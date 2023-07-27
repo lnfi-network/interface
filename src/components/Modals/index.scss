@@ -1,0 +1,69 @@
+.create-nostr-modal {
+  padding: 10px 10px 0;
+}
+.ant-timeline .ant-timeline-item-head {
+  background-color: transparent;
+}
+.connect-nostr-modal {
+  .ant-modal-title {
+    padding-bottom: 10px;
+  }
+  &-description {
+    font-size: 12px;
+    padding-top: 10px;
+    &:last-of-type {
+      padding-top: 0px;
+    }
+  }
+  &-btn {
+    text-align: center;
+    font-size: 14px;
+    padding-top: 10px;
+    button {
+      color: var(--color-unift-green);
+    }
+  }
+  &-link {
+    font-size: 12px;
+    a {
+      color: var(--color-unift-green);
+    }
+
+    text-align: center;
+    padding-top: 20px;
+  }
+}
+.nostr-modal {
+  &-content {
+    padding-top: 20px;
+  }
+  &-description {
+    text-align: center;
+    color: var(--color-text-base);
+    font-size: 14px;
+  }
+}
+.turnon-img-flex {
+  display: flex;
+  .img-box-item {
+    flex: 1;
+    img {
+      width: 100%;
+      border-radius: 5px;
+    }
+  }
+  .img-box-item + .img-box-item {
+    margin-left: 10px;
+  }
+}
+.nostr-setup-modal__content {
+  p {
+    text-align: left;
+    padding-top: 10px;
+  }
+  button {
+    margin-top: 20px;
+  }
+  padding: 20px 0px 10px;
+  text-align: center;
+}

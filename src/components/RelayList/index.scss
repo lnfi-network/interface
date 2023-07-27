@@ -1,0 +1,148 @@
+.relay-popover{
+  width: 400px;
+  max-width: 90%;
+}
+.relay-url-list-box{
+  .relays-text{
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+  .relays-btn{
+    height: 36px;
+    // margin-left: 20px;
+    position: relative;
+    margin-left: 2.4rem;
+    padding: 4px 15px 4px 20px;
+    &::before{
+      content: "";
+      width: 6px;
+      height: 6px;
+      background-color: var(--color-green-light);
+      border-radius: 6px;
+      position: absolute;
+      top: 50%;
+      left: 8px;
+      transform: translateY(-50%);
+    }
+    &__disconnected{
+      &::before {
+        background-color: var(--color-red);
+      }
+    }
+  }
+}
+
+.relay-url-list{
+  // width: 500px;
+  // max-width: 100%;
+  // min-height: 200px;
+  .relay-url-title-box{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 8px;
+  }
+  .relay-url-title{
+    font-size: 16px;
+    line-height: 26px;
+  }
+  .relay-url-title-desc{
+    font-size: 12px;
+    line-height: 16px;
+    color: var(--color-text-dark);
+    margin-bottom: 10px;
+  }
+  .relay-add{
+    margin-left: 10px;
+    padding: 1px 7px;
+    height: auto;
+    font-size: 12px;
+  }
+  .Checkbox-box{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    position: relative;
+  }
+  .ant-checkbox-disabled .ant-checkbox-inner{
+    background-color: #38c89d;
+    border-color: #38c89d;
+    border-radius: 10px;
+  }
+  .nostr-checkbox-connected .ant-checkbox .ant-checkbox-inner {
+    background-color: #38c89d;
+    border-color: #38c89d;
+  }
+  .nostr-checkbox-disconnected .ant-checkbox .ant-checkbox-inner{
+    background-color: var(--color-red);
+    border-color: var(--color-red);
+    
+  }
+  .CheckOutlined-btn{
+    vertical-align: sub;
+    padding: 0;
+    margin-left: 5px;
+    color: var(--color-green-light);
+    &:hover{
+      color: var(--color-green-light);
+    }
+  }
+  
+  .CloseOutlined-btn{
+    vertical-align: sub;
+    padding: 0;
+    margin-left: 5px;
+    color: var(--color-text-dark);
+    &:hover{
+      color: var(--color-green-light);
+    }
+  }
+  // .ant-checkbox-group .ant-checkbox-wrapper.offical{
+  //   .ant-checkbox-disabled+span{
+  //     color: var(--color-teal);
+  //   }
+    
+  // } 
+  .ant-checkbox-group .ant-checkbox-wrapper{
+    font-size: 12px;
+    .ant-typography{
+      display: inline-block;
+      margin-bottom: 0;
+      color: var(--color-green-light);
+      
+      .ant-typography-copy{
+        position: absolute;
+        top: 0;
+        right: 0;
+      }
+    }
+    
+  }
+  .DeleteOutlined-btn{
+    vertical-align: sub;
+    padding: 0;
+    margin-left: 5px;
+    color: var(--color-text-dark);
+    &:hover{
+      color: var(--color-green-light);
+    }
+  }
+  .ant-checkbox-group{
+    display: block;
+    .ant-checkbox-wrapper{
+      display: flex;
+    }
+    .ant-checkbox-wrapper+.ant-checkbox-wrapper{
+      margin-inline-start: 0;
+    }
+  } 
+  
+}
+.relay-response-time {
+  margin-top:20px;
+  font-size:14px;
+  &__value {
+    color:var(--color-green-light);
+    padding-left:10px;
+  }
+}

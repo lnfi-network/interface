@@ -1,0 +1,758 @@
+msgid ""
+msgstr ""
+"POT-Creation-Date: 2023-07-25 16:49+0800\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: @lingui/cli\n"
+"Language: zh\n"
+
+#: src/pages/Explore/comps/TableMarkets/index.jsx
+msgid "24H Trading Volume"
+msgstr ""
+
+#: src/components/Modals/WalletConnectModal.jsx
+msgid "<0>Install MetaMask</0> to start."
+msgstr ""
+
+#: src/pages/PageNotFound/PageNotFound.js
+msgid "<0>Return to </0><1>Homepage</1>"
+msgstr ""
+
+#: src/pages/Account/index.jsx
+#: src/pages/Explore/comps/TableMarkets/index.jsx
+#: src/pages/Marketplace/MyOrder.jsx
+msgid "Action"
+msgstr ""
+
+#: src/components/RelayList/index.jsx
+msgid "Add"
+msgstr ""
+
+#: src/pages/Account/comps/AddressBook/index.jsx
+msgid "Add Addres"
+msgstr ""
+
+#: src/pages/Account/comps/AddressBook/index.jsx
+msgid "Add Address"
+msgstr ""
+
+#: src/pages/Explore/MarketEvents.jsx
+#: src/pages/Explore/TokenEvents.jsx
+#: src/pages/Explore/comps/ExploreDetails/MarketDetail.jsx
+#: src/pages/Explore/comps/ExploreDetails/TokenDetail copy.jsx
+#: src/pages/Explore/comps/ExploreDetails/TokenDetail.jsx
+#: src/pages/Marketplace/MyOrder.jsx
+#: src/pages/Marketplace/OrderHistory.jsx
+#: src/pages/Marketplace/comps/OrderDetail/index.jsx
+#: src/pages/Marketplace/comps/OrderDetail/index.jsx
+msgid "Address"
+msgstr ""
+
+#: src/pages/Account/index.jsx
+msgid "Address Book"
+msgstr ""
+
+#: src/hooks/useNostr.js
+msgid "Alby manages your Nostr keys, and you can use your key to sign it."
+msgstr ""
+
+#: src/pages/Explore/MarketEvents.jsx
+#: src/pages/Explore/MarketEvents.jsx
+#: src/pages/Explore/TokenEvents.jsx
+#: src/pages/Explore/comps/ExploreDetails/TokenDetail.jsx
+msgid "All"
+msgstr ""
+
+#: src/pages/Marketplace/MyOrder.jsx
+#: src/pages/Marketplace/OrderHistory.jsx
+msgid "All Status"
+msgstr ""
+
+#: src/pages/Account/index.jsx
+#: src/pages/Account/index.jsx
+#: src/pages/Explore/comps/ExploreDetails/MarketDetail.jsx
+#: src/pages/Explore/comps/ExploreDetails/TokenDetail copy.jsx
+#: src/pages/Explore/comps/ExploreDetails/TokenDetail.jsx
+#: src/pages/Explore/comps/TableMarkets/index.jsx
+#: src/pages/Marketplace/Listing.jsx
+#: src/pages/Marketplace/MyOrder.jsx
+#: src/pages/Marketplace/OrderHistory.jsx
+#: src/pages/Marketplace/comps/OrderDetail/index.jsx
+#: src/pages/Marketplace/comps/OrderDetail/index.jsx
+msgid "Amount"
+msgstr ""
+
+#: src/pages/Marketplace/Listing.jsx
+msgid "Amount From Large to Small"
+msgstr ""
+
+#: src/pages/Marketplace/Listing.jsx
+msgid "Amount From Small to Large"
+msgstr ""
+
+#: src/pages/Explore/TokenEvents.jsx
+#: src/pages/Explore/comps/ExploreDetails/TokenDetail.jsx
+msgid "Approve"
+msgstr ""
+
+#: src/pages/Marketplace/comps/Market/index.jsx
+msgid "Approve successfully"
+msgstr ""
+
+#: src/components/Header/AppHeaderLinks.jsx
+#: src/pages/Account/index.jsx
+msgid "Assets"
+msgstr ""
+
+#: src/pages/Explore/comps/TableMarkets/index.jsx
+msgid "Auditor"
+msgstr ""
+
+#: src/pages/Explore/comps/TableMarkets/index.jsx
+msgid "Auditors"
+msgstr ""
+
+#: src/pages/Deposit/comps/DepositForm.jsx
+msgid "Available Balance is not enough."
+msgstr ""
+
+#: src/pages/Marketplace/comps/OrderDetail/index.jsx
+msgid "Average Executed Price"
+msgstr ""
+
+#: src/pages/Explore/MarketEvents.jsx
+msgid "Batch"
+msgstr ""
+
+#: src/pages/Marketplace/Listing.jsx
+#: src/pages/Marketplace/MyOrder.jsx
+#: src/pages/Marketplace/OrderHistory.jsx
+msgid "Buy"
+msgstr ""
+
+#: src/pages/Marketplace/MyOrder.jsx
+#: src/pages/Marketplace/OrderHistory.jsx
+msgid "Buy/Sell"
+msgstr ""
+
+#: src/pages/Marketplace/Listing.jsx
+msgid "Buyer"
+msgstr ""
+
+#: src/pages/Marketplace/MyOrder.jsx
+msgid "Cancel"
+msgstr ""
+
+#: src/pages/Explore/MarketEvents.jsx
+msgid "Cancel Order"
+msgstr ""
+
+#: src/pages/Explore/Markets.jsx
+msgid "Change"
+msgstr ""
+
+#: src/pages/Explore/Markets.jsx
+msgid "Channel"
+msgstr ""
+
+#: src/components/Modals/WalletConnectModal.jsx
+msgid "Click here to refresh the page."
+msgstr ""
+
+#: src/components/Modals/WalletConnectModal.jsx
+msgid "Coinbase"
+msgstr ""
+
+#: src/components/Common/ConnectWallet.jsx
+#: src/components/Common/ConnectWallet.jsx
+#: src/components/Modals/WalletConnectModal.jsx
+#: src/pages/Deposit/comps/DepositForm.jsx
+#: src/pages/Deposit/comps/DepositForm.jsx
+msgid "Connect wallet"
+msgstr ""
+
+#: src/components/Common/ConnectWallet.jsx
+msgid "Connect your wallet to deposit funds and start trading."
+msgstr ""
+
+#: src/pages/Account/index.jsx
+msgid "Connecting Nostr enables asset withdraw and transfer"
+msgstr ""
+
+#: src/pages/Explore/comps/TableMarkets/index.jsx
+msgid "Currency"
+msgstr ""
+
+#: src/pages/Explore/comps/TableMarkets/index.jsx
+#: src/pages/Marketplace/Listing.jsx
+msgid "Date"
+msgstr ""
+
+#: src/pages/Explore/TokenEvents.jsx
+#: src/pages/Explore/comps/ExploreDetails/TokenDetail.jsx
+msgid "Deposit"
+msgstr ""
+
+#: src/pages/Explore/MarketEvents.jsx
+#: src/pages/Explore/MarketEvents.jsx
+#: src/pages/Explore/TokenEvents.jsx
+#: src/pages/Explore/TokenEvents.jsx
+#: src/pages/Explore/comps/ExploreDetails/MarketDetail.jsx
+#: src/pages/Explore/comps/ExploreDetails/MarketDetail.jsx
+#: src/pages/Explore/comps/ExploreDetails/TokenDetail copy.jsx
+#: src/pages/Explore/comps/ExploreDetails/TokenDetail.jsx
+#: src/pages/Marketplace/OrderHistory.jsx
+#: src/pages/Marketplace/OrderHistory.jsx
+#: src/pages/Marketplace/comps/OrderDetail/index.jsx
+msgid "Detail"
+msgstr ""
+
+#: src/components/AddressDropdown/AddressNostrDropdown.jsx
+msgid "Disconnect"
+msgstr ""
+
+#: src/pages/Explore/MarketEvents.jsx
+#: src/pages/Explore/TokenEvents.jsx
+#: src/pages/Explore/comps/ExploreDetails/MarketDetail.jsx
+#: src/pages/Explore/comps/ExploreDetails/TokenDetail copy.jsx
+#: src/pages/Explore/comps/ExploreDetails/TokenDetail.jsx
+#: src/pages/Marketplace/MyOrder.jsx
+#: src/pages/Marketplace/OrderHistory.jsx
+#: src/pages/Marketplace/comps/OrderDetail/index.jsx
+msgid "Event ID"
+msgstr ""
+
+#: src/pages/Explore/comps/ExploreDetails/TokenDetail.jsx
+msgid "Event content"
+msgstr ""
+
+#: src/components/Header/AppHeaderLinks.jsx
+msgid "Explorer"
+msgstr ""
+
+#: src/components/Header/AppHeaderLinks.jsx
+msgid "Faucet"
+msgstr ""
+
+#: src/pages/Explore/MarketEvents.jsx
+#: src/pages/Explore/TokenEvents.jsx
+#: src/pages/Marketplace/Listing.jsx
+#: src/pages/Marketplace/MyOrder.jsx
+#: src/pages/Marketplace/OrderHistory.jsx
+msgid "Filters"
+msgstr ""
+
+#: src/pages/Explore/comps/ExploreDetails/TokenDetail copy.jsx
+#: src/pages/Explore/comps/ExploreDetails/TokenDetail.jsx
+msgid "From"
+msgstr ""
+
+#: src/pages/Marketplace/Listing.jsx
+msgid "From Earliest to Latest"
+msgstr ""
+
+#: src/pages/Marketplace/Listing.jsx
+msgid "From Latest to Earliest"
+msgstr ""
+
+#: src/pages/Marketplace/MyOrder.jsx
+#: src/pages/Marketplace/OrderHistory.jsx
+msgid "History Orders"
+msgstr ""
+
+#: src/pages/Explore/comps/TableMarkets/index.jsx
+msgid "Info"
+msgstr ""
+
+#: src/hooks/useGetNostrAccount.js
+#: src/hooks/useGetNostrAccount.js
+#: src/hooks/useNostr.js
+#: src/hooks/useNostr.js
+msgid "Install now"
+msgstr ""
+
+#: src/pages/Account/comps/AddressBook/index.jsx
+#: src/pages/Account/comps/Transfer/index.jsx
+#: src/pages/Account/comps/Transfer/index.jsx
+#: src/pages/Marketplace/comps/Listing/index.jsx
+#: src/pages/Marketplace/comps/Listing/index.jsx
+msgid "Invalid input format."
+msgstr ""
+
+#: src/pages/Explore/comps/TableMarkets/index.jsx
+msgid "Join Time"
+msgstr ""
+
+#: src/components/NetworkDropdown/index.jsx
+#: src/components/NetworkDropdown/index.jsx
+msgid "Language"
+msgstr ""
+
+#: src/pages/Account/index.jsx
+msgid "Last Price"
+msgstr ""
+
+#: src/pages/Marketplace/index.jsx
+msgid "Listing"
+msgstr ""
+
+#: src/pages/Explore/comps/TableMarkets/index.jsx
+msgid "Long Position Users"
+msgstr ""
+
+#: src/pages/Marketplace/index.jsx
+msgid "Make New Listing"
+msgstr ""
+
+#: src/pages/Explore/index.jsx
+msgid "Market Events"
+msgstr ""
+
+#: src/pages/Explore/comps/TableMarkets/index.jsx
+#: src/pages/Explore/comps/TableMarkets/index.jsx
+#: src/pages/Explore/comps/TableMarkets/index.jsx
+msgid "Market Marker"
+msgstr ""
+
+#: src/pages/Explore/comps/TableMarkets/index.jsx
+msgid "Market Markers"
+msgstr ""
+
+#: src/components/Header/AppHeaderLinks.jsx
+#: src/pages/Marketplace/index.jsx
+msgid "Marketplace"
+msgstr ""
+
+#: src/components/Footer/constants.js
+#: src/components/Footer/constants.js
+msgid "Media Kit"
+msgstr ""
+
+#: src/components/Modals/WalletConnectModal.jsx
+msgid "MetaMask"
+msgstr ""
+
+#: src/components/Modals/WalletConnectModal.jsx
+msgid "MetaMask not detected."
+msgstr ""
+
+#: src/pages/Marketplace/comps/Listing/index.jsx
+#: src/pages/Marketplace/comps/Listing/index.jsx
+#: src/pages/Marketplace/comps/Listing/index.jsx
+msgid "Minimum Qty is 10 USDT"
+msgstr ""
+
+#: src/pages/Account/index.jsx
+msgid "Mint"
+msgstr ""
+
+#: src/pages/Account/index.jsx
+msgid "Mint Asset"
+msgstr ""
+
+#: src/pages/Account/comps/AddressBook/index.jsx
+msgid "My Address Book"
+msgstr ""
+
+#: src/pages/Marketplace/index.jsx
+msgid "My Order"
+msgstr ""
+
+#: src/pages/Account/comps/AddressBook/index.jsx
+#: src/pages/Account/comps/Transfer/index.jsx
+msgid "Nostr Address"
+msgstr ""
+
+#: src/pages/Account/index.jsx
+msgid "Nostr Assets Transfer"
+msgstr ""
+
+#: src/pages/Marketplace/MyOrder.jsx
+#: src/pages/Marketplace/OrderHistory.jsx
+msgid "Open Orders"
+msgstr ""
+
+#: src/pages/Marketplace/index.jsx
+msgid "Order History"
+msgstr ""
+
+#: src/pages/Explore/comps/ExploreDetails/MarketDetail.jsx
+#: src/pages/Marketplace/MyOrder.jsx
+#: src/pages/Marketplace/OrderHistory.jsx
+#: src/pages/Marketplace/comps/OrderDetail/index.jsx
+#: src/pages/Marketplace/comps/OrderDetail/index.jsx
+msgid "Order ID"
+msgstr ""
+
+#: src/pages/PageNotFound/PageNotFound.js
+msgid "Page not found"
+msgstr ""
+
+#: src/pages/Explore/MarketEvents.jsx
+msgid "PlaceOrder"
+msgstr ""
+
+#: src/pages/Explore/comps/ExploreDetails/TokenDetail.jsx
+msgid "Plain text content"
+msgstr ""
+
+#: src/pages/Explore/MarketEvents.jsx
+#: src/pages/Explore/TokenEvents.jsx
+#: src/pages/Marketplace/OrderHistory.jsx
+msgid "Please enter Event ID or Address"
+msgstr ""
+
+#: src/pages/Deposit/comps/DepositForm.jsx
+msgid "Please enter the correct field."
+msgstr ""
+
+#: src/pages/Deposit/comps/DepositForm.jsx
+msgid "Please input a valid Nostr address."
+msgstr ""
+
+#: src/pages/Deposit/comps/DepositForm.jsx
+msgid "Please input receive amount."
+msgstr ""
+
+#: src/components/RelayList/index.jsx
+msgid "Please input your url!"
+msgstr ""
+
+#: src/pages/Explore/Markets.jsx
+#: src/pages/Explore/comps/ExploreDetails/MarketDetail.jsx
+#: src/pages/Explore/comps/TableMarkets/index.jsx
+#: src/pages/Marketplace/Listing.jsx
+#: src/pages/Marketplace/MyOrder.jsx
+#: src/pages/Marketplace/OrderHistory.jsx
+#: src/pages/Marketplace/comps/OrderDetail/index.jsx
+#: src/pages/Marketplace/comps/OrderDetail/index.jsx
+msgid "Price"
+msgstr ""
+
+#: src/pages/Marketplace/Listing.jsx
+msgid "Price From High to Low"
+msgstr ""
+
+#: src/pages/Marketplace/Listing.jsx
+msgid "Price From Low to High"
+msgstr ""
+
+#: src/pages/Account/index.jsx
+#: src/pages/Account/index.jsx
+msgid "Receive"
+msgstr ""
+
+#: src/pages/Account/index.jsx
+#: src/pages/Account/index.jsx
+msgid "Receive Assets"
+msgstr ""
+
+#: src/components/Footer/constants.js
+msgid "Referral Terms"
+msgstr ""
+
+#: src/components/Modals/WalletConnectModal.jsx
+msgid "Refresh the page after Install UniSat Wallet"
+msgstr ""
+
+#: src/components/RelayList/index.jsx
+msgid "Relay url"
+msgstr ""
+
+#: src/components/RelayList/index.jsx
+msgid "Relays"
+msgstr ""
+
+#: src/pages/Marketplace/Listing.jsx
+#: src/pages/Marketplace/MyOrder.jsx
+#: src/pages/Marketplace/OrderHistory.jsx
+msgid "Remaining"
+msgstr ""
+
+#: src/pages/Account/comps/AddressBook/index.jsx
+msgid "Remark"
+msgstr ""
+
+#: src/pages/Explore/MarketEvents.jsx
+#: src/pages/Explore/TokenEvents.jsx
+msgid "Reset"
+msgstr ""
+
+#: src/pages/Explore/comps/TableMarkets/index.jsx
+msgid "Reward"
+msgstr ""
+
+#: src/pages/Account/comps/AddressBook/index.jsx
+msgid "Save"
+msgstr ""
+
+#: src/pages/Explore/MarketEvents.jsx
+#: src/pages/Explore/TokenEvents.jsx
+msgid "Search"
+msgstr ""
+
+#: src/components/Modals/LanguageModal.jsx
+msgid "Select Language"
+msgstr ""
+
+#: src/pages/Marketplace/Listing.jsx
+#: src/pages/Marketplace/MyOrder.jsx
+#: src/pages/Marketplace/OrderHistory.jsx
+msgid "Sell"
+msgstr ""
+
+#: src/pages/Marketplace/Listing.jsx
+msgid "Seller"
+msgstr ""
+
+#: src/pages/Account/index.jsx
+#: src/pages/Account/index.jsx
+msgid "Send"
+msgstr ""
+
+#: src/pages/Account/index.jsx
+msgid "Send Assets"
+msgstr ""
+
+#: src/pages/Explore/comps/TableMarkets/index.jsx
+msgid "Short Position Users"
+msgstr ""
+
+#: src/pages/Explore/MarketEvents.jsx
+#: src/pages/Explore/TokenEvents.jsx
+#: src/pages/Explore/comps/ExploreDetails/MarketDetail.jsx
+#: src/pages/Explore/comps/ExploreDetails/TokenDetail copy.jsx
+#: src/pages/Explore/comps/ExploreDetails/TokenDetail.jsx
+#: src/pages/Marketplace/MyOrder.jsx
+#: src/pages/Marketplace/OrderHistory.jsx
+#: src/pages/Marketplace/comps/OrderDetail/index.jsx
+msgid "Status"
+msgstr ""
+
+#: src/pages/Account/comps/AddressBook/index.jsx
+#: src/pages/Account/comps/AddressBook/index.jsx
+#: src/pages/Account/comps/Transfer/index.jsx
+#: src/pages/Marketplace/MyOrder.jsx
+#: src/pages/Marketplace/MyOrder.jsx
+#: src/pages/Marketplace/comps/Listing/index.jsx
+#: src/pages/Marketplace/comps/Market/index.jsx
+msgid "Submit successfully"
+msgstr ""
+
+#: src/pages/Explore/MarketEvents.jsx
+msgid "Take order"
+msgstr ""
+
+#: src/components/Footer/constants.js
+msgid "Terms and Conditions"
+msgstr ""
+
+#: src/pages/Account/comps/AddressBook/index.jsx
+msgid "The address already exists in your address book."
+msgstr ""
+
+#: src/pages/Account/comps/AddressBook/index.jsx
+msgid "The name already exists in your address book. Please use a different label."
+msgstr ""
+
+#: src/components/RelayList/index.jsx
+msgid "The url is incorrectly entered!"
+msgstr ""
+
+#: src/pages/Explore/TokenEvents.jsx
+msgid "This is batch event, please view on detail."
+msgstr ""
+
+#: src/pages/Explore/MarketEvents.jsx
+#: src/pages/Explore/TokenEvents.jsx
+#: src/pages/Explore/comps/ExploreDetails/MarketDetail.jsx
+#: src/pages/Explore/comps/ExploreDetails/TokenDetail copy.jsx
+#: src/pages/Explore/comps/ExploreDetails/TokenDetail.jsx
+#: src/pages/Marketplace/MyOrder.jsx
+#: src/pages/Marketplace/OrderHistory.jsx
+#: src/pages/Marketplace/comps/OrderDetail/index.jsx
+msgid "Time"
+msgstr ""
+
+#: src/pages/Explore/comps/ExploreDetails/TokenDetail copy.jsx
+#: src/pages/Explore/comps/ExploreDetails/TokenDetail.jsx
+msgid "To"
+msgstr ""
+
+#: src/pages/Account/index.jsx
+#: src/pages/Account/index.jsx
+#: src/pages/Explore/MarketEvents.jsx
+#: src/pages/Explore/MarketEvents.jsx
+#: src/pages/Explore/Markets.jsx
+#: src/pages/Explore/TokenEvents.jsx
+#: src/pages/Explore/TokenEvents.jsx
+#: src/pages/Explore/comps/ExploreDetails/MarketDetail.jsx
+#: src/pages/Explore/comps/ExploreDetails/TokenDetail copy.jsx
+#: src/pages/Explore/comps/ExploreDetails/TokenDetail.jsx
+#: src/pages/Explore/comps/TableMarkets/index.jsx
+#: src/pages/Marketplace/MyOrder.jsx
+#: src/pages/Marketplace/OrderHistory.jsx
+#: src/pages/Marketplace/comps/OrderDetail/index.jsx
+msgid "Token"
+msgstr ""
+
+#: src/pages/Account/index.jsx
+#: src/pages/Account/index.jsx
+msgid "Token Address"
+msgstr ""
+
+#: src/pages/Explore/index.jsx
+msgid "Token Events"
+msgstr ""
+
+#: src/components/Modals/WalletConnectModal.jsx
+msgid "TokenPocket"
+msgstr ""
+
+#: src/pages/Explore/comps/TableMarkets/index.jsx
+msgid "Total Reward"
+msgstr ""
+
+#: src/pages/Explore/comps/TableMarkets/index.jsx
+msgid "Total Reward(NST)"
+msgstr ""
+
+#: src/pages/Marketplace/Listing.jsx
+msgid "Total Value"
+msgstr ""
+
+#: src/pages/Explore/comps/TableMarkets/index.jsx
+msgid "Trade"
+msgstr ""
+
+#: src/pages/Account/comps/Transfer/index.jsx
+#: src/pages/Account/comps/Transfer/index.jsx
+#: src/pages/Account/index.jsx
+#: src/pages/Account/index.jsx
+#: src/pages/Explore/TokenEvents.jsx
+#: src/pages/Explore/comps/ExploreDetails/TokenDetail.jsx
+msgid "Transfer"
+msgstr ""
+
+#: src/pages/Account/comps/Transfer/index.jsx
+msgid "Transfer Amount"
+msgstr ""
+
+#: src/pages/Explore/comps/TableMarkets/index.jsx
+msgid "Txid"
+msgstr ""
+
+#: src/pages/Explore/MarketEvents.jsx
+#: src/pages/Explore/MarketEvents.jsx
+#: src/pages/Explore/TokenEvents.jsx
+#: src/pages/Explore/TokenEvents.jsx
+#: src/pages/Explore/comps/ExploreDetails/MarketDetail.jsx
+#: src/pages/Explore/comps/ExploreDetails/MarketDetail.jsx
+#: src/pages/Explore/comps/ExploreDetails/TokenDetail copy.jsx
+#: src/pages/Explore/comps/ExploreDetails/TokenDetail.jsx
+#: src/pages/Marketplace/MyOrder.jsx
+#: src/pages/Marketplace/OrderHistory.jsx
+#: src/pages/Marketplace/comps/OrderDetail/index.jsx
+#: src/pages/Marketplace/comps/OrderDetail/index.jsx
+msgid "Type"
+msgstr ""
+
+#: src/pages/Account/index.jsx
+#: src/pages/Account/index.jsx
+msgid "USD Value"
+msgstr ""
+
+#: src/components/Modals/WalletConnectModal.jsx
+msgid "UniSat Wallet is disconnected."
+msgstr ""
+
+#: src/components/Modals/WalletConnectModal.jsx
+msgid "Unisat Wallet not detected."
+msgstr ""
+
+#: src/components/Modals/WalletConnectModal.jsx
+msgid "Unisat wallet"
+msgstr ""
+
+#: src/components/RelayList/index.jsx
+msgid "Url already exists"
+msgstr ""
+
+#: src/pages/Explore/Markets.jsx
+msgid "Volume(24H)"
+msgstr ""
+
+#: src/pages/Explore/comps/TableMarkets/index.jsx
+msgid "Wallet Address"
+msgstr ""
+
+#: src/components/Modals/WalletConnectModal.jsx
+msgid "Walletconnect"
+msgstr ""
+
+#: src/pages/Explore/comps/TableMarkets/index.jsx
+msgid "Website"
+msgstr ""
+
+#: src/pages/Account/index.jsx
+msgid "Welcome to Nostr"
+msgstr ""
+
+#: src/pages/Explore/TokenEvents.jsx
+#: src/pages/Explore/comps/ExploreDetails/TokenDetail.jsx
+msgid "Withdraw"
+msgstr ""
+
+#: src/pages/Account/comps/AddressBook/index.jsx
+msgid "You can't add to yourself."
+msgstr ""
+
+#: src/pages/Account/comps/Transfer/index.jsx
+msgid "You can't transfer to yourself."
+msgstr ""
+
+#: src/lib/utils/index.js
+msgid "You need connect your wallet first."
+msgstr ""
+
+#: src/components/Common/ConnectWallet.jsx
+msgid "You selected an ERC20 token to deposit, please click to switch your wallet connect from BRC20 to Goerli Network."
+msgstr ""
+
+#: src/pages/Explore/TokenEvents.jsx
+#: src/pages/Explore/comps/ExploreDetails/TokenDetail.jsx
+msgid "addressBookAdd"
+msgstr ""
+
+#: src/pages/Explore/TokenEvents.jsx
+#: src/pages/Explore/comps/ExploreDetails/TokenDetail.jsx
+msgid "closePro"
+msgstr ""
+
+#: src/pages/Explore/TokenEvents.jsx
+#: src/pages/Explore/comps/ExploreDetails/TokenDetail.jsx
+msgid "deleteAddressBook"
+msgstr ""
+
+#: src/pages/Explore/TokenEvents.jsx
+#: src/pages/Explore/comps/ExploreDetails/TokenDetail.jsx
+msgid "openPro"
+msgstr ""
+
+#: src/pages/Explore/MarketEvents.jsx
+msgid "ordi"
+msgstr ""
+
+#: src/pages/Explore/TokenEvents.jsx
+#: src/pages/Explore/comps/ExploreDetails/TokenDetail.jsx
+msgid "transferFrom"
+msgstr ""
+
+#: src/components/Common/ConnectWallet.jsx
+msgid "​Deposit only supported on Goerli Network at the moment. Switch network in wallet！"
+msgstr ""
+
+#: src/components/Common/ConnectWallet.jsx
+msgid "​You selected an BRC20 token to deposit, please click to switch your wallet connect from ERC20 to BRC20."
+msgstr ""

@@ -1,0 +1,157 @@
+.sell-button-checked {
+  .ant-radio-button-checked {
+    background: var(--color-orange);
+    border-color: var(--color-orange);
+  }
+  .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) {
+    background: var(--color-orange);
+    border-color: var(--color-orange);
+    
+  }
+  .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled):hover {
+    background: var(--color-orange);
+    border-color: var(--color-orange);
+  }
+  .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled)::before {
+    background: var(--color-orange);
+  }
+  
+}
+.select-token-name {
+  font-size: 14px;
+}
+.select-token-balance {
+  font-size:12px;
+  color:var(--color-text-dark);
+  padding-left:5px;
+}
+.transfer-form {
+  width:780px;
+  padding:50px 20px 0;
+  max-width: 100%;
+  .transfer-value {
+    padding-left:60px;
+  }
+  .ant-form-item{
+    margin-bottom: 40px;
+    .ant-select-selection-search-input{
+      font-size: 14px;
+    }
+  }
+  .ant-form-item.amount-form-item{
+    .ant-form-item-control-input-content{
+      display: flex;
+      align-items: center;
+    }
+  }
+  .ant-form-item .ant-form-item-label{
+    text-align: start;
+  }
+  .limit-buy-available{
+    font-size: 12px;
+    color: var(--color-text-dark);
+    text-align: center;
+    // margin-top: 15px;
+  }
+  .transfer-submit-btn {
+    min-width:180px;
+    &__sell {
+      background-color:var(--color-orange);
+      &:hover {
+        background-color:var(--color-orange);
+      }
+    }
+  }
+  &-usdt {
+    padding-left:10px;
+  }
+  .transfer-input {
+    width: 490px;
+    // height:32px;
+  }
+  .transfer-form-usdt{
+    font-size:14px;
+    // vertical-align: sub;
+  }
+  .suffix-btn {
+    width:45px;
+    font-size:14px;
+  }
+ 
+  .transfer-form-balance {
+    position:absolute;
+    top:-30px;
+    left:-45px;
+    width:100%;
+    display: flex;
+    color:var(--color-text-dark);
+    text-align: center;
+    font-size:12px;
+    &-container {
+      width:100%;
+      padding-right:20px;
+
+    }
+  }
+  &-total-value {
+    font-size: 16px;
+    span{
+      font-size: 12px;
+    }
+  }
+  // .transfer-form-total-stats {
+  //   margin-bottom:0px;
+  // }
+ 
+}
+@media screen and (max-width: 768px) {
+  .transfer-form {
+    width:100%;
+    padding:20px 0 0;
+    .ant-form-item{
+      margin-bottom: 20px;
+      // display: block;
+      .ant-form-item-row{
+        display: block;
+      }
+    }
+    .ant-form-item .ant-form-item-label{
+      padding: 0;
+      flex: initial;
+    }
+    .ant-form-item .ant-form-item-control{
+      flex: 1;
+    }
+    .ant-form-item .ant-form-item-label >label{
+      display: flex;
+      // width:90px;
+      font-size: 12px;
+    }
+    
+    .transfer-input {
+      width: calc(100% - 45px);
+      height: 32px;
+    }
+    .transfer-form-usdt{
+      font-size:12px;
+    }
+    .suffix-btn {
+      font-size:12px;
+    }
+    .transfer-select{
+      width: 100%;
+    }
+  }
+  .select-token-name {
+    font-size: 12px;
+  }
+  .select-token-balance {
+    font-size:10px;
+  }
+}
+.transfer-modal{
+  .ant-modal-title{
+    padding-bottom: 10px;
+    text-align: center;
+  }
+}

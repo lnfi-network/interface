@@ -1,0 +1,26 @@
+.explore-detail-drawer {
+  background: var(--color-layer-light)!important;
+  max-height: 100%;
+}
+.explore-detail-list{
+  &-item {
+    display: flex;
+    padding-bottom:20px;
+    &__label{
+      color:var(--color-text-base);
+      font-size:14px;
+      padding-right:10px;
+      width:160px;
+    }
+    &__text {
+      color:var(--color-text-light);
+      font-size: 14px;
+      word-break: break-all;
+      flex:1;
+    }
+  }
+  .border-t{
+    border-top: 1px solid #575454;
+    padding-top: 20px;
+  }
+}

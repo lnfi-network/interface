@@ -1,0 +1,116 @@
+.deposit-form {
+  margin: 20px auto 0;
+  display: flex;
+  justify-content: center;
+  .ant-form-item-label {
+    text-align: left;
+  }
+  .network-selector-btn {
+    width: 150px;
+    text-align: center;
+    max-width: 50%;
+  }
+  .deposit-plat {
+    padding-left: 10px;
+    color: var(--color-green);
+  }
+  .deposit-inscriptions {
+    padding: 0 0 0 174px;
+    margin-bottom: 20px;
+    &-label {
+      padding-bottom: 10px;
+    }
+    &-list {
+      border: 1px solid #333;
+      border-radius: 10px;
+      width: 490px;
+      min-height: 100px;
+      max-height: 200px;
+      overflow-y: auto;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      .ant-card {
+        margin: 10px;
+      }
+    }
+    &-empty {
+      margin: 10px auto;
+    }
+  }
+  .deposit-balance {
+    padding-left: 175px;
+    padding-bottom: 20px;
+    &-value {
+      color: var(--color-green);
+      &__red {
+        color: var(--color-red);
+      }
+    }
+  }
+  &-switch__tip {
+    display: block;
+    font-size: 12px;
+    color: var(--color-red);
+    padding-left: 30px;
+    text-align: center;
+  }
+  .mb20 {
+    margin-bottom: 20px;
+  }
+  @media screen and (max-width: 768px) {
+    .network-selector-btn {
+      width: 110px;
+      text-align: center;
+      max-width: 50%;
+    }
+    .deposit-balance {
+      padding-left: 0;
+    }
+    .deposit-inscriptions {
+      padding: 0;
+      margin-bottom: 20px;
+      width: 100%;
+      &-list {
+        width: 100%;
+        .ant-card {
+          margin: 5px;
+        }
+      }
+    }
+    .fixed-btn {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100vw;
+      padding: 15px;
+      background: var(--color-layer-base);
+      margin-bottom: 0;
+      border-top: 1px solid var(--color-border-grey);
+      z-index: 100;
+    }
+  }
+}
+.deposit-brc20-fees {
+  display: flex;
+  width: 340px;
+  height: 100px;
+  .ant-radio-button-wrapper {
+    height: auto;
+    padding: 5px;
+    flex: 1;
+
+    .fee-title {
+      font-size: 16px;
+      font-weight: bold;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .fee-tip {
+      font-size: 12px;
+      color: var(--color-text-dark);
+      line-height: 100%;
+    }
+  }
+}

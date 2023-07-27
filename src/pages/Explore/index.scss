@@ -1,0 +1,231 @@
+.market-dashborad {
+  flex:1;
+  .ant-layout {
+    height:100%;
+  }
+  .market-content {
+    height:100%;
+    padding: 0 50px;
+  }
+  .market-explore-filters{
+    .ant-form-item{
+      display: inline-block;
+      margin-right: 20px;
+      margin-bottom: 0;
+    }
+  }
+  .ant-layout-header {
+    height: auto;
+    // height:40px;
+    // line-height: 40px;
+    // padding-left:80px;
+  }
+  .market-sub-header {
+    // background-color: var(--color-layer-base);
+  }
+  .ant-menu-dark,.ant-menu-dark>.ant-menu {
+    // background: var(--color-layer-base);
+    background: transparent;
+    font-size: 16px;
+    // padding: 10px 0;
+    margin-top: 10px;
+    font-weight: bold;
+  }
+  .dashborad-sub-menu {
+    padding: 10px 50px 0;
+    .ant-menu-item-selected {
+      background-color: transparent;
+     /*  border-bottom:1px solid #fff; */
+      // &::after {
+      //   border-bottom-width:1px;
+      // }
+    }
+    
+  }
+  .ant-menu-dark.ant-menu-horizontal >.ant-menu-item:hover::after, .ant-menu-dark>.ant-menu.ant-menu-horizontal >.ant-menu-item:hover::after, .ant-menu-dark.ant-menu-horizontal >.ant-menu-submenu:hover::after, .ant-menu-dark>.ant-menu.ant-menu-horizontal >.ant-menu-submenu:hover::after, .ant-menu-dark.ant-menu-horizontal >.ant-menu-item-active::after, .ant-menu-dark>.ant-menu.ant-menu-horizontal >.ant-menu-item-active::after, .ant-menu-dark.ant-menu-horizontal >.ant-menu-submenu-active::after, .ant-menu-dark>.ant-menu.ant-menu-horizontal >.ant-menu-submenu-active::after, .ant-menu-dark.ant-menu-horizontal >.ant-menu-item-open::after, .ant-menu-dark>.ant-menu.ant-menu-horizontal >.ant-menu-item-open::after, .ant-menu-dark.ant-menu-horizontal >.ant-menu-submenu-open::after, .ant-menu-dark>.ant-menu.ant-menu-horizontal >.ant-menu-submenu-open::after{
+    border-bottom-width:2px;
+    border-bottom-color: #06F4DB;
+  }
+  .ant-menu-dark.ant-menu-horizontal >.ant-menu-item-selected::after, .ant-menu-dark>.ant-menu.ant-menu-horizontal >.ant-menu-item-selected::after, .ant-menu-dark.ant-menu-horizontal >.ant-menu-submenu-selected::after, .ant-menu-dark>.ant-menu.ant-menu-horizontal >.ant-menu-submenu-selected::after{
+    border-bottom-width:2px;
+    border-bottom-color: #06F4DB;
+  }
+  .perpetual-swap {
+    // padding:20px 40px;
+    .ant-table {
+      table>thead>tr>th {
+        padding: 20px 10px;
+      }
+      table>tbody>tr>td{
+        padding: 20px 10px;
+      }
+    }
+  }
+}
+.trading-data-echarts{
+  margin-top: 20px;
+  display: flex;
+  height: 300px;
+  .trading-data-echarts-item{
+    flex: 1;
+    background-color: var(--color-layer-light);
+    padding-left: 10px;
+    .trading-data-echarts-item-title{
+      font-size: 16px;
+      padding-top: 15px;
+    }
+    .trading-data-echarts-item-chartbox{
+      height: calc(100% - 50px);
+    }
+    .ant-radio-button-wrapper{
+      font-size: 12px;
+    }
+  }
+  .trading-data-echarts-item:not(:first-child) {
+    margin-left: 20px;
+  }
+}
+.dashborad-sub-menu-box{
+  position: relative;
+  .dashborad-sub-menu-abs{
+    position: absolute;
+    top: 12px;
+    right: 50px;
+    // width: 240px;
+    // height: 50px;
+    background: inherit;
+    background-color: rgba(5, 244, 219, 0.1450980392156863);
+    box-sizing: border-box;
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgba(121, 121, 121, 1);
+    border-radius: 10px;
+    -moz-box-shadow: none;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    font-size: 16px;
+    line-height: 42px;
+    text-align: center;
+    padding: 0 40px;
+    cursor: pointer;
+    &-icon{
+      color: #06F4DB;
+      margin-left: 5px;
+      font-size: 16px;
+    }
+  }
+}
+.dashboard-market{
+  margin-top: 20px;
+  padding-top:40px;
+  background: var(--color-layer-light);
+  padding: 0 20px 20px;
+  border-radius: 10px;
+  .dashboard-market-title{
+    font-size: 20px;
+    color: var(--color-text-light);
+    padding: 15px 5px;
+    border-bottom: 1px solid var(--color-border-grey)
+  }
+  .dashboard-market-content{
+    display: flex;
+    align-items: center;
+    .dashboard-market-content-table{
+      width: 100%;
+      margin-top: 10px;
+      .ant-table-thead > tr > th, .ant-table-tbody > tr > td {
+        border-bottom: none;
+      }
+    }
+  }
+}
+.banner-box{
+  padding: 10px 50px;
+}
+
+@media screen and (max-width: 768px) {
+
+  .banner-box{
+    padding: 15px;
+    // display: none;
+  }
+  .market-dashborad{
+    .dashborad-sub-menu {
+      padding: 0 10px;
+      .ant-menu-item-selected {
+        background-color: transparent;
+       /*  border-bottom:1px solid #fff; */
+        &::after {
+          border-bottom-width:1px;
+        }
+      }
+    }
+    .ant-menu-dark,.ant-menu-dark>.ant-menu{
+      font-size: 12px;
+      margin-top: 0;
+    }
+    .market-content{
+      padding: 0 10px;
+      
+    }
+    .market-explore-filters{
+      // .ant-form-item{
+      //   display: block;
+      // }
+      .ant-form-item{
+        display: block;
+        font-size: 12px;
+        margin-right: 5px;
+        margin-bottom: 10px;
+        .ant-select{
+          font-size: 12px;
+          .ant-select-selector{
+            font-size: 12px;
+          }
+        }
+        .ant-input{
+          font-size: 12px;
+        }
+        .ant-form-item-label >label{
+          font-size: 12px;
+        } 
+      }
+      .ant-form .ant-form-item .ant-form-item-label {
+        flex: inherit;
+        width: 80px;
+      }
+      .ant-form .ant-form-item .ant-form-item-control{
+        flex: 1;
+        .ant-form-item-control-input-content{
+          width: 100%;
+        }
+        
+      }
+      .search-btn-item{
+        .ant-form-item-control-input-content{
+          width: 100%;
+          text-align: right;
+        }
+      } 
+    }
+  }
+  .ant-menu-horizontal .ant-menu-item, .ant-menu-horizontal .ant-menu-submenu{
+    padding-inline: 6px;
+  }
+  .dashborad-sub-menu-box{
+    .dashborad-sub-menu-abs{
+      padding: 0 10px;
+      top: 8px;
+      right: 10px;
+      // background-color: transparent;
+      border: none;
+      font-size: 12px;
+      font-weight: bold;
+      line-height: 30px;
+      // display: none;
+      // .dashborad-sub-menu-abs-markets{
+      //   display: none;
+      // }
+    }
+  }
+}
