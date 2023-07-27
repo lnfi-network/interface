@@ -1,0 +1,81 @@
+.deposit-container {
+  flex: 1;
+  padding: 20px 20px 60px;
+  .deposit-content {
+    margin-top: 20px;
+    border: 1px solid var(--color-border-grey);
+    border-radius: 20px;
+    padding-bottom: 20px;
+  }
+  .deposit-title {
+    margin-top: 40px;
+    padding-left: 20px;
+    text-align: left;
+    font-size: 18px;
+    font-weight: bold;
+    &__value {
+      padding-left: 20px;
+      cursor: pointer;
+    }
+  }
+  .deposit-invoices {
+    margin: 0 auto 20px;
+    width: 660px;
+    &-time {
+      font-size: 14px;
+      padding-right: 10px;
+      color: rgba(255, 255, 255, 0.85);
+    }
+    &-qrcode {
+      position: relative;
+      padding-top: 20px;
+    }
+  }
+  .deposit-send-btn {
+    width: 120px;
+  }
+  @media (max-width: 768px) {
+    .deposit-invoices {
+      width: 100%;
+    }
+  }
+}
+
+.step-container {
+  width: 400px;
+  margin: 0 auto;
+  margin-top: 30px;
+}
+@media screen and (max-width: 768px) {
+  .step-container {
+    width: 100%;
+    margin: 0 auto;
+    margin-top: 30px;
+  }
+  .deposit-form .deposit-balance {
+    padding-left: 0;
+  }
+  .deposit-banner-box {
+    display: none;
+  }
+  .deposit-container {
+    .deposit-content {
+      margin-top: 0;
+      border: none;
+    }
+    .deposit-title {
+      margin-top: 0;
+      padding-left: 0;
+      text-align: left;
+      font-size: 18px;
+      font-weight: bold;
+      &__value {
+        padding-left: 20px;
+        cursor: pointer;
+      }
+    }
+    // .banner {
+    //   display: none;
+    // }
+  }
+}

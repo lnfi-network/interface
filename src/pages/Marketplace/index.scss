@@ -1,0 +1,452 @@
+.marketplace{
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  max-width: 100%;
+  // background: #000;
+  // margin: 0 auto;
+  .marketplace-layout{
+    flex: 1;
+    max-width: var(--max-width);
+    width: 100%;
+    padding: 0 24px;
+    background-color: var(--color-layer-base);
+  }
+  .ant-menu-dark,.ant-menu-dark>.ant-menu {
+    background: var(--color-layer-base);
+    background: transparent;
+    font-size: 16px;
+    // padding: 10px 0;
+    margin-top: 10px;
+    font-weight: bold;
+  }
+  .marketplace-menu-wrap {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 62px;
+    z-index: 100;
+    background:var(--color-layer-base) !important;
+    .marketplace-listing-btn{
+      position: absolute;
+      top: 15px;
+      right: 0;
+      z-index: 200;
+      // display: none;
+      .buy-list-btn{
+        // background: #14E3DA;
+        // padding: 4px 40px;
+        color: #333;
+        &__test {
+          position: absolute;
+          left: -200px;
+          top: -40px;
+          opacity: 0;
+        }
+        // float: right;
+        &:hover{
+          color: #333;
+          // padding: 4px 40px;
+          opacity: .9;
+        }
+      }
+      .buy-list-btn-sell{
+        color: #fff;
+        background: #FF6244;
+        // padding: 4px 40px;
+        &:hover{
+          color: #fff;
+          background: #FF6244;
+          // padding: 4px 40px;
+          opacity: .9;
+        }
+      }
+    }
+    // -webkit-backdrop-filter: blur(4px);
+    // backdrop-filter: blur(4px);
+    // background-color: var(--color-layer-base);
+    // background: rgba(0,0,0,.4);
+  }
+  .marketplace-menu {
+    // padding: 0 50px;
+    border-bottom: 1px solid var(--color-border-grey);
+    .ant-menu-item-selected {
+      background-color: transparent;
+    }
+    
+  }
+  .ant-menu-dark.ant-menu-horizontal >.ant-menu-item:hover::after, .ant-menu-dark>.ant-menu.ant-menu-horizontal >.ant-menu-item:hover::after, .ant-menu-dark.ant-menu-horizontal >.ant-menu-submenu:hover::after, .ant-menu-dark>.ant-menu.ant-menu-horizontal >.ant-menu-submenu:hover::after, .ant-menu-dark.ant-menu-horizontal >.ant-menu-item-active::after, .ant-menu-dark>.ant-menu.ant-menu-horizontal >.ant-menu-item-active::after, .ant-menu-dark.ant-menu-horizontal >.ant-menu-submenu-active::after, .ant-menu-dark>.ant-menu.ant-menu-horizontal >.ant-menu-submenu-active::after, .ant-menu-dark.ant-menu-horizontal >.ant-menu-item-open::after, .ant-menu-dark>.ant-menu.ant-menu-horizontal >.ant-menu-item-open::after, .ant-menu-dark.ant-menu-horizontal >.ant-menu-submenu-open::after, .ant-menu-dark>.ant-menu.ant-menu-horizontal >.ant-menu-submenu-open::after{
+    border-bottom-width:2px;
+    border-bottom-color: #06F4DB;
+  }
+  .ant-menu-dark.ant-menu-horizontal >.ant-menu-item-selected::after, .ant-menu-dark>.ant-menu.ant-menu-horizontal >.ant-menu-item-selected::after, .ant-menu-dark.ant-menu-horizontal >.ant-menu-submenu-selected::after, .ant-menu-dark>.ant-menu.ant-menu-horizontal >.ant-menu-submenu-selected::after{
+    border-bottom-width:2px;
+    border-bottom-color: #06F4DB;
+  }
+  .marketplace-title{
+    font-size: 30px;
+    text-align: center;
+    font-weight: bold;
+    line-height: 80px;
+    color: #fff;
+  }
+  .detail{
+    padding: 0;
+    color: #00FFFF;
+    font-size: 12px;
+    cursor: pointer;
+  }
+  .cancel{
+    padding: 0;
+    color: #00FFFF;
+    font-size: 12px;
+  }
+  .cancel:not(:disabled){
+    &:hover{
+      color: #00FFFF;
+      opacity: .9;
+    }
+  }
+}
+.marketplace-listing{
+  padding-bottom: 20px;
+  position: relative;
+  
+  .trade-list{
+    min-height: calc(100vh - 400px);
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 20px;
+    background-color: var(--color-layer-base);
+    .trade-item{
+      width: calc(20% - 16px);
+      // background: #1e1e1e;
+      border: 1px solid rgba(66,66,66,.8);
+      border-radius: 4px;
+      overflow: hidden;
+      transition: all .25s ease-in-out;
+      box-sizing: border-box;
+      
+      // &:hover{
+      //   border: 1px solid rgba(56,200,157,.8);
+      // }
+      .trade-item-head{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 16px;
+        margin-top: 5px;
+        .trade-item-title{
+          color: #fff;
+          font-size: 18px;
+          font-weight: bold;
+        }
+        .trade-item-id{
+          padding: 3px 6px;
+          background: #666;
+          color: #fff;
+          font-size: 12px;
+          border-radius: 2px;
+        }
+      }
+      .trade-item-section{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 6px 16px;
+        .buy-btn{
+          margin-top: 10px;
+          margin-bottom: 10px;
+          width: 100%;
+          .ant-btn{
+            width: 100%;
+          }
+        }
+        .ant-btn.sell-btn{
+          margin-top: 10px;
+          margin-bottom: 10px;
+          width: 100%;
+          background: #FF6244;
+          
+          &:hover{
+            background: #FF6244;
+            opacity: .9;
+          }
+        }
+        .sell-btn{
+          margin-top: 10px;
+          margin-bottom: 10px;
+          width: 100%;
+          .ant-btn{
+            width: 100%;
+          }
+        }
+        .trade-item-label{
+          font-size: 14px;
+        }
+        .trade-item-value{
+          font-size: 12px;
+          color: #fff;
+          .usd{
+            font-size: 16px;
+            font-weight: bold;
+          }
+          // .amount{
+          //   font-size: 14px;
+          //   font-weight: bold;
+          // }
+        }
+      }
+      .bg-grey{
+        background: #202124;
+      }
+      .pt10{
+        padding-top: 10px;
+      }
+    }
+  }
+}
+
+
+.marketplace-filters{
+  padding:24px 10px;
+  // margin-top:20px;
+  
+  background-color: var(--color-layer-base);
+  border-radius: 10px;
+
+  .ant-radio-group-solid .ant-radio-button-wrapper-checked.sell:not(.ant-radio-button-wrapper-disabled){
+    color: #fff;
+    background: #FF6244;
+    border-color: #FF6244;
+  }
+  .ant-radio-button-wrapper-checked.sell:not(.ant-radio-button-wrapper-disabled)::before {
+    background-color: #FF6244;
+  }
+  .ant-radio-button-wrapper.sell:hover {
+    color:#FF6244;
+  }
+  .filter-text {
+    font-size:18px;
+  }
+  &-items {
+    display: flex;
+    flex-wrap: wrap;
+    
+  }
+  &-item{
+    padding:10px 0;
+    margin-right:10px;
+    
+    &__date {
+      width:auto;
+    }
+    &__range {
+      width:200px;
+    }
+    &__select {
+      width:auto;
+    
+      label {
+        padding-right:5px;
+      }
+      .select {
+        width:120px;
+      }
+    }
+    &__input {
+     
+      label {
+        padding-right: 5px;
+      }
+      .input {
+        width:160px;
+        &.address {
+          width:260px;
+        }
+      }
+    }
+  }
+  .ant-form-item{
+    display: inline-block;
+    margin-right: 20px;
+    margin-bottom: 0;
+  }
+  
+}
+
+.my-order-small{
+  margin-top: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--color-border-grey);
+  .my-order-section{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px;
+    .key{
+      font-size: 14px;
+    }
+    .key.title{
+      color: #fff;
+      font-weight: bold;
+      font-size: 16px;
+    }
+    .key.ID{
+      color: #fff;
+    }
+    .value{
+      color: #fff;
+    }
+    .value.time{
+      color: var(--color-text-base);
+      font-size: 12px;
+    }
+  }
+  .btn-Cancel{
+    margin: 5px 0;
+    width: 100%;
+  }
+}
+@media screen and (max-width: 1200px) {
+  .marketplace-listing{
+    .trade-list{
+      .trade-item{
+        width: calc(25% - 15px);
+      }
+    }
+  }
+}
+@media screen and (max-width: 1000px) {
+  .marketplace-listing{
+    .trade-list{
+      .trade-item{
+        width: calc(33.333% - 16px);
+      }
+    }
+  }
+}
+@media screen and (max-width: 768px) {
+  .marketplace-listing{
+    
+    .trade-list{
+      margin-top: 10px;
+      // background: #000;
+      .trade-item{
+        width: calc(50% - 16px);
+      }
+    }
+  }
+  
+  
+  .marketplace{
+    // background-color: #000;
+    .marketplace-layout{
+      padding: 0 10px;
+      // background-color: #000;
+    }
+    .marketplace-title{
+      font-size: 18px;
+      text-align: center;
+      font-weight: bold;
+      line-height: 40px;
+      color: #fff;
+    }
+    .marketplace-menu-wrap {
+      // position: -webkit-sticky;
+      // position: sticky;
+      // top: 62px;
+      // z-index: 100;
+      // background:var(--color-layer-base) !important;
+      .marketplace-listing-btn{
+        top: 8px;
+        .buy-list-btn{
+          font-size: 10px;
+          padding: 2px 10px;
+        }
+        .buy-list-btn-sell{
+          font-size: 10px;
+          padding: 2px 10px;
+        }
+      }
+      // -webkit-backdrop-filter: blur(4px);
+      // backdrop-filter: blur(4px);
+      // background-color: var(--color-layer-base);
+      // background: rgba(0,0,0,.4);
+    }
+    .ant-menu-dark,.ant-menu-dark>.ant-menu{
+      font-size: 12px;
+      margin-top: 0;
+    }
+    .explore-table{
+      padding: 0;
+      margin-top:10px;
+      // background-color: var(--color-layer-base);
+    }
+  }
+  
+  .marketplace-filters{
+    // .ant-form-item{
+    //   display: block;
+    // }
+    // background-color: var(--color-layer-light);
+    padding: 0 10px 0;
+    margin-top:10px;
+    .ant-form-item{
+      display: block;
+      font-size: 12px;
+      margin-right: 5px;
+      margin-bottom: 10px;
+      .ant-select{
+        font-size: 12px;
+        .ant-select-selector{
+          font-size: 12px;
+        }
+      }
+      .ant-input{
+        font-size: 12px;
+      }
+      .ant-form-item-label >label{
+        font-size: 12px;
+      } 
+    }
+    .ant-form .ant-form-item .ant-form-item-label {
+      flex: inherit;
+      width: 80px;
+    }
+    .ant-form .ant-form-item .ant-form-item-control{
+      flex: 1;
+      .ant-form-item-control-input-content{
+        width: 100%;
+      }
+      
+    }
+    .search-btn-item{
+      .ant-form-item-control-input-content{
+        width: 100%;
+        text-align: right;
+      }
+    } 
+  }
+  .marketplace-filters{
+    // background-color: #000;
+    background: #1E2329;
+    border: 1px solid var(--color-border-grey);
+  }
+  
+  
+  .ant-menu-horizontal .ant-menu-item, .ant-menu-horizontal .ant-menu-submenu{
+    padding-inline: 6px;
+  }
+}
+@media screen and (max-width: 500px) {
+
+  .marketplace-listing{
+    .trade-list{
+      .trade-item{
+        width: calc(100%);
+      }
+    }
+  }
+}

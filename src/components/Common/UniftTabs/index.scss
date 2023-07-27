@@ -1,0 +1,53 @@
+.unift-tabs {
+  height:100%;
+  .ant-tabs-ink-bar{
+    top:0;
+    bottom: auto;
+    background: var(--color-green-light);
+  }
+  .ant-tabs-nav {
+    margin:0;
+    &:before{
+      border: none;
+    }
+    .ant-tabs-nav-operations{
+      display: none;
+    }
+  }
+  .ant-tabs-nav-list {
+    width:100%;
+    display: flex;
+    .ant-tabs-tab {
+      flex:1;
+      // width: 45%;
+      // border: 1px solid #2d2d3d;
+      border-top:none;
+      border-radius:0!important;
+      margin-left:0!important;
+      box-sizing: border-box;
+      // overflow: hidden;
+      .ant-tabs-tab-btn {
+        width:100%;
+        text-align: center;
+        color:var(--color-text-dark);
+      }
+      &-active {
+        // border-bottom: 1px solid #2d2d3d!important;
+        .ant-tabs-tab-btn {
+          color:var(--color-text-light);
+        }
+      }
+      
+     
+    }
+  }
+  .ant-tabs-content {
+    height:100%;
+  }
+  .ant-tabs-tabpane {
+    height:100%;
+  }
+  .ant-tabs-tab-btn {
+    font-size: 14px;;
+  }
+}

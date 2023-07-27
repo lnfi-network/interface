@@ -1,0 +1,222 @@
+.tester-quest-tips{
+  width: 100%;
+  max-width: 1000px;
+  margin: 10px auto 0;
+  border-radius: 20px;
+  .tester-quest-tips-text{
+    display: flex;
+    align-items: center;
+    // justify-content: center;
+    flex-direction: column;
+    // text-align: center;
+    height: 92px;
+    span{
+      margin-top: 28px;
+      font-size: 22px;
+      font-weight: bold;
+      color: #000;
+    }
+    a{
+      font-size: 14px;
+      color: #000;
+      margin-top: 5px;
+    }
+    
+  }
+}
+.nostr-page-title__tip {
+  font-size: 12px;
+  color: var(--color-text-dark);
+  text-align: center;
+}
+.nostr-group-info {
+  width: 100%;
+  max-width: 1000px;
+  background-color: var(--color-layer-light);
+  margin: 0 auto;
+  border-radius: 20px;
+  padding: 20px;
+  margin-top: 10px;
+}
+.nostr-pointer-info {
+  padding: 0 40px;
+
+  &-item {
+    padding: 10px 0px;
+    display: flex;
+    justify-content: space-between;
+    &__label {
+      width: 300px;
+      color: var(--color-text-light);
+      font-size: 14px;
+    }
+    &__value {
+      flex: 1;
+      text-align: left;
+      font-size: 14px;
+      &-number {
+        color: var(--color-text-yellow);
+      }
+      &-description {
+        font-size: 12px;
+      }
+    }
+  }
+}
+.nostr-testnet-list {
+  padding: 0 40px;
+  &-header {
+    font-size: 24px;
+    color: #fff;
+    text-align: center;
+    padding: 20px;
+  }
+  .nostr-list-item {
+    display: flex;
+    width: 100%;
+    padding: 6px 0;
+    &-label {
+      flex: 2;
+    }
+    &-point {
+      flex: 1;
+    }
+    &-isfinished {
+      width: 60px;
+      min-height: 50px;
+      padding-right: 20px;
+      font-size: 16px;
+      // font-weight: bold;
+      display: flex;
+      align-items: center;
+    }
+  }
+}
+.nostr-link {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  text-align: center;
+  a {
+    font-size: 14px;
+    text-decoration: none;
+    color: var(--color-unift-green);
+  }
+}
+.point-tooltip {
+  max-width: 300px;
+}
+.pioner-point-title {
+  padding: 10px;
+  p {
+    font-size: 12px;
+  }
+  .nostr-tokens {
+    font-size: 14px;
+  }
+}
+.daily-radio {
+  &-wrap {
+    width: 100%;
+    text-align: center;
+  }
+}
+.nostr-notConnect {
+  padding: 60px 20px;
+  &-tip {
+    width: 400px;
+    text-align: center;
+    margin: 0 auto;
+    font-size: 14px;
+  }
+  &-description {
+    width: 500px;
+    text-align: center;
+    margin: 0 auto;
+    font-size: 14px;
+    padding-top: 20px;
+  }
+  &-button {
+    margin-top: 40px;
+  }
+}
+@media (max-width: 800px) {
+  .tester-quest-tips{
+    border-radius: 8px;
+    .tester-quest-tips-text{
+      span{
+        margin-top: 28px;
+        font-size: 18px;
+      }
+      a{
+        font-size: 14px;
+        color: #000;
+        margin-top: 5px;
+      }
+      
+    }
+  }
+  .nostr-group-info {
+    width: 100%;
+    padding: 20px 10px; 
+    border-radius: 8px;
+  }
+  .nostr-pointer-info {
+    padding: 0;
+
+    &-item {
+      padding: 10px 0px;
+      display: flex;
+      justify-content: space-between;
+      &__label {
+        width: 120px;
+        color: var(--color-text-light);
+        font-size: 14px;
+      }
+      &__value {
+        flex: 1;
+        text-align: left;
+        font-size: 14px;
+        &-number {
+          color: var(--color-text-yellow);
+        }
+        &-description {
+          font-size: 12px;
+        }
+      }
+    }
+  }
+  .nostr-testnet-list {
+    padding: 0;
+    &-header {
+      font-size: 22px;
+      color: #fff;
+      text-align: center;
+      padding: 10px 0px;
+    }
+    .nostr-list-item {
+      display: flex;
+      width: 100%;
+      &-label {
+        flex: 3;
+      }
+      &-point {
+        flex: 1;
+      }
+      &-isfinished {
+        width: 40px;
+        padding-right: 20px;
+        font-size: 16px;
+      }
+    }
+  }
+  .daily-radio-wrap {
+    span {
+      font-size: 12px;
+    }
+    .ant-space-item{
+      .ant-radio-button-wrapper{
+        padding-inline: 4px;
+      }
+    }
+  }
+}

@@ -1,0 +1,36 @@
+.nostr-network-dropdown {
+  .ant-btn {
+    border:none;
+  }
+  .ant-btn + .ant-btn {
+    margin-left:0;
+    border-left:1px solid #424242;
+  }
+  
+}
+.nostr-network-list {
+  .ant-dropdown-menu {
+    .ant-dropdown-menu-item {
+      padding:10px 14px;
+    }
+  }
+}
+.network-dropdown-chain-name__active {
+  position:relative;
+  &::after {
+    content:'';
+    width: 6px;
+    height: 6px;
+    border-radius: 3px;
+    background: var(--color-green);
+    position: absolute;
+    right:-10px;
+    top:50%;
+    margin-top:-3px;
+  }
+}
+@media screen and (max-width: 768px) {
+  .App-header-network{
+    display: none;
+  }
+}

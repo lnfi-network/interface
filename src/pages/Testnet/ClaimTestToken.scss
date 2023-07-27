@@ -1,0 +1,216 @@
+.claim-test-token {
+  padding: 20px 40px;
+  &__banner {
+    width: 100%;
+    border-radius: 20px;
+    padding: 20px 200px 20px 40px;
+    // text-align: center;
+    background: #00F7D0;
+    // background: linear-gradient(
+    //   180deg,
+    //   rgba(0, 255, 255, 1) 30%,
+    //   rgba(11, 242, 213, 1) 78%,
+    //   rgba(34, 238, 194, 1) 98%,
+    //   rgba(117, 224, 127, 1) 106%,
+    //   rgba(0, 0, 0, 1) 108%
+    // );
+    position: relative;
+    &-title {
+      font-size: 26px;
+      font-weight: bold;
+      padding: 20px 0;
+      color: var(--color-layer-dark);
+      position: relative;
+      z-index: 10;
+    }
+    &-description {
+      font-size: 16px;
+      // font-weight: bold;
+      color: var(--color-layer-dark);
+      position: relative;
+      z-index: 10;
+    }
+    &-more {
+      padding-left: 20px;
+      a {
+        color: var(--color-purple);
+        font-size: 16px;
+      }
+      position: relative;
+      z-index: 10;
+    }
+    &-coin {
+      width: 170px;
+      position: absolute;
+      top: 50%;
+      right: 30px;
+      transform: translateY(-50%);
+      z-index: 5;
+    }
+  }
+  .claim-content-box{
+    width: 100%;
+
+    // padding: 20px;
+    margin: 0 auto;
+    margin-bottom: 20px;
+    .claim-content-title {
+      font-size: 22px;
+      text-align: center;
+      font-weight: bold;
+      line-height: 60px;
+      color: #fff;
+    }
+  }
+  &__form {
+    margin: 0 auto;
+    padding-right: 160px
+  }
+  .ant-btn.claim-test-token__btns {
+    min-width: 210px;
+    height: 46px;
+  }
+  &__btn {
+    &-bouns {
+      margin-left: 10px;
+      padding: 0;
+      line-height: 20px;
+      display: flex;
+      align-items: center;
+    }
+  }
+}
+.claim-bonus-modal{
+  .ant-modal-footer {
+    text-align: center;
+    .claim-bonus-modal__btn{
+      min-width: 160px;
+    }
+  }
+  .claim-bonus-modal-content{
+    padding-top: 20px;
+    .claim-bonus-modal-desc{
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+  }
+}
+.ClaimTokenSuccessfullyModal{
+  .ant-modal-content{
+    background: var(--color-layer-light);
+  }
+  .ant-modal-confirm .ant-modal-confirm-body .ant-modal-confirm-title{
+    color: #fff;
+  }
+  .ant-modal-confirm .ant-modal-confirm-body .ant-modal-confirm-title +.ant-modal-confirm-content{
+    color: #fff;
+  }
+  .ant-btn-primary{
+    background: var(--color-green-light);
+    &:hover{
+      background: var(--color-green-light);
+      opacity: 0.9;
+    }
+  }
+  .ant-modal-close-x{
+    color: #fff;
+  }
+}
+.claim-description {
+  text-decoration: none;
+  list-style: none;
+  width: 100%;
+  // max-width: 750px;
+  border: 1px solid #333;
+  border-radius: 10px;
+  margin: 0px auto;
+  padding: 0 20px;
+  &-item {
+    padding: 10px 0;
+    font-size: 12px;
+    &__child {
+      padding-top: 10px;
+    }
+  }
+}
+@media screen and (min-width: 1800px) {
+  .claim-test-token {
+    padding: 40px;
+    &__banner {
+      padding: 20px 260px 20px 80px;
+      &-title {
+        font-size: 32px;
+      }
+      &-description {
+        font-size: 20px;
+      }
+      &-more {
+        margin-top: 5px;
+        a {
+          color: var(--color-purple);
+          font-size: 20px;
+        }
+      }
+      &-coin {
+        width: 220px;
+        position: absolute;
+        top: 50%;
+        right: 80px;
+        // bottom: 20px;
+        transform: translateY(-50%);
+        z-index: 5;
+      }
+    }
+  }
+}
+@media (max-width: 800px) {
+  
+  .claim-test-token {
+    padding: 20px 10px; 
+    &__banner {
+      padding: 20px 20px;
+      &-title {
+        font-size: 20px;
+        padding: 0;
+      }
+      &-description {
+        margin-top: 15px;
+        font-size: 14px;
+        padding: 0 100px 0 0;
+      }
+      &-more {
+        display: block;
+        text-align: left;
+        padding: 0;
+        margin-top: 5px;
+        a {
+          color: var(--color-purple);
+          font-size: 14px;
+        }
+      }
+      &-coin {
+        width: 100px;
+        position: absolute;
+        top: auto;
+        right: 20px;
+        bottom: 20px;
+        transform: translateY(0);
+        z-index: 5;
+      }
+    }
+    &__form {
+      margin: 0 auto;
+      padding-right: 0;
+    }
+    .ant-btn.claim-test-token__btns {
+      min-width: 0px;
+      // max-width: 50%;
+      // font-size: 12px;
+    }
+    &__btn {
+      &-bouns {
+        margin-left: 0;
+      }
+    }
+  }
+}

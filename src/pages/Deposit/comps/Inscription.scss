@@ -1,0 +1,33 @@
+.inscription-card {
+  width:100px;
+  height:140px;
+  &-radio {
+    padding:0 5px;
+    .ant-radio-inner {
+      width:14px;
+      height:14px;
+    }
+  }
+  .ant-card-body {
+    width:100%;
+    height:100%;
+    padding: 0px;
+    display: flex;
+    flex-direction: column;
+    
+    .inscription-name,.inscription-num {
+      height:20px;
+      padding:0px 10px;
+    }
+    .inscription-num {
+      background-color: var(--color-loading-bar-shine);
+      padding:0 10px;
+    }
+    .inscription-amount {
+      flex:auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+}

@@ -1,0 +1,10 @@
+.nostr-modal {
+  padding-top: 20px;
+
+  &-description {
+    text-align: left;
+    &-light {
+      color: var(--color-text-light);
+    }
+  }
+}

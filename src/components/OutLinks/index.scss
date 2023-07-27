@@ -1,0 +1,15 @@
+.outLinks{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  .svg-icon{
+    padding: 5px;
+    background: #fff;
+    border-radius: 50px;
+    color: #000;
+  }
+  a+a{
+    margin-left: 10px;
+  }
+}
+

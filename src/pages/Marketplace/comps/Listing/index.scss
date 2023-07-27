@@ -1,0 +1,123 @@
+.sell-button-checked {
+  .ant-radio-button-checked {
+    background: var(--color-orange);
+    border-color: var(--color-orange);
+  }
+  .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) {
+    background: var(--color-orange);
+    border-color: var(--color-orange);
+    
+  }
+  .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled):hover {
+    background: var(--color-orange);
+    border-color: var(--color-orange);
+  }
+  .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled)::before {
+    background: var(--color-orange);
+  }
+  
+}
+.select-token-name {
+  font-size: 14px;
+}
+.select-token-balance {
+  font-size:12px;
+  color:var(--color-text-dark);
+  padding-left:5px;
+}
+.listing-form {
+  width:440px;
+  padding:20px 0px 0;
+  max-width: 100%;
+  .listing-value {
+    padding-left:60px;
+  }
+  .ant-form-item .ant-form-item-label{
+    text-align: start;
+  }
+  .limit-buy-available{
+    font-size: 12px;
+    color: var(--color-text-dark);
+    text-align: center;
+    // margin-top: 15px;
+  }
+  .listing-submit-btn {
+    min-width:180px;
+    &__sell {
+      background-color:var(--color-orange);
+      &:hover {
+        background-color:var(--color-orange);
+      }
+    }
+  }
+  &-usdt {
+    padding-left:10px;
+  }
+  .listing-input {
+    width: 180px;
+    height:32px;
+  }
+  .listing-select{
+    width:220px;
+  }
+  .suffix-btn {
+    width:40px;
+    font-size:12px;
+  }
+ 
+  .listing-form-balance {
+    position:absolute;
+    top:-30px;
+    left:-45px;
+    width:100%;
+    display: flex;
+    color:var(--color-text-dark);
+    text-align: center;
+    font-size:12px;
+    &-container {
+      width:100%;
+      padding-right:20px;
+
+    }
+  }
+  &-total-value {
+    font-size: 16px;
+    span{
+      font-size: 12px;
+    }
+  }
+  // .listing-form-total-stats {
+  //   margin-bottom:0px;
+  // }
+ 
+}
+@media screen and (max-width: 768px) {
+  .listing-form {
+    width:100%;
+    .ant-form-item .ant-form-item-label{
+      flex: initial;
+    }
+    .ant-form-item .ant-form-item-control{
+      flex: 1;
+    }
+    .ant-form-item .ant-form-item-label >label{
+      width:90px;
+      font-size: 12px;
+    }
+    .ant-form-item{
+      margin-bottom: 6px;
+    }
+    .listing-input {
+      width: calc(100% - 45px);
+    }
+    .listing-select{
+      width: 100%;
+    }
+  }
+  .select-token-name {
+    font-size: 12px;
+  }
+  .select-token-balance {
+    font-size:10px;
+  }
+}

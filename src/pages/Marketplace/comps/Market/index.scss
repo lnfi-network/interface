@@ -1,0 +1,78 @@
+.ant-modal-body{
+  width: 100%;
+}
+.market-buy-list{
+  width: 400px;
+  max-width: 100%;
+  padding: 0 20px;
+  .market-buy-item{
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+    .market-buy-label{
+      width: 120px;
+      color: var(--color-text-dark);
+    }
+    .market-buy-value{
+      flex: 1;
+      text-align: left;
+    }
+    
+  }
+  .market-buy-available{
+    margin-top: 30px;
+    color: var(--color-text-dark);
+    font-size: 12px;
+    text-align: center;
+  }
+  .market-buy-submit{
+    margin-top: 10px;
+    margin-bottom: 15px;
+    text-align: center;
+    .listing-submit-btn{
+      min-width: 180px;
+    }
+  }
+}
+.ant-modal-header,.ant-modal-title {
+  width:100%;
+}
+.ant-modal-header {
+  border-bottom:1px solid var(--color-border-lighter);
+}
+.market-form-title {
+  padding-bottom:10px;
+  .market-form-title-tag {
+    margin-right: 10px;
+    background-color: var(--color-layer-lighter);
+    border-radius: 4px;
+    padding:2px 10px;
+    &__sell{
+      color:var(--color-orange);
+    }
+    &__buy{
+      color:var(--color-green);
+    }
+  }
+}
+// @media screen and (max-width: 768px) {
+//   .listing-form {
+//     width:100%;
+//      .ant-form-item .ant-form-item-label,  .ant-form-item .ant-form-item-control{
+//       flex: initial;
+//     }
+//     .ant-form-item .ant-form-item-label >label{
+//       width:90px;
+//       font-size: 12px;
+//     }
+//     .ant-form-item{
+//       margin-bottom: 6px;
+//     }
+//     .listing-input {
+//       width:120px;
+//     }
+//     .listing-select{
+//       width:160px;
+//     }
+//   }
+// }

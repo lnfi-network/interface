@@ -1,0 +1,63 @@
+.withdraw-container {
+  flex: 1;
+  padding: 20px 20px 60px;
+  max-width: 100%;
+  .withdraw-content {
+    margin-top: 20px;
+    border: 1px solid var(--color-border-grey);
+    border-radius: 20px;
+    padding-bottom: 20px;
+  }
+  .withdraw-title {
+    margin-top: 40px;
+    padding-left: 20px;
+    text-align: left;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    &__value {
+      padding-left: 20px;
+    }
+  }
+  .withdraw-send-btn {
+    width: 120px;
+  }
+}
+.step-container {
+  width: 400px;
+  margin: 0 auto;
+  margin-top: 30px;
+}
+@media screen and (max-width: 768px) {
+  .step-container {
+    width: 100%;
+    margin: 0 auto;
+    margin-top: 30px;
+  }
+  .withdraw-form .deposit-balance {
+    padding-left: 0;
+  }
+  .withdraw-banner-box {
+    display: none;
+  }
+  .withdraw-container {
+    .withdraw-content {
+      margin-top: 0;
+      border: none;
+    }
+    .withdraw-title {
+      margin-top: 0;
+      padding-left: 0;
+      text-align: left;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      &__value {
+        padding-left: 20px;
+      }
+    }
+    // .banner {
+    //   display: none;
+    // }
+  }
+}
