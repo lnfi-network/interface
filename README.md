@@ -15,7 +15,7 @@
 </p>
 # NostrAssets
 
-[Nostr Assets Protocol](https://doc.nostrassets.com) s an open-source protocol that introduces Taproot assets and Satoshis into the Nostr ecosystem.
+[Nostr Assets Protocol](https://doc.nostrassets.com) is an open-source protocol that introduces Taproot assets and Satoshis into the Nostr ecosystem.
 Once the assets are introduced, users can send and receive them at the Nostr Protocol layer using Nostr’s public and private keys.
 The settlement and security of assets still rely on the Lightning Network, and the Nostr Assets Protocol itself does not issue assets but only introduces assets into Nostr through the protocol.
 
