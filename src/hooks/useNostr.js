@@ -10,8 +10,6 @@ import EventEmitter from "EventEmitter";
 import { isInTokenPocket } from "lib/utils/userAgent";
 import { t } from "@lingui/macro";
 import { getLocalRobotPrivateKey } from "lib/utils/index";
-window.nip19 = nip19;
-window.nip04 = nip04;
 
 const ROBOT_PRIVATE_KEY = getLocalRobotPrivateKey();
 const ROBOT_ERC20_SEND_TO = nip19.decode(process.env.REACT_APP_NOSTR_TOKEN_SEND_TO).data;
@@ -143,16 +141,21 @@ export const usePostNostr = () => {
       for (let i = 0; i < pubAndRelays.length; i++) {
         const relay = pubAndRelays[i].relay;
         const pub = pubAndRelays[i].pub;
-        pub?.on("ok", onOk.bind(null, relay));
-        pub?.on("failed", onError.bind(null, relay));
+        if (pub && pub.on) {
+          pub?.on("ok", onOk.bind(null, relay));
+          pub?.on("failed", onError.bind(null, relay));
+        }
+
       }
     }
     return () => {
       if (pubAndRelays?.length > 0) {
         for (let i = 0; i < pubAndRelays.length; i++) {
           const pub = pubAndRelays[i].pub;
-          pub?.off("ok", onOk);
-          pub?.off("failed", onError);
+          if (pub && pub.off) {
+            pub?.off("ok", onOk);
+            pub?.off("failed", onError);
+          }
         }
       }
     };
