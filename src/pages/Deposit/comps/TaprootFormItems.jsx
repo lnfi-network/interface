@@ -14,6 +14,7 @@ import { useDispatch } from "react-redux";
 import { setOnlyMobileSupportedVisible } from "store/reducer/modalReducer";
 import useDevice from "hooks/useDevice";
 import { useSelector } from "react-redux";
+import { nip19 } from "nostr-tools";
 export default function TaprootFormItems({
   form,
   nostrAccount,

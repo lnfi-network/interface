@@ -15,6 +15,7 @@ import {
 } from "hooks/graphQuery/useTestnet";
 import { useSize } from "ahooks";
 import { ReactComponent as Success } from "img/success.svg";
+import { nip19 } from "nostr-tools";
 const getSevenDateArrayFromToday = () => {
   const dateArray = [];
   for (let i = 0; i < 5; i++) {
@@ -93,8 +94,8 @@ export default function DailyQuestList({ npubNostrAccount }) {
       ? dayjs.utc().format("YYYY-MM-DD")
       : new Date().getTime() >
         new Date(dateArray[dateArray.length - 1]?.timeStamp).getTime()
-      ? dateArray[dateArray.length - 1]?.timeStamp
-      : dateArray[0]?.timeStamp
+        ? dateArray[dateArray.length - 1]?.timeStamp
+        : dateArray[0]?.timeStamp
   );
   const nostrAddress = useMemo(() => {
     if (npubNostrAccount) {
