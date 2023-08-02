@@ -13,15 +13,12 @@ import {
   Modal,
   Tooltip,
   Popover,
-  Space,
+  Space
 } from "antd";
 import { useMemo, memo, useCallback, useState, useEffect } from "react";
 import "./WithdrawForm.scss";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  setSelectedTokenPlatForm,
-  setConnectPlat,
-} from "store/reducer/userReducer";
+import { setSelectedTokenPlatForm, setConnectPlat } from "store/reducer/userReducer";
 import { limitDecimals, numberWithCommas } from "lib/numbers";
 import { ContainerOutlined } from "@ant-design/icons";
 import { useSize, useThrottleFn } from "ahooks";
@@ -42,42 +39,35 @@ function WithdrawForm() {
   const [withdrawAmount, setWithdrawAmount] = useState(0);
   const dispatch = useDispatch();
   const Option = Select.Option;
-  const {
-    nostrAccount,
-    npubNostrAccount,
-    selectedTokenPlatform,
-    connectPlat,
-    balanceList,
-  } = useSelector(({ user }) => user);
+  const { nostrAccount, npubNostrAccount, selectedTokenPlatform, connectPlat, balanceList } = useSelector(
+    ({ user }) => user
+  );
   const [historyAddress, setHistoryAddress] = useState([]);
   const { tokenList } = useSelector(({ market }) => market);
   const [btnLoading, setBtnLoading] = useState(false);
   const { handleWithdrawAsync } = useWithdraw();
   const { handleQueryBalance } = useQueryBalance();
   const layout = useMemo(() => {
-    return selectedTokenPlatform === "Lightning" ||
-      selectedTokenPlatform === "Taproot"
+    return selectedTokenPlatform === "Lightning" || selectedTokenPlatform === "Taproot"
       ? {
           labelCol: {
-            span: 8,
+            span: 8
           },
           wrapperCol: {
-            span: 16,
-          },
+            span: 16
+          }
         }
       : {
           labelCol: {
-            span: 5,
+            span: 5
           },
           wrapperCol: {
-            span: 19,
-          },
+            span: 19
+          }
         };
   }, [selectedTokenPlatform]);
   const memoCurrentPlatformTokenList = useMemo(() => {
-    const filterdTokenList = tokenList.filter(
-      (tokenItem) => tokenItem.chainName === selectedTokenPlatform
-    );
+    const filterdTokenList = tokenList.filter((tokenItem) => tokenItem.chainName === selectedTokenPlatform);
 
     return [...filterdTokenList];
   }, [selectedTokenPlatform, tokenList]);
@@ -90,9 +80,7 @@ function WithdrawForm() {
   }, [memoCurrentPlatformTokenList]);
 
   const balance = useMemo(() => {
-    return selectedToken && balanceList[selectedToken]
-      ? balanceList[selectedToken]?.balanceShow
-      : 0.0;
+    return selectedToken && balanceList[selectedToken] ? balanceList[selectedToken]?.balanceShow : 0.0;
   }, [balanceList, selectedToken]);
 
   const satsBalance = useMemo(() => {
@@ -116,9 +104,7 @@ function WithdrawForm() {
     async ({ target: { value } }) => {
       form.setFieldValue("walletAddress", "");
       if (nostrAccount) {
-        setHistoryAddress(
-          Lockr.get(`${nostrAccount}-${value}-addresses`) || []
-        );
+        setHistoryAddress(Lockr.get(`${nostrAccount}-${value}-addresses`) || []);
       }
 
       dispatch(setSelectedTokenPlatForm(value));
@@ -132,7 +118,7 @@ function WithdrawForm() {
         setSelectedToken(value);
       } catch (e) {
         messageApi.error({
-          content: e.message,
+          content: e.message
         });
       }
     },
@@ -156,7 +142,7 @@ function WithdrawForm() {
       }
     },
     {
-      wait: 200,
+      wait: 200
     }
   );
 
@@ -171,7 +157,7 @@ function WithdrawForm() {
     const maxWithdrawAmount = balance;
     if (maxWithdrawAmount) {
       form.setFieldsValue({
-        amount: maxWithdrawAmount,
+        amount: maxWithdrawAmount
       });
       setWithdrawAmount(maxWithdrawAmount);
     }
@@ -211,11 +197,7 @@ function WithdrawForm() {
       <>
         {historyAddress.length > 0 ? (
           <span className="withdraw-amount-more-address">
-            <Popover
-              content={memoHistoryWalletAddresses}
-              title=""
-              trigger="click"
-            >
+            <Popover content={memoHistoryWalletAddresses} title="" trigger="click">
               <ContainerOutlined />
             </Popover>
           </span>
@@ -242,31 +224,25 @@ function WithdrawForm() {
           Lockr.get(`${nostrAccount}-${selectedTokenPlatform}-addresses`) || []
         );
         storegedWalletAddressesSet.add(walletAddress);
-        Lockr.set(`${nostrAccount}-${selectedTokenPlatform}-addresses`, [
-          ...storegedWalletAddressesSet,
-        ]);
+        Lockr.set(`${nostrAccount}-${selectedTokenPlatform}-addresses`, [...storegedWalletAddressesSet]);
         setHistoryAddress([...storegedWalletAddressesSet]);
       }
       try {
         setBtnLoading(true);
         const { amount, token, walletAddress } = values;
-        const retWithdraw = await handleWithdrawAsync(
-          amount,
-          token,
-          walletAddress
-        );
+        const retWithdraw = await handleWithdrawAsync(amount, token, walletAddress);
         if (!retWithdraw.code == 0) {
           messageApi.error({
-            content: retWithdraw.msg,
+            content: retWithdraw.msg
           });
           return;
         }
         messageApi.success({
-          content: "Submit successully.",
+          content: "Submit successully."
         });
       } catch (err) {
         messageApi.error({
-          content: err.message,
+          content: err.message
         });
       } finally {
         setBtnLoading(false);
@@ -274,14 +250,7 @@ function WithdrawForm() {
         npubNostrAccount && handleQueryBalance(npubNostrAccount);
       }
     },
-    [
-      handleQueryBalance,
-      handleWithdrawAsync,
-      messageApi,
-      nostrAccount,
-      npubNostrAccount,
-      selectedTokenPlatform,
-    ]
+    [handleQueryBalance, handleWithdrawAsync, messageApi, nostrAccount, npubNostrAccount, selectedTokenPlatform]
   );
   useEffect(() => {
     if (params.platform) {
@@ -301,19 +270,11 @@ function WithdrawForm() {
         form.setFieldValue("token", tokenFirst?.name);
       }
     }
-  }, [
-    connectPlat,
-    form,
-    memoCurrentPlatformTokenList,
-    params?.symbol,
-    selectedTokenPlatform,
-  ]);
+  }, [connectPlat, form, memoCurrentPlatformTokenList, params?.symbol, selectedTokenPlatform]);
 
   useEffect(() => {
     if (nostrAccount) {
-      setHistoryAddress(
-        Lockr.get(`${nostrAccount}-${selectedTokenPlatform}-addresses`) || []
-      );
+      setHistoryAddress(Lockr.get(`${nostrAccount}-${selectedTokenPlatform}-addresses`) || []);
     } else {
       setHistoryAddress([]);
     }
@@ -333,11 +294,11 @@ function WithdrawForm() {
           onFinish={onFinish}
           initialValues={{
             platform: selectedTokenPlatform,
-            amount: "0.00",
+            amount: "0.00"
           }}
           style={{
             maxWidth: "650px",
-            width: "100%",
+            width: "100%"
           }}
         >
           <Form.Item
@@ -346,22 +307,14 @@ function WithdrawForm() {
             tooltip="We currently support Lightning、ERC20 and Taproot network, please select the network of the token you want send asset to."
             rules={[
               {
-                required: true,
-              },
+                required: true
+              }
             ]}
           >
-            <Radio.Group
-              value={selectedTokenPlatform || "Lightning"}
-              onChange={handlePlatformChange}
-            >
+            <Radio.Group value={selectedTokenPlatform || "Lightning"} onChange={handlePlatformChange}>
               <Radio.Button className="network-selector-btn" value="Lightning">
                 Lightning
               </Radio.Button>
-              {process.env.REACT_APP_CURRENT_ENV === "dev" && (
-                <Radio.Button className="network-selector-btn" value="ETH">
-                  ERC20
-                </Radio.Button>
-              )}
 
               {/* <Radio.Button className="network-selector-btn" value="BTC">
                 BRC20
@@ -369,10 +322,12 @@ function WithdrawForm() {
               <Radio.Button className="network-selector-btn" value="Taproot">
                 Taproot
               </Radio.Button>
+              <Radio.Button className="network-selector-btn" value="ETH">
+                ERC20
+              </Radio.Button>
             </Radio.Group>
           </Form.Item>
-          {(selectedTokenPlatform === "ETH" ||
-            selectedTokenPlatform === "BTC") && (
+          {(selectedTokenPlatform === "ETH" || selectedTokenPlatform === "BTC") && (
             <>
               <Form.Item
                 label="Token"
@@ -380,8 +335,8 @@ function WithdrawForm() {
                 rules={[
                   {
                     required: true,
-                    message: "Please select send token",
-                  },
+                    message: "Please select send token"
+                  }
                 ]}
               >
                 <Select
@@ -400,33 +355,23 @@ function WithdrawForm() {
                 tooltip="The asset will be deducted from the balance of you connected Nostr account and will be credited to your wallet account."
                 rules={[
                   {
-                    required: true,
+                    required: true
                   },
                   ({ getFieldValue }) => ({
                     validator(_, value) {
                       if (value) {
-                        if (
-                          selectedTokenPlatform === "ETH" &&
-                          !/^0x\w{40}$/.test(value)
-                        ) {
-                          return Promise.reject(
-                            new Error(`Please input a valid wallet address.`)
-                          );
+                        if (selectedTokenPlatform === "ETH" && !/^0x\w{40}$/.test(value)) {
+                          return Promise.reject(new Error(`Please input a valid wallet address.`));
                         }
-                        if (
-                          selectedTokenPlatform === "BTC" &&
-                          !/^bc\w{40}$/.test(value)
-                        ) {
-                          return Promise.reject(
-                            new Error(`Please input a valid wallet address.`)
-                          );
+                        if (selectedTokenPlatform === "BTC" && !/^bc\w{40}$/.test(value)) {
+                          return Promise.reject(new Error(`Please input a valid wallet address.`));
                         }
 
                         return Promise.resolve();
                       }
                       return Promise.resolve();
-                    },
-                  }),
+                    }
+                  })
                 ]}
               >
                 <Input
@@ -448,25 +393,20 @@ function WithdrawForm() {
                       rules={[
                         {
                           required: true,
-                          message: "Please Input Your Send Amount.",
+                          message: "Please Input Your Send Amount."
                         },
                         () => ({
                           validator(_, value) {
                             if (value) {
-                              if (
-                                Number(value) > Number(balance) ||
-                                Number(value) <= 0
-                              ) {
-                                return Promise.reject(
-                                  new Error(`Please input a valid send amount.`)
-                                );
+                              if (Number(value) > Number(balance) || Number(value) <= 0) {
+                                return Promise.reject(new Error(`Please input a valid send amount.`));
                               }
 
                               return Promise.resolve();
                             }
                             return Promise.resolve();
-                          },
-                        }),
+                          }
+                        })
                       ]}
                     >
                       <Input
@@ -494,26 +434,16 @@ function WithdrawForm() {
                 <Form.Item
                   wrapperCol={{
                     offset: 7,
-                    span: 17,
+                    span: 17
                   }}
                 >
-                  <Button
-                    type="primary"
-                    size="large"
-                    htmlType="submit"
-                    loading={btnLoading}
-                  >
+                  <Button type="primary" size="large" htmlType="submit" loading={btnLoading}>
                     Send
                   </Button>
                 </Form.Item>
               ) : (
                 <Row justify="center" className="mb20 fixed-btn">
-                  <Button
-                    type="primary"
-                    size="large"
-                    htmlType="submit"
-                    loading={btnLoading}
-                  >
+                  <Button type="primary" size="large" htmlType="submit" loading={btnLoading}>
                     Send
                   </Button>
                 </Row>
