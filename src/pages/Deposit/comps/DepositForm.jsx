@@ -1,27 +1,11 @@
-import {
-  Form,
-  Select,
-  Input,
-  Col,
-  Row,
-  Button,
-  Radio,
-  Spin,
-  message,
-  notification,
-  Empty,
-  Tooltip,
-} from "antd";
+import { Form, Select, Input, Col, Row, Button, Radio, Spin, message, notification, Empty, Tooltip } from "antd";
 import { useMemo, useCallback, useState, useEffect } from "react";
 import "./DepositForm.scss";
 import { useSelector, useDispatch } from "react-redux";
 import { ConnectWalletWithOnlyDeposit } from "components/Common/ConnectWallet";
 import EllipsisMiddle from "components/EllipsisMiddle";
 import { isInTokenPocket } from "lib/utils/userAgent";
-import {
-  setConnectPlat,
-  setSelectedTokenPlatForm,
-} from "store/reducer/userReducer";
+import { setConnectPlat, setSelectedTokenPlatForm } from "store/reducer/userReducer";
 import { BTCEXPORE_PREFIX } from "config/constants";
 import Inscription from "./Inscription";
 import { t } from "@lingui/macro";
@@ -41,15 +25,15 @@ import LightningFormItems from "./LightningFormItems";
 import TaprootFormItems from "./TaprootFormItems";
 const layout = {
   labelCol: {
-    span: 7,
+    span: 7
   },
   wrapperCol: {
-    span: 17,
-  },
+    span: 17
+  }
 };
 const MAPPLATFORM = {
   ETH: "ERC20",
-  BTC: "BRC20",
+  BTC: "BRC20"
 };
 const transferBRCTo = process.env.REACT_APP_BTC_SEND_TO_ADDR;
 const queryNostrAddress = getQueryVariable("nostrAddress");
@@ -64,13 +48,9 @@ function DepositForm() {
   const Option = Select.Option;
   const params = useParams();
 
-  const {
-    account,
-    nostrAccount,
-    selectedTokenPlatform,
-    connectPlat,
-    npubNostrAccount,
-  } = useSelector(({ user }) => user);
+  const { account, nostrAccount, selectedTokenPlatform, connectPlat, npubNostrAccount } = useSelector(
+    ({ user }) => user
+  );
   const {
     handleDepositERC20,
     handleApproveAsync,
@@ -80,7 +60,7 @@ function DepositForm() {
     symbol,
     currencyContractAddress,
     PROXY_ADDR,
-    allowanceValue,
+    allowanceValue
   } = useERC20Deposit(account);
   const [btnLoading, setBtnLoading] = useState(false);
   const { getInscriptions, handleSendInscription } = useBRC20Deposit();
@@ -104,9 +84,7 @@ function DepositForm() {
     }
   }, [account, connectPlat, selectedTokenPlatform]);
   const memoCurrentPlatformTokenList = useMemo(() => {
-    const filterdTokenList = tokenList.filter(
-      (tokenItem) => tokenItem.chainName === selectedTokenPlatform
-    );
+    const filterdTokenList = tokenList.filter((tokenItem) => tokenItem.chainName === selectedTokenPlatform);
     return [...filterdTokenList];
   }, [selectedTokenPlatform, tokenList]);
   const options = useMemo(() => {
@@ -177,9 +155,7 @@ function DepositForm() {
     const { token } = values;
 
     if (allInscriptions.length > 0) {
-      const currentList = inscriptionsContent.filter(
-        (item) => item.tick.toLowerCase() === token.toLowerCase()
-      );
+      const currentList = inscriptionsContent.filter((item) => item.tick.toLowerCase() === token.toLowerCase());
       setInscriptions([...currentList]);
     } else {
       setInscriptions([]);
@@ -212,32 +188,20 @@ function DepositForm() {
     async (value) => {
       try {
         setCheckedInscriptionValue("");
-        const selectedToken = TOKEN_LIST.find(
-          (tokenItem) => tokenItem.value === value
-        );
+        const selectedToken = TOKEN_LIST.find((tokenItem) => tokenItem.value === value);
         if (selectedToken) {
           setSelectedToken(selectedToken);
         }
-        if (
-          selectedTokenPlatform === "BTC" &&
-          selectedTokenPlatform === connectPlat &&
-          account
-        ) {
+        if (selectedTokenPlatform === "BTC" && selectedTokenPlatform === connectPlat && account) {
           handleGetInsciptions();
         }
       } catch (e) {
         messageApi.error({
-          content: e.message,
+          content: e.message
         });
       }
     },
-    [
-      account,
-      connectPlat,
-      handleGetInsciptions,
-      messageApi,
-      selectedTokenPlatform,
-    ]
+    [account, connectPlat, handleGetInsciptions, messageApi, selectedTokenPlatform]
   );
   //
   const { run: handleAmountOnChange } = useThrottleFn(
@@ -254,7 +218,7 @@ function DepositForm() {
       }
     },
     {
-      wait: 500,
+      wait: 500
     }
   );
   const handleTranserERC20 = useCallback(async () => {
@@ -270,11 +234,7 @@ function DepositForm() {
         throw new Error("Insufficient Balance");
       }
       const ret = await handleDepositERC20({
-        args: [
-          currencyContractAddress,
-          utils.parseUnits(amount, decimals).toString(),
-          nostrAddress,
-        ],
+        args: [currencyContractAddress, utils.parseUnits(amount, decimals).toString(), nostrAddress]
       });
       const hash = ret.hash;
       notifiApi.success({
@@ -285,12 +245,12 @@ function DepositForm() {
             target="_blank"
             rel="noreferrer"
           >{`View on ${chain?.blockExplorers?.default?.name}`}</a>
-        ),
+        )
       });
     } catch (e) {
       e.message &&
         messageApi.error({
-          content: e.message,
+          content: e.message
         });
     } finally {
       setBtnLoading(false);
@@ -304,23 +264,21 @@ function DepositForm() {
     form,
     handleDepositERC20,
     messageApi,
-    notifiApi,
+    notifiApi
   ]);
   const handleApproveERC20 = useCallback(async () => {
     //todo approve
-    const willApproveAmount = utils
-      .parseUnits("" + erc20Amount, decimals)
-      .toString();
+    const willApproveAmount = utils.parseUnits("" + erc20Amount, decimals).toString();
     setBtnLoading(true);
     try {
       const ret = await handleApproveAsync({
-        args: [PROXY_ADDR, willApproveAmount],
+        args: [PROXY_ADDR, willApproveAmount]
       });
 
       if (ret?.hash) {
         const waitForRet = await waitForTransaction({
           hash: ret.hash,
-          confirmations: 1,
+          confirmations: 1
         });
         if (waitForRet?.status === "success") {
           notifiApi.success({
@@ -331,7 +289,7 @@ function DepositForm() {
                 target="_blank"
                 rel="noreferrer"
               >{`View on ${chain?.blockExplorers?.default?.name}`}</a>
-            ),
+            )
           });
         }
         getAllowanceValue();
@@ -348,7 +306,7 @@ function DepositForm() {
     erc20Amount,
     getAllowanceValue,
     handleApproveAsync,
-    notifiApi,
+    notifiApi
   ]);
   const handleTranserBRC20 = useCallback(async () => {
     try {
@@ -357,42 +315,25 @@ function DepositForm() {
 
       const options = fee
         ? {
-            feeRate: fee,
+            feeRate: fee
           }
         : {};
 
-      const hash = await handleSendInscription(
-        transferBRCTo,
-        checkedInscriptionId,
-        options
-      );
+      const hash = await handleSendInscription(transferBRCTo, checkedInscriptionId, options);
       notifiApi.success({
         message: `Transaction Submitted`,
-        description: (
-          <a
-            href={`${BTCEXPORE_PREFIX}/${hash}`}
-            target="_blank"
-            rel="noreferrer"
-          >{`View on BTC.com`}</a>
-        ),
+        description: <a href={`${BTCEXPORE_PREFIX}/${hash}`} target="_blank" rel="noreferrer">{`View on BTC.com`}</a>
       });
       setCheckedInscriptionValue("");
       handleGetInsciptions();
     } catch (e) {
       messageApi.error({
-        content: e.message,
+        content: e.message
       });
     } finally {
       setBtnLoading(false);
     }
-  }, [
-    checkedInscriptionValue,
-    fee,
-    handleGetInsciptions,
-    handleSendInscription,
-    messageApi,
-    notifiApi,
-  ]);
+  }, [checkedInscriptionValue, fee, handleGetInsciptions, handleSendInscription, messageApi, notifiApi]);
   const onInscriptionChange = useCallback((inscriptionId, toChecked) => {
     setInscriptions(
       produce((draft) => {
@@ -432,11 +373,7 @@ The deposit will be deducted from the balance of you connected wallet account an
           <span style={{ display: "inline-block" }}>
             <ConnectWalletWithOnlyDeposit
               connectType="switch"
-              btnText={
-                isInTokenPocket()
-                  ? t`Connect wallet`
-                  : `Switch To ${MAPPLATFORM[selectedTokenPlatform]} Wallet`
-              }
+              btnText={isInTokenPocket() ? t`Connect wallet` : `Switch To ${MAPPLATFORM[selectedTokenPlatform]} Wallet`}
             />
           </span>
         </>
@@ -474,9 +411,7 @@ The deposit will be deducted from the balance of you connected wallet account an
               <ConnectWalletWithOnlyDeposit
                 connectType="switch"
                 btnText={
-                  isInTokenPocket()
-                    ? t`Connect wallet`
-                    : `Switch To ${MAPPLATFORM[selectedTokenPlatform]} Wallet`
+                  isInTokenPocket() ? t`Connect wallet` : `Switch To ${MAPPLATFORM[selectedTokenPlatform]} Wallet`
                 }
               />
             </Col>
@@ -526,10 +461,7 @@ The deposit will be deducted from the balance of you connected wallet account an
               size="large"
               loading={btnLoading}
               disabled={
-                isInTokenPocket() ||
-                !checkedInscriptionValue ||
-                !account ||
-                connectPlat !== selectedTokenPlatform
+                isInTokenPocket() || !checkedInscriptionValue || !account || connectPlat !== selectedTokenPlatform
               }
               onClick={handleTranserBRC20}
               style={{ width: "160px" }}
@@ -553,7 +485,7 @@ The deposit will be deducted from the balance of you connected wallet account an
     btnLoading,
     handleApproveERC20,
     checkedInscriptionValue,
-    handleTranserBRC20,
+    handleTranserBRC20
   ]);
   const onChangeFeeRate = useCallback((value) => {
     setFeeRate(value);
@@ -590,7 +522,7 @@ The deposit will be deducted from the balance of you connected wallet account an
     handleGetInsciptions,
     memoCurrentPlatformTokenList,
     routeParams?.symbol,
-    selectedTokenPlatform,
+    selectedTokenPlatform
   ]);
 
   useEffect(() => {
@@ -601,13 +533,7 @@ The deposit will be deducted from the balance of you connected wallet account an
     } else {
       form.setFieldValue("platform", selectedTokenPlatform);
     }
-  }, [
-    connectPlat,
-    dispatch,
-    form,
-    routeParams?.platform,
-    selectedTokenPlatform,
-  ]);
+  }, [connectPlat, dispatch, form, routeParams?.platform, selectedTokenPlatform]);
   return (
     <>
       {contextHolder}
@@ -621,11 +547,11 @@ The deposit will be deducted from the balance of you connected wallet account an
           autoComplete="off"
           initialValues={{
             platform: selectedTokenPlatform || "ETH",
-            amount: "0.00",
+            amount: "0.00"
           }}
           style={{
             maxWidth: "670px",
-            width: "100%",
+            width: "100%"
           }}
         >
           <Form.Item
@@ -634,32 +560,27 @@ The deposit will be deducted from the balance of you connected wallet account an
             tooltip="We currently support receiving assets from Lightning、ERC20 and Taproot network, please select the network of the token you want to receive."
             rules={[
               {
-                required: true,
-              },
+                required: true
+              }
             ]}
           >
-            <Radio.Group
-              value={selectedTokenPlatform || "ETH"}
-              onChange={handlePlatformChange}
-            >
+            <Radio.Group value={selectedTokenPlatform || "ETH"} onChange={handlePlatformChange}>
               <Radio.Button className="network-selector-btn" value="Lightning">
                 Lightning
               </Radio.Button>
-              {process.env.REACT_APP_CURRENT_ENV === "dev" && (
-                <Radio.Button className="network-selector-btn" value="ETH">
-                  ERC20
-                </Radio.Button>
-              )}
+
               {/* <Radio.Button className="network-selector-btn" value="BTC">
                 BRC20
               </Radio.Button> */}
               <Radio.Button className="network-selector-btn" value="Taproot">
                 Taproot
               </Radio.Button>
+              <Radio.Button className="network-selector-btn" value="ETH">
+                ERC20
+              </Radio.Button>
             </Radio.Group>
           </Form.Item>
-          {(selectedTokenPlatform === "ETH" ||
-            selectedTokenPlatform === "BTC") && (
+          {(selectedTokenPlatform === "ETH" || selectedTokenPlatform === "BTC") && (
             <>
               <Form.Item name="walletAddress" label={memoWalletAddressLabel}>
                 {width > 768 ? (
@@ -669,9 +590,7 @@ The deposit will be deducted from the balance of you connected wallet account an
                 ) : (
                   <>
                     {memoAccount && memoAccount != "--" ? (
-                      <EllipsisMiddle suffixCount={10}>
-                        {memoAccount}
-                      </EllipsisMiddle>
+                      <EllipsisMiddle suffixCount={10}>{memoAccount}</EllipsisMiddle>
                     ) : (
                       "--"
                     )}
@@ -685,29 +604,23 @@ The deposit will be deducted from the balance of you connected wallet account an
                 tooltip="The Nostr address is obtained from any Nostr clients (Damus,Amethyst,Iris etc.) or wallets that support the Nostr protocol. Please make sure to confirm that the Nostr address you are receiving asset is correct and securely store the private key associated with that address."
                 rules={[
                   {
-                    required: true,
+                    required: true
                   },
                   ({ getFieldValue }) => ({
                     validator(_, value) {
                       if (value) {
                         if (!/npub\w{59}/.test(value)) {
-                          return Promise.reject(
-                            new Error(t`Please input a valid Nostr address.`)
-                          );
+                          return Promise.reject(new Error(t`Please input a valid Nostr address.`));
                         }
                         nip19.decode(value).data;
                         return Promise.resolve();
                       }
                       return Promise.resolve();
-                    },
-                  }),
+                    }
+                  })
                 ]}
               >
-                <Input
-                  size="large"
-                  style={{ maxWidth: "460px" }}
-                  placeholder="Please input your nostr address"
-                />
+                <Input size="large" style={{ maxWidth: "460px" }} placeholder="Please input your nostr address" />
               </Form.Item>
               <Form.Item
                 label="Token"
@@ -715,8 +628,8 @@ The deposit will be deducted from the balance of you connected wallet account an
                 rules={[
                   {
                     required: true,
-                    message: "Please select receive token",
-                  },
+                    message: "Please select receive token"
+                  }
                 ]}
               >
                 <Select
@@ -740,26 +653,22 @@ The deposit will be deducted from the balance of you connected wallet account an
               rules={[
                 {
                   required: true,
-                  message: "Please input receive amount",
+                  message: "Please input receive amount"
                 },
                 () => ({
                   validator(_, value) {
                     if (value) {
                       if (Number.isNaN(Number(value)) || Number(value) <= 0) {
-                        return Promise.reject(
-                          new Error(t`Please input receive amount.`)
-                        );
+                        return Promise.reject(new Error(t`Please input receive amount.`));
                       }
                       if (Number(value) > Number(erc20Balance)) {
-                        return Promise.reject(
-                          new Error(t`Available Balance is not enough.`)
-                        );
+                        return Promise.reject(new Error(t`Available Balance is not enough.`));
                       }
                       return Promise.resolve();
                     }
                     return Promise.resolve();
-                  },
-                }),
+                  }
+                })
               ]}
             >
               <Input
@@ -773,9 +682,7 @@ The deposit will be deducted from the balance of you connected wallet account an
 
           {selectedTokenPlatform === "BTC" && (
             <div className="deposit-inscriptions">
-              <div className="deposit-inscriptions-label">
-                Select inscription you want to deposit
-              </div>
+              <div className="deposit-inscriptions-label">Select inscription you want to deposit</div>
               <Spin spinning={loadingBRC20}>
                 <div className="deposit-inscriptions-list">
                   {inscriptions.length > 0 ? (
@@ -787,10 +694,7 @@ The deposit will be deducted from the balance of you connected wallet account an
                       />
                     ))
                   ) : (
-                    <Empty
-                      className="deposit-inscriptions-empty"
-                      image={Empty.PRESENTED_IMAGE_SIMPLE}
-                    />
+                    <Empty className="deposit-inscriptions-empty" image={Empty.PRESENTED_IMAGE_SIMPLE} />
                   )}
                 </div>
               </Spin>
@@ -800,49 +704,39 @@ The deposit will be deducted from the balance of you connected wallet account an
           {connectPlat === "BTC" && selectedTokenPlatform === "BTC" && account && (
             <>
               <Form.Item label="Fee" wrapperCol={18}>
-                <BRC20Fee
-                  feeRate={feeRate}
-                  setFee={setFee}
-                  setFeeRate={onChangeFeeRate}
-                  ready={true}
-                />
+                <BRC20Fee feeRate={feeRate} setFee={setFee} setFeeRate={onChangeFeeRate} ready={true} />
               </Form.Item>
             </>
           )}
-          {connectPlat === "BTC" &&
-            selectedTokenPlatform === "BTC" &&
-            feeRate === "Custom" && (
-              <Form.Item
-                name="fee"
-                label=" "
-                rules={[
-                  ({ getFieldValue }) => ({
-                    validator(_, value) {
-                      if (value) {
-                        if (Number.isNaN(Number(value)) || Number(value) < 0) {
-                          return Promise.reject(
-                            new Error(t`Please enter the correct field.`)
-                          );
-                        }
-                        return Promise.resolve();
+          {connectPlat === "BTC" && selectedTokenPlatform === "BTC" && feeRate === "Custom" && (
+            <Form.Item
+              name="fee"
+              label=" "
+              rules={[
+                ({ getFieldValue }) => ({
+                  validator(_, value) {
+                    if (value) {
+                      if (Number.isNaN(Number(value)) || Number(value) < 0) {
+                        return Promise.reject(new Error(t`Please enter the correct field.`));
                       }
                       return Promise.resolve();
-                    },
-                  }),
-                ]}
-              >
-                <Input
-                  suffix="sat/vb"
-                  size="large"
-                  style={{ maxWidth: "100px" }}
-                  onChange={({ target: { value } }) => {
-                    setFee(value);
-                  }}
-                />
-              </Form.Item>
-            )}
-          {(selectedTokenPlatform === "ETH" ||
-            selectedTokenPlatform === "BTC") && (
+                    }
+                    return Promise.resolve();
+                  }
+                })
+              ]}
+            >
+              <Input
+                suffix="sat/vb"
+                size="large"
+                style={{ maxWidth: "100px" }}
+                onChange={({ target: { value } }) => {
+                  setFee(value);
+                }}
+              />
+            </Form.Item>
+          )}
+          {(selectedTokenPlatform === "ETH" || selectedTokenPlatform === "BTC") && (
             <Row justify="center" className="mb20 fixed-btn">
               {memoSubmitButton}
             </Row>
