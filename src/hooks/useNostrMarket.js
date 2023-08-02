@@ -536,7 +536,7 @@ export const useTaprootDeposit = () => {
     [execQueryNostrAsync]
   );
   return {
-    handleGetTaprootDepositInvoice,
+    handleGetTaprootDepositInvoice
   };
 };
 export const useTaprootWithdraw = () => {
@@ -583,7 +583,7 @@ export const useTaprootDecode = () => {
 };
 export const useMode = () => {
   const dispatch = useDispatch();
-  const { proMode } = useSelector(({ user }) => user)
+  const { proMode } = useSelector(({ user }) => user);
   const { execQueryNostrAsync } = useListenNostrEvent({
     isUseLocalRobotToSend: true,
     sendToNostrAddress: NOSTAR_TOKEN_SEND_TO
@@ -593,20 +593,23 @@ export const useMode = () => {
     isProxyReceiverEnable: true,
     sendToNostrAddress: NOSTAR_TOKEN_SEND_TO
   });
-  const handleQueryMode = useCallback(async (nostrAccount) => {
-    const queryCommand = `query mode of ${nostrAccount}`;
-    const ret = await execQueryNostrAsync({
-      queryCommand
-    });
-    if (ret.result.code === 0) {
-      if (ret.result.data === "NORMAL_MODE_CURRENT") {
-        dispatch(setProMode({ ...proMode, value: false, hasInit: true }));
-      } else {
-        dispatch(setProMode({ ...proMode, value: true, hasInit: true }));
+  const handleQueryMode = useCallback(
+    async (nostrAccount) => {
+      const queryCommand = `query mode of ${nostrAccount}`;
+      const ret = await execQueryNostrAsync({
+        queryCommand
+      });
+      if (ret.result.code === 0) {
+        if (ret.result.data === "NORMAL_MODE_CURRENT") {
+          dispatch(setProMode({ ...proMode, value: false, hasInit: true }));
+        } else {
+          dispatch(setProMode({ ...proMode, value: true, hasInit: true }));
+        }
       }
-    }
-    return ret.result;
-  }, [dispatch, execQueryNostrAsync, proMode]);
+      return ret.result;
+    },
+    [dispatch, execQueryNostrAsync, proMode]
+  );
   const handleChangeMode = useCallback(
     async (openOrClose) => {
       const queryCommand = `${openOrClose} pro mode`;

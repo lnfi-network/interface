@@ -6,6 +6,7 @@ import {
 } from "hooks/graphQuery/useTestnet";
 import { useMemo, useEffect } from "react";
 import { ReactComponent as Success } from "img/success.svg";
+import { nip19 } from "nostr-tools";
 export default function QuestList({ npubNostrAccount }) {
   const staticData = useMemo(() => {
     return [

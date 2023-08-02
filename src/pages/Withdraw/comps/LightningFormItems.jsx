@@ -10,7 +10,7 @@ import { sleep } from "lib/utils";
 import { useDispatch } from "react-redux";
 import { setOnlyMobileSupportedVisible } from "store/reducer/modalReducer";
 import useDevice from "hooks/useDevice";
-
+import { nip19 } from "nostr-tools";
 export default function LightningFormItems({
   form,
   nostrAccount,

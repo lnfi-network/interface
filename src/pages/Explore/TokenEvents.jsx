@@ -20,6 +20,7 @@ import TokenDetail from "./comps/ExploreDetails/TokenDetail";
 import { useTokenQuery } from "hooks/graphQuery/useExplore";
 import { useSelector } from "react-redux";
 import { getQueryVariable } from "lib/url";
+import { nip19 } from "nostr-tools";
 const initQuery = {
   type: "",
   token: "",

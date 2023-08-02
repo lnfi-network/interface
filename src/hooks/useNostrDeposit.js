@@ -10,6 +10,7 @@ import ABINostrSwapDeposit from "abis/INostrSwapDeposit.json";
 import useUnisatSdk from "hooks/unisatWallet/useUnisatWalletSdk";
 import { setIsBindNostrAddress } from "store/reducer/userReducer";
 import { useQueryNonce } from "./useNostrMarket";
+import { nip19 } from "nostr-tools";
 const NOSTR_ERC20_SEND_TO = nip19.decode(process.env.REACT_APP_NOSTR_TOKEN_SEND_TO).content;
 /* 
 query is Bind 
