@@ -6,12 +6,12 @@ export default function OutLinks() {
   return (
     <>
       <div className="outLinks">
-        {/* <a href="https://t.me/nostrswap" target="_blank">
+        <a href="https://t.me/nostrassets" target="_blank">
           <Telegram className="svg-icon" width={30} height={30}></Telegram>
         </a>
-        <a href="https://twitter.com/nostrswap" target="_blank">
+        <a href="https://twitter.com/nostrassets" target="_blank">
           <Twitter className="svg-icon" width={30} height={30}></Twitter>
-        </a> */}
+        </a>
         <a href="https://doc.nostrassets.com/" target="_blank">
           <Gitbook className="svg-icon" width={26} height={26}></Gitbook>
         </a>
