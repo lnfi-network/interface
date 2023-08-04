@@ -327,7 +327,6 @@ export const useGlobalNostrAssetsEvent = () => {
       if (events.length > 0) {
         const content = events[0].content;
         const decryptContent = await nip04.decrypt(ROBOT_PRIVATE_KEY, sendToNostrAddress, content)
-        console.log("🚀 ~ file: useNostr.js:330 ~ fn ~ decryptContent:", decryptContent)
         if (decryptContent) {
           window._notification.success({
             message: 'Nostr Notice',
@@ -343,7 +342,6 @@ export const useGlobalNostrAssetsEvent = () => {
   }, [events, sendToNostrAddress])
   /* 
     useDeepCompareEffect(() => {
-      console.log("🚀 ~ file: useNostr.js:320 ~ useGlobalNostrAssetsEvent ~ eventRet:", eventRet)
     }, [eventRet]) */
 
   return eventRet

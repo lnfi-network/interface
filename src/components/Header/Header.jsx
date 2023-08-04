@@ -27,19 +27,6 @@ function NostrHeader() {
   const memoAddressDropDown = useMemo(() => {
     return <AppNostrHeaderUser />;
   }, []);
-
-  /*  useEffect(() => {
-    if (isDrawerVisible) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
-    }
-
-    return () => {
-      document.body.style.overflow = "unset";
-    };
-  }, [isDrawerVisible]); */
-
   return (
     <>
       <GetTokenList />
@@ -47,10 +34,7 @@ function NostrHeader() {
         {width > 800 ? (
           <div className="App-header large">
             <div className="App-header-container-left">
-              <Link
-                className="App-header-link-main App-header-link-main1"
-                to="/"
-              >
+              <Link className="App-header-link-main App-header-link-main1" to="/">
                 <img src={logoImg} className="big" alt="NostrAssets Logo" />
               </Link>
               <AppHeaderLinks />
@@ -64,36 +48,20 @@ function NostrHeader() {
             </div>
           </div>
         ) : (
-          <div
-            className={cx("App-header", "small", { active: isDrawerVisible })}
-          >
+          <div className={cx("App-header", "small", { active: isDrawerVisible })}>
             <div
               className={cx("App-header-link-container", "App-header-top", {
-                active: isDrawerVisible,
+                active: isDrawerVisible
               })}
             >
               <div className="App-header-container-left">
-                <div
-                  className="App-header-menu-icon-block"
-                  onClick={() => setIsDrawerVisible(!isDrawerVisible)}
-                >
-                  {!isDrawerVisible && (
-                    <RiMenuLine className="App-header-menu-icon" />
-                  )}
-                  {isDrawerVisible && (
-                    <FaTimes className="App-header-menu-icon" />
-                  )}
+                <div className="App-header-menu-icon-block" onClick={() => setIsDrawerVisible(!isDrawerVisible)}>
+                  {!isDrawerVisible && <RiMenuLine className="App-header-menu-icon" />}
+                  {isDrawerVisible && <FaTimes className="App-header-menu-icon" />}
                 </div>
-                <div
-                  className="App-header-link-main clickable"
-                  onClick={() => setIsDrawerVisible(!isDrawerVisible)}
-                >
+                <div className="App-header-link-main clickable" onClick={() => setIsDrawerVisible(!isDrawerVisible)}>
                   <img src={logoImg} className="big" alt="NostrAssets Logo" />
-                  <img
-                    src={logoSmallImg}
-                    className="small"
-                    alt="NostrAssets Logo"
-                  />
+                  <img src={logoSmallImg} className="small" alt="NostrAssets Logo" />
                 </div>
               </div>
               <div className="App-header-container-right">
@@ -117,10 +85,7 @@ function NostrHeader() {
         closeIcon={null}
         open={isDrawerVisible}
       >
-        <AppHeaderLinks
-          small
-          clickCloseIcon={() => setIsDrawerVisible(false)}
-        />
+        <AppHeaderLinks small clickCloseIcon={() => setIsDrawerVisible(false)} />
       </Drawer>
     </>
   );

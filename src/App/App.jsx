@@ -21,8 +21,8 @@ import { Provider as GraphProvider } from "urql";
 import { client } from "config/graphqlClient";
 import { notification, message } from "antd";
 import { useSelector } from "react-redux";
-import { useGlobalNostrAssetsEvent } from "hooks/useNostr";
-import { NostrProvider2 } from "hooks/useNostrPool";
+//import { useGlobalNostrAssetsEvent } from "hooks/useNostr";
+import { NostrProvider2, useGlobalNostrAssetsEvent } from "hooks/useNostrPools";
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;
 }
@@ -57,25 +57,25 @@ function App() {
     dynamicActivate(defaultLanguage);
   }, []);
 
-  const relayUrls = useSelector(({ basic }) => basic.relayUrls);
+  /*  const relayUrls = useSelector(({ basic }) => basic.relayUrls);
   const nostrProviderRelayUrls = useMemo(() => {
     return relayUrls.filter((relayUrl) => relayUrl.link === true).map((relayUrl) => relayUrl.address);
-  }, [relayUrls]);
+  }, [relayUrls]); */
   return (
     <WagmiConfig config={wagmiConfig}>
       <I18nProvider i18n={i18n} forceRenderOnLocaleChange={false}>
         <NostrProvider2>
-          <NostrProvider relayUrls={nostrProviderRelayUrls} debug={true}>
-            <GraphProvider value={client}>
-              <SEO>
-                <Router>
-                  <Routes />
-                </Router>
-              </SEO>
-            </GraphProvider>
-            <GlobalHooks />
-            <GlobalModalInit />
-          </NostrProvider>
+          {/* <NostrProvider relayUrls={nostrProviderRelayUrls} debug={true}> */}
+          <GraphProvider value={client}>
+            <SEO>
+              <Router>
+                <Routes />
+              </Router>
+            </SEO>
+          </GraphProvider>
+          <GlobalHooks />
+          <GlobalModalInit />
+          {/* </NostrProvider> */}
         </NostrProvider2>
       </I18nProvider>
     </WagmiConfig>
