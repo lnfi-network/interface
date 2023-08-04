@@ -22,6 +22,7 @@ import { client } from "config/graphqlClient";
 import { notification, message } from "antd";
 import { useSelector } from "react-redux";
 import { useGlobalNostrAssetsEvent } from "hooks/useNostr";
+import { NostrProvider2 } from "hooks/useNostrPool";
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;
 }
@@ -52,31 +53,30 @@ const GlobalModalInit = () => {
 function App() {
   useScrollToTop();
   useEffect(() => {
-    const defaultLanguage =
-      localStorage.getItem(LANGUAGE_LOCALSTORAGE_KEY) || defaultLocale;
+    const defaultLanguage = localStorage.getItem(LANGUAGE_LOCALSTORAGE_KEY) || defaultLocale;
     dynamicActivate(defaultLanguage);
   }, []);
 
   const relayUrls = useSelector(({ basic }) => basic.relayUrls);
   const nostrProviderRelayUrls = useMemo(() => {
-    return relayUrls
-      .filter((relayUrl) => relayUrl.link === true)
-      .map((relayUrl) => relayUrl.address);
+    return relayUrls.filter((relayUrl) => relayUrl.link === true).map((relayUrl) => relayUrl.address);
   }, [relayUrls]);
   return (
     <WagmiConfig config={wagmiConfig}>
       <I18nProvider i18n={i18n} forceRenderOnLocaleChange={false}>
-        <NostrProvider relayUrls={nostrProviderRelayUrls} debug={true}>
-          <GraphProvider value={client}>
-            <SEO>
-              <Router>
-                <Routes />
-              </Router>
-            </SEO>
-          </GraphProvider>
-          <GlobalHooks />
-          <GlobalModalInit />
-        </NostrProvider>
+        <NostrProvider2>
+          <NostrProvider relayUrls={nostrProviderRelayUrls} debug={true}>
+            <GraphProvider value={client}>
+              <SEO>
+                <Router>
+                  <Routes />
+                </Router>
+              </SEO>
+            </GraphProvider>
+            <GlobalHooks />
+            <GlobalModalInit />
+          </NostrProvider>
+        </NostrProvider2>
       </I18nProvider>
     </WagmiConfig>
   );

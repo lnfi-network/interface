@@ -14,13 +14,13 @@ export const basicSlice = createSlice({
         status: "disconnected"
       },
 
-      {
-        address: "wss://relay.damus.io",
-        offical: true,
-        link: true,
-        delete: false,
-        status: "disconnected"
-      }
+      /*  {
+         address: "wss://relay.damus.io",
+         offical: true,
+         link: true,
+         delete: false,
+         status: "disconnected"
+       } */
     ],
     isRelayConnected: false
   },
