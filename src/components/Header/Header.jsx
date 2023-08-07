@@ -69,7 +69,6 @@ function NostrHeader() {
                   <OutLinks></OutLinks>
                 </div>
                 <AppNostrHeaderUser />
-                {/* <RelayList setRelayUrls={setRelayUrls}></RelayList> */}
               </div>
             </div>
           </div>

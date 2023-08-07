@@ -1,9 +1,11 @@
 import dayjs from "dayjs";
 import { SimplePool, nip19, nip04, getEventHash, getPublicKey, getSignature } from "nostr-tools";
-import { useSelector } from "react-redux";
-import { useContext, createContext, useCallback, useMemo, useEffect, useRef } from 'react'
+import { useSelector, useDispatch } from "react-redux";
+import { useContext, createContext, useCallback, useEffect, useRef } from 'react'
 import { isInTokenPocket } from 'lib/utils/userAgent'
 import { getLocalRobotPrivateKey } from "lib/utils/index";
+import { selectorRelayUrls, updateRelayStatus } from 'store/reducer/relayReducer'
+import { useAsyncEffect } from 'ahooks'
 const NostrContext = createContext()
 const ROBOT_PRIVATE_KEY = getLocalRobotPrivateKey();
 export function NostrProvider2({ children }) {
@@ -17,11 +19,7 @@ export function useNostr() {
 const useNostrPools = () => {
   const { pool } = useNostr();
   const { nostrAccount } = useSelector(({ user }) => user);
-  const relayUrls = useSelector(({ basic }) => basic.relayUrls);
-  const relays = useMemo(() => {
-    return relayUrls.map(relayUrl => relayUrl.address);
-  }, [relayUrls])
-
+  const relays = useSelector(selectorRelayUrls);
   const checkRuntime = useCallback(() => {
     if (isInTokenPocket() && !window.ethereum) {
       Modal.info({
@@ -139,8 +137,8 @@ const useNostrPools = () => {
     });
     if (!willSendEvent) {
       return {
-        event: null,
-        result: { code: 500, data: 'Event create Error', message: 'Event create Error' }
+        sendEvent: { message: queryCommand },
+        result: { code: 500, data: 'Event create Error', msg: 'Event create Error' }
       }
     }
     const filter = {
@@ -149,25 +147,26 @@ const useNostrPools = () => {
       '#e': [willSendEvent.id],
       '#p': [receiver]
     }
-    pool.publish(relays, willSendEvent);
-    const event = await pool.get(relays, filter) || null;
-    const retEvent = {
-      message: queryCommand,
-      ...event
-    }
-    if (!event) {
-      return {
-        event: retEvent,
-        result: { code: 400, data: 'timeout', message: 'timeout' }
+
+    pool.publish(relays, willSendEvent)
+    const retEvent = await pool.get(relays, filter) || null;
+    const sendEvent = { ...willSendEvent, message: queryCommand }
+
+    if (!retEvent) {
+      const errRet = {
+        retEvent: retEvent,
+        sendEvent: sendEvent,
+        result: { code: 400, data: 'Timeout', msg: 'Timeout' }
       }
+      return errRet
     }
-    const content = event.content;
+    const content = retEvent.content;
     const decryptContent = await nip04.decrypt(ROBOT_PRIVATE_KEY, decodeSendTo, content)
     if (decryptContent) {
       result = JSON.parse(decryptContent)
-      console.log("🚀 ~ file: useNostrPools.js:168 ~ execQueryNostrAsync ~ result:", result)
       return {
-        event: retEvent,
+        sendEvent: sendEvent,
+        retEvent: retEvent,
         result
       }
     }
@@ -176,15 +175,25 @@ const useNostrPools = () => {
     execQueryNostrAsync
   }
 }
+export const useListenerRelayStatus = () => {
+  const { pool } = useNostr();
+  const relays = useSelector(selectorRelayUrls);
+  const dispatch = useDispatch();
+  useAsyncEffect(async () => {
+    for (let i = 0; i < relays.length; i++) {
+      const relay = await pool.ensureRelay(relays[i]).catch(e => {
+      });
+      if (relay) {
+        dispatch(updateRelayStatus({ address: relay.url, status: 'connected' }))
+      }
+    }
+  }, [pool, relays.length])
+}
 export const useGlobalNostrAssetsEvent = () => {
   const receiver = getPublicKey(ROBOT_PRIVATE_KEY)
   const { pool } = useNostr();
-  const relayUrls = useSelector(({ basic }) => basic.relayUrls);
+  const relays = useSelector(selectorRelayUrls);
   const sub = useRef(null)
-  const relays = useMemo(() => {
-    return relayUrls.map(relayUrl => relayUrl.address);
-  }, [relayUrls])
-
   useEffect(() => {
     const onSubEvent = async (event) => {
       const content = event.content;
@@ -201,11 +210,11 @@ export const useGlobalNostrAssetsEvent = () => {
     }
     if (relays.length > 0) {
       sub.current = pool.sub([...relays], [{
-        kinds: [4],
+        kinds: [1, 4],
         since: dayjs().unix(),
         '#p': [receiver],
         '#t': ['notice']
-      }]);
+      }])
       sub.current.on('event', onSubEvent);
     }
     return () => {

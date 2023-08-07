@@ -3,7 +3,7 @@ import { createContext, ReactNode, useCallback, useContext, useEffect, useRef, u
 import { relayInit } from "nostr-tools";
 
 import { uniqBy } from "./utils";
-import { updateRelayStatus } from "store/reducer/basicReducer";
+import { updateRelayStatus } from "store/reducer/relayReducer";
 import { useDispatch } from "react-redux";
 const NostrContext = createContext({
   isLoading: true,

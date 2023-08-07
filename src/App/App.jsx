@@ -4,7 +4,7 @@ import wagmiConfig from "config/wagmiConfig";
 import { WagmiConfig } from "wagmi";
 import useScrollToTop from "lib/useScrollToTop";
 import { HashRouter as Router } from "react-router-dom";
-import { NostrProvider } from "lib/nostr-react";
+/* import { NostrProvider } from "lib/nostr-react"; */
 import { Buffer } from "buffer";
 Buffer.from("anything", "base64");
 window.Buffer = Buffer;
@@ -20,9 +20,8 @@ import useAccountInit from "hooks/useAccountInit";
 import { Provider as GraphProvider } from "urql";
 import { client } from "config/graphqlClient";
 import { notification, message } from "antd";
-import { useSelector } from "react-redux";
-//import { useGlobalNostrAssetsEvent } from "hooks/useNostr";
-import { NostrProvider2, useGlobalNostrAssetsEvent } from "hooks/useNostrPools";
+
+import { NostrProvider2, useGlobalNostrAssetsEvent, useListenerRelayStatus } from "hooks/useNostrPools";
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;
 }
@@ -30,6 +29,7 @@ if ("ethereum" in window) {
 const GlobalHooks = () => {
   useAccountInit();
   useGlobalNostrAssetsEvent();
+  useListenerRelayStatus();
   return null;
 };
 const GlobalModalInit = () => {
@@ -56,16 +56,10 @@ function App() {
     const defaultLanguage = localStorage.getItem(LANGUAGE_LOCALSTORAGE_KEY) || defaultLocale;
     dynamicActivate(defaultLanguage);
   }, []);
-
-  /*  const relayUrls = useSelector(({ basic }) => basic.relayUrls);
-  const nostrProviderRelayUrls = useMemo(() => {
-    return relayUrls.filter((relayUrl) => relayUrl.link === true).map((relayUrl) => relayUrl.address);
-  }, [relayUrls]); */
   return (
     <WagmiConfig config={wagmiConfig}>
       <I18nProvider i18n={i18n} forceRenderOnLocaleChange={false}>
         <NostrProvider2>
-          {/* <NostrProvider relayUrls={nostrProviderRelayUrls} debug={true}> */}
           <GraphProvider value={client}>
             <SEO>
               <Router>
@@ -75,7 +69,6 @@ function App() {
           </GraphProvider>
           <GlobalHooks />
           <GlobalModalInit />
-          {/* </NostrProvider> */}
         </NostrProvider2>
       </I18nProvider>
     </WagmiConfig>
