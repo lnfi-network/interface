@@ -9,7 +9,6 @@ const INIT_RELAYS = [
     delete: false,
     status: "disconnected"
   },
-
   {
     address: "wss://relay.damus.io",
     offical: true,
@@ -32,10 +31,11 @@ const getInitialStateRelays = () => {
   }
   return INIT_RELAYS
 }
-export const basicSlice = createSlice({
+export const relaySlice = createSlice({
   name: "basic",
   initialState: {
-    relayList: getInitialStateRelays()
+    relayList: getInitialStateRelays(),
+    hasRelayConnected: false,
   },
   reducers: {
     addRelayUrls(state, { payload }) {
@@ -54,12 +54,15 @@ export const basicSlice = createSlice({
     updateRelayStatus(state, { payload }) {
       const itemRelay = state.relayList.find((item) => payload.address.includes(item.address));
       itemRelay.status = payload.status;
+      if (payload.status === 'connected') {
+        state.hasRelayConnected = true
+      }
       Lockr.set("relayList", state.relayList);
     }
   }
 });
 export const { addRelayUrls, removeRelayUrls, initRelayUrls, updateRelayStatus } =
-  basicSlice.actions;
+  relaySlice.actions;
 
-export const selectorRelayUrls = createSelector(({ basic }) => basic.relayList, (relayList) => relayList.map(relay => relay.address))
-export default basicSlice.reducer;
+export const selectorRelayUrls = createSelector(({ relay }) => relay.relayList, (relayList) => relayList.map(relay => relay.address))
+export default relaySlice.reducer;

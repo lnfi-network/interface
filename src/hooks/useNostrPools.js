@@ -25,7 +25,7 @@ const useNostrPools = () => {
   const { pool, debug } = useNostr();
   const { nostrAccount } = useSelector(({ user }) => user);
   const relays = useSelector(selectorRelayUrls);
-  const checkRuntime = useCallback(() => {
+  const checkRuntime = useCallback((isUseLocalRobotToSend) => {
     if (isInTokenPocket() && !window.ethereum) {
       Modal.info({
         width: 326,
@@ -71,14 +71,17 @@ const useNostrPools = () => {
       });
       return false;
     }
-    if (!nostrAccount) {
-      window._message.destroy('albyWarning')
-      window._message.warning({
-        content: 'Please connect alby extension first.',
-        key: "albyWarning",
-      })
-      return false;
+    if (!isUseLocalRobotToSend) {
+      if (!nostrAccount) {
+        window._message.destroy('albyWarning')
+        window._message.warning({
+          content: 'Please connect alby extension first.',
+          key: "albyWarning",
+        })
+        return false;
+      }
     }
+
     return true
 
   }, [nostrAccount])
@@ -117,7 +120,7 @@ const useNostrPools = () => {
   }, [nostrAccount])
 
   const execQueryNostrAsync = useCallback(async ({ queryCommand, sendToNostrAddress, isUseLocalRobotToSend = true }) => {
-    const checkRuntimeRet = checkRuntime()
+    const checkRuntimeRet = checkRuntime(isUseLocalRobotToSend)
     if (!checkRuntimeRet) {
       return;
     }
@@ -156,9 +159,17 @@ const useNostrPools = () => {
       '#e': [willSendEvent.id],
       '#p': [receiver]
     }
+    const publishRets = pool.publish(relays, willSendEvent)
 
-    pool.publish(relays, willSendEvent)
-    const retEvent = await pool.get(relays, filter) || null;
+    publishRets.forEach(async (publishRet, index) => {
+      await publishRet.catch(e => {
+        log(debug, "info", `❌ ${queryCommand} ${relays[1]}`, e.message);
+      })
+    })
+    const retEvent = await pool.get(relays, filter).catch(e => {
+      console.log('e', e?.message)
+      return null;
+    }) || null;
     const sendEvent = { ...willSendEvent, message: queryCommand }
 
     if (!retEvent) {

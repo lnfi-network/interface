@@ -69,9 +69,9 @@ export default function RelayList() {
   const dispatch = useDispatch();
 
   const [check, setCheck] = useState([]);
-  const relayList = useSelector(({ basic }) => basic.relayList);
+  const relayList = useSelector(({ relay }) => relay.relayList);
 
-  const responseTime = useSelector(({ market }) => market.responseTime);
+  // const responseTime = useSelector(({ market }) => market.responseTime);
 
   // modify
   const onUrlsChange = useCallback(

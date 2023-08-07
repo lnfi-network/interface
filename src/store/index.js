@@ -5,7 +5,7 @@ import modalReducer from "./reducer/modalReducer";
 import marketReducer from "./reducer/marketReducer";
 const store = configureStore({
   reducer: {
-    basic: relayReducer,
+    relay: relayReducer,
     user: userReducer,
     modal: modalReducer,
     market: marketReducer

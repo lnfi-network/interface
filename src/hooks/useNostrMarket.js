@@ -38,6 +38,7 @@ export const useQueryNonce = () => {
 export const useQueryTokenList = () => {
   const dispatch = useDispatch()
   const { execQueryNostrAsync } = useNostrPools();
+  const hasRelayConnected = useSelector(({ relay }) => relay.hasRelayConnected)
   const handleQueryTokenList = useCallback(async () => {
     const queryCommand = `token list`;
     const ret = await execQueryNostrAsync({
@@ -56,7 +57,9 @@ export const useQueryTokenList = () => {
   }, [dispatch, execQueryNostrAsync]);
   useDebounceEffect(
     () => {
-      handleQueryTokenList()
+      if (hasRelayConnected) {
+        handleQueryTokenList()
+      }
     },
     [handleQueryTokenList],
     {

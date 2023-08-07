@@ -11,7 +11,7 @@ import { nip19 } from "nostr-tools";
 import * as Lockr from "lockr";
 import { useQueryBalance, useMode } from "hooks/useNostrMarket";
 import { isInTokenPocket } from "lib/utils/userAgent";
-import { useAsyncEffect, useDebounceEffect } from "ahooks";
+import { useDebounceEffect } from "ahooks";
 const { Text } = Typography;
 function AddressNostrDropdown() {
   const { nostrAccount } = useSelector(({ user }) => user);
@@ -20,7 +20,7 @@ function AddressNostrDropdown() {
   const npubNostrAccount = useMemo(() => {
     return nostrAccount ? nip19.npubEncode(nostrAccount) : "";
   }, [nostrAccount]);
-
+  const hasRelayConnected = useSelector(({ relay }) => relay.hasRelayConnected);
   const dispatch = useDispatch();
   const handleDisconnect = useCallback(() => {
     dispatch(initNostrAccount(""));
@@ -68,18 +68,22 @@ function AddressNostrDropdown() {
   }, [handleDisconnect, npubNostrAccount]);
   useDebounceEffect(
     () => {
-      handleQueryBalance(npubNostrAccount);
+      if (npubNostrAccount && hasRelayConnected) {
+        handleQueryBalance(npubNostrAccount);
+      }
     },
-    [handleQueryBalance, npubNostrAccount],
+    [handleQueryBalance, hasRelayConnected],
     {
       wait: 200
     }
   );
   useDebounceEffect(
     () => {
-      handleQueryMode(npubNostrAccount);
+      if (npubNostrAccount && hasRelayConnected) {
+        handleQueryMode(npubNostrAccount);
+      }
     },
-    [handleQueryMode, npubNostrAccount],
+    [handleQueryMode, hasRelayConnected],
     {
       wait: 200
     }

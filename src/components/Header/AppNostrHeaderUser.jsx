@@ -4,7 +4,7 @@ import "./Header.scss";
 
 import ConnectNostr from "components/Common/ConnectNostr";
 
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import AddressNostrDropdown from "components/AddressDropdown/AddressNostrDropdown";
 function AppNostrHeaderUser() {
   const { nostrAccount } = useSelector(({ user }) => user);
@@ -27,9 +27,7 @@ function AppNostrHeaderUser() {
     <div className="App-header-user">
       {
         <>
-          <div className="App-header-user-address">
-            {memoAddressNostrDropdown}
-          </div>
+          <div className="App-header-user-address">{memoAddressNostrDropdown}</div>
 
           {/* <NetworkDropdown /> */}
         </>
