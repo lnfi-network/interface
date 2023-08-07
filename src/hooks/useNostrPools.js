@@ -8,16 +8,21 @@ import { selectorRelayUrls, updateRelayStatus } from 'store/reducer/relayReducer
 import { useAsyncEffect } from 'ahooks'
 const NostrContext = createContext()
 const ROBOT_PRIVATE_KEY = getLocalRobotPrivateKey();
-export function NostrProvider2({ children }) {
+export function NostrProvider({ debug = false, children }) {
   const pool = new SimplePool();
-  return <NostrContext.Provider value={{ pool }}>{children}</NostrContext.Provider>
+  return <NostrContext.Provider value={{ debug, pool }}>{children}</NostrContext.Provider>
 }
 export function useNostr() {
   return useContext(NostrContext);
 }
 
+export const log = (isOn, type, ...args) => {
+  if (!isOn) return;
+  console[type](...args);
+};
+
 const useNostrPools = () => {
-  const { pool } = useNostr();
+  const { pool, debug } = useNostr();
   const { nostrAccount } = useSelector(({ user }) => user);
   const relays = useSelector(selectorRelayUrls);
   const checkRuntime = useCallback(() => {
@@ -67,8 +72,10 @@ const useNostrPools = () => {
       return false;
     }
     if (!nostrAccount) {
+      window._message.destroy('albyWarning')
       window._message.warning({
-        content: 'Please connect alby extension first.'
+        content: 'Please connect alby extension first.',
+        key: "albyWarning",
       })
       return false;
     }
@@ -136,10 +143,12 @@ const useNostrPools = () => {
       tags: tags,
     });
     if (!willSendEvent) {
-      return {
+      const createErrRet = {
         sendEvent: { message: queryCommand },
         result: { code: 500, data: 'Event create Error', msg: 'Event create Error' }
       }
+      log(debug, "info", `❌ ${queryCommand}`, createErrRet);
+      return
     }
     const filter = {
       kinds: [kind],
@@ -158,25 +167,33 @@ const useNostrPools = () => {
         sendEvent: sendEvent,
         result: { code: 400, data: 'Timeout', msg: 'Timeout' }
       }
+      log(debug, "info", `❌ ${queryCommand}`, errRet);
       return errRet
     }
     const content = retEvent.content;
     const decryptContent = await nip04.decrypt(ROBOT_PRIVATE_KEY, decodeSendTo, content)
     if (decryptContent) {
       result = JSON.parse(decryptContent)
-      return {
+      const sucRet = {
         sendEvent: sendEvent,
         retEvent: retEvent,
         result
       }
+      if (result.code === 0) {
+        log(debug, "info", `✅ ${queryCommand}`, sucRet);
+      } else {
+        log(debug, "info", `❗️${queryCommand}`, sucRet);
+      }
+
+      return sucRet
     }
-  }, [checkRuntime, getWillSendEvent, pool, relays])
+  }, [checkRuntime, debug, getWillSendEvent, pool, relays])
   return {
     execQueryNostrAsync
   }
 }
 export const useListenerRelayStatus = () => {
-  const { pool } = useNostr();
+  const { pool, debug } = useNostr();
   const relays = useSelector(selectorRelayUrls);
   const dispatch = useDispatch();
   useAsyncEffect(async () => {
@@ -184,6 +201,7 @@ export const useListenerRelayStatus = () => {
       const relay = await pool.ensureRelay(relays[i]).catch(e => {
       });
       if (relay) {
+        log(debug, "info", `✅ nostr (${relay.url}): Connected ${Date.now()}!`);
         dispatch(updateRelayStatus({ address: relay.url, status: 'connected' }))
       }
     }

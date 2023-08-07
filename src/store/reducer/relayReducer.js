@@ -20,7 +20,7 @@ const INIT_RELAYS = [
 ]
 
 const getInitialStateRelays = () => {
-  const localStorageRelays = Lockr.get("initRelayUrlsv2");
+  const localStorageRelays = Lockr.get("relayList");
   if (localStorageRelays) {
     const relayList = localStorageRelays.map(localStorageRelay => localStorageRelay.address);
     const initRelayUrls = INIT_RELAYS.map(initRelay => initRelay.address)
@@ -40,21 +40,21 @@ export const basicSlice = createSlice({
   reducers: {
     addRelayUrls(state, { payload }) {
       state.relayList = [...state.relayList, { ...payload }];
-      Lockr.set("initRelayUrlsv2", state.relayList);
+      Lockr.set("relayList", state.relayList);
     },
     removeRelayUrls(state, { payload }) {
       const willDeleteRelayItemIndex = state.relayList.findIndex((relayUrlItem) => relayUrlItem.address === payload.address);
       state.relayList.splice(willDeleteRelayItemIndex, 1);
-      Lockr.set("initRelayUrlsv2", state.relayList);
+      Lockr.set("relayList", state.relayList);
     },
     initRelayUrls(state, { payload }) {
       state.relayList = payload;
-      Lockr.set("initRelayUrlsv2", payload);
+      Lockr.set("relayList", payload);
     },
     updateRelayStatus(state, { payload }) {
       const itemRelay = state.relayList.find((item) => payload.address.includes(item.address));
       itemRelay.status = payload.status;
-      Lockr.set("initRelayUrlsv2", state.relayList);
+      Lockr.set("relayList", state.relayList);
     }
   }
 });

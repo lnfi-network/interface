@@ -3,9 +3,8 @@ import { useCallback, useEffect, useState, useRef, useMemo } from "react";
 import useNostrPools from "hooks/useNostrPools";
 import { useSelector, useDispatch } from "react-redux";
 import { setTokenList, setResponseTime } from "store/reducer/marketReducer";
-import { setBalanceList, setIsProMode, setProMode } from "store/reducer/userReducer";
+import { setBalanceList, setProMode } from "store/reducer/userReducer";
 import { getPublicKey, nip19 } from "nostr-tools";
-import { useNostr } from "lib/nostr-react";
 import { useDebounceEffect } from 'ahooks'
 import { getLocalRobotPrivateKey } from "lib/utils/index";
 import useWebln from "./useWebln";
@@ -531,7 +530,7 @@ export const useMode = () => {
         if (ret.result.data === "NORMAL_MODE_CURRENT") {
           dispatch(setProMode({ value: false, hasInit: true }));
         } else {
-          dispatch(setProMode({ alue: true, hasInit: true }));
+          dispatch(setProMode({ value: true, hasInit: true }));
         }
       }
       return ret.result;

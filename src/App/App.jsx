@@ -4,7 +4,6 @@ import wagmiConfig from "config/wagmiConfig";
 import { WagmiConfig } from "wagmi";
 import useScrollToTop from "lib/useScrollToTop";
 import { HashRouter as Router } from "react-router-dom";
-/* import { NostrProvider } from "lib/nostr-react"; */
 import { Buffer } from "buffer";
 Buffer.from("anything", "base64");
 window.Buffer = Buffer;
@@ -21,7 +20,7 @@ import { Provider as GraphProvider } from "urql";
 import { client } from "config/graphqlClient";
 import { notification, message } from "antd";
 
-import { NostrProvider2, useGlobalNostrAssetsEvent, useListenerRelayStatus } from "hooks/useNostrPools";
+import { NostrProvider, useGlobalNostrAssetsEvent, useListenerRelayStatus } from "hooks/useNostrPools";
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;
 }
@@ -59,7 +58,7 @@ function App() {
   return (
     <WagmiConfig config={wagmiConfig}>
       <I18nProvider i18n={i18n} forceRenderOnLocaleChange={false}>
-        <NostrProvider2>
+        <NostrProvider debug={true}>
           <GraphProvider value={client}>
             <SEO>
               <Router>
@@ -69,7 +68,7 @@ function App() {
           </GraphProvider>
           <GlobalHooks />
           <GlobalModalInit />
-        </NostrProvider2>
+        </NostrProvider>
       </I18nProvider>
     </WagmiConfig>
   );
