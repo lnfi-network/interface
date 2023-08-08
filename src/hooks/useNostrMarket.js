@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState, useRef, useMemo } from "react";
 /* import { useListenNostrEvent } from "hooks/useNostr"; */
-import useNostrPools from "hooks/useNostrPools";
+import useNostrPool from "hooks/useNostrPool";
 import { useSelector, useDispatch } from "react-redux";
 import { setTokenList, setResponseTime } from "store/reducer/marketReducer";
 import { setBalanceList, setProMode } from "store/reducer/userReducer";
@@ -15,7 +15,7 @@ const NOSTR_MARKET_SEND_TO = process.env.REACT_APP_NOSTR_MARKET_SEND_TO
 //const NOSTR_CLAIMPPOINTS_SEND_TO = nip19.decode(process.env.REACT_APP_NOSTR_CLAIMPPOINTS_SEND_TO).data;
 const LOCAL_ROBOT_ADDR = nip19.npubEncode(getPublicKey(getLocalRobotPrivateKey()));
 export const useQueryNonce = () => {
-  const { execQueryNostrAsync } = useNostrPools();
+  const { execQueryNostrAsync } = useNostrPool();
   const npubNostrAccount = useSelector(({ user }) => user.npubNostrAccount);
 
   const handleQueryNonce = useCallback(async () => {
@@ -37,7 +37,7 @@ export const useQueryNonce = () => {
 };
 export const useQueryTokenList = () => {
   const dispatch = useDispatch()
-  const { execQueryNostrAsync } = useNostrPools();
+  const { execQueryNostrAsync } = useNostrPool();
   const hasRelayConnected = useSelector(({ relay }) => relay.hasRelayConnected)
   const handleQueryTokenList = useCallback(async () => {
     const queryCommand = `token list`;
@@ -72,7 +72,7 @@ export const useQueryTokenList = () => {
 };
 export const useQueryBalance = () => {
   const dispatch = useDispatch();
-  const { execQueryNostrAsync } = useNostrPools();
+  const { execQueryNostrAsync } = useNostrPool();
   const handleQueryBalance = useCallback(
     async (nostrAddress = LOCAL_ROBOT_ADDR) => {
       const queryCommand = `balance of ${nostrAddress}`;
@@ -93,7 +93,7 @@ export const useQueryBalance = () => {
   };
 };
 export const useAllowance = () => {
-  const { execQueryNostrAsync } = useNostrPools();
+  const { execQueryNostrAsync } = useNostrPool();
   const [allowance, setAllowance] = useState(0);
 
   const { nostrAccount } = useSelector(({ user }) => user);
@@ -132,7 +132,7 @@ export const useAllowance = () => {
   };
 };
 export const useApprove = () => {
-  const { execQueryNostrAsync } = useNostrPools();
+  const { execQueryNostrAsync } = useNostrPool();
   const handleApproveAsync = useCallback(
     async (approveAmount = 0, tokenName) => {
       const queryCommand = `approve ${approveAmount} ${tokenName} to ${process.env.REACT_APP_NOSTR_MARKET_SEND_TO}`;
@@ -153,7 +153,7 @@ export const useApprove = () => {
 };
 
 export const useSendListOrder = () => {
-  const { execQueryNostrAsync } = useNostrPools();
+  const { execQueryNostrAsync } = useNostrPool();
   const handleLimitOrderAsync = useCallback(
     async ({ side, amount, buyTokenName, price, payTokenName }) => {
       const queryCommand = `${side} ${amount} ${buyTokenName} at price ${price} ${payTokenName}`;
@@ -174,7 +174,7 @@ export const useSendListOrder = () => {
 };
 
 export const useSendMarketOrder = () => {
-  const { execQueryNostrAsync } = useNostrPools();
+  const { execQueryNostrAsync } = useNostrPool();
   const handleTakeOrderAsync = useCallback(
     async (orderId) => {
       const queryCommand = `take order ${orderId}`;
@@ -192,7 +192,7 @@ export const useSendMarketOrder = () => {
   };
 };
 export const useTransfer = () => {
-  const { execQueryNostrAsync } = useNostrPools();
+  const { execQueryNostrAsync } = useNostrPool();
   const handleTransferAsync = useCallback(
     async ({ token, address, amount }) => {
       const queryCommand = `transfer ${amount} ${token} to ${address}`;
@@ -216,7 +216,7 @@ export const useTransfer = () => {
   query address book
 */
 export const useAddAddressBook = () => {
-  const { execQueryNostrAsync } = useNostrPools();
+  const { execQueryNostrAsync } = useNostrPool();
   const handleAddAddress = useCallback(
     async ({ name, address }) => {
       const queryCommand = `add address ${address} name ${name}`;
@@ -247,7 +247,7 @@ export const useAddAddressBook = () => {
   };
 };
 export const useAddressBook = () => {
-  const { execQueryNostrAsync } = useNostrPools();
+  const { execQueryNostrAsync } = useNostrPool();
   const npubNostrAccount = useSelector(({ user }) => user.npubNostrAccount);
   const [fetching, setFetching] = useState(false);
   const handleQueryAddressBook = useCallback(async () => {
@@ -268,7 +268,7 @@ export const useAddressBook = () => {
   };
 };
 export const useQueryClaimTestnetTokens = () => {
-  const { execQueryNostrAsync } = useNostrPools();
+  const { execQueryNostrAsync } = useNostrPool();
   const handleClaimTestnetTokens = useCallback(async () => {
     const queryCommand = `claim`;
     const ret = await execQueryNostrAsync({
@@ -285,7 +285,7 @@ export const useQueryClaimTestnetTokens = () => {
 };
 export const useQueryClaimPoints = () => {
 
-  const { execQueryNostrAsync } = useNostrPools();
+  const { execQueryNostrAsync } = useNostrPool();
   // const { handleQueryNonce } = useQueryNonce(NOSTR_CLAIMPPOINTS_SEND_TO);
   const handleClaimPoints = useCallback(
     async ({ points, account }) => {
@@ -305,7 +305,7 @@ export const useQueryClaimPoints = () => {
   };
 };
 export const useCancelOrder = () => {
-  const { execQueryNostrAsync } = useNostrPools();
+  const { execQueryNostrAsync } = useNostrPool();
   const handleCancelOrderAsync = useCallback(
     async (orderId) => {
       const queryCommand = `cancel order ${orderId}`;
@@ -324,7 +324,7 @@ export const useCancelOrder = () => {
 };
 
 export const useNostrPing = () => {
-  const { execQueryNostrAsync } = useNostrPools();
+  const { execQueryNostrAsync } = useNostrPool();
   const dispatch = useDispatch();
   const handlePingMarketRobot = useCallback(async () => {
     const queryCommand = `ping ${Date.now()}`;
@@ -406,7 +406,7 @@ export const useNostrPing = () => {
 }; */
 export const useWithdraw = () => {
 
-  const { execQueryNostrAsync } = useNostrPools();
+  const { execQueryNostrAsync } = useNostrPool();
   const handleWithdrawAsync = useCallback(
     async (amount, symbol, receiver) => {
       const queryCommand = `withdraw ${amount} ${symbol} to ${receiver}`;
@@ -425,7 +425,7 @@ export const useWithdraw = () => {
   };
 };
 export const useWeblnDeposit = () => {
-  const { execQueryNostrAsync } = useNostrPools();
+  const { execQueryNostrAsync } = useNostrPool();
   const { sendPayment } = useWebln();
   const handleGetWeblnDepositInvoice = useCallback(
     async (amount = 1, to) => {
@@ -445,7 +445,7 @@ export const useWeblnDeposit = () => {
   };
 };
 export const useWeblnWithdraw = () => {
-  const { execQueryNostrAsync } = useNostrPools();
+  const { execQueryNostrAsync } = useNostrPool();
   const handleWeblnWithdrawAsync = useCallback(
     async (amount, invoice) => {
       const queryCommand = `withdraw ${amount} sats to ${invoice}`;
@@ -465,7 +465,7 @@ export const useWeblnWithdraw = () => {
 
 export const useTaprootDeposit = () => {
 
-  const { execQueryNostrAsync } = useNostrPools();
+  const { execQueryNostrAsync } = useNostrPool();
   const handleGetTaprootDepositInvoice = useCallback(
     async (amount = 1, to, tokenName) => {
       const queryCommand = !to ? `deposit ${amount} ${tokenName}` : `deposit ${amount} ${tokenName} to ${to}`;
@@ -483,7 +483,7 @@ export const useTaprootDeposit = () => {
   };
 };
 export const useTaprootWithdraw = () => {
-  const { execQueryNostrAsync } = useNostrPools();
+  const { execQueryNostrAsync } = useNostrPool();
   const handleTaprootWithdrawAsync = useCallback(
     async (amount, invoice, tokenName) => {
       const queryCommand = `withdraw ${amount} ${tokenName} to ${invoice}`;
@@ -501,7 +501,7 @@ export const useTaprootWithdraw = () => {
   };
 };
 export const useTaprootDecode = () => {
-  const { execQueryNostrAsync } = useNostrPools();
+  const { execQueryNostrAsync } = useNostrPool();
   const handleTaprootDecodeAsync = useCallback(
     async (encodeInvoice) => {
       const queryCommand = `taproot decode ${encodeInvoice}`;
@@ -520,7 +520,7 @@ export const useTaprootDecode = () => {
 };
 export const useMode = () => {
   const dispatch = useDispatch();
-  const { execQueryNostrAsync } = useNostrPools();
+  const { execQueryNostrAsync } = useNostrPool();
   const handleQueryMode = useCallback(
     async (nostrAccount) => {
       const queryCommand = `query mode of ${nostrAccount}`;

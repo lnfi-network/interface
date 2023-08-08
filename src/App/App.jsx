@@ -20,7 +20,7 @@ import { Provider as GraphProvider } from "urql";
 import { client } from "config/graphqlClient";
 import { notification, message } from "antd";
 
-import { NostrProvider, useGlobalNostrAssetsEvent, useListenerRelayStatus } from "hooks/useNostrPools";
+import { NostrProvider, useGlobalNostrAssetsEvent, useListenerRelayStatus } from "hooks/useNostrPool";
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;
 }

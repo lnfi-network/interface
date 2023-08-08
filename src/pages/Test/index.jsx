@@ -1,9 +1,9 @@
-import useNostrPools from "hooks/useNostrPools";
+import useNostrPool from "hooks/useNostrPool";
 import { useCallback, useEffect } from "react";
 import { useDebounceEffect } from "ahooks";
 import { Button } from "antd";
 export default function Test() {
-  const { execQueryNostrAsync } = useNostrPools();
+  const { execQueryNostrAsync } = useNostrPool();
   const onHandleClick = useCallback(async () => {
     const ret = await execQueryNostrAsync({
       queryCommand: "token list",
