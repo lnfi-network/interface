@@ -163,7 +163,7 @@ const useNostrPools = () => {
 
     publishRets.forEach(async (publishRet, index) => {
       await publishRet.catch(e => {
-        log(debug, "info", `❌ ${queryCommand} ${relays[1]}`, e.message);
+        log(debug, "info", `❌ ${queryCommand} ${relays[1]}`, e?.message);
       })
     })
     const retEvent = await pool.get(relays, filter).catch(e => {
