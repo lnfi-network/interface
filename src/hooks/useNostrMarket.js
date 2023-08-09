@@ -529,14 +529,15 @@ export const useMode = () => {
         isUseLocalRobotToSend: true,
         sendToNostrAddress: NOSTAR_TOKEN_SEND_TO
       });
-      if (ret.result.code === 0) {
+      console.log("🚀 ~ file: useNostrMarket.js:532 ~ ret:", ret)
+      if (ret?.result?.code === 0) {
         if (ret.result.data === "NORMAL_MODE_CURRENT") {
           dispatch(setProMode({ value: false, hasInit: true }));
         } else {
           dispatch(setProMode({ value: true, hasInit: true }));
         }
       }
-      return ret.result;
+      return ret?.result;
     },
     [dispatch, execQueryNostrAsync]
   );

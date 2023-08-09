@@ -1,4 +1,5 @@
 import dayjs from "dayjs";
+import { t } from "@lingui/macro";
 import { SimplePool, nip19, nip04, getEventHash, getPublicKey, getSignature } from "nostr-tools";
 import { useSelector, useDispatch } from "react-redux";
 import { useContext, createContext, useCallback, useEffect, useRef } from 'react'
@@ -42,7 +43,9 @@ const useNostrPool = () => {
     }
     if (!window.nostr) {
       const isFirefox = navigator.userAgent.indexOf("Firefox") > -1;
+      window._notification.destroy('albyInstallWarning')
       window._notification.warning({
+        key: "albyInstallWarning",
         message: isFirefox
           ? "Install the Alby extension on your Firefox"
           : "Install the Alby extension on your Chrome",
