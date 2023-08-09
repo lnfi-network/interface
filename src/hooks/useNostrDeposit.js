@@ -2,7 +2,7 @@ import { erc20ABI } from "@wagmi/core";
 import { useNetwork, useBalance, useToken, useContractRead, useContractWrite } from "wagmi";
 import { useCallback, useEffect, useState, useRef, useMemo } from "react";
 
-import { useListenNostrEvent } from "hooks/useNostr";
+
 import { useSelector, useDispatch } from "react-redux";
 import useNostrSignMessage from "hooks/useSignMessage";
 import CONTRACT_CONFIG from "config/contract";
@@ -15,7 +15,7 @@ const NOSTR_ERC20_SEND_TO = nip19.decode(process.env.REACT_APP_NOSTR_TOKEN_SEND_
 /* 
 query is Bind 
 */
-export const useQueryBindWallet = () => {
+/* export const useQueryBindWallet = () => {
   const { connectPlat } = useSelector(({ user }) => user);
   const dispatch = useDispatch();
   const { execQueryNostrAsync } = useListenNostrEvent({
@@ -45,8 +45,8 @@ export const useQueryBindWallet = () => {
   return {
     handleQueryIsBindWallet
   };
-};
-export const useNostrBindWallet = (messageApi) => {
+}; */
+/* export const useNostrBindWallet = (messageApi) => {
   const { execQueryNostrAsync } = useListenNostrEvent({
     isUseLocalRobotToSend: true,
     sendToNostrAddress: NOSTR_ERC20_SEND_TO
@@ -76,7 +76,7 @@ export const useNostrBindWallet = (messageApi) => {
   return {
     handleBindWallet
   };
-};
+}; */
 
 /* 
 deposit

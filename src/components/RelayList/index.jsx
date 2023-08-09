@@ -1,30 +1,13 @@
 import "./index.scss";
-import {
-  Tooltip,
-  Typography,
-  Popover,
-  Checkbox,
-  Button,
-  Input,
-  message,
-  Form,
-} from "antd";
+import { Tooltip, Typography, Popover, Checkbox, Button, Input, message, Form } from "antd";
 const { Paragraph } = Typography;
 import { Trans, t } from "@lingui/macro";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  addRelayUrls,
-  removeRelayUrls,
-  initRelayUrls,
-} from "store/reducer/basicReducer";
+import { addRelayUrls, removeRelayUrls, initRelayUrls } from "store/reducer/relayReducer";
 import { DownOutlined } from "@ant-design/icons";
 
-import {
-  CheckOutlined,
-  CloseOutlined,
-  DeleteOutlined,
-} from "@ant-design/icons";
+import { CheckOutlined, CloseOutlined, DeleteOutlined } from "@ant-design/icons";
 import classNames from "classnames";
 const AddRelay = ({ show, setShow, handleFormSubmit }) => {
   const [form] = Form.useForm();
@@ -43,10 +26,10 @@ const AddRelay = ({ show, setShow, handleFormSubmit }) => {
         style={{ display: show ? "block" : "none" }}
         layout="inline"
         labelCol={{
-          span: 0,
+          span: 0
         }}
         wrapperCol={{
-          span: 24,
+          span: 24
         }}
         autoComplete="off"
         onFinish={handleFormSubmit}
@@ -56,35 +39,25 @@ const AddRelay = ({ show, setShow, handleFormSubmit }) => {
           name="address"
           style={{
             display: "inline-block",
-            marginBottom: "10px",
+            marginBottom: "10px"
           }}
           rules={[
             {
               required: true,
-              message: t`Please input your url!`,
+              message: t`Please input your url!`
             },
             {
               pattern: /^wss:\/\//,
-              message: t`The url is incorrectly entered!`,
-            },
+              message: t`The url is incorrectly entered!`
+            }
           ]}
         >
           <Input placeholder={t`Relay url`} size="small" />
         </Form.Item>
-        <Button
-          className="CheckOutlined-btn"
-          type="link"
-          size="small"
-          onClick={formSubmit}
-        >
+        <Button className="CheckOutlined-btn" type="link" size="small" onClick={formSubmit}>
           <CheckOutlined />
         </Button>
-        <Button
-          className="CloseOutlined-btn"
-          type="link"
-          size="small"
-          onClick={() => setShow(false)}
-        >
+        <Button className="CloseOutlined-btn" type="link" size="small" onClick={() => setShow(false)}>
           <CloseOutlined></CloseOutlined>
         </Button>
       </Form>
@@ -96,23 +69,23 @@ export default function RelayList() {
   const dispatch = useDispatch();
 
   const [check, setCheck] = useState([]);
-  const relayUrls = useSelector(({ basic }) => basic.relayUrls);
+  const relayList = useSelector(({ relay }) => relay.relayList);
 
-  const responseTime = useSelector(({ market }) => market.responseTime);
+  // const responseTime = useSelector(({ market }) => market.responseTime);
 
   // modify
   const onUrlsChange = useCallback(
     (values) => {
       setCheck(values);
 
-      const _localCheck = [...relayUrls];
+      const _localCheck = [...relayList];
       const urls = _localCheck.map((item) => {
         return { ...item, link: values.includes(item.address) };
       });
 
       dispatch(initRelayUrls(urls));
     },
-    [relayUrls, dispatch]
+    [relayList, dispatch]
   );
   // delete
   const deleteRelay = useCallback(
@@ -122,7 +95,7 @@ export default function RelayList() {
     [dispatch]
   );
   const urls = useMemo(() => {
-    const _localCheck = [...relayUrls];
+    const _localCheck = [...relayList];
     const _result = [];
     const _check = [];
     _localCheck.forEach((item) => {
@@ -132,11 +105,7 @@ export default function RelayList() {
       _result.push(
         <div key={item.address} className="Checkbox-box">
           <Checkbox
-            className={
-              item.status === "connected"
-                ? "nostr-checkbox-connected"
-                : "nostr-checkbox-disconnected"
-            }
+            className={item.status === "connected" ? "nostr-checkbox-connected" : "nostr-checkbox-disconnected"}
             disabled={item.offical}
             value={item.address}
           >
@@ -144,7 +113,7 @@ export default function RelayList() {
             {item.offical ? (
               <Paragraph
                 copyable={{
-                  tooltips: false,
+                  tooltips: false
                 }}
               >
                 {item.address}
@@ -154,12 +123,7 @@ export default function RelayList() {
             )}
           </Checkbox>
           {!item.offical && (
-            <Button
-              className="DeleteOutlined-btn"
-              type="link"
-              size="small"
-              onClick={() => deleteRelay(item)}
-            >
+            <Button className="DeleteOutlined-btn" type="link" size="small" onClick={() => deleteRelay(item)}>
               <DeleteOutlined></DeleteOutlined>
             </Button>
           )}
@@ -172,13 +136,11 @@ export default function RelayList() {
     });
     setCheck(_check);
     return _result;
-  }, [deleteRelay, relayUrls]);
+  }, [deleteRelay, relayList]);
   const handleFormSubmit = useCallback(
     async (values) => {
-      const _localCheck = [...relayUrls];
-      const relaySome = _localCheck.some(
-        (item) => item.address == values.address && !item.delete
-      );
+      const _localCheck = [...relayList];
+      const relaySome = _localCheck.some((item) => item.address == values.address && !item.delete);
       if (relaySome) {
         return message.error(t`Url already exists`);
       }
@@ -187,13 +149,13 @@ export default function RelayList() {
         offical: false,
         link: true,
         delete: false,
-        status: "disconnected",
+        status: "disconnected"
       };
       dispatch(addRelayUrls(willAddRelay));
 
       setShow(false);
     },
-    [dispatch, relayUrls]
+    [dispatch, relayList]
   );
   return (
     <div className="relay-url-list-box">
@@ -210,12 +172,7 @@ export default function RelayList() {
                   <Trans>Relays</Trans>
                 </div>
                 <div className="relay-url-title-action">
-                  <Button
-                    className="relay-add"
-                    size="small"
-                    type="primary"
-                    onClick={() => setShow(true)}
-                  >
+                  <Button className="relay-add" size="small" type="primary" onClick={() => setShow(true)}>
                     <Trans>Add</Trans>
                   </Button>
                 </div>
@@ -224,41 +181,31 @@ export default function RelayList() {
                 We suggest that you copy our official relay and add it to your
                 commonly used Nostr clients (Damus, Amethyst, Iris, etc.).
               </div> */}
-              <AddRelay
-                show={show}
-                setShow={setShow}
-                handleFormSubmit={handleFormSubmit}
-              ></AddRelay>
+              <AddRelay show={show} setShow={setShow} handleFormSubmit={handleFormSubmit}></AddRelay>
               <Checkbox.Group
                 style={{
-                  width: "100%",
+                  width: "100%"
                 }}
                 value={check}
-                // defaultValue={relayUrls}
+                // defaultValue={relayList}
                 onChange={onUrlsChange}
               >
                 {urls}
               </Checkbox.Group>
-              <div className="relay-response-time">
+              {/* <div className="relay-response-time">
                 <span className="relay-response-time__label">Ping:</span>
-                <span className="relay-response-time__value">
-                  {responseTime} ms
-                </span>
-              </div>
+                <span className="relay-response-time__value">{responseTime} ms</span>
+              </div> */}
             </div>
           </>
         }
         title=""
         trigger={"click"}
       >
-        {/* <span className="relays-text">
-          <Trans>Relays</Trans>
-        </span> */}
         <Button
           className={classNames("relays-btn", {
             "relays-btn__disconnected":
-              relayUrls.find((item) => item.address.includes("nostr"))
-                ?.status === "disconnected",
+              relayList.find((item) => item.address.includes("nostr"))?.status === "disconnected"
           })}
         >
           Relays <DownOutlined />

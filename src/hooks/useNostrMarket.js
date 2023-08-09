@@ -1,30 +1,28 @@
 import { useCallback, useEffect, useState, useRef, useMemo } from "react";
-import { useListenNostrEvent } from "hooks/useNostr";
+/* import { useListenNostrEvent } from "hooks/useNostr"; */
+import useNostrPool from "hooks/useNostrPool";
 import { useSelector, useDispatch } from "react-redux";
 import { setTokenList, setResponseTime } from "store/reducer/marketReducer";
-import { setBalanceList, setIsProMode, setProMode } from "store/reducer/userReducer";
+import { setBalanceList, setProMode } from "store/reducer/userReducer";
 import { getPublicKey, nip19 } from "nostr-tools";
-import { useNostr } from "lib/nostr-react";
-import { useAsyncEffect } from "ahooks";
+import { useDebounceEffect } from 'ahooks'
 import { getLocalRobotPrivateKey } from "lib/utils/index";
 import useWebln from "./useWebln";
 import * as Lockr from "lockr";
 
-const NOSTAR_TOKEN_SEND_TO = nip19.decode(process.env.REACT_APP_NOSTR_TOKEN_SEND_TO).data;
-const NOSTR_MARKET_SEND_TO = nip19.decode(process.env.REACT_APP_NOSTR_MARKET_SEND_TO).data;
-const NOSTR_CLAIMPPOINTS_SEND_TO = nip19.decode(process.env.REACT_APP_NOSTR_CLAIMPPOINTS_SEND_TO).data;
+const NOSTAR_TOKEN_SEND_TO = process.env.REACT_APP_NOSTR_TOKEN_SEND_TO
+const NOSTR_MARKET_SEND_TO = process.env.REACT_APP_NOSTR_MARKET_SEND_TO
+//const NOSTR_CLAIMPPOINTS_SEND_TO = nip19.decode(process.env.REACT_APP_NOSTR_CLAIMPPOINTS_SEND_TO).data;
 const LOCAL_ROBOT_ADDR = nip19.npubEncode(getPublicKey(getLocalRobotPrivateKey()));
-export const useQueryNonce = (sendToRobotAddr) => {
+export const useQueryNonce = () => {
+  const { execQueryNostrAsync } = useNostrPool();
   const npubNostrAccount = useSelector(({ user }) => user.npubNostrAccount);
-  const { execQueryNostrAsync } = useListenNostrEvent({
-    isUseLocalRobotToSend: true,
-    sendToNostrAddress: sendToRobotAddr
-  });
 
   const handleQueryNonce = useCallback(async () => {
     const queryCommand = `nonce of ${npubNostrAccount}`;
     const ret = await execQueryNostrAsync({
-      queryCommand
+      queryCommand,
+      sendToNostrAddress: NOSTAR_TOKEN_SEND_TO
     });
     if (ret?.result?.code === 0) {
       const data = ret.result.data;
@@ -37,30 +35,15 @@ export const useQueryNonce = (sendToRobotAddr) => {
     handleQueryNonce
   };
 };
-
 export const useQueryTokenList = () => {
-  const dispatch = useDispatch();
-  const { tokenList } = useSelector(({ market }) => market);
-
-  const { connectedRelays } = useNostr();
-
-  const isRelayConnected = useMemo(() => {
-    const relay = connectedRelays.find((r) => r.url.indexOf("nostr") > -1);
-    if (relay) {
-      return true;
-    }
-    return false;
-  }, [connectedRelays]);
-
-  const tokenListRef = useRef(null);
-  const { execQueryNostrAsync } = useListenNostrEvent({
-    isUseLocalRobotToSend: true,
-    sendToNostrAddress: NOSTAR_TOKEN_SEND_TO
-  });
+  const dispatch = useDispatch()
+  const { execQueryNostrAsync } = useNostrPool();
+  const hasRelayConnected = useSelector(({ relay }) => relay.hasRelayConnected)
   const handleQueryTokenList = useCallback(async () => {
     const queryCommand = `token list`;
     const ret = await execQueryNostrAsync({
-      queryCommand
+      queryCommand,
+      sendToNostrAddress: NOSTAR_TOKEN_SEND_TO
     });
     if (ret?.result?.code === 0) {
       const data = ret.result.data;
@@ -70,36 +53,32 @@ export const useQueryTokenList = () => {
       const localTokenList = Lockr.get("tokenList") || [];
       dispatch(setTokenList(localTokenList));
     }
-    tokenListRef.current = false;
     return ret?.result;
   }, [dispatch, execQueryNostrAsync]);
-
-  useAsyncEffect(async () => {
-    if (!tokenListRef.current && isRelayConnected && !tokenList?.length) {
-      tokenListRef.current = true;
-      handleQueryTokenList();
+  useDebounceEffect(
+    () => {
+      if (hasRelayConnected) {
+        handleQueryTokenList()
+      }
+    },
+    [handleQueryTokenList],
+    {
+      wait: 200
     }
-    return () => {
-      tokenListRef.current = false;
-    };
-  }, [handleQueryTokenList, isRelayConnected]);
-
+  )
   return {
     handleQueryTokenList
   };
 };
 export const useQueryBalance = () => {
   const dispatch = useDispatch();
-  const { execQueryNostrAsync } = useListenNostrEvent({
-    isUseLocalRobotToSend: true,
-    sendToNostrAddress: NOSTAR_TOKEN_SEND_TO
-  });
-
+  const { execQueryNostrAsync } = useNostrPool();
   const handleQueryBalance = useCallback(
     async (nostrAddress = LOCAL_ROBOT_ADDR) => {
       const queryCommand = `balance of ${nostrAddress}`;
       const ret = await execQueryNostrAsync({
-        queryCommand
+        queryCommand,
+        sendToNostrAddress: NOSTAR_TOKEN_SEND_TO
       });
       if (ret?.result?.code === 0) {
         const data = ret.result.data;
@@ -114,10 +93,7 @@ export const useQueryBalance = () => {
   };
 };
 export const useAllowance = () => {
-  const { execQueryNostrAsync } = useListenNostrEvent({
-    isUseLocalRobotToSend: true,
-    sendToNostrAddress: NOSTAR_TOKEN_SEND_TO
-  });
+  const { execQueryNostrAsync } = useNostrPool();
   const [allowance, setAllowance] = useState(0);
 
   const { nostrAccount } = useSelector(({ user }) => user);
@@ -128,7 +104,8 @@ export const useAllowance = () => {
           nostrAccount
         )} for  ${tokenName}`;
         const ret = await execQueryNostrAsync({
-          queryCommand
+          queryCommand,
+          sendToNostrAddress: NOSTAR_TOKEN_SEND_TO
         });
 
         if (!ret) {
@@ -155,18 +132,14 @@ export const useAllowance = () => {
   };
 };
 export const useApprove = () => {
-  const { execQueryNostrAsync } = useListenNostrEvent({
-    isUseLocalRobotToSend: false,
-    isProxyReceiverEnable: true,
-    sendToNostrAddress: NOSTAR_TOKEN_SEND_TO
-  });
+  const { execQueryNostrAsync } = useNostrPool();
   const handleApproveAsync = useCallback(
     async (approveAmount = 0, tokenName) => {
       const queryCommand = `approve ${approveAmount} ${tokenName} to ${process.env.REACT_APP_NOSTR_MARKET_SEND_TO}`;
-
       const ret = await execQueryNostrAsync({
-        queryCommand
-        // nonce: nonce
+        queryCommand,
+        sendToNostrAddress: NOSTAR_TOKEN_SEND_TO,
+        isUseLocalRobotToSend: false
       });
 
       return ret?.result;
@@ -180,17 +153,14 @@ export const useApprove = () => {
 };
 
 export const useSendListOrder = () => {
-  const { execQueryNostrAsync } = useListenNostrEvent({
-    isUseLocalRobotToSend: false,
-    isProxyReceiverEnable: true,
-    sendToNostrAddress: NOSTR_MARKET_SEND_TO
-  });
-
+  const { execQueryNostrAsync } = useNostrPool();
   const handleLimitOrderAsync = useCallback(
     async ({ side, amount, buyTokenName, price, payTokenName }) => {
       const queryCommand = `${side} ${amount} ${buyTokenName} at price ${price} ${payTokenName}`;
       const ret = await execQueryNostrAsync({
-        queryCommand
+        queryCommand,
+        sendToNostrAddress: NOSTR_MARKET_SEND_TO,
+        isUseLocalRobotToSend: false,
       });
 
       return ret.result;
@@ -204,39 +174,32 @@ export const useSendListOrder = () => {
 };
 
 export const useSendMarketOrder = () => {
-  const { execQueryNostrAsync } = useListenNostrEvent({
-    isUseLocalRobotToSend: false,
-    isProxyReceiverEnable: true,
-    sendToNostrAddress: NOSTR_MARKET_SEND_TO
-  });
-  // const { handleQueryNonce } = useQueryNonce(NOSTAR_TOKEN_SEND_TO);
+  const { execQueryNostrAsync } = useNostrPool();
   const handleTakeOrderAsync = useCallback(
     async (orderId) => {
       const queryCommand = `take order ${orderId}`;
       const ret = await execQueryNostrAsync({
-        queryCommand
-        // nonce
+        queryCommand,
+        isUseLocalRobotToSend: false,
+        sendToNostrAddress: NOSTR_MARKET_SEND_TO
       });
       return ret.result;
     },
     [execQueryNostrAsync]
   );
-
   return {
     handleTakeOrderAsync
   };
 };
 export const useTransfer = () => {
-  const { execQueryNostrAsync } = useListenNostrEvent({
-    isUseLocalRobotToSend: false,
-    isProxyReceiverEnable: true,
-    sendToNostrAddress: NOSTAR_TOKEN_SEND_TO
-  });
+  const { execQueryNostrAsync } = useNostrPool();
   const handleTransferAsync = useCallback(
     async ({ token, address, amount }) => {
       const queryCommand = `transfer ${amount} ${token} to ${address}`;
       const ret = await execQueryNostrAsync({
-        queryCommand
+        queryCommand,
+        sendToNostrAddress: NOSTAR_TOKEN_SEND_TO,
+        isUseLocalRobotToSend: false,
       });
 
       return ret.result;
@@ -253,16 +216,14 @@ export const useTransfer = () => {
   query address book
 */
 export const useAddAddressBook = () => {
-  const { execQueryNostrAsync } = useListenNostrEvent({
-    isUseLocalRobotToSend: false,
-    isProxyReceiverEnable: true,
-    sendToNostrAddress: NOSTAR_TOKEN_SEND_TO
-  });
+  const { execQueryNostrAsync } = useNostrPool();
   const handleAddAddress = useCallback(
     async ({ name, address }) => {
       const queryCommand = `add address ${address} name ${name}`;
       const ret = await execQueryNostrAsync({
-        queryCommand
+        queryCommand,
+        isUseLocalRobotToSend: false,
+        sendToNostrAddress: NOSTAR_TOKEN_SEND_TO
       });
       return ret.result;
     },
@@ -272,7 +233,9 @@ export const useAddAddressBook = () => {
     async ({ name }) => {
       const queryCommand = `delete ${name} from address book`;
       const ret = await execQueryNostrAsync({
-        queryCommand
+        queryCommand,
+        isUseLocalRobotToSend: false,
+        sendToNostrAddress: NOSTAR_TOKEN_SEND_TO
       });
       return ret.result;
     },
@@ -284,18 +247,16 @@ export const useAddAddressBook = () => {
   };
 };
 export const useAddressBook = () => {
-  // const dispatch = useDispatch();
+  const { execQueryNostrAsync } = useNostrPool();
   const npubNostrAccount = useSelector(({ user }) => user.npubNostrAccount);
-  const { execQueryNostrAsync } = useListenNostrEvent({
-    isUseLocalRobotToSend: true,
-    sendToNostrAddress: NOSTAR_TOKEN_SEND_TO
-  });
   const [fetching, setFetching] = useState(false);
   const handleQueryAddressBook = useCallback(async () => {
     setFetching(true);
     const queryCommand = `address book of ${npubNostrAccount}`;
     const ret = await execQueryNostrAsync({
-      queryCommand
+      queryCommand,
+      isUseLocalRobotToSend: true,
+      sendToNostrAddress: NOSTAR_TOKEN_SEND_TO
     });
     setFetching(false);
     return ret?.result;
@@ -307,16 +268,13 @@ export const useAddressBook = () => {
   };
 };
 export const useQueryClaimTestnetTokens = () => {
-  const { execQueryNostrAsync } = useListenNostrEvent({
-    isUseLocalRobotToSend: false,
-    isProxyReceiverEnable: true,
-    sendToNostrAddress: NOSTAR_TOKEN_SEND_TO
-  });
-  // const { handleQueryNonce } = useQueryNonce(NOSTAR_TOKEN_SEND_TO);
+  const { execQueryNostrAsync } = useNostrPool();
   const handleClaimTestnetTokens = useCallback(async () => {
     const queryCommand = `claim`;
     const ret = await execQueryNostrAsync({
-      queryCommand
+      queryCommand,
+      isUseLocalRobotToSend: false,
+      sendToNostrAddress: NOSTAR_TOKEN_SEND_TO
     });
     return ret.result;
   }, [execQueryNostrAsync]);
@@ -326,17 +284,16 @@ export const useQueryClaimTestnetTokens = () => {
   };
 };
 export const useQueryClaimPoints = () => {
-  const { execQueryNostrAsync } = useListenNostrEvent({
-    isUseLocalRobotToSend: false,
-    isProxyReceiverEnable: true,
-    sendToNostrAddress: NOSTR_CLAIMPPOINTS_SEND_TO
-  });
+
+  const { execQueryNostrAsync } = useNostrPool();
   // const { handleQueryNonce } = useQueryNonce(NOSTR_CLAIMPPOINTS_SEND_TO);
   const handleClaimPoints = useCallback(
     async ({ points, account }) => {
       const queryCommand = `ClaimPoints ${points} ${account}`;
       const ret = await execQueryNostrAsync({
-        queryCommand
+        queryCommand,
+        isUseLocalRobotToSend: false,
+        sendToNostrAddress: NOSTR_CLAIMPPOINTS_SEND_TO
       });
       return ret.result;
     },
@@ -348,40 +305,33 @@ export const useQueryClaimPoints = () => {
   };
 };
 export const useCancelOrder = () => {
-  const { execQueryNostrAsync } = useListenNostrEvent({
-    isUseLocalRobotToSend: false,
-    isProxyReceiverEnable: true,
-    sendToNostrAddress: NOSTR_MARKET_SEND_TO
-  });
-  // const { nostrAccount } = useSelector(({ user }) => user);
+  const { execQueryNostrAsync } = useNostrPool();
   const handleCancelOrderAsync = useCallback(
     async (orderId) => {
       const queryCommand = `cancel order ${orderId}`;
       const ret = await execQueryNostrAsync({
-        queryCommand
+        queryCommand,
+        isUseLocalRobotToSend: false,
+        sendToNostrAddress: NOSTR_MARKET_SEND_TO
       });
       return ret.result;
     },
     [execQueryNostrAsync]
   );
-
   return {
     handleCancelOrderAsync
   };
 };
 
 export const useNostrPing = () => {
-  const { execQueryNostrAsync: execQueryMarketNostrAsync } = useListenNostrEvent({
-    isUseLocalRobotToSend: true,
-    sendToNostrAddress: NOSTR_MARKET_SEND_TO
-  });
+  const { execQueryNostrAsync } = useNostrPool();
   const dispatch = useDispatch();
-
   const handlePingMarketRobot = useCallback(async () => {
     const queryCommand = `ping ${Date.now()}`;
-
-    const ret = await execQueryMarketNostrAsync({
-      queryCommand
+    const ret = await execQueryNostrAsync({
+      queryCommand,
+      isUseLocalRobotToSend: true,
+      sendToNostrAddress: NOSTR_MARKET_SEND_TO
     });
     if (!ret?.result?.code === 0) {
       console.error(ret.result.data);
@@ -392,14 +342,14 @@ export const useNostrPing = () => {
         dispatch(setResponseTime(responseTime));
       }
     }
-  }, [dispatch, execQueryMarketNostrAsync]);
+  }, [dispatch, execQueryNostrAsync]);
 
   return {
     handlePingMarketRobot
   };
 };
 
-export const useListenerTabVisible = () => {
+/* export const useListenerTabVisible = () => {
   const [visibilityState, setVisiblityState] = useState(true);
   const { connectedRelays, connectToRelays, disconnectToRelays, setConnectedRelays, onConnect } = useNostr();
   const relayUrls = useSelector(({ basic }) => basic.relayUrls);
@@ -453,18 +403,18 @@ export const useListenerTabVisible = () => {
     setConnectedRelays,
     nostrProviderRelayUrls
   ]);
-};
+}; */
 export const useWithdraw = () => {
-  const { execQueryNostrAsync } = useListenNostrEvent({
-    isUseLocalRobotToSend: false,
-    isProxyReceiverEnable: true,
-    sendToNostrAddress: NOSTAR_TOKEN_SEND_TO
-  });
+
+  const { execQueryNostrAsync } = useNostrPool();
   const handleWithdrawAsync = useCallback(
     async (amount, symbol, receiver) => {
       const queryCommand = `withdraw ${amount} ${symbol} to ${receiver}`;
       const ret = await execQueryNostrAsync({
-        queryCommand
+        queryCommand,
+        isUseLocalRobotToSend: false,
+
+        sendToNostrAddress: NOSTAR_TOKEN_SEND_TO
       });
       return ret?.result;
     },
@@ -475,17 +425,15 @@ export const useWithdraw = () => {
   };
 };
 export const useWeblnDeposit = () => {
-  const { execQueryNostrAsync } = useListenNostrEvent({
-    isUseLocalRobotToSend: false,
-    isProxyReceiverEnable: true,
-    sendToNostrAddress: NOSTAR_TOKEN_SEND_TO
-  });
+  const { execQueryNostrAsync } = useNostrPool();
   const { sendPayment } = useWebln();
   const handleGetWeblnDepositInvoice = useCallback(
     async (amount = 1, to) => {
       const queryCommand = !to ? `deposit ${amount} sats` : `deposit ${amount} sats to ${to}`;
       const ret = await execQueryNostrAsync({
-        queryCommand
+        queryCommand,
+        isUseLocalRobotToSend: false,
+        sendToNostrAddress: NOSTAR_TOKEN_SEND_TO
       });
       return ret.result;
     },
@@ -497,17 +445,14 @@ export const useWeblnDeposit = () => {
   };
 };
 export const useWeblnWithdraw = () => {
-  const { execQueryNostrAsync } = useListenNostrEvent({
-    isUseLocalRobotToSend: false,
-    isProxyReceiverEnable: true,
-    sendToNostrAddress: NOSTAR_TOKEN_SEND_TO
-  });
-
+  const { execQueryNostrAsync } = useNostrPool();
   const handleWeblnWithdrawAsync = useCallback(
     async (amount, invoice) => {
       const queryCommand = `withdraw ${amount} sats to ${invoice}`;
       const ret = await execQueryNostrAsync({
-        queryCommand
+        queryCommand,
+        isUseLocalRobotToSend: false,
+        sendToNostrAddress: NOSTAR_TOKEN_SEND_TO
       });
       return ret.result;
     },
@@ -519,17 +464,15 @@ export const useWeblnWithdraw = () => {
 };
 
 export const useTaprootDeposit = () => {
-  const { execQueryNostrAsync } = useListenNostrEvent({
-    isUseLocalRobotToSend: false,
-    isProxyReceiverEnable: true,
-    sendToNostrAddress: NOSTAR_TOKEN_SEND_TO
-  });
 
+  const { execQueryNostrAsync } = useNostrPool();
   const handleGetTaprootDepositInvoice = useCallback(
     async (amount = 1, to, tokenName) => {
       const queryCommand = !to ? `deposit ${amount} ${tokenName}` : `deposit ${amount} ${tokenName} to ${to}`;
       const ret = await execQueryNostrAsync({
-        queryCommand
+        queryCommand,
+        isUseLocalRobotToSend: false,
+        sendToNostrAddress: NOSTAR_TOKEN_SEND_TO
       });
       return ret.result;
     },
@@ -540,17 +483,14 @@ export const useTaprootDeposit = () => {
   };
 };
 export const useTaprootWithdraw = () => {
-  const { execQueryNostrAsync } = useListenNostrEvent({
-    isUseLocalRobotToSend: false,
-    isProxyReceiverEnable: true,
-    sendToNostrAddress: NOSTAR_TOKEN_SEND_TO
-  });
-
+  const { execQueryNostrAsync } = useNostrPool();
   const handleTaprootWithdrawAsync = useCallback(
     async (amount, invoice, tokenName) => {
       const queryCommand = `withdraw ${amount} ${tokenName} to ${invoice}`;
       const ret = await execQueryNostrAsync({
-        queryCommand
+        queryCommand,
+        isUseLocalRobotToSend: false,
+        sendToNostrAddress: NOSTAR_TOKEN_SEND_TO
       });
       return ret.result;
     },
@@ -561,17 +501,14 @@ export const useTaprootWithdraw = () => {
   };
 };
 export const useTaprootDecode = () => {
-  const { execQueryNostrAsync } = useListenNostrEvent({
-    isUseLocalRobotToSend: true,
-    isProxyReceiverEnable: false,
-    sendToNostrAddress: NOSTAR_TOKEN_SEND_TO
-  });
-
+  const { execQueryNostrAsync } = useNostrPool();
   const handleTaprootDecodeAsync = useCallback(
     async (encodeInvoice) => {
       const queryCommand = `taproot decode ${encodeInvoice}`;
       const ret = await execQueryNostrAsync({
-        queryCommand
+        queryCommand,
+        isUseLocalRobotToSend: true,
+        sendToNostrAddress: NOSTAR_TOKEN_SEND_TO
       });
       return ret.result;
     },
@@ -583,42 +520,37 @@ export const useTaprootDecode = () => {
 };
 export const useMode = () => {
   const dispatch = useDispatch();
-  const { proMode } = useSelector(({ user }) => user);
-  const { execQueryNostrAsync } = useListenNostrEvent({
-    isUseLocalRobotToSend: true,
-    sendToNostrAddress: NOSTAR_TOKEN_SEND_TO
-  });
-  const { execQueryNostrAsync: execNostrAsync } = useListenNostrEvent({
-    isUseLocalRobotToSend: false,
-    isProxyReceiverEnable: true,
-    sendToNostrAddress: NOSTAR_TOKEN_SEND_TO
-  });
+  const { execQueryNostrAsync } = useNostrPool();
   const handleQueryMode = useCallback(
     async (nostrAccount) => {
       const queryCommand = `query mode of ${nostrAccount}`;
       const ret = await execQueryNostrAsync({
-        queryCommand
+        queryCommand,
+        isUseLocalRobotToSend: true,
+        sendToNostrAddress: NOSTAR_TOKEN_SEND_TO
       });
       if (ret.result.code === 0) {
         if (ret.result.data === "NORMAL_MODE_CURRENT") {
-          dispatch(setProMode({ ...proMode, value: false, hasInit: true }));
+          dispatch(setProMode({ value: false, hasInit: true }));
         } else {
-          dispatch(setProMode({ ...proMode, value: true, hasInit: true }));
+          dispatch(setProMode({ value: true, hasInit: true }));
         }
       }
       return ret.result;
     },
-    [dispatch, execQueryNostrAsync, proMode]
+    [dispatch, execQueryNostrAsync]
   );
   const handleChangeMode = useCallback(
     async (openOrClose) => {
       const queryCommand = `${openOrClose} pro mode`;
-      const ret = await execNostrAsync({
-        queryCommand
+      const ret = await execQueryNostrAsync({
+        queryCommand,
+        isUseLocalRobotToSend: false,
+        sendToNostrAddress: NOSTAR_TOKEN_SEND_TO
       });
       return ret.result;
     },
-    [execNostrAsync]
+    [execQueryNostrAsync]
   );
   return {
     handleQueryMode,

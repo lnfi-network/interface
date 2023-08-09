@@ -22,11 +22,12 @@ import { ReactComponent as ReceiveSvg } from "img/Receive.svg";
 import { ReactComponent as SendSvg } from "img/Send.svg";
 import { ReactComponent as AssetSvg } from "img/Asset.svg";
 import { ReloadOutlined } from "@ant-design/icons";
+import ConnectNostr from "components/Common/ConnectNostr";
 const ASSET_PLAT_MAP = {
   ETHEREUM: "ETH",
   BRC20: "BTC",
   LIGHTNING: "Lightning",
-  TAPROOT: "Taproot",
+  TAPROOT: "Taproot"
 };
 function Account() {
   const { width } = useSize(document.querySelector("body"));
@@ -34,9 +35,7 @@ function Account() {
   const [isAddressBookShow, setIsAddressBookShow] = useState(false);
   const [detail, setDetail] = useState(null);
   const history = useHistory();
-  const { nostrAccount, balanceList, npubNostrAccount } = useSelector(
-    ({ user }) => user
-  );
+  const { nostrAccount, balanceList, npubNostrAccount } = useSelector(({ user }) => user);
   const { tokenList } = useSelector(({ market }) => market);
   const usdtDetail = useMemo(() => {
     return tokenList.find((k) => k?.name?.toUpperCase() == "USDT");
@@ -64,11 +63,7 @@ function Account() {
         if (item?.name == "USDT") {
           total += BigNumber(balance).toNumber();
         } else if (item?.deal_price && row && balance) {
-          total += BigNumber(item.deal_price)
-            .div(usdtDetail?.decimals)
-            .div(row?.decimals)
-            .times(balance)
-            .toNumber();
+          total += BigNumber(item.deal_price).div(usdtDetail?.decimals).div(row?.decimals).times(balance).toNumber();
         }
       });
     }
@@ -90,7 +85,7 @@ function Account() {
       return [
         {
           title: t`Token`,
-          dataIndex: "name",
+          dataIndex: "name"
         },
         {
           title: t`Token Address`,
@@ -105,9 +100,7 @@ function Account() {
                     <div>
                       Token address:{" "}
                       {row?.token
-                        ? row?.token?.substring(0, 10) +
-                          "..." +
-                          row?.token?.substring(row?.token?.length - 6)
+                        ? row?.token?.substring(0, 10) + "..." + row?.token?.substring(row?.token?.length - 6)
                         : "--"}
                     </div>
                     <div>Token Channel: {row?.symbol || "--"}</div>
@@ -122,7 +115,7 @@ function Account() {
             ) : (
               "--"
             );
-          },
+          }
         },
         {
           title: t`Last Price`,
@@ -135,15 +128,12 @@ function Account() {
             return priceDetail?.deal_price && usdtDetail
               ? `$${numberWithCommas(
                   limitDecimals(
-                    BigNumber(priceDetail.deal_price)
-                      .div(usdtDetail?.decimals)
-                      .div(row?.decimals)
-                      .toNumber(),
+                    BigNumber(priceDetail.deal_price).div(usdtDetail?.decimals).div(row?.decimals).toNumber(),
                     2
                   )
                 )}`
               : "--";
-          },
+          }
         },
         {
           title: t`Amount`,
@@ -151,7 +141,7 @@ function Account() {
           render: (text) => {
             const balance = balanceList?.[text]?.balanceShow;
             return balance ? numberWithCommas(balance) : "--";
-          },
+          }
         },
         {
           title: t`USD Value`,
@@ -174,7 +164,7 @@ function Account() {
                   )
                 )}`
               : "--";
-          },
+          }
         },
         {
           title: t`Action`,
@@ -206,23 +196,19 @@ function Account() {
                 >
                   {t`Send`}
                 </Button>
-                <Button
-                  type="primary"
-                  size="small"
-                  onClick={() => transferShow(row)}
-                >
+                <Button type="primary" size="small" onClick={() => transferShow(row)}>
                   {t`Transfer`}
                 </Button>
               </div>
             );
-          },
-        },
+          }
+        }
       ];
     } else {
       return [
         {
           title: t`Token`,
-          dataIndex: "name",
+          dataIndex: "name"
         },
         {
           title: t`Token Address`,
@@ -237,9 +223,7 @@ function Account() {
                     <div>
                       Token address:
                       {row?.token
-                        ? row?.token?.substring(0, 10) +
-                          "..." +
-                          row?.token?.substring(row?.token?.length - 6)
+                        ? row?.token?.substring(0, 10) + "..." + row?.token?.substring(row?.token?.length - 6)
                         : "--"}
                     </div>
                     <div>Token Channel: {row?.symbol || "--"}</div>
@@ -254,7 +238,7 @@ function Account() {
             ) : (
               "--"
             );
-          },
+          }
         },
         {
           title: (
@@ -292,8 +276,8 @@ function Account() {
                 <div>{usdValue}</div>
               </div>
             );
-          },
-        },
+          }
+        }
       ];
     }
   }, [balanceList, list, onHandleRedirect, transferShow, usdtDetail, width]);
@@ -310,9 +294,7 @@ function Account() {
               <div className="account-head-left-nostr">
                 <div className="f14">My Nostr Address</div>
                 <div className="account-head-left-nostr-text">
-                  <EllipsisMiddle suffixCount={8}>
-                    {nip19.npubEncode(nostrAccount)}
-                  </EllipsisMiddle>
+                  <EllipsisMiddle suffixCount={8}>{nip19.npubEncode(nostrAccount)}</EllipsisMiddle>
                 </div>
                 <div className="account-head-left-btns">
                   <ProModal />
@@ -333,10 +315,7 @@ function Account() {
             <div className="account-tokenList-title">
               <img src={asset} alt="" />
               <span>{t`Assets`}</span>
-              <span
-                className="account-tokenList-title__reload"
-                onClick={handleReloadBalance}
-              >
+              <span className="account-tokenList-title__reload" onClick={handleReloadBalance}>
                 <ReloadOutlined />
               </span>
             </div>
@@ -376,11 +355,7 @@ function Account() {
                   </>
                 ) : (
                   <>
-                    <Button
-                      type="primary"
-                      size="small"
-                      onClick={() => transferShow(null)}
-                    >
+                    <Button type="primary" size="small" onClick={() => transferShow(null)}>
                       {t`Transfer`}
                     </Button>
                     <Button
@@ -397,11 +372,7 @@ function Account() {
                         onHandleRedirect("send");
                       }}
                     >{t`Send`}</Button>
-                    <Button
-                      type="primary"
-                      size="small"
-                      onClick={() => message.info("Coming soon")}
-                    >
+                    <Button type="primary" size="small" onClick={() => message.info("Coming soon")}>
                       {t`Mint`}
                     </Button>
                   </>
@@ -421,15 +392,8 @@ function Account() {
               />
             </Spin>
           </div>
-          <Transfer
-            isTransferShow={isTransferShow}
-            setIsTransferShow={setIsTransferShow}
-            detail={detail}
-          ></Transfer>
-          <AddressBook
-            isAddressBookShow={isAddressBookShow}
-            setIsAddressBookShow={setIsAddressBookShow}
-          ></AddressBook>
+          <Transfer isTransferShow={isTransferShow} setIsTransferShow={setIsTransferShow} detail={detail}></Transfer>
+          <AddressBook isAddressBookShow={isAddressBookShow} setIsAddressBookShow={setIsAddressBookShow}></AddressBook>
         </div>
       ) : (
         <div className="account-nologin">
@@ -445,7 +409,7 @@ function Account() {
                   onHandleRedirect("receive");
                 }}
               >{t`Receive Assets`}</Button>
-              <AppNostrHeaderUser></AppNostrHeaderUser>
+              <ConnectNostr />
             </div>
           </div>
         </div>

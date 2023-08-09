@@ -1,10 +1,6 @@
 import { t, Trans } from "@lingui/macro";
 import { Button, Dropdown, Typography, Row } from "antd";
-import {
-  CopyOutlined,
-  DisconnectOutlined,
-  CheckOutlined,
-} from "@ant-design/icons";
+import { CopyOutlined, DisconnectOutlined, CheckOutlined } from "@ant-design/icons";
 import { shortenAddress } from "lib/legacy";
 import { FaChevronDown } from "react-icons/fa";
 import { useCallback, useRef, useMemo, memo } from "react";
@@ -15,28 +11,16 @@ import { nip19 } from "nostr-tools";
 import * as Lockr from "lockr";
 import { useQueryBalance, useMode } from "hooks/useNostrMarket";
 import { isInTokenPocket } from "lib/utils/userAgent";
-import { useAsyncEffect } from "ahooks";
-import { useNostr } from "lib/nostr-react";
+import { useDebounceEffect } from "ahooks";
 const { Text } = Typography;
 function AddressNostrDropdown() {
-  const { connectedRelays } = useNostr();
-  const { nostrAccount, balanceList, proMode } = useSelector(
-    ({ user }) => user
-  );
-  const queryBalanceRef = useRef(null);
-  const queryModeRef = useRef(null);
+  const { nostrAccount } = useSelector(({ user }) => user);
   const { handleQueryBalance } = useQueryBalance();
   const { handleQueryMode } = useMode();
   const npubNostrAccount = useMemo(() => {
     return nostrAccount ? nip19.npubEncode(nostrAccount) : "";
   }, [nostrAccount]);
-  const isRelayConnected = useMemo(() => {
-    const relay = connectedRelays.find((r) => r.url.indexOf("nostr") > -1);
-    if (relay) {
-      return true;
-    }
-    return false;
-  }, [connectedRelays]);
+  const hasRelayConnected = useSelector(({ relay }) => relay.hasRelayConnected);
   const dispatch = useDispatch();
   const handleDisconnect = useCallback(() => {
     dispatch(initNostrAccount(""));
@@ -53,69 +37,57 @@ function AddressNostrDropdown() {
               icon: [
                 <span className="menu-copy-address-item">
                   <CopyOutlined />
-                  <span className="menu-copy-address-item__text">
-                    Copy Address
-                  </span>
+                  <span className="menu-copy-address-item__text">Copy Address</span>
                 </span>,
                 <span className="menu-copy-address-item">
                   <CheckOutlined />
-                  <span className="menu-copy-address-item__text">
-                    Copy Address
-                  </span>
-                </span>,
+                  <span className="menu-copy-address-item__text">Copy Address</span>
+                </span>
               ],
 
               text: npubNostrAccount,
-              tooltips: false,
+              tooltips: false
             }}
           />
-        ),
-      },
+        )
+      }
     ];
     !isInTokenPocket() &&
       _items.push({
         key: "menu-disconnect",
         label: (
-          <div
-            onClick={handleDisconnect}
-            className="user-address-dropdown-item"
-          >
+          <div onClick={handleDisconnect} className="user-address-dropdown-item">
             <DisconnectOutlined />
             <div className="user-address-dropdown-item-text">
               <Trans>Disconnect</Trans>
             </div>
           </div>
-        ),
+        )
       });
     return _items;
   }, [handleDisconnect, npubNostrAccount]);
-
-  useAsyncEffect(async () => {
-    if (
-      !queryBalanceRef.current &&
-      JSON.stringify(balanceList) == "{}" &&
-      isRelayConnected &&
-      npubNostrAccount
-    ) {
-      queryBalanceRef.current = true;
-      await handleQueryBalance(npubNostrAccount);
-      queryBalanceRef.current = false;
+  useDebounceEffect(
+    () => {
+      if (npubNostrAccount && hasRelayConnected) {
+        handleQueryBalance(npubNostrAccount);
+      }
+    },
+    [handleQueryBalance, hasRelayConnected],
+    {
+      wait: 200
     }
-    return () => {
-      queryBalanceRef.current = false;
-    };
-  }, [handleQueryBalance, npubNostrAccount, isRelayConnected]);
-
-  useAsyncEffect(async () => {
-    if (npubNostrAccount && isRelayConnected && !proMode.hasInit) {
-      queryModeRef.current = true;
-      await handleQueryMode(npubNostrAccount);
-      queryModeRef.current = false;
+  );
+  useDebounceEffect(
+    () => {
+      if (npubNostrAccount && hasRelayConnected) {
+        handleQueryMode(npubNostrAccount);
+      }
+    },
+    [handleQueryMode, hasRelayConnected],
+    {
+      wait: 200
     }
-    return () => {
-      queryModeRef.current = false;
-    };
-  }, [npubNostrAccount, isRelayConnected, proMode.hasInit]);
+  );
 
   return (
     <>
@@ -123,15 +95,13 @@ function AddressNostrDropdown() {
         className="nostr-address-dropdown"
         overlayClassName="nostr-address-dropdown-items"
         menu={{
-          items,
+          items
         }}
         placement="bottom"
         trigger="click"
       >
         <Button className="address-btn">
-          <span className="nostr-address">
-            {shortenAddress(npubNostrAccount, 16)}
-          </span>
+          <span className="nostr-address">{shortenAddress(npubNostrAccount, 16)}</span>
           <FaChevronDown />
         </Button>
       </Dropdown>
