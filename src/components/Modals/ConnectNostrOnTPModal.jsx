@@ -33,10 +33,11 @@ export default function ConnectNostrOnTPModal() {
           onCancel={onCancel}
         >
           <p className="connect-nostr-modal-description">
-            Use TP Wallet to manage your Nostr keys, and you can log in using Nostr in TP Wallet.
+            Need the extension or wallet to connect Nostr and manage your Nostr private key.
           </p>
           <p className="connect-nostr-modal-description">
-            Note: Currently, only TP Wallet on mobile supports Nostr key management.
+            Currently, only TP Wallet is supported Nostr on the mobile phone side. You can use TP Wallet to connect or
+            copy the URL to go to the web side to operate.
           </p>
           <div className="connect-nostr-modal-btn">
             <ConnectWalletButton imgSrc={IconTPWallet} href={`tpdapp://open?params=${encodeTPParams}`}>
