@@ -161,6 +161,9 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
         price,
         payTokenName: payTokenName
       });
+      if (!ret) {
+        return;
+      }
       if (ret?.code === 0) {
         message.success(t`Submit successfully`);
         /* modalRef.current.handleCancel(); */
@@ -247,6 +250,9 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
       } else {
         ret = await handleApproveAsync(Number(amountValue), selectedToken?.name);
         handleQueryAllowance(selectedToken?.name);
+      }
+      if (!ret) {
+        return;
       }
       if (ret?.code === 0) {
         messageApi.open({
@@ -423,6 +429,7 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
         className="nostrswap-modal"
         open={isListFormShow}
         width="420px"
+        zIndex={999}
         title={buyOrSellSelect}
         footer={null}
         /* onOk={handleOk} */

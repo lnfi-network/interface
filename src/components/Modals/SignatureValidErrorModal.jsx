@@ -15,7 +15,14 @@ export default function SignatureValidErrorModal() {
     onCancel();
   }, [dispatch, onCancel]);
   return (
-    <Modal className="nostr-modal" open={signatureValidErrorVisible} title={null} footer={null} onCancel={onCancel}>
+    <Modal
+      className="nostr-modal"
+      zIndex={1000}
+      open={signatureValidErrorVisible}
+      title={null}
+      footer={null}
+      onCancel={onCancel}
+    >
       <Row justify="center">
         <p className="nostr-modal-content">
           The currently connected Nostr account and the Nostr account logged in by Alby are inconsistent. Please
