@@ -1,5 +1,4 @@
 import dayjs from "dayjs";
-import { t } from "@lingui/macro";
 import { SimplePool, nip19, nip04, getEventHash, getPublicKey, getSignature } from "nostr-tools";
 import { useSelector, useDispatch } from "react-redux";
 import { useContext, createContext, useCallback, useEffect, useRef } from 'react'

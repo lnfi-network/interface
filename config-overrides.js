@@ -4,9 +4,9 @@ const ProgressBarPlugin = require("progress-bar-webpack-plugin");
 
 const rewiredMap = () => (config) => {
   config.devtool = config.mode === "development" ? "cheap-module-source-map" : false;
-  config.externals = {
+  /* config.externals = {
     'nostr-tools': 'NostrTools'
-  }
+  } */
   if (config.mode !== "development") {
     config.devtool = false;
     /* invade(config.optimization.minimizer, "TerserPlugin", (e) => {
