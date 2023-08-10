@@ -6,30 +6,20 @@ import "./index.scss";
 import { t } from "@lingui/macro";
 import { useSelector } from "react-redux";
 import { nip19 } from "nostr-tools";
-import {
-  useAllowance,
-  useApprove,
-  useSendListOrder,
-  useQueryBalance,
-} from "hooks/useNostrMarket";
+import { useAllowance, useApprove, useSendListOrder, useQueryBalance } from "hooks/useNostrMarket";
 import { limitDecimals } from "lib/numbers";
 import { nul } from "lib/utils/math";
 import { useDeepCompareEffect } from "ahooks";
 const layout = {
   labelCol: {
-    span: 7,
+    span: 7
   },
   wrapperCol: {
-    span: 17,
-  },
+    span: 17
+  }
 };
 
-function ListingModalForm({
-  reexcuteQuery,
-  isListFormShow,
-  setIsListFormShow,
-  token,
-}) {
+function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, token }) {
   const [form] = Form.useForm();
   const [buyOrSell, setBuyOrSell] = useState("buy");
   const [messageApi, contextHolder] = message.useMessage();
@@ -48,12 +38,12 @@ function ListingModalForm({
     return [
       {
         label: "Buy Token",
-        value: "buy",
+        value: "buy"
       },
       {
         label: "Sell Token",
-        value: "sell",
-      },
+        value: "sell"
+      }
     ];
   }, []);
   const getTokenBalance = useCallback(
@@ -76,7 +66,7 @@ function ListingModalForm({
       <div className={classNames("market-form-title")}>
         <Radio.Group
           className={classNames({
-            "sell-button-checked": buyOrSell === "sell",
+            "sell-button-checked": buyOrSell === "sell"
           })}
           options={titleOptions}
           onChange={handleBuyOrSellChange}
@@ -130,8 +120,7 @@ function ListingModalForm({
         <Select.Option value={tokenItem.id} key={tokenItem.id}>
           <span className="select-token-name">{tokenItem.name}</span>
           <span className="select-token-balance">
-            Balance: (
-            {parseFloat(limitDecimals(tokenBalance, tokenItem.reserve))})
+            Balance: ({parseFloat(limitDecimals(tokenBalance, tokenItem.reserve))})
           </span>
         </Select.Option>
       );
@@ -141,11 +130,7 @@ function ListingModalForm({
     (id) => {
       const tempSelectedToken = tokenList.find((item) => item.id === id);
       setSelectedToken(tempSelectedToken);
-      // if (buyOrSell === "buy") {
-      //   handleQueryAllowance("USDT");
-      // } else {
-      //   handleQueryAllowance(tempSelectedToken.name);
-      // }
+
       setPriceValue("");
       setAmountValue("");
       form.setFieldValue("amount", "");
@@ -155,13 +140,12 @@ function ListingModalForm({
   );
   const onListingSubmit = useCallback(async () => {
     // form.validateFields();
-
-    await form.validateFields();
-    if (Number(memoTotalValue) < 10) {
-      message.warning(t`Minimum Qty is 10 USDT`);
-      return;
-    }
     try {
+      await form.validateFields();
+      if (Number(memoTotalValue) < 10) {
+        message.warning(t`Minimum Qty is 10 USDT`);
+        return;
+      }
       setBtnLoading(true);
       const values = form.getFieldsValue();
       const side = buyOrSell;
@@ -175,7 +159,7 @@ function ListingModalForm({
         amount,
         buyTokenName,
         price,
-        payTokenName: payTokenName,
+        payTokenName: payTokenName
       });
       if (ret?.code === 0) {
         message.success(t`Submit successfully`);
@@ -189,7 +173,7 @@ function ListingModalForm({
       } else {
         messageApi.open({
           type: "error",
-          content: ret.data,
+          content: ret.data
         });
       }
     } catch (e) {
@@ -215,7 +199,7 @@ function ListingModalForm({
     messageApi,
     handleQueryBalance,
     nostrAccount,
-    handleQueryAllowance,
+    handleQueryAllowance
   ]);
   const onPriceChange = useCallback(
     ({ target: { value } }) => {
@@ -261,21 +245,18 @@ function ListingModalForm({
         ret = await handleApproveAsync(Number(memoTotalValue), "USDT");
         handleQueryAllowance("USDT");
       } else {
-        ret = await handleApproveAsync(
-          Number(amountValue),
-          selectedToken?.name
-        );
+        ret = await handleApproveAsync(Number(amountValue), selectedToken?.name);
         handleQueryAllowance(selectedToken?.name);
       }
       if (ret?.code === 0) {
         messageApi.open({
           type: "success",
-          content: ret.data,
+          content: ret.data
         });
       } else {
         messageApi.open({
           type: "error",
-          content: ret.data,
+          content: ret.data
         });
       }
     } catch (e) {
@@ -290,7 +271,7 @@ function ListingModalForm({
     handleQueryAllowance,
     amountValue,
     selectedToken?.name,
-    messageApi,
+    messageApi
   ]);
   /*  const initForm = useCallback(() => {
     form.setFieldsValue({
@@ -304,11 +285,7 @@ function ListingModalForm({
   const memoButton = useMemo(() => {
     if (buyOrSell === "buy") {
       //
-      if (
-        Number(memoTotalValue) &&
-        Number(balance) &&
-        Number(memoTotalValue) > Number(balance)
-      ) {
+      if (Number(memoTotalValue) && Number(balance) && Number(memoTotalValue) > Number(balance)) {
         return (
           <>
             <Button
@@ -325,9 +302,7 @@ function ListingModalForm({
         );
       }
       if (
-        (allowance?.amountShow &&
-          Number(balance) > 0 &&
-          Number(allowance?.amountShow) < Number(memoTotalValue)) ||
+        (allowance?.amountShow && Number(balance) > 0 && Number(allowance?.amountShow) < Number(memoTotalValue)) ||
         Number(allowance?.amountShow) === 0
       ) {
         return (
@@ -353,19 +328,13 @@ function ListingModalForm({
             onClick={onListingSubmit}
             disabled={!Number(balance) || Number(balance) === 0}
           >
-            {Number(balance) > 0
-              ? `Buy ${selectedToken?.name}`
-              : "Insufficient balance"}
+            {Number(balance) > 0 ? `Buy ${selectedToken?.name}` : "Insufficient balance"}
           </Button>
         </>
       );
     } else {
       const selectedTokenBalance = getTokenBalance(selectedToken?.name);
-      if (
-        Number(amountValue) &&
-        Number(selectedTokenBalance) &&
-        Number(amountValue) > Number(selectedTokenBalance)
-      ) {
+      if (Number(amountValue) && Number(selectedTokenBalance) && Number(amountValue) > Number(selectedTokenBalance)) {
         return (
           <>
             <Button
@@ -382,16 +351,14 @@ function ListingModalForm({
         );
       }
       if (
-        (allowance?.amountShow &&
-          Number(balance) > 0 &&
-          Number(allowance?.amountShow) < Number(amountValue)) ||
+        (allowance?.amountShow && Number(balance) > 0 && Number(allowance?.amountShow) < Number(amountValue)) ||
         Number(allowance?.amountShow) === 0
       ) {
         return (
           <Button
             type="primary"
             className={classNames("listing-submit-btn", {
-              "listing-submit-btn__sell": buyOrSell === "sell",
+              "listing-submit-btn__sell": buyOrSell === "sell"
             })}
             // size="large"
             onClick={onApprove}
@@ -406,18 +373,14 @@ function ListingModalForm({
         <Button
           type="primary"
           className={classNames("listing-submit-btn", {
-            "listing-submit-btn__sell": buyOrSell === "sell",
+            "listing-submit-btn__sell": buyOrSell === "sell"
           })}
           // size="large"
           loading={btnLoading}
           onClick={onListingSubmit}
-          disabled={
-            !Number(selectedTokenBalance) || Number(selectedTokenBalance) === 0
-          }
+          disabled={!Number(selectedTokenBalance) || Number(selectedTokenBalance) === 0}
         >
-          {Number(selectedTokenBalance) > 0
-            ? `Sell ${selectedToken?.name}`
-            : "Insufficient balance"}
+          {Number(selectedTokenBalance) > 0 ? `Sell ${selectedToken?.name}` : "Insufficient balance"}
         </Button>
       );
     }
@@ -431,27 +394,17 @@ function ListingModalForm({
     memoTotalValue,
     onApprove,
     onListingSubmit,
-    selectedToken?.name,
+    selectedToken?.name
   ]);
   useEffect(() => {
     if (memoTokenList.length > 0) {
-      const tokenItem =
-        selectedToken ||
-        tokenList.find((item) => item.name === token) ||
-        memoTokenList[0];
+      const tokenItem = selectedToken || tokenList.find((item) => item.name === token) || memoTokenList[0];
       if (!selectedToken) {
         setSelectedToken(tokenItem);
       }
       form.setFieldValue("token", tokenItem.id);
     }
-  }, [
-    form,
-    memoTokenList,
-    memoTokenList.length,
-    selectedToken,
-    token,
-    tokenList,
-  ]);
+  }, [form, memoTokenList, memoTokenList.length, selectedToken, token, tokenList]);
 
   useEffect(() => {
     if (buyOrSell === "buy" && selectedToken?.name) {
@@ -475,21 +428,15 @@ function ListingModalForm({
         /* onOk={handleOk} */
         onCancel={onCancel}
       >
-        <Form
-          className="listing-form"
-          {...layout}
-          form={form}
-          name="listingForm"
-          autoComplete="off"
-        >
+        <Form className="listing-form" {...layout} form={form} name="listingForm" autoComplete="off">
           <Form.Item label="Token">
             <Form.Item
               noStyle
               name="token"
               rules={[
                 {
-                  required: true,
-                },
+                  required: true
+                }
               ]}
             >
               <Select className="listing-select" onChange={handleTokenChange}>
@@ -504,22 +451,20 @@ function ListingModalForm({
               noStyle
               rules={[
                 {
-                  required: true,
+                  required: true
                 },
                 ({ getFieldValue }) => ({
                   validator(_, value) {
                     if (value) {
                       if (!Number(value)) {
-                        return Promise.reject(
-                          new Error(t`Invalid input format.`)
-                        );
+                        return Promise.reject(new Error(t`Invalid input format.`));
                       }
 
                       return Promise.resolve();
                     }
                     return Promise.resolve();
-                  },
-                }),
+                  }
+                })
               ]}
             >
               <Input className="listing-input" onChange={onPriceChange} />
@@ -532,22 +477,18 @@ function ListingModalForm({
               noStyle
               rules={[
                 {
-                  required: true,
+                  required: true
                 },
                 ({ getFieldValue }) => ({
                   validator(_, value) {
                     if (value) {
                       if (!Number(value)) {
-                        return Promise.reject(
-                          new Error(t`Invalid input format.`)
-                        );
+                        return Promise.reject(new Error(t`Invalid input format.`));
                       }
 
                       if (Number(value) < selectedToken.volume) {
                         return Promise.reject(
-                          new Error(
-                            `Minimum Qty is ${selectedToken.volume} ${selectedToken?.name}`
-                          )
+                          new Error(`Minimum Qty is ${selectedToken.volume} ${selectedToken?.name}`)
                         );
                       }
                       if (
@@ -555,15 +496,13 @@ function ListingModalForm({
                         Number(value) &&
                         Number(form.getFieldValue("price")) * Number(value) < 10
                       ) {
-                        return Promise.reject(
-                          new Error(t`Minimum Qty is 10 USDT`)
-                        );
+                        return Promise.reject(new Error(t`Minimum Qty is 10 USDT`));
                       }
                       return Promise.resolve();
                     }
                     return Promise.resolve();
-                  },
-                }),
+                  }
+                })
               ]}
             >
               <Input
