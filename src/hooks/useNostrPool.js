@@ -3,7 +3,7 @@ import { t } from "@lingui/macro";
 import { SimplePool, nip19, nip04, getEventHash, getPublicKey, getSignature } from "nostr-tools";
 import { useSelector, useDispatch } from "react-redux";
 import { useContext, createContext, useCallback, useEffect, useRef } from 'react'
-import { isInTokenPocket } from 'lib/utils/userAgent'
+import { isInTokenPocket, isMobile } from 'lib/utils/userAgent'
 import { getLocalRobotPrivateKey } from "lib/utils/index";
 import { selectorRelayUrls, updateRelayStatus } from 'store/reducer/relayReducer'
 import { useAsyncEffect } from 'ahooks'
@@ -39,40 +39,7 @@ const useNostrPool = () => {
           </>
         )
       });
-      return false
-    }
-    if (!window.nostr) {
-      const isFirefox = navigator.userAgent.indexOf("Firefox") > -1;
-      window._notification.destroy('albyInstallWarning')
-      window._notification.warning({
-        key: "albyInstallWarning",
-        message: isFirefox
-          ? "Install the Alby extension on your Firefox"
-          : "Install the Alby extension on your Chrome",
-        description: (
-          <span>
-            {t`Alby manages your Nostr keys, and you can use your key to sign it.`}
-            {isFirefox ? (
-              <a
-                className="nostr-swap-link__notice"
-                href="https://addons.mozilla.org/en-US/firefox/addon/alby/"
-                target="_blank"
-              >
-                {t`Install now`}
-              </a>
-            ) : (
-              <a
-                className="nostr-swap-link__notice"
-                href="https://chrome.google.com/webstore/detail/alby-bitcoin-lightning-wa/iokeahhehimjnekafflcihljlcjccdbe"
-                target="_blank"
-              >
-                {t`Install now`}
-              </a>
-            )}
-          </span>
-        )
-      });
-      return false;
+      return
     }
     if (!isUseLocalRobotToSend) {
       if (!nostrAccount) {
@@ -81,7 +48,7 @@ const useNostrPool = () => {
           content: 'Please connect alby extension first.',
           key: "albyWarning",
         })
-        return false;
+        return;
       }
     }
 

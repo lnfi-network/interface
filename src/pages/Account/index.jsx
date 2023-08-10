@@ -120,6 +120,7 @@ function Account() {
         {
           title: t`Last Price`,
           dataIndex: "name",
+          width: "140px",
           render: (text, row) => {
             if (text == "USDT") {
               return `$1.00`;
@@ -138,6 +139,7 @@ function Account() {
         {
           title: t`Amount`,
           dataIndex: "name",
+          width: "140px",
           render: (text) => {
             const balance = balanceList?.[text]?.balanceShow;
             return balance ? numberWithCommas(balance) : "--";
@@ -146,6 +148,7 @@ function Account() {
         {
           title: t`USD Value`,
           dataIndex: "name",
+          width: "140px",
           render: (text, row) => {
             const balance = balanceList?.[text]?.balanceShow || 0;
             if (text == "USDT") {
@@ -382,11 +385,11 @@ function Account() {
             <Spin spinning={reloading}>
               <Table
                 className="table-light"
-                loading={!(tokenList.length && list?.length)}
+                loading={!tokenList.length}
                 // sticky
                 showSorterTooltip={false}
                 rowKey="name"
-                columns={tokenList.length && list?.length ? columns : []}
+                columns={tokenList.length > 0 ? columns : []}
                 dataSource={tokenList || []}
                 pagination={false}
               />
