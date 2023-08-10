@@ -78,7 +78,6 @@ export default function useGetNostrAccount() {
       if (!nostrAccount) {
         albyNostrAccount = await window.nostr.getPublicKey();
         dispatch(initNostrAccount(albyNostrAccount));
-        Lockr.set("nostrAccount", albyNostrAccount);
       }
 
       return albyNostrAccount;

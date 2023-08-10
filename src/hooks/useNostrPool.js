@@ -5,7 +5,9 @@ import { useContext, createContext, useCallback, useEffect, useRef } from 'react
 import { isInTokenPocket, isMobile } from 'lib/utils/userAgent'
 import { getLocalRobotPrivateKey } from "lib/utils/index";
 import { selectorRelayUrls, updateRelayStatus } from 'store/reducer/relayReducer'
+import { setSignatureValidErrorVisible } from "store/reducer/modalReducer";
 import { useAsyncEffect } from 'ahooks'
+window.nip19 = nip19
 const NostrContext = createContext()
 const ROBOT_PRIVATE_KEY = getLocalRobotPrivateKey();
 export function NostrProvider({ debug = false, children }) {
@@ -24,6 +26,7 @@ export const log = (isOn, type, ...args) => {
 const useNostrPool = () => {
   const { pool, debug } = useNostr();
   const { nostrAccount } = useSelector(({ user }) => user);
+  const dispatch = useDispatch();
   const relays = useSelector(selectorRelayUrls);
   const checkRuntime = useCallback((isUseLocalRobotToSend) => {
     if (isInTokenPocket() && !window.ethereum) {
@@ -80,7 +83,8 @@ const useNostrPool = () => {
     };
     event.id = getEventHash(event);
     if (!privateKey) {
-      const signedEvent = await window.nostr.signEvent(event);
+      const signedEvent = await window.nostr.signEvent(event)
+      console.log("🚀 ~ file: useNostrPool.js:84 ~ getWillSendEvent ~ signedEvent:", signedEvent)
       event = signedEvent;
     } else {
       event.sig = getSignature(event, privateKey);
@@ -91,7 +95,7 @@ const useNostrPool = () => {
   const execQueryNostrAsync = useCallback(async ({ queryCommand, sendToNostrAddress, isUseLocalRobotToSend = true }) => {
     const checkRuntimeRet = checkRuntime(isUseLocalRobotToSend)
     if (!checkRuntimeRet) {
-      return;
+      return null
     }
     const decodeSendTo = nip19.decode(sendToNostrAddress).data
     const robotPubkey = getPublicKey(ROBOT_PRIVATE_KEY)
@@ -114,6 +118,7 @@ const useNostrPool = () => {
       privateKey: isUseLocalRobotToSend ? ROBOT_PRIVATE_KEY : '',
       tags: tags,
     });
+
     if (!willSendEvent) {
       const createErrRet = {
         sendEvent: { message: queryCommand },
@@ -122,28 +127,42 @@ const useNostrPool = () => {
       log(debug, "info", `❌ ${queryCommand}`, createErrRet);
       return
     }
+    const sendEvent = { ...willSendEvent, message: queryCommand }
+
     const filter = {
       kinds: [kind],
       since: dayjs().unix(),
       '#e': [willSendEvent.id],
       '#p': [receiver]
     }
-    const publishRets = pool.publish(relays, willSendEvent)
+    const publishPromises = pool.publish(relays, willSendEvent)
 
-    publishRets.forEach(async (publishRet, index) => {
-      await publishRet.catch(e => {
-        log(debug, "info", `❌ ${queryCommand} ${relays[1]}`, e?.message);
-      })
-    })
+    const publishedRets = await Promise.allSettled(publishPromises)
+    for (let i = 0; i < publishedRets.length; i++) {
+      const publishRet = publishedRets[i];
+      if (publishRet.status == 'rejected') {
+        const errMsg = publishRet.reason.message;
+        log(debug, "info", `❌ ${queryCommand} ${relays[i]}`, errMsg);
+        if (errMsg.indexOf('invalid') > -1) {
+          const errRet = {
+            retEvent: null,
+            sendEvent: sendEvent,
+            result: { code: 403, data: 'Event signature verification failed', msg: 'Event signature verification failed' }
+          }
+          dispatch(setSignatureValidErrorVisible(true))
+          log(debug, "info", `❌ ${queryCommand}`, errRet);
+          return errRet
+        }
+      }
+    }
+
     const retEvent = await pool.get(relays, filter).catch(e => {
-      console.log('e', e?.message)
       return null;
-    }) || null;
-    const sendEvent = { ...willSendEvent, message: queryCommand }
+    });
 
     if (!retEvent) {
       const errRet = {
-        retEvent: retEvent,
+        retEvent: null,
         sendEvent: sendEvent,
         result: { code: 400, data: 'Timeout', msg: 'Timeout' }
       }
@@ -167,7 +186,7 @@ const useNostrPool = () => {
 
       return sucRet
     }
-  }, [checkRuntime, debug, getWillSendEvent, pool, relays])
+  }, [checkRuntime, debug, dispatch, getWillSendEvent, pool, relays])
   return {
     execQueryNostrAsync
   }

@@ -7,7 +7,8 @@ export const modalSlice = createSlice({
     walletConnectModalVisible: false,
     languageModalVisible: false,
     turnOnNostrDrawerVisible: false,
-    onlyMobileSupportedVisible: false
+    onlyMobileSupportedVisible: false,
+    signatureValidErrorVisible: false
   },
   reducers: {
     setNostrModalVisible(state, action) {
@@ -27,6 +28,9 @@ export const modalSlice = createSlice({
     },
     setOnlyMobileSupportedVisible(state, action) {
       state.onlyMobileSupportedVisible = action.payload;
+    },
+    setSignatureValidErrorVisible(state, action) {
+      state.signatureValidErrorVisible = action.payload
     }
   }
 });
@@ -36,6 +40,7 @@ export const {
   setLanguageModalVisible,
   setConnectNostrModalVisible,
   setTurnOnNostrDrawerVisible,
-  setOnlyMobileSupportedVisible
+  setOnlyMobileSupportedVisible,
+  setSignatureValidErrorVisible
 } = modalSlice.actions;
 export default modalSlice.reducer;

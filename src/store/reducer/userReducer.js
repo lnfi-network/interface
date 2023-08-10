@@ -41,7 +41,9 @@ export const userSlice = createSlice({
     },
     initNostrAccount(state, action) {
       state.nostrAccount = action.payload;
+      Lockr.set("nostrAccount", action.payload);
       state.npubNostrAccount = action.payload ? nip19.npubEncode(action.payload) : "";
+
     },
     setBalanceList(state, action) {
       state.balanceList = action.payload;

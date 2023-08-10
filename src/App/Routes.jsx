@@ -13,6 +13,7 @@ import ConnectNostrOnTPModal from "components/Modals/ConnectNostrOnTPModal";
 import ConnectNostrModal from "components/Modals/ConnectNostrModal";
 import TurnOnNostrDrawer from "components/Modals/TurnOnNostrDrawer";
 import OnlyMobileSupportModal from "components/Modals/OnlyMobileSupportModal";
+import SignatureValidErrorModal from "components/Modals/SignatureValidErrorModal";
 import { Spin } from "antd";
 const Explore = lazy(() => import("pages/Explore/index"));
 const Account = lazy(() => import("pages/Account/index"));
@@ -78,6 +79,7 @@ function Routes({ children }) {
       <ConnectNostrModal />
       <TurnOnNostrDrawer />
       <OnlyMobileSupportModal />
+      <SignatureValidErrorModal />
     </>
   );
 }

@@ -24,7 +24,6 @@ function AddressNostrDropdown() {
   const dispatch = useDispatch();
   const handleDisconnect = useCallback(() => {
     dispatch(initNostrAccount(""));
-    Lockr.set("nostrAccount", "");
   }, [dispatch]);
 
   const items = useMemo(() => {

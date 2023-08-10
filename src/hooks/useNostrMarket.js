@@ -163,7 +163,7 @@ export const useSendListOrder = () => {
         isUseLocalRobotToSend: false,
       });
 
-      return ret.result;
+      return ret?.result;
     },
     [execQueryNostrAsync]
   );
@@ -183,7 +183,7 @@ export const useSendMarketOrder = () => {
         isUseLocalRobotToSend: false,
         sendToNostrAddress: NOSTR_MARKET_SEND_TO
       });
-      return ret.result;
+      return ret?.result;
     },
     [execQueryNostrAsync]
   );
@@ -202,7 +202,7 @@ export const useTransfer = () => {
         isUseLocalRobotToSend: false,
       });
 
-      return ret.result;
+      return ret?.result;
     },
     [execQueryNostrAsync]
   );
@@ -225,7 +225,7 @@ export const useAddAddressBook = () => {
         isUseLocalRobotToSend: false,
         sendToNostrAddress: NOSTAR_TOKEN_SEND_TO
       });
-      return ret.result;
+      return ret?.result;
     },
     [execQueryNostrAsync]
   );
@@ -237,7 +237,7 @@ export const useAddAddressBook = () => {
         isUseLocalRobotToSend: false,
         sendToNostrAddress: NOSTAR_TOKEN_SEND_TO
       });
-      return ret.result;
+      return ret?.result;
     },
     [execQueryNostrAsync]
   );
@@ -276,7 +276,7 @@ export const useQueryClaimTestnetTokens = () => {
       isUseLocalRobotToSend: false,
       sendToNostrAddress: NOSTAR_TOKEN_SEND_TO
     });
-    return ret.result;
+    return ret?.result;
   }, [execQueryNostrAsync]);
 
   return {
@@ -295,7 +295,7 @@ export const useQueryClaimPoints = () => {
         isUseLocalRobotToSend: false,
         sendToNostrAddress: NOSTR_CLAIMPPOINTS_SEND_TO
       });
-      return ret.result;
+      return ret?.result;
     },
     [execQueryNostrAsync]
   );
@@ -314,7 +314,7 @@ export const useCancelOrder = () => {
         isUseLocalRobotToSend: false,
         sendToNostrAddress: NOSTR_MARKET_SEND_TO
       });
-      return ret.result;
+      return ret?.result;
     },
     [execQueryNostrAsync]
   );
@@ -435,7 +435,7 @@ export const useWeblnDeposit = () => {
         isUseLocalRobotToSend: false,
         sendToNostrAddress: NOSTAR_TOKEN_SEND_TO
       });
-      return ret.result;
+      return ret?.result;
     },
     [execQueryNostrAsync]
   );
@@ -454,7 +454,7 @@ export const useWeblnWithdraw = () => {
         isUseLocalRobotToSend: false,
         sendToNostrAddress: NOSTAR_TOKEN_SEND_TO
       });
-      return ret.result;
+      return ret?.result;
     },
     [execQueryNostrAsync]
   );
@@ -474,7 +474,7 @@ export const useTaprootDeposit = () => {
         isUseLocalRobotToSend: false,
         sendToNostrAddress: NOSTAR_TOKEN_SEND_TO
       });
-      return ret.result;
+      return ret?.result;
     },
     [execQueryNostrAsync]
   );
@@ -492,7 +492,7 @@ export const useTaprootWithdraw = () => {
         isUseLocalRobotToSend: false,
         sendToNostrAddress: NOSTAR_TOKEN_SEND_TO
       });
-      return ret.result;
+      return ret?.result;
     },
     [execQueryNostrAsync]
   );
@@ -510,7 +510,7 @@ export const useTaprootDecode = () => {
         isUseLocalRobotToSend: true,
         sendToNostrAddress: NOSTAR_TOKEN_SEND_TO
       });
-      return ret.result;
+      return ret?.result;
     },
     [execQueryNostrAsync]
   );
@@ -548,7 +548,7 @@ export const useMode = () => {
         isUseLocalRobotToSend: false,
         sendToNostrAddress: NOSTAR_TOKEN_SEND_TO
       });
-      return ret.result;
+      return ret?.result;
     },
     [execQueryNostrAsync]
   );
