@@ -128,11 +128,11 @@ function Account() {
             const priceDetail = list.find((item) => item?.name == text);
             return priceDetail?.deal_price && usdtDetail
               ? `$${numberWithCommas(
-                  limitDecimals(
-                    BigNumber(priceDetail.deal_price).div(usdtDetail?.decimals).div(row?.decimals).toNumber(),
-                    2
-                  )
-                )}`
+                limitDecimals(
+                  BigNumber(priceDetail.deal_price).div(usdtDetail?.decimals).div(row?.decimals).toNumber(),
+                  2
+                )
+              )}`
               : "--";
           }
         },
@@ -157,15 +157,15 @@ function Account() {
             const priceDetail = list.find((item) => item?.name == text);
             return priceDetail?.deal_price && usdtDetail
               ? `$${numberWithCommas(
-                  limitDecimals(
-                    BigNumber(priceDetail.deal_price)
-                      .div(usdtDetail?.decimals)
-                      .div(row?.decimals)
-                      .times(balance)
-                      .toNumber(),
-                    2
-                  )
-                )}`
+                limitDecimals(
+                  BigNumber(priceDetail.deal_price)
+                    .div(usdtDetail?.decimals)
+                    .div(row?.decimals)
+                    .times(balance)
+                    .toNumber(),
+                  2
+                )
+              )}`
               : "--";
           }
         },
@@ -262,15 +262,15 @@ function Account() {
               usdValue =
                 priceDetail?.deal_price && usdtDetail
                   ? `$${numberWithCommas(
-                      limitDecimals(
-                        BigNumber(priceDetail.deal_price)
-                          .div(usdtDetail?.decimals)
-                          .div(row?.decimals)
-                          .times(balance)
-                          .toNumber(),
-                        2
-                      )
-                    )}`
+                    limitDecimals(
+                      BigNumber(priceDetail.deal_price)
+                        .div(usdtDetail?.decimals)
+                        .div(row?.decimals)
+                        .times(balance)
+                        .toNumber(),
+                      2
+                    )
+                  )}`
                   : "--";
             }
             return (
@@ -403,15 +403,18 @@ function Account() {
           <div className="account-nologin-title">{t`Welcome to Nostr`}</div>
           <div className="account-nologin-content">
             <div className="account-nologin-content-text">
-              {t`Connecting Nostr enables asset withdraw and transfer`}
+              {t`The first asset management platform built on Nostr Protocol. Efficient, Gasless and Safe.`}
+            </div>
+            <div className="account-nologin-content-text">
+              {t`Connect Nostr now to manage your assets.`}
             </div>
             <div className="account-nologin-content-btns">
-              <Button
+              {/* <Button
                 className="account-nologin-content-btns-deposit"
                 onClick={() => {
                   onHandleRedirect("receive");
                 }}
-              >{t`Receive Assets`}</Button>
+              >{t`Receive Assets`}</Button> */}
               <ConnectNostr />
             </div>
           </div>
