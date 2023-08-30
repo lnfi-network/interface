@@ -122,7 +122,7 @@
     .trade-item{
       width: calc(20% - 16px);
       // background: #1e1e1e;
-      border: 1px solid rgba(66,66,66,.8);
+      border: 1px solid var(--color-border-grey);
       border-radius: 4px;
       overflow: hidden;
       transition: all .25s ease-in-out;
@@ -431,7 +431,7 @@
   }
   .marketplace-filters{
     // background-color: #000;
-    background: #1E2329;
+    background: var(--color-layer-base);
     border: 1px solid var(--color-border-grey);
   }
   
