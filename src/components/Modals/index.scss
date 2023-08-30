@@ -10,17 +10,32 @@
   }
   &-description {
     font-size: 12px;
-    padding-top: 10px;
-    &:last-of-type {
-      padding-top: 0px;
-    }
+    padding-top: 12px;
+    margin-bottom: 0;
+    // &:last-of-type {
+    //   padding-top: 0px;
+    // }
   }
   &-btn {
     text-align: center;
     font-size: 14px;
     padding-top: 10px;
-    button {
+    // button {
+    //   color: var(--color-unift-green);
+    // }
+    .open-dapp{
+      margin-top: 10px;
+      width: 100%;
+      color: #333;
+    }
+    .ant-typography-copy{
+      width: 100%;
+    }
+    .copy-url{
+      margin-top: 10px;
+      width: 100%;
       color: var(--color-unift-green);
+      border-color: var(--color-unift-green);;
     }
   }
   &-link {
