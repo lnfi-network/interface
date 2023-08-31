@@ -34,17 +34,23 @@ export default function ConnectNostrOnTPModal() {
           footer={null}
           onCancel={onCancel}
         >
-          <p className="connect-nostr-modal-description color-dark">
-            Similar to other Web3 websites connect wallet, using NostrAssets requires connecting Nostr and approve each account operation.
+          <p className="connect-nostr-modal-description color-dark f12">
+            Similar to other Web3 websites, using NostrAssets requires connecting your Nostr account to approve each account operation.
           </p>
-          <p className="connect-nostr-modal-description">
-            There are currently two ways to connect Nostr:
+          <p className="connect-nostr-modal-description mt10 f12">
+            2 ways to connect NostrAssets to Nostr:
           </p>
-          <p className="connect-nostr-modal-description">
-            1. Visit the URL on Web and connect Nostr with website extensions that supports Nostr and manage your Nostr private key. eg. Alby extension, which is referred to as the Metamask for Nostr.
+          <p className="connect-nostr-modal-description b mt10 f12">
+            1. Connect via Nostr Web Browser Extensions
           </p>
-          <p className="connect-nostr-modal-description">
-            2. Use a wallet that supports Nostr to connect on the mobile phone and manage your Nostr private key. Currently only TP Wallet is supported.
+          <p className="connect-nostr-modal-description f10">
+            Eg. Alby Browser Extension which is referred to as the Metamask for Nostr
+          </p>
+          <p className="connect-nostr-modal-description b mt10 f12">
+            2. Use a Nostr-compatible wallet on your mobile device
+          </p>
+          <p className="connect-nostr-modal-description f10">
+            Currently only TP Wallet is the sole supported option for this method.
           </p>
           <div className="connect-nostr-modal-btn">
             {/* <ConnectWalletButton imgSrc={IconTPWallet} href={`tpdapp://open?params=${encodeTPParams}`}>
