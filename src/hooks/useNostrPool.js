@@ -137,24 +137,26 @@ const useNostrPool = () => {
     }
     const publishPromises = pool.publish(relays, willSendEvent)
 
-    const publishedRets = await Promise.allSettled(publishPromises)
-    for (let i = 0; i < publishedRets.length; i++) {
-      const publishRet = publishedRets[i];
-      if (publishRet.status == 'rejected') {
-        const errMsg = publishRet.reason.message;
-        log(debug, "info", `❌ ${queryCommand} ${relays[i]}`, errMsg);
-        if (errMsg.indexOf('invalid') > -1) {
-          const errRet = {
-            retEvent: null,
-            sendEvent: sendEvent,
-            result: { code: 403, data: 'Event signature verification failed', msg: 'Event signature verification failed' }
-          }
-          dispatch(setSignatureValidErrorVisible(true))
-          log(debug, "info", `❌ ${queryCommand}`, errRet);
-          return errRet
-        }
-      }
-    }
+    await Promise.any(publishPromises).catch(e => {
+      console.log(e.message);
+    })
+    /*  for (let i = 0; i < publishedRets.length; i++) {
+       const publishRet = publishedRets[i];
+       if (publishRet.status == 'rejected') {
+         const errMsg = publishRet.reason.message;
+         log(debug, "info", `❌ ${queryCommand} ${relays[i]}`, errMsg);
+         if (errMsg.indexOf('invalid') > -1) {
+           const errRet = {
+             retEvent: null,
+             sendEvent: sendEvent,
+             result: { code: 403, data: 'Event signature verification failed', msg: 'Event signature verification failed' }
+           }
+           dispatch(setSignatureValidErrorVisible(true))
+           log(debug, "info", `❌ ${queryCommand}`, errRet);
+           return errRet
+         }
+       }
+     } */
 
     const retEvent = await pool.get(relays, filter).catch(e => {
       return null;
@@ -186,7 +188,7 @@ const useNostrPool = () => {
 
       return sucRet
     }
-  }, [checkRuntime, debug, dispatch, getWillSendEvent, pool, relays])
+  }, [checkRuntime, debug, getWillSendEvent, pool, relays])
   return {
     execQueryNostrAsync
   }
