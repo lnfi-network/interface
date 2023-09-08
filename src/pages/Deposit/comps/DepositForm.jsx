@@ -87,6 +87,10 @@ function DepositForm() {
     const filterdTokenList = tokenList.filter((tokenItem) => tokenItem.chainName === selectedTokenPlatform);
     return [...filterdTokenList];
   }, [selectedTokenPlatform, tokenList]);
+
+  const hasErc20Token = useMemo(() => {
+    return tokenList.find((token) => token.assetType === "ERC20");
+  }, [tokenList]);
   const options = useMemo(() => {
     return memoCurrentPlatformTokenList.map((tokenItem) => (
       <Option value={tokenItem.name} key={tokenItem.id}>
@@ -564,7 +568,7 @@ The deposit will be deducted from the balance of you connected wallet account an
               }
             ]}
           >
-            <Radio.Group value={selectedTokenPlatform || "ETH"} onChange={handlePlatformChange}>
+            <Radio.Group value={selectedTokenPlatform || "BTC"} onChange={handlePlatformChange}>
               <Radio.Button className="network-selector-btn" value="Lightning">
                 Lightning
               </Radio.Button>
@@ -575,9 +579,11 @@ The deposit will be deducted from the balance of you connected wallet account an
               <Radio.Button className="network-selector-btn" value="Taproot">
                 Taproot
               </Radio.Button>
-              <Radio.Button className="network-selector-btn" value="ETH">
-                ERC20
-              </Radio.Button>
+              {hasErc20Token && (
+                <Radio.Button className="network-selector-btn" value="ETH">
+                  ERC20
+                </Radio.Button>
+              )}
             </Radio.Group>
           </Form.Item>
           {(selectedTokenPlatform === "ETH" || selectedTokenPlatform === "BTC") && (

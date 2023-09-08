@@ -1,9 +1,13 @@
 import WithdrawForm from "./comps/WithdrawForm";
 import { LeftOutlined } from "@ant-design/icons";
 import { useHistory } from "react-router-dom";
+import { useQueryBalance } from "hooks/useNostrMarket";
+import { useSelector } from "react-redux";
 import "./index.scss";
 export default function Withdraw() {
   const history = useHistory();
+  const { handleQueryBalance } = useQueryBalance();
+  const { npubNostrAccount } = useSelector(({ user }) => user);
   return (
     <>
       <div className="withdraw-container">
@@ -11,6 +15,7 @@ export default function Withdraw() {
           <div
             className="withdraw-title OpenSans"
             onClick={() => {
+              handleQueryBalance(npubNostrAccount);
               history.push("/account");
             }}
           >

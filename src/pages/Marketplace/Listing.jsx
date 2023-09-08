@@ -40,7 +40,6 @@ export default function Listing({ refListing }) {
   const [pageSize, setPageSize] = useState(20);
   const [pageIndex, setPageIndex] = useState(1);
   const [isMarketModalForm, setIsMarketModalForm] = useState(false);
-  const refMarketModalForm = useRef(null);
   const { nostrAccount } = useSelector(({ user }) => user);
   const { handleGetNostrAccount } = useGetNostrAccount();
 

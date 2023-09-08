@@ -71,6 +71,7 @@ function WithdrawForm() {
 
     return [...filterdTokenList];
   }, [selectedTokenPlatform, tokenList]);
+
   const options = useMemo(() => {
     return memoCurrentPlatformTokenList.map((tokenItem) => (
       <Option value={tokenItem.name} key={tokenItem.id}>
@@ -78,7 +79,9 @@ function WithdrawForm() {
       </Option>
     ));
   }, [memoCurrentPlatformTokenList]);
-
+  const hasErc20Token = useMemo(() => {
+    return tokenList.find((token) => token.assetType === "ERC20");
+  }, [tokenList]);
   const balance = useMemo(() => {
     return selectedToken && balanceList[selectedToken] ? balanceList[selectedToken]?.balanceShow : 0.0;
   }, [balanceList, selectedToken]);
@@ -322,9 +325,11 @@ function WithdrawForm() {
               <Radio.Button className="network-selector-btn" value="Taproot">
                 Taproot
               </Radio.Button>
-              <Radio.Button className="network-selector-btn" value="ETH">
-                ERC20
-              </Radio.Button>
+              {hasErc20Token && (
+                <Radio.Button className="network-selector-btn" value="ETH">
+                  ERC20
+                </Radio.Button>
+              )}
             </Radio.Group>
           </Form.Item>
           {(selectedTokenPlatform === "ETH" || selectedTokenPlatform === "BTC") && (
