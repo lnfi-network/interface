@@ -1,26 +1,8 @@
 import "./index.scss";
-import {
-  useCallback,
-  useImperativeHandle,
-  useState,
-  useEffect,
-  useMemo,
-  useRef,
-} from "react";
+import { useCallback, useImperativeHandle, useState, useEffect, useMemo, useRef } from "react";
 import ListingModalForm from "./comps/Listing";
 import { useQueryBalance } from "hooks/useNostrMarket";
-import {
-  Select,
-  Radio,
-  Collapse,
-  Button,
-  Spin,
-  Form,
-  Pagination,
-  Tooltip,
-  message,
-  Empty,
-} from "antd";
+import { Select, Radio, Collapse, Button, Spin, Form, Pagination, Tooltip, message, Empty } from "antd";
 import { t } from "@lingui/macro";
 // import * as dayjs from "dayjs";
 const { Panel } = Collapse;
@@ -51,7 +33,7 @@ export default function Listing({ refListing }) {
   const { tokenList } = useSelector(({ market }) => market);
   const [timer, setTimer] = useState(false);
   const [type, setType] = useState("Buy");
-  const [token, setToken] = useState(getQueryVariable("token") || "ORDI");
+  const [token, setToken] = useState(getQueryVariable("token"));
   const [sort, setSort] = useState("Price From Low to High");
   const [marketData, setMarketData] = useState({});
   const [form] = Form.useForm();
@@ -67,7 +49,7 @@ export default function Listing({ refListing }) {
     pageIndex: pageIndex,
     type,
     token,
-    sort,
+    sort
   });
   const refresh = useCallback(() => {
     reexcuteQuery();
@@ -75,7 +57,7 @@ export default function Listing({ refListing }) {
   useImperativeHandle(refListing, () => {
     return {
       refresh: refresh,
-      token: token,
+      token: token
     };
   });
   useEffect(() => {
@@ -89,32 +71,33 @@ export default function Listing({ refListing }) {
   const sortOptions = [
     {
       value: "Price From Low to High",
-      label: t`Price From Low to High`,
+      label: t`Price From Low to High`
     },
     {
       value: "Price From High to Low",
-      label: t`Price From High to Low`,
+      label: t`Price From High to Low`
     },
     {
       value: "Amount From Small to Large",
-      label: t`Amount From Small to Large`,
+      label: t`Amount From Small to Large`
     },
     {
       value: "Amount From Large to Small",
-      label: t`Amount From Large to Small`,
+      label: t`Amount From Large to Small`
     },
     {
       value: "From Latest to Earliest",
-      label: t`From Latest to Earliest`,
+      label: t`From Latest to Earliest`
     },
     {
       value: "From Earliest to Latest",
-      label: t`From Earliest to Latest`,
-    },
+      label: t`From Earliest to Latest`
+    }
   ];
   const memoTokenList = useMemo(() => {
     return tokenList.filter((tokenItem) => tokenItem.name !== "USDT") || [];
   }, [tokenList]);
+  console.log("🚀 ~ file: Listing.jsx:100 ~ memoTokenList ~ memoTokenList:", memoTokenList);
   const typeChange = useCallback(
     (e) => {
       //
@@ -155,7 +138,7 @@ export default function Listing({ refListing }) {
   const onFinish = useCallback(
     (values) => {
       let filterObj = {
-        ...values,
+        ...values
       };
       // setFilter(filterObj);
       reexcuteQuery();
@@ -203,12 +186,7 @@ export default function Listing({ refListing }) {
               {/* to do */}
               <span className="usd">
                 {item?.price && row
-                  ? numberWithCommas(
-                      limitDecimals(
-                        BigNumber(item?.price).div(row?.decimals).toNumber(),
-                        row?.reserve
-                      )
-                    )
+                  ? numberWithCommas(limitDecimals(BigNumber(item?.price).div(row?.decimals).toNumber(), row?.reserve))
                   : "--"}
               </span>{" "}
               USDT
@@ -219,10 +197,7 @@ export default function Listing({ refListing }) {
             <div className="trade-item-value">
               <span>
                 {item.volume && curToken
-                  ? BigNumber(item.volume)
-                      .minus(item.deal_volume)
-                      .div(curToken?.decimals)
-                      .toNumber()
+                  ? BigNumber(item.volume).minus(item.deal_volume).div(curToken?.decimals).toNumber()
                   : "--"}
               </span>{" "}
               {item.token}
@@ -232,9 +207,7 @@ export default function Listing({ refListing }) {
             <div className="trade-item-label">{t`Amount`}</div>
             <div className="trade-item-value">
               <span className="amount">
-                {item.volume && curToken
-                  ? BigNumber(item.volume).div(curToken?.decimals).toNumber()
-                  : "--"}{" "}
+                {item.volume && curToken ? BigNumber(item.volume).div(curToken?.decimals).toNumber() : "--"}{" "}
                 {item?.token}
               </span>
             </div>
@@ -245,10 +218,7 @@ export default function Listing({ refListing }) {
               {item?.total_price && row && curToken
                 ? numberWithCommas(
                     limitDecimals(
-                      BigNumber(item?.total_price)
-                        .div(curToken?.decimals)
-                        .div(row?.decimals)
-                        .toNumber(),
+                      BigNumber(item?.total_price).div(curToken?.decimals).div(row?.decimals).toNumber(),
                       row?.reserve
                     )
                   )
@@ -257,35 +227,21 @@ export default function Listing({ refListing }) {
             </div>
           </div>
           <div className="trade-item-section bg-grey mt5 pt10">
-            <div className="trade-item-label">
-              {type == "Buy" ? t`Seller` : t`Buyer`}
-            </div>
+            <div className="trade-item-label">{type == "Buy" ? t`Seller` : t`Buyer`}</div>
             <div className="trade-item-value">
-              {item.owner ? (
-                <EllipsisMiddle suffixCount={4}>
-                  {nip19.npubEncode(item.owner)}
-                </EllipsisMiddle>
-              ) : (
-                "--"
-              )}
+              {item.owner ? <EllipsisMiddle suffixCount={4}>{nip19.npubEncode(item.owner)}</EllipsisMiddle> : "--"}
             </div>
           </div>
           <div className="trade-item-section bg-grey">
             <div className="trade-item-label">{t`Date`}</div>
             <div className="trade-item-value">
-              {item?.modify_time
-                ? dayjs(item?.modify_time).format("YYYY-MM-DD HH:mm:ss")
-                : "--"}
+              {item?.modify_time ? dayjs(item?.modify_time).format("YYYY-MM-DD HH:mm:ss") : "--"}
             </div>
           </div>
           <div className="trade-item-section bg-grey">
             <Tooltip
               color="#6f6e84"
-              title={
-                item.owner == nostrAccount
-                  ? "Trading your own orders is not supported"
-                  : ""
-              }
+              title={item.owner == nostrAccount ? "Trading your own orders is not supported" : ""}
             >
               <Button
                 type="primary"
@@ -301,10 +257,7 @@ export default function Listing({ refListing }) {
         </div>
       ))
     ) : (
-      <Empty
-        style={{ margin: "0 auto" }}
-        image={Empty.PRESENTED_IMAGE_SIMPLE}
-      />
+      <Empty style={{ margin: "0 auto" }} image={Empty.PRESENTED_IMAGE_SIMPLE} />
     );
   }, [handleBuyOrSellByMarket, list, nostrAccount, token, tokenList, type]);
   const filters = useMemo(() => {
@@ -314,8 +267,8 @@ export default function Listing({ refListing }) {
         form={form}
         initialValues={{
           type: "Buy",
-          token: getQueryVariable("token") || "ORDI",
-          sort: "Price From Low to High",
+          token: getQueryVariable("token"),
+          sort: "Price From Low to High"
         }}
       >
         <Form.Item label={t``} name="type" className="token-item">
@@ -332,7 +285,7 @@ export default function Listing({ refListing }) {
             fieldNames={{ label: "name", value: "name" }}
             style={{
               width: "100%",
-              minWidth: "140px",
+              minWidth: "140px"
             }}
           />
         </Form.Item>
@@ -343,7 +296,7 @@ export default function Listing({ refListing }) {
             onChange={sortChange}
             style={{
               width: "100%",
-              minWidth: "140px",
+              minWidth: "140px"
             }}
           />
         </Form.Item>
@@ -360,16 +313,15 @@ export default function Listing({ refListing }) {
         </Collapse>
       );
     }
-  }, [
-    onFinish,
-    form,
-    typeChange,
-    memoTokenList,
-    tokenChange,
-    sortOptions,
-    sortChange,
-    width,
-  ]);
+  }, [onFinish, form, typeChange, memoTokenList, tokenChange, sortOptions, sortChange, width]);
+
+  useEffect(() => {
+    const defaultTokenSelect = memoTokenList?.[0];
+    if (defaultTokenSelect) {
+      form.setFieldValue("token", defaultTokenSelect.name);
+      setToken(defaultTokenSelect.name);
+    }
+  }, [form, memoTokenList]);
 
   return (
     <>
@@ -412,12 +364,7 @@ export default function Listing({ refListing }) {
           )}
         </div>
         <div className="tc mt20">
-          <Pagination
-            current={pageIndex}
-            pageSize={pageSize}
-            total={total}
-            onChange={onPageChange}
-          />
+          <Pagination current={pageIndex} pageSize={pageSize} total={total} onChange={onPageChange} />
         </div>
       </div>
     </>
