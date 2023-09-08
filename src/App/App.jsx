@@ -19,7 +19,7 @@ import useAccountInit from "hooks/useAccountInit";
 import { Provider as GraphProvider } from "urql";
 import { client } from "config/graphqlClient";
 import { notification, message } from "antd";
-
+import useListenerAlbyAccountChange from "hooks/useListenerAlbyAccountChange";
 import { NostrProvider, useGlobalNostrAssetsEvent, useListenerRelayStatus } from "hooks/useNostrPool";
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -29,6 +29,7 @@ const GlobalHooks = () => {
   useAccountInit();
   useGlobalNostrAssetsEvent();
   useListenerRelayStatus();
+  useListenerAlbyAccountChange();
   return null;
 };
 const GlobalModalInit = () => {

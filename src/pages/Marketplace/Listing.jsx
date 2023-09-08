@@ -97,7 +97,6 @@ export default function Listing({ refListing }) {
   const memoTokenList = useMemo(() => {
     return tokenList.filter((tokenItem) => tokenItem.name !== "USDT") || [];
   }, [tokenList]);
-  console.log("🚀 ~ file: Listing.jsx:100 ~ memoTokenList ~ memoTokenList:", memoTokenList);
   const typeChange = useCallback(
     (e) => {
       //
