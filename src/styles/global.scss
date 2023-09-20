@@ -109,6 +109,9 @@ li {
 .color-light {
   color: var(--color-text-light) !important;
 }
+.color-base {
+  color: var(--color-text-base) !important;
+}
 .color-dark {
   color: var(--color-text-dark) !important;
 }
@@ -186,6 +189,30 @@ li {
 }
 .mb30 {
   margin-bottom: 30px;
+}
+.ml5 {
+  margin-left: 5px;
+}
+.ml10 {
+  margin-left: 10px;
+}
+.ml20 {
+  margin-left: 20px;
+}
+.ml30 {
+  margin-left: 30px;
+}
+.mr5 {
+  margin-right: 5px;
+}
+.mr10 {
+  margin-left: 10px;
+}
+.mr20 {
+  margin-left: 20px;
+}
+.mr30 {
+  margin-left: 30px;
 }
 .fw500 {
   font-weight: 500;

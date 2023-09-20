@@ -19,6 +19,7 @@ const Explore = lazy(() => import("pages/Explore/index"));
 const Account = lazy(() => import("pages/Account/index"));
 const Deposit = lazy(() => import("pages/Deposit/index"));
 const Withdraw = lazy(() => import("pages/Withdraw/index"));
+const ImportAssets = lazy(() => import("pages/ImportAssets/index"));
 const Transfer = lazy(() => import("pages/Transfer/index"));
 const Marketplace = lazy(() => import("pages/Marketplace/index"));
 const Faucet = lazy(() => import("pages/Testnet/ClaimTestToken"));
@@ -56,6 +57,9 @@ function Routes({ children }) {
               </Route>
               <Route exact path={["/send", "/send/:platform/:symbol"]}>
                 <Withdraw />
+              </Route>
+              <Route exact path={"/importAssets"}>
+                <ImportAssets />
               </Route>
               <Route exact path="/transfer">
                 <Transfer />

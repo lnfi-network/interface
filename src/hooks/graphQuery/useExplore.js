@@ -625,3 +625,65 @@ export const useTokenChangeQuery = ({ pageSize = 20, pageIndex = 1 }) => {
     reexcuteQuery
   };
 };
+export const useImportAssetsQuery = ({ pageSize = 20, pageIndex = 1, assetId }) => {
+  const tableName = `${GRAPH_BASE}nostr_universe_assets`;
+  const limit = useMemo(() => {
+    return pageSize;
+  }, [pageSize]);
+  const offset = useMemo(() => {
+    return (pageIndex - 1) * pageSize;
+  }, [pageIndex, pageSize]);
+  let whereMemo = useMemo(() => {
+    let where = "{";
+    // 0: "Token"   1: "NFT"
+    where += `asset_type:{_eq: "0"} `;
+    if (assetId) {
+      where += `_or:[{ asset_id: {_regex: "${assetId}"} }, { asset_name: {_regex: "${assetId}"} }] `;
+    }
+
+    where += "}";
+    return where;
+  }, [assetId]);
+  let queryGraphsql = useMemo(() => {
+    return gql`
+    query($offset: Int!, $limit: Int!){
+      ${tableName}(limit:$limit,offset:$offset,where:${whereMemo}) {
+        asset_id
+        asset_name
+        asset_type
+        genesis_height
+        group_key
+        total_proofs
+        total_supply
+        total_syncs
+      }
+      ${tableName}_aggregate(where:${whereMemo}){
+        aggregate {
+          count
+        }
+      }
+    }
+  `;
+  }, [tableName, whereMemo]);
+  const [result, reexcuteQuery] = useQuery({
+    query: queryGraphsql,
+    // pause: !token,
+    // pollInterval: 2000,
+    variables: {
+      offset,
+      limit
+    }
+  });
+
+  const { data, fetching } = result;
+
+  const list = data ? data[tableName] : [];
+  const total = data ? data[`${tableName}_aggregate`]?.aggregate?.count : 0;
+
+  return {
+    list,
+    total,
+    fetching,
+    reexcuteQuery
+  };
+};

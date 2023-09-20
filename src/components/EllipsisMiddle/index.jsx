@@ -7,11 +7,11 @@ const EllipsisMiddle = ({
   suffixCountMore = 2,
   suffixEnable = true,
 }) => {
-  const formatChildren = suffixEnable
+  const formatChildren = suffixEnable && (children?.length > suffixCount * 2 + suffixCountMore)
     ? `${children.substring(
-        0,
-        suffixCount + suffixCountMore
-      )}...${children.substring(children.length - suffixCount)}`
+      0,
+      suffixCount + suffixCountMore
+    )}...${children.substring(children.length - suffixCount)}`
     : children;
   return (
     <Text
@@ -21,8 +21,8 @@ const EllipsisMiddle = ({
       copyable={
         copyable
           ? {
-              text: children,
-            }
+            text: children,
+          }
           : false
       }
     >

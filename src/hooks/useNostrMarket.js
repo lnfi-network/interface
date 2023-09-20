@@ -5,13 +5,13 @@ import { useSelector, useDispatch } from "react-redux";
 import { setTokenList, setResponseTime } from "store/reducer/marketReducer";
 import { setBalanceList, setProMode } from "store/reducer/userReducer";
 import { getPublicKey, nip19 } from "nostr-tools";
-import { useDebounceEffect } from 'ahooks'
+import { useDebounceEffect } from "ahooks";
 import { getLocalRobotPrivateKey } from "lib/utils/index";
 import useWebln from "./useWebln";
 import * as Lockr from "lockr";
 
-const NOSTAR_TOKEN_SEND_TO = process.env.REACT_APP_NOSTR_TOKEN_SEND_TO
-const NOSTR_MARKET_SEND_TO = process.env.REACT_APP_NOSTR_MARKET_SEND_TO
+const NOSTAR_TOKEN_SEND_TO = process.env.REACT_APP_NOSTR_TOKEN_SEND_TO;
+const NOSTR_MARKET_SEND_TO = process.env.REACT_APP_NOSTR_MARKET_SEND_TO;
 //const NOSTR_CLAIMPPOINTS_SEND_TO = nip19.decode(process.env.REACT_APP_NOSTR_CLAIMPPOINTS_SEND_TO).data;
 const LOCAL_ROBOT_ADDR = nip19.npubEncode(getPublicKey(getLocalRobotPrivateKey()));
 export const useQueryNonce = () => {
@@ -36,9 +36,9 @@ export const useQueryNonce = () => {
   };
 };
 export const useQueryTokenList = () => {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const { execQueryNostrAsync } = useNostrPool();
-  const hasRelayConnected = useSelector(({ relay }) => relay.hasRelayConnected)
+  const hasRelayConnected = useSelector(({ relay }) => relay.hasRelayConnected);
   const handleQueryTokenList = useCallback(async () => {
     const queryCommand = `token list`;
     const ret = await execQueryNostrAsync({
@@ -58,14 +58,38 @@ export const useQueryTokenList = () => {
   useDebounceEffect(
     () => {
       if (hasRelayConnected) {
-        handleQueryTokenList()
+        handleQueryTokenList();
       }
     },
     [handleQueryTokenList],
     {
       wait: 200
     }
-  )
+  );
+  return {
+    handleQueryTokenList
+  };
+};
+export const useHandleQueryTokenList = () => {
+  const dispatch = useDispatch();
+  const { execQueryNostrAsync } = useNostrPool();
+  // const hasRelayConnected = useSelector(({ relay }) => relay.hasRelayConnected);
+  const handleQueryTokenList = useCallback(async () => {
+    const queryCommand = `token list`;
+    const ret = await execQueryNostrAsync({
+      queryCommand,
+      sendToNostrAddress: NOSTAR_TOKEN_SEND_TO
+    });
+    if (ret?.result?.code === 0) {
+      const data = ret.result.data;
+      dispatch(setTokenList(data));
+      Lockr.set("tokenList", data);
+    } else {
+      const localTokenList = Lockr.get("tokenList") || [];
+      dispatch(setTokenList(localTokenList));
+    }
+    return ret?.result;
+  }, [dispatch, execQueryNostrAsync]);
   return {
     handleQueryTokenList
   };
@@ -160,7 +184,7 @@ export const useSendListOrder = () => {
       const ret = await execQueryNostrAsync({
         queryCommand,
         sendToNostrAddress: NOSTR_MARKET_SEND_TO,
-        isUseLocalRobotToSend: false,
+        isUseLocalRobotToSend: false
       });
 
       return ret?.result;
@@ -199,7 +223,7 @@ export const useTransfer = () => {
       const ret = await execQueryNostrAsync({
         queryCommand,
         sendToNostrAddress: NOSTAR_TOKEN_SEND_TO,
-        isUseLocalRobotToSend: false,
+        isUseLocalRobotToSend: false
       });
 
       return ret?.result;
@@ -284,7 +308,6 @@ export const useQueryClaimTestnetTokens = () => {
   };
 };
 export const useQueryClaimPoints = () => {
-
   const { execQueryNostrAsync } = useNostrPool();
   // const { handleQueryNonce } = useQueryNonce(NOSTR_CLAIMPPOINTS_SEND_TO);
   const handleClaimPoints = useCallback(
@@ -405,7 +428,6 @@ export const useNostrPing = () => {
   ]);
 }; */
 export const useWithdraw = () => {
-
   const { execQueryNostrAsync } = useNostrPool();
   const handleWithdrawAsync = useCallback(
     async (amount, symbol, receiver) => {
@@ -464,7 +486,6 @@ export const useWeblnWithdraw = () => {
 };
 
 export const useTaprootDeposit = () => {
-
   const { execQueryNostrAsync } = useNostrPool();
   const handleGetTaprootDepositInvoice = useCallback(
     async (amount = 1, to, tokenName) => {
@@ -555,5 +576,26 @@ export const useMode = () => {
   return {
     handleQueryMode,
     handleChangeMode
+  };
+};
+export const useImportAsset = () => {
+  const { execQueryNostrAsync } = useNostrPool();
+  const handleImportAsset = useCallback(
+    async ({ id, universe }) => {
+      const queryCommand = universe
+        ? `tapcli sync asset id ${id} from universe ${universe}`
+        : `tapcli import asset id ${id}`;
+      console.log("queryCommand", queryCommand);
+      const ret = await execQueryNostrAsync({
+        queryCommand,
+        isUseLocalRobotToSend: false,
+        sendToNostrAddress: NOSTAR_TOKEN_SEND_TO
+      });
+      return ret?.result;
+    },
+    [execQueryNostrAsync]
+  );
+  return {
+    handleImportAsset
   };
 };

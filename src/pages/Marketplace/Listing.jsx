@@ -215,11 +215,11 @@ export default function Listing({ refListing }) {
             <div className="trade-item-value">
               {item?.total_price && row && curToken
                 ? numberWithCommas(
-                    limitDecimals(
-                      BigNumber(item?.total_price).div(curToken?.decimals).div(row?.decimals).toNumber(),
-                      row?.reserve
-                    )
+                  limitDecimals(
+                    BigNumber(item?.total_price).div(curToken?.decimals).div(row?.decimals).toNumber(),
+                    row?.reserve
                   )
+                )
                 : "--"}{" "}
               USDT
             </div>
@@ -332,25 +332,6 @@ export default function Listing({ refListing }) {
         />
       )}
       <div className="marketplace-listing">
-        {/* <div className="marketplace-listing-btn">
-          {type == "Buy" ? (
-            <Button
-              className="buy-list-btn"
-              type="primary"
-              onClick={handleList}
-            >
-              {t`Make New Listing`}
-            </Button>
-          ) : (
-            <Button
-              className="buy-list-btn-sell"
-              type="primary"
-              onClick={handleList}
-            >
-              {t`Make New Listing`}
-            </Button>
-          )}
-        </div> */}
         <div className="marketplace-filters listing">{filters}</div>
         <div className="trade-list">
           {fetching && !timer ? (

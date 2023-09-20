@@ -351,9 +351,12 @@ function Account() {
                     <Button
                       type="primary"
                       icon={<AssetSvg width={26} height={26} />}
-                      onClick={() => message.info("Coming soon")}
+                      // onClick={() => message.info("Coming soon")}
+                      onClick={() => {
+                        onHandleRedirect("importAssets");
+                      }}
                     >
-                      {t`Mint Asset`}
+                      {t`Import Assets`}
                     </Button>
                   </>
                 ) : (
@@ -376,7 +379,7 @@ function Account() {
                       }}
                     >{t`Send`}</Button>
                     <Button type="primary" size="small" onClick={() => message.info("Coming soon")}>
-                      {t`Mint`}
+                      {t`Import`}
                     </Button>
                   </>
                 )}
