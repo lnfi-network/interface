@@ -2,7 +2,7 @@
   background: transparent;
   // padding: 0.5rem 1.4rem;
   height: 36px;
-  margin-left: 2.4rem;
+  /* margin-left: 2.4rem; */
   display: inline-flex;
   align-items: center;
   border: none;
@@ -16,8 +16,8 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width:18px;
-    height:18px;
+    width: 18px;
+    height: 18px;
   }
   .btn-label {
     font-weight: 400;
@@ -32,5 +32,3 @@
     background: var(--dark-blue-active);
   }
 }
-
-

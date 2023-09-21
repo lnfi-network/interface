@@ -5,7 +5,7 @@ import { t } from "@lingui/macro";
 import { useSelector } from "react-redux";
 import { nip19 } from "nostr-tools";
 import EllipsisMiddle from "components/EllipsisMiddle";
-import AppNostrHeaderUser from "components/Header/AppNostrHeaderUser";
+/* import AppNostrHeaderUser from "components/Header/AppNostrHeaderUser"; */
 import Transfer from "./comps/Transfer";
 import AddressBook from "./comps/AddressBook";
 import avatar from "img/avatar.png";
@@ -24,6 +24,7 @@ import { ReactComponent as AssetSvg } from "img/Asset.svg";
 import { ReloadOutlined } from "@ant-design/icons";
 import ConnectNostr from "components/Common/ConnectNostr";
 import CheckNostrButton from "components/CheckNostrButton";
+import useDevice from "hooks/useDevice";
 const ASSET_PLAT_MAP = {
   ETHEREUM: "ETH",
   BRC20: "BTC",
@@ -32,6 +33,7 @@ const ASSET_PLAT_MAP = {
 };
 function Account() {
   const { width } = useSize(document.querySelector("body"));
+  const device = useDevice();
   const [isTransferShow, setIsTransferShow] = useState(false);
   const [isAddressBookShow, setIsAddressBookShow] = useState(false);
   const [detail, setDetail] = useState(null);
@@ -355,7 +357,10 @@ function Account() {
               </CheckNostrButton>
             </div>
             <div className="account-tokenList-title-right">
-              Universe Host: <EllipsisMiddle suffixEnable={false}>tabd.nostrassets.com:10029 </EllipsisMiddle>
+              Universe Host:{" "}
+              <EllipsisMiddle suffixCount={6} suffixEnable={device.isMobile ? true : false}>
+                tapd.nostrassets.com:10029
+              </EllipsisMiddle>
             </div>
           </div>
           <div className="account-tokenList-actions">

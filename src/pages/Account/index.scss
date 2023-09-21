@@ -223,8 +223,9 @@
       .account-tokenList-title {
         // margin-top: 30px;
         display: flex;
-        flex-direction: column;
+        justify-content: space-between;
         &-left {
+          width: 130px;
           padding: 0;
           font-size: 18px;
           font-weight: bold;
@@ -235,7 +236,10 @@
           }
         }
         &-right {
-          padding-left: 0;
+          flex: 1;
+          padding-left: 10px;
+          padding-right: 0;
+          font-size: 12px;
         }
       }
       .account-tokenList-actions {
@@ -280,15 +284,15 @@
   }
 
   .account-nologin {
-    padding: 40px 10px;
+    padding: 20px 10px 0;
     .account-nologin-content {
-      padding: 50px 20px;
+      padding: 20px 20px;
       .account-nologin-content-text {
         font-size: 14px;
         line-height: 20px;
       }
       .account-nologin-content-text + .account-nologin-content-text {
-        margin-top: 15px;
+        margin-top: 10px;
       }
     }
   }
