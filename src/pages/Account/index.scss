@@ -85,7 +85,7 @@
       }
 
       &__reload {
-        padding-left: 10px;
+        padding-left: 0px;
         color: var(--color-green-light);
         cursor: pointer;
         font-size: 16px;
@@ -226,7 +226,7 @@
         display: flex;
         justify-content: space-between;
         &-left {
-          width: 120px;
+          width: 100px;
           padding: 0;
           font-size: 18px;
           font-weight: bold;
@@ -238,7 +238,7 @@
           }
         }
         &__reload {
-          padding-left: 5px;
+          padding-left: 0px;
         }
         &-right {
           flex: 1;

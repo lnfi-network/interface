@@ -350,21 +350,23 @@ function Account() {
             <div className="account-tokenList-title-left">
               <img src={asset} alt="" />
               <span>{t`Assets`}</span>
+            </div>
+            <div className="account-tokenList-title-right">
+              Universe Host:{" "}
+              <EllipsisMiddle suffixCount={8} suffixEnable={device.isMobile ? true : false}>
+                tapd.nostrassets.com:10029
+              </EllipsisMiddle>
+            </div>
+          </div>
+          <div className="account-tokenList-actions">
+            <div className="account-tokenList-total">
+              ${totalUsd}{" "}
               <CheckNostrButton>
                 <span className="account-tokenList-title__reload" onClick={handleReloadBalance}>
                   <ReloadOutlined />
                 </span>
               </CheckNostrButton>
             </div>
-            <div className="account-tokenList-title-right">
-              Universe Host:{" "}
-              <EllipsisMiddle suffixCount={6} suffixEnable={device.isMobile ? true : false}>
-                tapd.nostrassets.com:10029
-              </EllipsisMiddle>
-            </div>
-          </div>
-          <div className="account-tokenList-actions">
-            <div className="account-tokenList-total">${totalUsd}</div>
             <div className="account-tokenList-actions-btns">
               {width > 768 ? (
                 <>
