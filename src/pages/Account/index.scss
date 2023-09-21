@@ -81,6 +81,7 @@
       }
       &-right {
         padding-right: 20px;
+        font-size: 12px;
       }
 
       &__reload {
@@ -225,15 +226,19 @@
         display: flex;
         justify-content: space-between;
         &-left {
-          width: 130px;
+          width: 120px;
           padding: 0;
           font-size: 18px;
           font-weight: bold;
           color: #fff;
+
           img {
             width: 24px;
             margin-right: 10px;
           }
+        }
+        &__reload {
+          padding-left: 5px;
         }
         &-right {
           flex: 1;
