@@ -67,14 +67,22 @@
     background: var(--color-layer-light);
     .account-tokenList-title {
       // margin-top: 30px;
-      padding: 0 20px;
-      font-size: 20px;
-      font-weight: bold;
-      color: #fff;
-      img {
-        width: 24px;
-        margin-right: 10px;
+      display: flex;
+      justify-content: space-between;
+      &-left {
+        padding: 0 20px;
+        font-size: 20px;
+        font-weight: bold;
+        color: #fff;
+        img {
+          width: 24px;
+          margin-right: 10px;
+        }
       }
+      &-right {
+        padding-right: 20px;
+      }
+
       &__reload {
         padding-left: 10px;
         color: var(--color-green-light);
@@ -129,30 +137,23 @@
 }
 .account-nologin {
   // padding-top: 100px;
-  padding: 100px 10px 0;
-  .account-nologin-title {
-    font-size: 26px;
-    font-weight: bold;
-    color: #fff;
-    width: 1000px;
-    margin: 0 auto;
-  }
+  margin: 0 auto;
+  padding: 20px 20px 0;
+  width: 100%;
+  max-width: 1200px;
   .account-nologin-content {
-    width: 1000px;
-    max-width: 100%;
-    margin: 20px auto 0;
-    padding: 100px;
+    padding: 20px 0;
     text-align: center;
     background: var(--color-layer-light);
     border-radius: 15px;
     .account-nologin-content-text {
       font-size: 17px;
     }
-    .account-nologin-content-text +.account-nologin-content-text {
-      margin-top: 30px;
+    .account-nologin-content-text + .account-nologin-content-text {
+      margin-top: 10px;
     }
     .account-nologin-content-btns {
-      margin-top: 40px;
+      margin-top: 20px;
       display: flex;
       justify-content: center;
       .account-nologin-content-btns-deposit {
@@ -221,13 +222,20 @@
       border-radius: 10px;
       .account-tokenList-title {
         // margin-top: 30px;
-        padding: 0 20px;
-        font-size: 18px;
-        font-weight: bold;
-        color: #fff;
-        img {
-          width: 24px;
-          margin-right: 10px;
+        display: flex;
+        flex-direction: column;
+        &-left {
+          padding: 0;
+          font-size: 18px;
+          font-weight: bold;
+          color: #fff;
+          img {
+            width: 24px;
+            margin-right: 10px;
+          }
+        }
+        &-right {
+          padding-left: 0;
         }
       }
       .account-tokenList-actions {
@@ -279,7 +287,7 @@
         font-size: 14px;
         line-height: 20px;
       }
-      .account-nologin-content-text + .account-nologin-content-text{
+      .account-nologin-content-text + .account-nologin-content-text {
         margin-top: 15px;
       }
     }

@@ -3,12 +3,8 @@ import React, { useState, useEffect, useCallback, lazy, Suspense, memo, useMemo 
 import PageNotFound from "pages/PageNotFound/PageNotFound";
 
 import { Header } from "components/Header/Header";
-import Footer from "components/Footer/Footer";
-
 import WalletConnectModal from "components/Modals/WalletConnectModal";
-
 import { Switch, Route, HashRouter as Router, Redirect } from "react-router-dom";
-
 import ConnectNostrOnTPModal from "components/Modals/ConnectNostrOnTPModal";
 import ConnectNostrModal from "components/Modals/ConnectNostrModal";
 import TurnOnNostrDrawer from "components/Modals/TurnOnNostrDrawer";

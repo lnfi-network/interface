@@ -23,6 +23,7 @@ import { ReactComponent as SendSvg } from "img/Send.svg";
 import { ReactComponent as AssetSvg } from "img/Asset.svg";
 import { ReloadOutlined } from "@ant-design/icons";
 import ConnectNostr from "components/Common/ConnectNostr";
+import CheckNostrButton from "components/CheckNostrButton";
 const ASSET_PLAT_MAP = {
   ETHEREUM: "ETH",
   BRC20: "BTC",
@@ -56,6 +57,9 @@ function Account() {
   }, [handleQueryBalance, npubNostrAccount]);
   const totalUsd = useMemo(() => {
     let total = 0;
+    if (!nostrAccount) {
+      return "--";
+    }
     if (tokenList?.length) {
       list.forEach((item) => {
         const row = tokenList.find((k) => k?.name == item?.name);
@@ -67,9 +71,8 @@ function Account() {
         }
       });
     }
-
     return total ? numberWithCommas(limitDecimals(total, 2)) : "0.00";
-  }, [balanceList, list, tokenList, usdtDetail?.decimals]);
+  }, [balanceList, list, nostrAccount, tokenList, usdtDetail?.decimals]);
   const transferShow = useCallback((row) => {
     setDetail(row);
     setIsTransferShow(true);
@@ -128,11 +131,11 @@ function Account() {
             const priceDetail = list.find((item) => item?.name == text);
             return priceDetail?.deal_price && usdtDetail
               ? `$${numberWithCommas(
-                limitDecimals(
-                  BigNumber(priceDetail.deal_price).div(usdtDetail?.decimals).div(row?.decimals).toNumber(),
-                  2
-                )
-              )}`
+                  limitDecimals(
+                    BigNumber(priceDetail.deal_price).div(usdtDetail?.decimals).div(row?.decimals).toNumber(),
+                    2
+                  )
+                )}`
               : "--";
           }
         },
@@ -150,6 +153,9 @@ function Account() {
           dataIndex: "name",
           width: "140px",
           render: (text, row) => {
+            if (!nostrAccount) {
+              return "--";
+            }
             const balance = balanceList?.[text]?.balanceShow || 0;
             if (text == "USDT") {
               return `$${numberWithCommas(limitDecimals(balance, 2))}`;
@@ -157,15 +163,15 @@ function Account() {
             const priceDetail = list.find((item) => item?.name == text);
             return priceDetail?.deal_price && usdtDetail
               ? `$${numberWithCommas(
-                limitDecimals(
-                  BigNumber(priceDetail.deal_price)
-                    .div(usdtDetail?.decimals)
-                    .div(row?.decimals)
-                    .times(balance)
-                    .toNumber(),
-                  2
-                )
-              )}`
+                  limitDecimals(
+                    BigNumber(priceDetail.deal_price)
+                      .div(usdtDetail?.decimals)
+                      .div(row?.decimals)
+                      .times(balance)
+                      .toNumber(),
+                    2
+                  )
+                )}`
               : "--";
           }
         },
@@ -176,32 +182,35 @@ function Account() {
           render: (text, row) => {
             return (
               <div className="account-table-btns">
-                <Button
-                  type="primary"
-                  size="small"
-                  onClick={() => {
-                    const platform = ASSET_PLAT_MAP[row.assetType];
-                    onHandleRedirect(`receive/${platform}/${row?.name}`);
-                  }}
-                >
-                  {t`Receive`}
-                </Button>
-                <Button
-                  type="primary"
-                  size="small"
-                  // onClick={() => {
-                  //   message.info("Coming soon.")
-                  // }}
-                  onClick={() => {
-                    const platform = ASSET_PLAT_MAP[row.assetType];
-                    onHandleRedirect(`send/${platform}/${row?.name}`);
-                  }}
-                >
-                  {t`Send`}
-                </Button>
-                <Button type="primary" size="small" onClick={() => transferShow(row)}>
-                  {t`Transfer`}
-                </Button>
+                <CheckNostrButton>
+                  <Button
+                    type="primary"
+                    size="small"
+                    onClick={() => {
+                      const platform = ASSET_PLAT_MAP[row.assetType];
+                      onHandleRedirect(`receive/${platform}/${row?.name}`);
+                    }}
+                  >
+                    {t`Receive`}
+                  </Button>
+                </CheckNostrButton>
+                <CheckNostrButton>
+                  <Button
+                    type="primary"
+                    size="small"
+                    onClick={() => {
+                      const platform = ASSET_PLAT_MAP[row.assetType];
+                      onHandleRedirect(`send/${platform}/${row?.name}`);
+                    }}
+                  >
+                    {t`Send`}
+                  </Button>
+                </CheckNostrButton>
+                <CheckNostrButton>
+                  <Button type="primary" size="small" onClick={() => transferShow(row)}>
+                    {t`Transfer`}
+                  </Button>
+                </CheckNostrButton>
               </div>
             );
           }
@@ -255,24 +264,29 @@ function Account() {
             const balance = balanceList?.[text]?.balanceShow || 0;
             const amount = balance ? numberWithCommas(balance) : "--";
             let usdValue = "";
-            if (text == "USDT") {
-              usdValue = `$${numberWithCommas(limitDecimals(balance, 2))}`;
+            if (nostrAccount) {
+              if (text == "USDT") {
+                usdValue = `$${numberWithCommas(limitDecimals(balance, 2))}`;
+              } else {
+                const priceDetail = list.find((item) => item?.name == text);
+                usdValue =
+                  priceDetail?.deal_price && usdtDetail
+                    ? `$${numberWithCommas(
+                        limitDecimals(
+                          BigNumber(priceDetail.deal_price)
+                            .div(usdtDetail?.decimals)
+                            .div(row?.decimals)
+                            .times(balance)
+                            .toNumber(),
+                          2
+                        )
+                      )}`
+                    : "--";
+              }
             } else {
-              const priceDetail = list.find((item) => item?.name == text);
-              usdValue =
-                priceDetail?.deal_price && usdtDetail
-                  ? `$${numberWithCommas(
-                    limitDecimals(
-                      BigNumber(priceDetail.deal_price)
-                        .div(usdtDetail?.decimals)
-                        .div(row?.decimals)
-                        .times(balance)
-                        .toNumber(),
-                      2
-                    )
-                  )}`
-                  : "--";
+              usdValue = "--";
             }
+
             return (
               <div>
                 <div>{amount}</div>
@@ -283,11 +297,25 @@ function Account() {
         }
       ];
     }
-  }, [balanceList, list, onHandleRedirect, transferShow, usdtDetail, width]);
+  }, [balanceList, list, nostrAccount, onHandleRedirect, transferShow, usdtDetail, width]);
   return (
     <>
-      {nostrAccount ? (
-        <div className="account">
+      {!nostrAccount && (
+        <div className="account-nologin">
+          <div className="account-nologin-content">
+            <div className="account-nologin-content-text">
+              {t`The first asset management platform built on Nostr Protocol. Efficient, Gasless and Safe.`}
+            </div>
+            <div className="account-nologin-content-text">{t`Connect Nostr now to manage your assets.`}</div>
+            <div className="account-nologin-content-btns">
+              <ConnectNostr />
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className="account">
+        {!!nostrAccount && (
           <div className="account-head">
             <div className="account-head-left">
               <div className="account-head-left-logo">
@@ -313,20 +341,29 @@ function Account() {
               </div>
             </div>
           </div>
+        )}
 
-          <div className="account-table-box">
-            <div className="account-tokenList-title">
+        <div className="account-table-box">
+          <div className="account-tokenList-title">
+            <div className="account-tokenList-title-left">
               <img src={asset} alt="" />
               <span>{t`Assets`}</span>
-              <span className="account-tokenList-title__reload" onClick={handleReloadBalance}>
-                <ReloadOutlined />
-              </span>
+              <CheckNostrButton>
+                <span className="account-tokenList-title__reload" onClick={handleReloadBalance}>
+                  <ReloadOutlined />
+                </span>
+              </CheckNostrButton>
             </div>
-            <div className="account-tokenList-actions">
-              <div className="account-tokenList-total">${totalUsd}</div>
-              <div className="account-tokenList-actions-btns">
-                {width > 768 ? (
-                  <>
+            <div className="account-tokenList-title-right">
+              Universe Host: <EllipsisMiddle suffixEnable={false}>tabd.nostrassets.com:10029 </EllipsisMiddle>
+            </div>
+          </div>
+          <div className="account-tokenList-actions">
+            <div className="account-tokenList-total">${totalUsd}</div>
+            <div className="account-tokenList-actions-btns">
+              {width > 768 ? (
+                <>
+                  <CheckNostrButton>
                     <Button
                       type="primary"
                       icon={<TransferSvg width={22} height={22} />}
@@ -334,6 +371,8 @@ function Account() {
                     >
                       {t`Nostr Assets Transfer`}
                     </Button>
+                  </CheckNostrButton>
+                  <CheckNostrButton>
                     <Button
                       type="primary"
                       icon={<ReceiveSvg width={26} color="#fff" height={26} />}
@@ -341,6 +380,8 @@ function Account() {
                         onHandleRedirect("receive");
                       }}
                     >{t`Receive Assets`}</Button>
+                  </CheckNostrButton>
+                  <CheckNostrButton>
                     <Button
                       type="primary"
                       icon={<SendSvg width={26} height={26} />}
@@ -348,6 +389,8 @@ function Account() {
                         onHandleRedirect("send");
                       }}
                     >{t`Send Assets`}</Button>
+                  </CheckNostrButton>
+                  <CheckNostrButton>
                     <Button
                       type="primary"
                       icon={<AssetSvg width={26} height={26} />}
@@ -358,12 +401,16 @@ function Account() {
                     >
                       {t`Import Assets`}
                     </Button>
-                  </>
-                ) : (
-                  <>
+                  </CheckNostrButton>
+                </>
+              ) : (
+                <>
+                  <CheckNostrButton>
                     <Button type="primary" size="small" onClick={() => transferShow(null)}>
                       {t`Transfer`}
                     </Button>
+                  </CheckNostrButton>
+                  <CheckNostrButton>
                     <Button
                       type="primary"
                       size="small"
@@ -371,6 +418,8 @@ function Account() {
                         onHandleRedirect("receive");
                       }}
                     >{t`Receive`}</Button>
+                  </CheckNostrButton>
+                  <CheckNostrButton>
                     <Button
                       type="primary"
                       size="small"
@@ -378,51 +427,32 @@ function Account() {
                         onHandleRedirect("send");
                       }}
                     >{t`Send`}</Button>
+                  </CheckNostrButton>
+                  <CheckNostrButton>
                     <Button type="primary" size="small" onClick={() => message.info("Coming soon")}>
                       {t`Import`}
                     </Button>
-                  </>
-                )}
-              </div>
-            </div>
-            <Spin spinning={reloading}>
-              <Table
-                className="table-light"
-                loading={!tokenList.length}
-                // sticky
-                showSorterTooltip={false}
-                rowKey="name"
-                columns={tokenList.length > 0 ? columns : []}
-                dataSource={tokenList || []}
-                pagination={false}
-              />
-            </Spin>
-          </div>
-          <Transfer isTransferShow={isTransferShow} setIsTransferShow={setIsTransferShow} detail={detail}></Transfer>
-          <AddressBook isAddressBookShow={isAddressBookShow} setIsAddressBookShow={setIsAddressBookShow}></AddressBook>
-        </div>
-      ) : (
-        <div className="account-nologin">
-          <div className="account-nologin-title">{t`Welcome to Nostr`}</div>
-          <div className="account-nologin-content">
-            <div className="account-nologin-content-text">
-              {t`The first asset management platform built on Nostr Protocol. Efficient, Gasless and Safe.`}
-            </div>
-            <div className="account-nologin-content-text">
-              {t`Connect Nostr now to manage your assets.`}
-            </div>
-            <div className="account-nologin-content-btns">
-              {/* <Button
-                className="account-nologin-content-btns-deposit"
-                onClick={() => {
-                  onHandleRedirect("receive");
-                }}
-              >{t`Receive Assets`}</Button> */}
-              <ConnectNostr />
+                  </CheckNostrButton>
+                </>
+              )}
             </div>
           </div>
+          <Spin spinning={reloading}>
+            <Table
+              className="table-light"
+              loading={!tokenList.length}
+              // sticky
+              showSorterTooltip={false}
+              rowKey="name"
+              columns={tokenList.length > 0 ? columns : []}
+              dataSource={tokenList || []}
+              pagination={false}
+            />
+          </Spin>
         </div>
-      )}
+        <Transfer isTransferShow={isTransferShow} setIsTransferShow={setIsTransferShow} detail={detail}></Transfer>
+        <AddressBook isAddressBookShow={isAddressBookShow} setIsAddressBookShow={setIsAddressBookShow}></AddressBook>
+      </div>
     </>
   );
 }

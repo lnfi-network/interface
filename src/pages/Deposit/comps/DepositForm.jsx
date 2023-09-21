@@ -23,6 +23,7 @@ import { waitForTransaction } from "@wagmi/core";
 import { useParams } from "react-router-dom";
 import LightningFormItems from "./LightningFormItems";
 import TaprootFormItems from "./TaprootFormItems";
+import AlertTip from "components/AlertTip";
 const layout = {
   labelCol: {
     span: 7
@@ -542,6 +543,10 @@ The deposit will be deducted from the balance of you connected wallet account an
     <>
       {contextHolder}
       {notifiContextHolder}
+      <AlertTip
+        id="depositAlertTip"
+        description="Deposit assets from your Lightning wallet, Taproot wallet or other Nostr account to your currently connected Nostr account. The Lightning Network is currently using real assets, while Taproot is temporarily using test assets."
+      />
       <div className="deposit-form">
         <Form
           {...layout}
