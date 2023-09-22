@@ -39,12 +39,12 @@ const connectorItems = [
       shimDisconnect: true
     }
   }),
-  new WalletConnectConnector({
+  /* new WalletConnectConnector({
     chains,
     options: {
       projectId: "2dbfdce8f774975e4c47ca92870dba88"
     }
-  })
+  }) */
 ];
 
 const config = createConfig({

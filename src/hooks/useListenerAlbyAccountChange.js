@@ -1,28 +1,39 @@
 import { useSelector, useDispatch } from "react-redux"
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { initNostrAccount } from "store/reducer/userReducer";
 const useListenerAlbyAccountChange = () => {
   const dispatch = useDispatch()
-
+  const intervarRef = useRef(null)
   const albyAccountChange = useCallback(async () => {
     dispatch(initNostrAccount(''));
     const albyNostrAccount = await window.nostr.getPublicKey();
     dispatch(initNostrAccount(albyNostrAccount));
   }, [dispatch])
 
-
-  useEffect(() => {
-    setTimeout(() => {
+  const onListenerNostr = useCallback(async () => {
+    intervarRef.current = setTimeout(() => {
       if (window.nostr) {
-        window.nostr.on('accountChanged', albyAccountChange)
+        if (window.nostr.on) {
+          window.nostr?.on('accountChanged', albyAccountChange)
+        } else {
+          window.nostr?.getRelays();
+        }
+      } else {
+        console.log('trigger onListenerNostr again');
+        onListenerNostr();
       }
-    }, 1000)
+    }, 1000);
 
+  }, [albyAccountChange])
+  useEffect(() => {
+    onListenerNostr();
     return () => {
-      if (window.nostr) {
+      clearTimeout(intervarRef.current);
+      if (window.nostr?.off) {
         window.nostr.off('accountChanged', albyAccountChange)
       }
-    }
-  }, [albyAccountChange])
+    };
+
+  }, [albyAccountChange, onListenerNostr])
 }
 export default useListenerAlbyAccountChange
