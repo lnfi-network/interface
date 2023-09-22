@@ -19,6 +19,7 @@ import EllipsisMiddle from "components/EllipsisMiddle";
 import MarketDetail from "./comps/ExploreDetails/MarketDetail";
 import { useMarketQuery } from "hooks/graphQuery/useExplore";
 import { useSelector } from "react-redux";
+import { utcToClient } from "lib/dates"
 const initQuery = {
   type: "",
   token: "",
@@ -107,8 +108,7 @@ export default function MarketTransactions() {
         title: t`Time`,
         dataIndex: "create_time",
         // width: 120,
-        render: (text) =>
-          text ? dayjs(text).format("YYYY-MM-DD HH:mm:ss") : "--",
+        render: (text) => utcToClient(text)
       },
       {
         title: t`Type`,
