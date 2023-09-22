@@ -70,8 +70,26 @@ export default function TaprootFormItems({ form, nostrAccount, notifiApi, messag
   }, [device.isMobile, dispatch, form, handleGetTaprootDepositInvoice, messageApi]);
 
   const memoSubmitButton = useMemo(() => {
-    return nostrAccount ? <></> : <ConnectNostr />;
-  }, [nostrAccount]);
+    return nostrAccount ? (
+      <>
+        {!payInvoice && (
+          <Space>
+            <Button
+              type="primary"
+              size="large"
+              loading={btnLoading}
+              disabled={!nostrAccount}
+              onClick={handleCreateInvoice}
+            >
+              Create Invoice
+            </Button>
+          </Space>
+        )}
+      </>
+    ) : (
+      <ConnectNostr />
+    );
+  }, [btnLoading, handleCreateInvoice, nostrAccount, payInvoice]);
 
   const memoPaymentInvoice = useMemo(() => {
     return payInvoice ? (

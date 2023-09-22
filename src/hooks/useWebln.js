@@ -5,11 +5,8 @@ export default function useWebln() {
     if (!webln) {
       throw new Error("Webln is not available.")
     } else {
-      if (!webln.enabled) {
-        const enableRet = await webln.enable()
-        console.log("🚀 ~ file: useWebln.js:10 ~ checkWebln ~ enableRet:", enableRet)
-      }
-      return webln.enabled;
+      await webln.enable()
+
     }
   }, [])
   const detecWebLNProvider = useCallback(async (timeoutParam) => {
@@ -52,25 +49,24 @@ export default function useWebln() {
 
   const makeInvoice = useCallback(async (amount = 0, defaultMemo = "") => {
     const webln = await detecWebLNProvider();
-    const enabled = await checkWebln(webln);
-    if (enabled) {
-      const invoice = await webln.makeInvoice({
-        amount: amount,
-        defaultMemo
-      });
-      return invoice;
-    }
-    return null;
+    await checkWebln(webln);
+    const invoice = await webln.makeInvoice({
+      amount: amount,
+      defaultMemo
+    });
+    return invoice;
+
+
   }, [checkWebln, detecWebLNProvider])
 
   const sendPayment = useCallback(async (paymentRequest) => {
     const webln = await detecWebLNProvider();
-    const enabled = await checkWebln(webln);
-    if (enabled) {
-      const sendRet = await webln.sendPayment(paymentRequest);
-      return sendRet;
-    }
-    return null;
+    await checkWebln(webln);
+
+    const sendRet = await webln.sendPayment(paymentRequest);
+    return sendRet;
+
+
   }, [checkWebln, detecWebLNProvider])
 
   return {
