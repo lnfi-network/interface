@@ -87,6 +87,9 @@ export default function LightningFormItems({ form, nostrAccount, balance, messag
       return;
     }
     try {
+      if (!willCreateInvoiceAmount) {
+        throw new Error("The minimum quantity is 1.");
+      }
       const invoice = await makeInvoice(willCreateInvoiceAmount, npubNostrAccount);
       const willDecodeInvoice = invoice.paymentRequest || invoice;
       form.setFieldValue("invoice", willDecodeInvoice);
@@ -149,12 +152,16 @@ export default function LightningFormItems({ form, nostrAccount, balance, messag
     }
     form.setFieldValue("depositOrWithdrawToken", "SATS");
   }, [form, nostrAccount, tokens]);
+
+  const memoTitle = useMemo(() => {
+    return <div className="create-invoice-modal-title">Create Invoice</div>;
+  }, []);
   return (
     <>
       <Modal
         width={360}
         className="create-invoice-modal"
-        title="Create Invoice"
+        title={memoTitle}
         centered
         open={createInvoiceModal}
         footer={null}
@@ -167,6 +174,7 @@ export default function LightningFormItems({ form, nostrAccount, balance, messag
         <div className="create-invoice-modal-container">
           <label className="nostr-modal-label">Amount</label>
           <InputNumber
+            defaultValue={1}
             min={1}
             max={Number(balance)}
             precision={0}

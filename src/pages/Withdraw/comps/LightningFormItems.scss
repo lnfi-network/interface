@@ -1,4 +1,7 @@
 .create-invoice-modal {
+  &-title {
+    text-align: center;
+  }
   &-container {
     width: 100%;
     .nostr-modal-label {
