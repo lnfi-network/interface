@@ -15,16 +15,11 @@ import { setOnlyMobileSupportedVisible } from "store/reducer/modalReducer";
 import useDevice from "hooks/useDevice";
 import { useSelector } from "react-redux";
 import { nip19 } from "nostr-tools";
-export default function LightningFormItems({
-  form,
-  nostrAccount,
-  notifiApi,
-  messageApi,
-}) {
+export default function LightningFormItems({ form, nostrAccount, notifiApi, messageApi }) {
   const [btnLoading, setBtnLoading] = useState(false);
   const [payInvoice, setPaymentInvoice] = useState(null);
   const { tokenList } = useSelector(({ market }) => market);
-  const { handleQueryBalance } = useQueryBalance();
+  //const { handleQueryBalance } = useQueryBalance();
   const { handleGetWeblnDepositInvoice, sendPayment } = useWeblnDeposit();
   const dispatch = useDispatch();
   const device = useDevice();
@@ -44,28 +39,19 @@ export default function LightningFormItems({
     setPaymentInvoice(null);
     try {
       const values = form.getFieldsValue(true);
-      const createRet = await handleGetWeblnDepositInvoice(
-        values.amount,
-        values.depositOrWithdrawFormNostrAddress
-      );
+      const createRet = await handleGetWeblnDepositInvoice(values.amount, values.depositOrWithdrawFormNostrAddress);
       if (createRet.code !== 0) {
         throw new Error(createRet.msg);
       }
       setPaymentInvoice({ invoice: createRet.data, createTime: Date.now() });
     } catch (e) {
       messageApi.error({
-        content: e.message,
+        content: e.message
       });
     } finally {
       setBtnLoading(false);
     }
-  }, [
-    device.isMobile,
-    dispatch,
-    form,
-    handleGetWeblnDepositInvoice,
-    messageApi,
-  ]);
+  }, [device.isMobile, dispatch, form, handleGetWeblnDepositInvoice, messageApi]);
 
   const handleDirectPayInvoice = useCallback(async () => {
     if (device.isMobile) {
@@ -73,29 +59,23 @@ export default function LightningFormItems({
       return;
     }
     setBtnLoading(true);
-    const [payErr, _] = await to(sendPayment(payInvoice?.invoice));
-    if (payErr) {
-      messageApi.error({
-        content: payErr.message,
+    try {
+      const sendRet = await sendPayment(payInvoice?.invoice);
+      if (!sendRet) {
+        throw new Error("webln disabled.");
+      }
+      messageApi.success({
+        content: `Deposit Submit Successfully.`
       });
+      await sleep(4000);
+    } catch (e) {
+      messageApi.error({
+        content: e.message
+      });
+    } finally {
       setBtnLoading(false);
-      return;
     }
-    messageApi.success({
-      content: `Deposit Submit Successfully.`,
-    });
-    await sleep(4000);
-    await handleQueryBalance(nostrAccount);
-    setBtnLoading(false);
-  }, [
-    device.isMobile,
-    dispatch,
-    handleQueryBalance,
-    messageApi,
-    nostrAccount,
-    payInvoice?.invoice,
-    sendPayment,
-  ]);
+  }, [device.isMobile, dispatch, messageApi, payInvoice, sendPayment]);
   const memoSubmitButton = useMemo(() => {
     return nostrAccount ? (
       <>
@@ -122,20 +102,12 @@ export default function LightningFormItems({
     ) : (
       <ConnectNostr />
     );
-  }, [
-    btnLoading,
-    handleCreateInvoice,
-    handleDirectPayInvoice,
-    nostrAccount,
-    payInvoice,
-  ]);
+  }, [btnLoading, handleCreateInvoice, handleDirectPayInvoice, nostrAccount, payInvoice]);
 
   const memoPaymentInvoice = useMemo(() => {
     return payInvoice ? (
       <>
-        <span className="deposit-invoices-time">
-          {dayjs(payInvoice.createTime).format("YYYY-MM-DD HH:mm:ss")}
-        </span>
+        <span className="deposit-invoices-time">{dayjs(payInvoice.createTime).format("YYYY-MM-DD HH:mm:ss")}</span>
         <EllipsisMiddle suffixCount={20}>{payInvoice.invoice}</EllipsisMiddle>
       </>
     ) : (
@@ -166,7 +138,7 @@ export default function LightningFormItems({
       }
     },
     {
-      wait: 500,
+      wait: 500
     }
   );
   useEffect(() => {
@@ -184,29 +156,23 @@ export default function LightningFormItems({
         tooltip="The Nostr address is obtained from any Nostr clients (Damus,Amethyst,Iris etc.) or wallets that support the Nostr protocol. Please make sure to confirm that the Nostr address you are receiving asset is correct and securely store the private key associated with that address."
         rules={[
           {
-            required: true,
+            required: true
           },
           ({ getFieldValue }) => ({
             validator(_, value) {
               if (value) {
                 if (!/npub\w{59}/.test(value)) {
-                  return Promise.reject(
-                    new Error(t`Please input a valid Nostr address.`)
-                  );
+                  return Promise.reject(new Error(t`Please input a valid Nostr address.`));
                 }
                 nip19.decode(value).data;
                 return Promise.resolve();
               }
               return Promise.resolve();
-            },
-          }),
+            }
+          })
         ]}
       >
-        <Input
-          size="large"
-          style={{ maxWidth: "460px" }}
-          placeholder="Please input your nostr address"
-        />
+        <Input size="large" style={{ maxWidth: "460px" }} placeholder="Please input your nostr address" />
       </Form.Item>
       <Form.Item name="depositOrWithdrawToken" label="Receive Token">
         <Select
@@ -230,34 +196,21 @@ export default function LightningFormItems({
                   validator(_, value) {
                     if (Number.isNaN(Number(value))) {
                       form.setFieldValue("amount", "");
-                      return Promise.reject(
-                        new Error(`Please input receive amount.`)
-                      );
+                      return Promise.reject(new Error(`Please input receive amount.`));
                     }
                     if (Number(value) <= 0) {
-                      return Promise.reject(
-                        new Error(`Please input receive amount.`)
-                      );
+                      return Promise.reject(new Error(`Please input receive amount.`));
                     }
                     return Promise.resolve();
-                  },
-                }),
+                  }
+                })
               ]}
             >
-              <Input
-                placeholder="Please input your amount"
-                size="large"
-                onChange={handleAmountOnChange}
-              />
+              <Input placeholder="Please input your amount" size="large" onChange={handleAmountOnChange} />
             </Form.Item>
           </Col>
           <Col span={10}>
-            <Button
-              type="link"
-              loading={btnLoading}
-              onClick={handleCreateInvoice}
-              size="small"
-            >
+            <Button type="link" loading={btnLoading} onClick={handleCreateInvoice} size="small">
               Create New Invoice
             </Button>
           </Col>
@@ -265,9 +218,7 @@ export default function LightningFormItems({
       </Form.Item>
       {memoPaymentInvoice && (
         <div className="deposit-invoices">
-          <div className="deposit-invoices-title">
-            Generated invoices:(only show the last 1 invoice):
-          </div>
+          <div className="deposit-invoices-title">Generated invoices:(only show the last 1 invoice):</div>
           <div className="deposit-invoices-item">{memoPaymentInvoice}</div>
           {payInvoice?.invoice && (
             <Row className="deposit-invoices-qrcode" justify="center">
@@ -279,7 +230,7 @@ export default function LightningFormItems({
                 imageSettings={{
                   src: IconBtc,
                   width: 24,
-                  height: 24,
+                  height: 24
                 }}
               />
             </Row>

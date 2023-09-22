@@ -1,15 +1,13 @@
 import { useCallback } from "react";
-import { to } from 'await-to-js';
+
 export default function useWebln() {
   const checkWebln = useCallback(async (webln) => {
     if (!webln) {
       throw new Error("Webln is not available.")
     } else {
       if (!webln.enabled) {
-        const [err] = await to(webln.enable())
-        if (err) {
-          throw new Error(err.message);
-        }
+        const enableRet = await webln.enable()
+        console.log("🚀 ~ file: useWebln.js:10 ~ checkWebln ~ enableRet:", enableRet)
       }
       return webln.enabled;
     }
