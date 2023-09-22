@@ -207,8 +207,8 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
   const onPriceChange = useCallback(
     ({ target: { value } }) => {
       if (Number(value)) {
+        // let reg = new RegExp('/\d+\.?\d{0,' + selectedToken?.reserve || 4 + '}/')
         const match = value.match(/\d+\.?\d{0,4}/);
-        //
         form.setFieldValue("price", match[0]);
         setPriceValue(match[0]);
       } else if (value && !Number.isNaN(value) && Number(value) >= 0) {
@@ -225,16 +225,24 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
   const onAmountChange = useCallback(
     ({ target: { value } }) => {
       if (Number(value)) {
-        const match = value.match(/\d+\.?\d{0,4}/);
-        form.setFieldValue("amount", match[0]);
-        setAmountValue(match[0]);
+        let reg = new RegExp('\\d+\\.?\\d{0,' + (selectedToken?.reserve) + '}')
+        const match = value.match(reg);
+        console.log("match", match);
+        if (selectedToken?.reserve == 0) {
+          form.setFieldValue("amount", Math.floor(value));
+          setAmountValue(Math.floor(value));
+        } else {
+          form.setFieldValue("amount", match[0]);
+          setAmountValue(match[0]);
+        }
+
       } else if (value && !Number.isNaN(value) && Number(value) >= 0) {
         setAmountValue(value);
       } else {
         setAmountValue(0);
       }
     },
-    [form]
+    [form, selectedToken]
   );
   const onApprove = useCallback(async () => {
     if (Number(memoTotalValue) < 10) {
@@ -492,7 +500,9 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
                       if (!Number(value)) {
                         return Promise.reject(new Error(t`Invalid input format.`));
                       }
-
+                      // if (selectedToken?.reserve == 0 && !/^\d+$/.test(value)) {
+                      //   return Promise.reject(new Error(t`Invalid input format1.`));
+                      // }
                       if (Number(value) < selectedToken.volume) {
                         return Promise.reject(
                           new Error(`Minimum Qty is ${selectedToken.volume} ${selectedToken?.name}`)
