@@ -99,6 +99,7 @@ export const useQueryBalance = () => {
   const { execQueryNostrAsync } = useNostrPool();
   const handleQueryBalance = useCallback(
     async (nostrAddress = LOCAL_ROBOT_ADDR) => {
+      if (!nostrAddress) return;
       const queryCommand = `balance of ${nostrAddress}`;
       const ret = await execQueryNostrAsync({
         queryCommand,
