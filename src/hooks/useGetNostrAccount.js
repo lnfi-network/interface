@@ -23,9 +23,6 @@ export default function useGetNostrAccount() {
           description: (
             <span>
               {`Alby manages your Nostr keys, and you can use your key to sign it.`}
-              {/* <a className="nostr-swap-link__notice" href="https://getalby.com/#alby-extension" target="_blank">
-                {`Install now`}
-              </a> */}
               {isFirefox ? (
                 <a
                   className="nostr-swap-link__notice"
