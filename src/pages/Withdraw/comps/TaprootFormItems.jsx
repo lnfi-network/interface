@@ -11,14 +11,7 @@ import { useDispatch } from "react-redux";
 import { setOnlyMobileSupportedVisible } from "store/reducer/modalReducer";
 import useDevice from "hooks/useDevice";
 import { nip19 } from "nostr-tools";
-export default function TaprootFormItems({
-  form,
-  nostrAccount,
-  balance,
-  notifiApi,
-  messageApi,
-  handleQueryBalance,
-}) {
+export default function TaprootFormItems({ form, nostrAccount, balance, notifiApi, messageApi, handleQueryBalance }) {
   const { TextArea } = Input;
   const [btnLoading, setBtnLoading] = useState(false);
   const { handleTaprootWithdrawAsync } = useTaprootWithdraw();
@@ -41,13 +34,13 @@ export default function TaprootFormItems({
       }
       if (!withdrawAmount) {
         messageApi.error({
-          content: "The minimum withdrawal quantity is 1 TAPROOT.",
+          content: "The minimum withdrawal quantity is 1 TAPROOT."
         });
         return;
       }
       if (withdrawAmount > Number(balance)) {
         messageApi.error({
-          content: "Insfufficient balance.",
+          content: "Insfufficient balance."
         });
         return;
       }
@@ -55,21 +48,21 @@ export default function TaprootFormItems({
       const values = form.getFieldsValue(true);
       const withdrawRet = await handleTaprootWithdrawAsync(
         withdrawAmount,
-        values.invoice,
+        values.invoiceTap,
         values.depositOrWithdrawToken
       );
       if (withdrawRet?.code === 0) {
         await sleep(4000);
         await handleQueryBalance(npubNostrAccount);
         messageApi.success({
-          content: <p className="message-content">{withdrawRet.data}</p>,
+          content: <p className="message-content">{withdrawRet.data}</p>
         });
       } else {
         throw new Error(`Withdraw failed: ${withdrawRet?.data}`);
       }
     } catch (e) {
       messageApi.error({
-        content: e.message,
+        content: e.message
       });
     } finally {
       setBtnLoading(false);
@@ -83,7 +76,7 @@ export default function TaprootFormItems({
     handleTaprootWithdrawAsync,
     messageApi,
     npubNostrAccount,
-    withdrawAmount,
+    withdrawAmount
   ]);
   const tokens = useMemo(() => {
     return tokenList.filter((item) => item.assetType === "TAPROOT");
@@ -96,11 +89,7 @@ export default function TaprootFormItems({
     ));
   }, [tokens]);
   const memoWithdrawBalance = useMemo(() => {
-    return (
-      <span className="withdraw-amount-balance">
-        Nostr Account balance: {balance} TAPROOT
-      </span>
-    );
+    return <span className="withdraw-amount-balance">Nostr Account balance: {balance} TAPROOT</span>;
   }, [balance]);
   const memoWithdrawBtn = useMemo(() => {
     return nostrAccount ? (
@@ -141,7 +130,7 @@ export default function TaprootFormItems({
       }
     },
     {
-      wait: 500,
+      wait: 500
     }
   );
 
@@ -159,30 +148,23 @@ export default function TaprootFormItems({
         tooltip="The Nostr address is obtained from any Nostr clients (Damus,Amethyst,Iris etc.) or wallets that support the Nostr protocol. Please make sure to confirm that the Nostr address you are sending asset is correct and securely store the private key associated with that address."
         rules={[
           {
-            required: true,
+            required: true
           },
           () => ({
             validator(_, value) {
               if (value) {
                 if (!/npub\w{59}/.test(value)) {
-                  return Promise.reject(
-                    new Error(t`Please input a valid Nostr address.`)
-                  );
+                  return Promise.reject(new Error(t`Please input a valid Nostr address.`));
                 }
                 nip19.decode(value).data;
                 return Promise.resolve();
               }
               return Promise.resolve();
-            },
-          }),
+            }
+          })
         ]}
       >
-        <Input
-          readOnly
-          size="large"
-          style={{ maxWidth: "460px" }}
-          placeholder="Please input your nostr address"
-        />
+        <Input readOnly size="large" style={{ maxWidth: "460px" }} placeholder="Please input your nostr address" />
       </Form.Item>
       <Form.Item name="depositOrWithdrawToken" label="Send Token">
         <Select
@@ -198,26 +180,24 @@ export default function TaprootFormItems({
         <Row className="withdraw-amount-row" align="middle">
           <Col span={24}>
             <Form.Item
-              name="invoice"
+              name="invoiceTap"
               label="Invoice"
               noStyle
               rules={[
                 {
-                  required: true,
+                  required: true
                 },
                 () => ({
                   validator(_, value) {
                     if (value) {
                       if (!/^tap\w+$/.test(value)) {
-                        return Promise.reject(
-                          new Error(`Please input a valid invoice.`)
-                        );
+                        return Promise.reject(new Error(`Please input a valid invoice.`));
                       }
                       return Promise.resolve();
                     }
                     return Promise.resolve();
-                  },
-                }),
+                  }
+                })
               ]}
             >
               <TextArea
@@ -226,7 +206,7 @@ export default function TaprootFormItems({
                 /* onBlur={handleInvoiceChange} */
                 autoSize={{
                   minRows: 2,
-                  maxRows: 6,
+                  maxRows: 6
                 }}
               />
             </Form.Item>
