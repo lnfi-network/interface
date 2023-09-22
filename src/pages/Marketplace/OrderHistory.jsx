@@ -13,6 +13,7 @@ import { useSelector } from "react-redux";
 import { nip19 } from "nostr-tools";
 import BigNumber from "bignumber.js";
 import { getQueryVariable } from "lib/url";
+import { utcToClient } from "lib/dates"
 const initQuery = {
   type: "",
   token: "",
@@ -150,8 +151,7 @@ export default function OrderHistory() {
         title: t`Time`,
         dataIndex: "create_time",
         width: 120,
-        render: (text) =>
-          text ? dayjs(text).format("YYYY-MM-DD HH:mm:ss") : "--",
+        render: (text) => utcToClient(text)
       },
       {
         title: t`Order ID`,
@@ -197,8 +197,8 @@ export default function OrderHistory() {
             <span className="color-yellow">
               {text && cur
                 ? `${numberWithCommas(
-                    limitDecimals(text / cur?.decimals, cur?.reserve)
-                  )} USDT`
+                  limitDecimals(text / cur?.decimals, cur?.reserve)
+                )} USDT`
                 : "--"}
             </span>
           );

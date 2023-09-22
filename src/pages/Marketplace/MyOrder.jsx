@@ -25,6 +25,7 @@ import useGetNostrAccount from "hooks/useGetNostrAccount";
 import { nip19 } from "nostr-tools";
 import { useCancelOrder } from "hooks/useNostrMarket";
 import BigNumber from "bignumber.js";
+import { utcToClient } from "lib/dates"
 const initQuery = {
   type: "",
   token: "",
@@ -187,8 +188,7 @@ export default function MyOrder() {
         title: t`Time`,
         dataIndex: "create_time",
         width: 120,
-        render: (text) =>
-          text ? dayjs(text).format("YYYY-MM-DD HH:mm:ss") : "--",
+        render: (text) => utcToClient(text)
       },
       {
         title: t`Order ID`,
@@ -234,8 +234,8 @@ export default function MyOrder() {
             <span className="color-yellow">
               {text && cur
                 ? `${numberWithCommas(
-                    limitDecimals(text / cur?.decimals, cur?.reserve)
-                  )} USDT`
+                  limitDecimals(text / cur?.decimals, cur?.reserve)
+                )} USDT`
                 : "--"}
             </span>
           );
@@ -561,11 +561,11 @@ export default function MyOrder() {
               <span className="color-yellow">
                 {item.price && usdtToken
                   ? `${numberWithCommas(
-                      limitDecimals(
-                        item.price / usdtToken?.decimals,
-                        usdtToken?.reserve
-                      )
-                    )} USDT`
+                    limitDecimals(
+                      item.price / usdtToken?.decimals,
+                      usdtToken?.reserve
+                    )
+                  )} USDT`
                   : "--"}
               </span>
             </div>
@@ -601,18 +601,18 @@ export default function MyOrder() {
             "TAKE_LOCK",
             "PART_SUCCESS",
           ].includes(item.status) && (
-            <div>
-              <Button
-                className="btn-grey btn-Cancel"
-                onClick={() => {
-                  //
-                  onCancelOrder(item.id);
-                }}
-              >
-                Cancel
-              </Button>
-            </div>
-          )}
+              <div>
+                <Button
+                  className="btn-grey btn-Cancel"
+                  onClick={() => {
+                    //
+                    onCancelOrder(item.id);
+                  }}
+                >
+                  Cancel
+                </Button>
+              </div>
+            )}
         </div>
       );
     });

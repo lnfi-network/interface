@@ -19,6 +19,7 @@ import { getQueryVariable } from "lib/url";
 // import { useCancelOrder } from "hooks/useNostrMarket";
 import { nip19 } from "nostr-tools";
 import BigNumber from "bignumber.js";
+import { utcToClient } from "lib/dates"
 // import { add, cut, nul, division } from "lib/utils/math";
 
 // const initQuery = {
@@ -233,7 +234,7 @@ export default function Listing({ refListing }) {
           <div className="trade-item-section bg-grey">
             <div className="trade-item-label">{t`Date`}</div>
             <div className="trade-item-value">
-              {item?.modify_time ? dayjs(item?.modify_time).format("YYYY-MM-DD HH:mm:ss") : "--"}
+              {utcToClient(item?.create_time)}
             </div>
           </div>
           <div className="trade-item-section bg-grey">
