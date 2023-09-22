@@ -1,0 +1,16 @@
+.create-invoice-modal {
+  &-container {
+    width: 100%;
+    .nostr-modal-label {
+      display: block;
+    }
+    .nostr-modal-input {
+      width: 100%;
+      margin-top: 10px;
+    }
+    .nostr-modal-btn {
+      padding-top: 20px;
+      text-align: center;
+    }
+  }
+}
