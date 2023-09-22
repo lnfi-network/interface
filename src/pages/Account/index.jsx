@@ -108,7 +108,7 @@ function Account() {
                         ? row?.token?.substring(0, 10) + "..." + row?.token?.substring(row?.token?.length - 6)
                         : "--"}
                     </div>
-                    <div>Token Channel: {row?.symbol || "--"}</div>
+                    {/* <div>Token Channel: {row?.symbol || "--"}</div> */}
                     <div>Total supply: {row?.totalSupply || "--"}</div>
                   </div>
                 }
@@ -240,7 +240,7 @@ function Account() {
                         ? row?.token?.substring(0, 10) + "..." + row?.token?.substring(row?.token?.length - 6)
                         : "--"}
                     </div>
-                    <div>Token Channel: {row?.symbol || "--"}</div>
+                    {/*  <div>Token Channel: {row?.symbol || "--"}</div> */}
                     <div>Total supply: {row?.totalSupply || "--"}</div>
                   </div>
                 }

@@ -15,12 +15,7 @@ import { setOnlyMobileSupportedVisible } from "store/reducer/modalReducer";
 import useDevice from "hooks/useDevice";
 import { useSelector } from "react-redux";
 import { nip19 } from "nostr-tools";
-export default function TaprootFormItems({
-  form,
-  nostrAccount,
-  notifiApi,
-  messageApi,
-}) {
+export default function TaprootFormItems({ form, nostrAccount, notifiApi, messageApi }) {
   //const { width } = useSize(document.querySelector("body"));
   /*   const [amount, setAmount] = useState(0); */
   const [btnLoading, setBtnLoading] = useState(false);
@@ -67,45 +62,21 @@ export default function TaprootFormItems({
       setPaymentInvoice({ invoice: createRet.data, createTime: Date.now() });
     } catch (e) {
       messageApi.error({
-        content: e.message,
+        content: e.message
       });
     } finally {
       setBtnLoading(false);
     }
-  }, [
-    device.isMobile,
-    dispatch,
-    form,
-    handleGetTaprootDepositInvoice,
-    messageApi,
-  ]);
+  }, [device.isMobile, dispatch, form, handleGetTaprootDepositInvoice, messageApi]);
 
   const memoSubmitButton = useMemo(() => {
-    return nostrAccount ? (
-      <>
-        <Space>
-          <Button
-            type="primary"
-            size="large"
-            loading={btnLoading}
-            disabled={!nostrAccount}
-            onClick={handleCreateInvoice}
-          >
-            Create Invoice
-          </Button>
-        </Space>
-      </>
-    ) : (
-      <ConnectNostr />
-    );
-  }, [btnLoading, handleCreateInvoice, nostrAccount]);
+    return nostrAccount ? <></> : <ConnectNostr />;
+  }, [nostrAccount]);
 
   const memoPaymentInvoice = useMemo(() => {
     return payInvoice ? (
       <>
-        <span className="deposit-invoices-time">
-          {dayjs(payInvoice.createTime).format("YYYY-MM-DD HH:mm:ss")}
-        </span>
+        <span className="deposit-invoices-time">{dayjs(payInvoice.createTime).format("YYYY-MM-DD HH:mm:ss")}</span>
         <EllipsisMiddle suffixCount={20}>{payInvoice.invoice}</EllipsisMiddle>
       </>
     ) : (
@@ -126,7 +97,7 @@ export default function TaprootFormItems({
       }
     },
     {
-      wait: 500,
+      wait: 500
     }
   );
   useEffect(() => {
@@ -144,29 +115,23 @@ export default function TaprootFormItems({
         tooltip="The Nostr address is obtained from any Nostr clients (Damus,Amethyst,Iris etc.) or wallets that support the Nostr protocol. Please make sure to confirm that the Nostr address you are receiving asset is correct and securely store the private key associated with that address."
         rules={[
           {
-            required: true,
+            required: true
           },
           ({ getFieldValue }) => ({
             validator(_, value) {
               if (value) {
                 if (!/npub\w{59}/.test(value)) {
-                  return Promise.reject(
-                    new Error(t`Please input a valid Nostr address.`)
-                  );
+                  return Promise.reject(new Error(t`Please input a valid Nostr address.`));
                 }
                 nip19.decode(value).data;
                 return Promise.resolve();
               }
               return Promise.resolve();
-            },
-          }),
+            }
+          })
         ]}
       >
-        <Input
-          size="large"
-          style={{ maxWidth: "460px" }}
-          placeholder="Please input your nostr address"
-        />
+        <Input size="large" style={{ maxWidth: "460px" }} placeholder="Please input your nostr address" />
       </Form.Item>
       <Form.Item name="depositOrWithdrawToken" label="Receive Token">
         <Select
@@ -189,34 +154,21 @@ export default function TaprootFormItems({
                   validator(_, value) {
                     if (Number.isNaN(Number(value))) {
                       form.setFieldValue("amount", "");
-                      return Promise.reject(
-                        new Error(`Please input receive amount.`)
-                      );
+                      return Promise.reject(new Error(`Please input receive amount.`));
                     }
                     if (Number(value) <= 0) {
-                      return Promise.reject(
-                        new Error(`Please input receive amount.`)
-                      );
+                      return Promise.reject(new Error(`Please input receive amount.`));
                     }
                     return Promise.resolve();
-                  },
-                }),
+                  }
+                })
               ]}
             >
-              <Input
-                placeholder="Please input your amount"
-                size="large"
-                onChange={handleAmountOnChange}
-              />
+              <Input placeholder="Please input your amount" size="large" onChange={handleAmountOnChange} />
             </Form.Item>
           </Col>
           <Col span={10}>
-            <Button
-              type="link"
-              loading={btnLoading}
-              onClick={handleCreateInvoice}
-              size="small"
-            >
+            <Button type="link" loading={btnLoading} onClick={handleCreateInvoice} size="small">
               Create New Invoice
             </Button>
           </Col>
@@ -224,9 +176,7 @@ export default function TaprootFormItems({
       </Form.Item>
       {memoPaymentInvoice && (
         <div className="deposit-invoices">
-          <div className="deposit-invoices-title">
-            Generated invoices:(only show the last 1 invoice):
-          </div>
+          <div className="deposit-invoices-title">Generated invoices:(only show the last 1 invoice):</div>
           <div className="deposit-invoices-item">{memoPaymentInvoice}</div>
           {payInvoice?.invoice && (
             <Row className="deposit-invoices-qrcode" justify="center">
@@ -238,7 +188,7 @@ export default function TaprootFormItems({
                 imageSettings={{
                   src: IconBtc,
                   width: 24,
-                  height: 24,
+                  height: 24
                 }}
               />
             </Row>
