@@ -150,9 +150,6 @@
     .account-nologin-content-text {
       font-size: 17px;
     }
-    .account-nologin-content-text + .account-nologin-content-text {
-      margin-top: 10px;
-    }
     .account-nologin-content-btns {
       margin-top: 20px;
       display: flex;
@@ -295,9 +292,10 @@
       .account-nologin-content-text {
         font-size: 14px;
         line-height: 20px;
+        // margin-top: 10px;
       }
-      .account-nologin-content-text + .account-nologin-content-text {
-        margin-top: 10px;
+      .mt15{
+        margin-top: 15px;
       }
     }
   }

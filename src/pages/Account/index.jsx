@@ -133,11 +133,11 @@ function Account() {
             const priceDetail = list.find((item) => item?.name == text);
             return priceDetail?.deal_price && usdtDetail
               ? `$${numberWithCommas(
-                  limitDecimals(
-                    BigNumber(priceDetail.deal_price).div(usdtDetail?.decimals).div(row?.decimals).toNumber(),
-                    2
-                  )
-                )}`
+                limitDecimals(
+                  BigNumber(priceDetail.deal_price).div(usdtDetail?.decimals).div(row?.decimals).toNumber(),
+                  2
+                )
+              )}`
               : "--";
           }
         },
@@ -165,15 +165,15 @@ function Account() {
             const priceDetail = list.find((item) => item?.name == text);
             return priceDetail?.deal_price && usdtDetail
               ? `$${numberWithCommas(
-                  limitDecimals(
-                    BigNumber(priceDetail.deal_price)
-                      .div(usdtDetail?.decimals)
-                      .div(row?.decimals)
-                      .times(balance)
-                      .toNumber(),
-                    2
-                  )
-                )}`
+                limitDecimals(
+                  BigNumber(priceDetail.deal_price)
+                    .div(usdtDetail?.decimals)
+                    .div(row?.decimals)
+                    .times(balance)
+                    .toNumber(),
+                  2
+                )
+              )}`
               : "--";
           }
         },
@@ -274,15 +274,15 @@ function Account() {
                 usdValue =
                   priceDetail?.deal_price && usdtDetail
                     ? `$${numberWithCommas(
-                        limitDecimals(
-                          BigNumber(priceDetail.deal_price)
-                            .div(usdtDetail?.decimals)
-                            .div(row?.decimals)
-                            .times(balance)
-                            .toNumber(),
-                          2
-                        )
-                      )}`
+                      limitDecimals(
+                        BigNumber(priceDetail.deal_price)
+                          .div(usdtDetail?.decimals)
+                          .div(row?.decimals)
+                          .times(balance)
+                          .toNumber(),
+                        2
+                      )
+                    )}`
                     : "--";
               }
             } else {
@@ -305,10 +305,13 @@ function Account() {
       {!nostrAccount && (
         <div className="account-nologin">
           <div className="account-nologin-content">
-            <div className="account-nologin-content-text">
-              {t`The first asset management platform built on Nostr Protocol. Efficient, Gasless and Safe.`}
+            <div className="account-nologin-content-text f18 b mt15">
+              {t`First Asset Management Platform`}
             </div>
-            <div className="account-nologin-content-text">{t`Connect Nostr now to manage your assets.`}</div>
+            <div className="account-nologin-content-text mt15">
+              {t`Powered by Nostr Protocol, Secured by Lightning Network. `}
+            </div>
+            <div className="account-nologin-content-text mt10">{t`Connect Nostr to start managing your assets`}</div>
             <div className="account-nologin-content-btns">
               <ConnectNostr />
             </div>
