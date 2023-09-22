@@ -353,7 +353,7 @@ function Account() {
             </div>
             <div className="account-tokenList-title-right">
               Universe Host:{" "}
-              <EllipsisMiddle suffixCount={8} suffixEnable={device.isMobile ? true : false}>
+              <EllipsisMiddle suffixCount={5} suffixEnable={device.isMobile ? true : false}>
                 tapd.nostrassets.com:10029
               </EllipsisMiddle>
             </div>
