@@ -1,4 +1,4 @@
-import { Form, Row, Col, Input, Button, Select } from "antd";
+import { Form, Row, Col, Input, Button, Select, Modal, InputNumber } from "antd";
 
 import { useEffect, useMemo, useState, useCallback } from "react";
 import ConnectNostr from "components/Common/ConnectNostr";
@@ -8,14 +8,18 @@ import { useSelector } from "react-redux";
 import useWebln from "hooks/useWebln";
 import { sleep } from "lib/utils";
 import { useDispatch } from "react-redux";
-import { setOnlyMobileSupportedVisible } from "store/reducer/modalReducer";
+import { setConnectNostrModalVisible, setOnlyMobileSupportedVisible } from "store/reducer/modalReducer";
 import useDevice from "hooks/useDevice";
 import { nip19 } from "nostr-tools";
+import "./LightningFormItems.scss";
 export default function LightningFormItems({ form, nostrAccount, balance, messageApi, handleQueryBalance }) {
   const { TextArea } = Input;
   const [btnLoading, setBtnLoading] = useState(false);
+  const [createBtnLoading, setBtnCreateLoading] = useState(false);
   const { handleWeblnWithdrawAsync } = useWeblnWithdraw();
   const [withdrawAmount, setWithdrawAmount] = useState(0);
+  const [createInvoiceModal, setCreateInvoiceModal] = useState(false);
+  const [willCreateInvoiceAmount, setWillCreateInvoiceAmount] = useState(1);
   const { npubNostrAccount } = useSelector(({ user }) => user);
   const { tokenList } = useSelector(({ market }) => market);
   const { makeInvoice } = useWebln();
@@ -75,26 +79,32 @@ export default function LightningFormItems({ form, nostrAccount, balance, messag
     npubNostrAccount,
     withdrawAmount
   ]);
+
   const handleMakeInvoice = useCallback(async () => {
+    setBtnCreateLoading(true);
     if (device.isMobile) {
       dispatch(setOnlyMobileSupportedVisible(true));
       return;
     }
-    const [err, invoice] = await to(makeInvoice("", npubNostrAccount));
-    if (err) {
-      messageApi.error({
-        content: err.message
-      });
-      return;
-    }
-    if (invoice) {
-      form.setFieldValue("invoice", invoice?.paymentRequest);
-      const parsedData = window.lightningPayReq.decode(invoice?.paymentRequest);
+    try {
+      const invoice = await makeInvoice(willCreateInvoiceAmount, npubNostrAccount);
+      const willDecodeInvoice = invoice.paymentRequest || invoice;
+      form.setFieldValue("invoice", willDecodeInvoice);
+      const parsedData = window.lightningPayReq.decode(willDecodeInvoice);
+      console.log("🚀 ~ file: LightningFormItems.jsx:94 ~ handleMakeInvoice ~ parsedData:", parsedData);
       const amount = parsedData.satoshis;
       setWithdrawAmount(amount);
-      await to(form.validateFields());
+      await form.validateFields();
+    } catch (e) {
+      messageApi.error({
+        content: e.message
+      });
+    } finally {
+      setCreateInvoiceModal(false);
+      setBtnCreateLoading(false);
     }
-  }, [device.isMobile, dispatch, form, makeInvoice, messageApi, npubNostrAccount]);
+  }, [device.isMobile, dispatch, form, makeInvoice, messageApi, npubNostrAccount, willCreateInvoiceAmount]);
+
   const memoWithdrawBalance = useMemo(() => {
     return <span className="withdraw-amount-balance">Nostr Account balance: {balance} SATS</span>;
   }, [balance]);
@@ -128,6 +138,10 @@ export default function LightningFormItems({ form, nostrAccount, balance, messag
     }
   }, []);
 
+  const onInvoiceModalInputChange = useCallback((value) => {
+    setWillCreateInvoiceAmount(Number(value));
+  }, []);
+
   useEffect(() => {
     form.setFieldValue("depositOrWithdrawFormNostrAddress", nostrAccount);
     if (tokens.length > 0) {
@@ -137,6 +151,38 @@ export default function LightningFormItems({ form, nostrAccount, balance, messag
   }, [form, nostrAccount, tokens]);
   return (
     <>
+      <Modal
+        width={360}
+        className="create-invoice-modal"
+        title="Create Invoice"
+        centered
+        open={createInvoiceModal}
+        footer={null}
+        closable={true}
+        onCancel={() => {
+          setBtnCreateLoading(false);
+          setCreateInvoiceModal(false);
+        }}
+      >
+        <div className="create-invoice-modal-container">
+          <label className="nostr-modal-label">Amount</label>
+          <InputNumber
+            min={1}
+            max={Number(balance)}
+            precision={0}
+            step={1}
+            className="nostr-modal-input"
+            placeholder="Please input invoice amount"
+            //onBlur={onInvoiceModalInputChange}
+            onChange={onInvoiceModalInputChange}
+          />
+          <div className="nostr-modal-btn">
+            <Button type="primary" loading={createBtnLoading} onClick={handleMakeInvoice}>
+              Create Invoice
+            </Button>
+          </div>
+        </div>
+      </Modal>
       <Form.Item
         name="depositOrWithdrawFormNostrAddress"
         label="Send From Nostr Address"
@@ -208,7 +254,13 @@ export default function LightningFormItems({ form, nostrAccount, balance, messag
             </Form.Item>
           </Col>
           <Col span={8}>
-            <Button type="link" onClick={handleMakeInvoice}>
+            <Button
+              type="link"
+              onClick={() => {
+                setWillCreateInvoiceAmount(1);
+                setCreateInvoiceModal(true);
+              }}
+            >
               Create Invoice
             </Button>
           </Col>
