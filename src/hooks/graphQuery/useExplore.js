@@ -638,7 +638,7 @@ export const useImportAssetsQuery = ({ pageSize = 20, pageIndex = 1, assetId }) 
     // 0: "Token"   1: "NFT"
     where += `asset_type:{_eq: "0"} `;
     if (assetId) {
-      where += `_or:[{ asset_id: {_regex: "${assetId}"} }, { asset_name: {_regex: "${assetId}"} }] `;
+      where += `_or:[{ asset_id: {_iregex: "${assetId}"} }, { asset_name: {_iregex: "${assetId}"} }] `;
     }
 
     where += "}";

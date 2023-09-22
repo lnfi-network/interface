@@ -24,6 +24,7 @@ function Transfer({ item }) {
   const handleIdTypeChange = useCallback(() => {
     setIsHex(!isHex)
   }, [isHex])
+
   return <div className="import-asset-item-section">
     <div className="import-asset-item-section-label color-dark">
       <>
@@ -83,6 +84,7 @@ function ImportButton({ item, setImportingOpen, setImportingMap }) {
 }
 export default function ImportAssets() {
   const history = useHistory();
+  const { tokenList } = useSelector(({ market }) => market);
   const [open, setOpen] = useState(false)
   const [pageSize, setPageSize] = useState(20);
   const [pageIndex, setPageIndex] = useState(1);
@@ -104,7 +106,8 @@ export default function ImportAssets() {
       return <div className="tc"><Spin></Spin></div>
     }
     if (list?.length) {
-      return list.map((item, i) => {
+      return list.map((item) => {
+        const isImported = tokenList.some(k => k.token == item.asset_id)
         return <div className="import-asset-item" key={item.asset_id}>
           <Tooltip
             overlayClassName="token-address-tooltip"
@@ -147,7 +150,7 @@ export default function ImportAssets() {
             <Transfer item={item}></Transfer>
 
             <div className="import-asset-item-section-btn">
-              <ImportButton item={item} setImportingOpen={setImportingOpen} setImportingMap={setImportingMap}></ImportButton>
+              {!isImported ? <ImportButton item={item} setImportingOpen={setImportingOpen} setImportingMap={setImportingMap}></ImportButton> : "Imported"}
             </div>
           </Tooltip>
         </div>
@@ -158,7 +161,7 @@ export default function ImportAssets() {
         <Button type="primary" onClick={() => setOpen(true)}>Sync and Import</Button>
       </div>
     }
-  }, [fetching, list])
+  }, [fetching, list, tokenList])
   const assetIdChange = useCallback((e) => {
     //
     setPageIndex(1);
