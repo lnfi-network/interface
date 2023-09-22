@@ -1,0 +1,14 @@
+.form-alert {
+  max-width: 660px;
+  margin: 20px auto 0;
+  background-color: rgba(202, 249, 130, 0.7);
+  padding: 10px;
+  .ant-alert-content {
+    padding-top: 10px;
+  }
+  .ant-alert-close-icon {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+  }
+}

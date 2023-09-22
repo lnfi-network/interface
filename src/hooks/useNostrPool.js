@@ -5,7 +5,8 @@ import { useContext, createContext, useCallback, useEffect, useRef } from "react
 import { isInTokenPocket, isMobile } from "lib/utils/userAgent";
 import { getLocalRobotPrivateKey } from "lib/utils/index";
 import { selectorRelayUrls, updateRelayStatus } from "store/reducer/relayReducer";
-import { setSignatureValidErrorVisible } from "store/reducer/modalReducer";
+//import { setSignatureValidErrorVisible } from "store/reducer/modalReducer";
+import useDevice from "./useDevice";
 import { useAsyncEffect } from "ahooks";
 window.nip19 = nip19;
 const NostrContext = createContext();
@@ -26,7 +27,8 @@ export const log = (isOn, type, ...args) => {
 const useNostrPool = () => {
   const { pool, debug } = useNostr();
   const { nostrAccount } = useSelector(({ user }) => user);
-  const dispatch = useDispatch();
+  const device = useDevice();
+  // const dispatch = useDispatch();
   const relays = useSelector(selectorRelayUrls);
   const checkRuntime = useCallback(
     (isUseLocalRobotToSend) => {
@@ -42,7 +44,7 @@ const useNostrPool = () => {
             </>
           )
         });
-        return;
+        return false;
       }
       if (!isUseLocalRobotToSend) {
         if (!nostrAccount) {
@@ -51,13 +53,69 @@ const useNostrPool = () => {
             content: "Please connect alby extension first.",
             key: "albyWarning"
           });
-          return;
+          return false;
+        }
+        if (!window.nostr) {
+          if (!device.isMobile) {
+            const isFirefox = navigator.userAgent.indexOf("Firefox") > -1;
+            window._notification.warning({
+              message: isFirefox
+                ? "Install the Alby extension on your Firefox"
+                : "Install the Alby extension on your Chrome",
+              description: (
+                <span>
+                  {`Alby manages your Nostr keys, and you can use your key to sign it.`}
+                  {isFirefox ? (
+                    <a
+                      className="nostr-swap-link__notice"
+                      href="https://addons.mozilla.org/en-US/firefox/addon/alby/"
+                      target="_blank"
+                    >
+                      {`Install now`}
+                    </a>
+                  ) : (
+                    <a
+                      className="nostr-swap-link__notice"
+                      href="https://chrome.google.com/webstore/detail/alby-bitcoin-lightning-wa/iokeahhehimjnekafflcihljlcjccdbe"
+                      target="_blank"
+                    >
+                      {`Install now`}
+                    </a>
+                  )}
+                </span>
+              )
+            });
+          } else {
+            if (!isInTokenPocket()) {
+              dispatch(setConnectNostrModalVisible(true));
+            } else {
+              // check window.nostr & setting、turn on Nostr
+              if (!window.ethereum) {
+                // chain
+                Modal.info({
+                  width: 326,
+                  footer: null,
+                  closable: true,
+                  title: "Check your network",
+
+                  content: (
+                    <>
+                      <div>Currently only supported in ERC20, Switch network in wallet</div>
+                    </>
+                  )
+                });
+              } else {
+                dispatch(setTurnOnNostrDrawerVisible(true));
+              }
+            }
+          }
+          return false
         }
       }
 
       return true;
     },
-    [nostrAccount]
+    [device.isMobile, nostrAccount]
   );
 
   const getWillSendEvent = useCallback(
@@ -101,7 +159,12 @@ const useNostrPool = () => {
     async ({ queryCommand, sendToNostrAddress, isUseLocalRobotToSend = true }) => {
       const checkRuntimeRet = checkRuntime(isUseLocalRobotToSend);
       if (!checkRuntimeRet) {
-        return null;
+        const errRet = {
+          retEvent: null,
+          sendEvent: null,
+          result: { code: 400, data: "Alby not detected", msg: "Alby not detected." }
+        };
+        return errRet
       }
       const decodeSendTo = nip19.decode(sendToNostrAddress).data;
       const robotPubkey = getPublicKey(ROBOT_PRIVATE_KEY);
@@ -207,7 +270,7 @@ export const useListenerRelayStatus = () => {
   const dispatch = useDispatch();
   useAsyncEffect(async () => {
     for (let i = 0; i < relays.length; i++) {
-      const relay = await pool.ensureRelay(relays[i]).catch((e) => {});
+      const relay = await pool.ensureRelay(relays[i]).catch((e) => { });
       if (relay) {
         log(debug, "info", `✅ nostr (${relay.url}): Connected ${Date.now()}!`);
         dispatch(updateRelayStatus({ address: relay.url, status: "connected" }));

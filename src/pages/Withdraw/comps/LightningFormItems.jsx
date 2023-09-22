@@ -11,13 +11,7 @@ import { useDispatch } from "react-redux";
 import { setOnlyMobileSupportedVisible } from "store/reducer/modalReducer";
 import useDevice from "hooks/useDevice";
 import { nip19 } from "nostr-tools";
-export default function LightningFormItems({
-  form,
-  nostrAccount,
-  balance,
-  messageApi,
-  handleQueryBalance,
-}) {
+export default function LightningFormItems({ form, nostrAccount, balance, messageApi, handleQueryBalance }) {
   const { TextArea } = Input;
   const [btnLoading, setBtnLoading] = useState(false);
   const { handleWeblnWithdrawAsync } = useWeblnWithdraw();
@@ -39,25 +33,22 @@ export default function LightningFormItems({
       }
       if (!withdrawAmount) {
         messageApi.error({
-          content: "The minimum withdrawal quantity is 1 SATS.",
+          content: "The minimum withdrawal quantity is 1 SATS."
         });
         return;
       }
       if (withdrawAmount > Number(balance)) {
         messageApi.error({
-          content: "Insfufficient balance.",
+          content: "Insfufficient balance."
         });
         return;
       }
       setBtnLoading(true);
       const values = form.getFieldsValue(true);
-      const withdrawRet = await handleWeblnWithdrawAsync(
-        withdrawAmount,
-        values.invoice
-      );
+      const withdrawRet = await handleWeblnWithdrawAsync(withdrawAmount, values.invoice);
       if (withdrawRet?.code === 0) {
         messageApi.success({
-          content: <p className="message-content">{withdrawRet.data}</p>,
+          content: <p className="message-content">{withdrawRet.data}</p>
         });
         await sleep(4000);
         await handleQueryBalance(npubNostrAccount);
@@ -66,7 +57,7 @@ export default function LightningFormItems({
       }
     } catch (e) {
       messageApi.error({
-        content: e.message,
+        content: e.message
       });
     } finally {
       setBtnLoading(false);
@@ -82,7 +73,7 @@ export default function LightningFormItems({
     handleWeblnWithdrawAsync,
     messageApi,
     npubNostrAccount,
-    withdrawAmount,
+    withdrawAmount
   ]);
   const handleMakeInvoice = useCallback(async () => {
     if (device.isMobile) {
@@ -92,7 +83,7 @@ export default function LightningFormItems({
     const [err, invoice] = await to(makeInvoice("", npubNostrAccount));
     if (err) {
       messageApi.error({
-        content: err.message,
+        content: err.message
       });
       return;
     }
@@ -103,30 +94,13 @@ export default function LightningFormItems({
       setWithdrawAmount(amount);
       await to(form.validateFields());
     }
-  }, [
-    device.isMobile,
-    dispatch,
-    form,
-    makeInvoice,
-    messageApi,
-    npubNostrAccount,
-  ]);
+  }, [device.isMobile, dispatch, form, makeInvoice, messageApi, npubNostrAccount]);
   const memoWithdrawBalance = useMemo(() => {
-    return (
-      <span className="withdraw-amount-balance">
-        Nostr Account balance: {balance} SATS
-      </span>
-    );
+    return <span className="withdraw-amount-balance">Nostr Account balance: {balance} SATS</span>;
   }, [balance]);
   const memoWithdrawBtn = useMemo(() => {
     return nostrAccount ? (
-      <Button
-        type="primary"
-        size="large"
-        className="withdraw-send-btn"
-        loading={btnLoading}
-        onClick={handleWithdraw}
-      >
+      <Button type="primary" size="large" className="withdraw-send-btn" loading={btnLoading} onClick={handleWithdraw}>
         Send
       </Button>
     ) : (
@@ -169,30 +143,23 @@ export default function LightningFormItems({
         tooltip="The Nostr address is obtained from any Nostr clients (Damus,Amethyst,Iris etc.) or wallets that support the Nostr protocol. Please make sure to confirm that the Nostr address you are sending asset is correct and securely store the private key associated with that address."
         rules={[
           {
-            required: true,
+            required: true
           },
           () => ({
             validator(_, value) {
               if (value) {
                 if (!/npub\w{59}/.test(value)) {
-                  return Promise.reject(
-                    new Error(t`Please input a valid Nostr address.`)
-                  );
+                  return Promise.reject(new Error(t`Please input a valid Nostr address.`));
                 }
                 nip19.decode(value).data;
                 return Promise.resolve();
               }
               return Promise.resolve();
-            },
-          }),
+            }
+          })
         ]}
       >
-        <Input
-          readOnly
-          size="large"
-          style={{ maxWidth: "460px" }}
-          placeholder="Please input your nostr address"
-        />
+        <Input readOnly size="large" style={{ maxWidth: "460px" }} placeholder="Please input your nostr address" />
       </Form.Item>
 
       <Form.Item name="depositOrWithdrawToken" label="Send Token">
@@ -214,21 +181,19 @@ export default function LightningFormItems({
               noStyle
               rules={[
                 {
-                  required: true,
+                  required: true
                 },
                 () => ({
                   validator(_, value) {
                     if (value) {
                       if (!/^lnbc\w+$/.test(value)) {
-                        return Promise.reject(
-                          new Error(`Please input a valid invoice.`)
-                        );
+                        return Promise.reject(new Error(`Please input a valid invoice.`));
                       }
                       return Promise.resolve();
                     }
                     return Promise.resolve();
-                  },
-                }),
+                  }
+                })
               ]}
             >
               <TextArea
@@ -237,7 +202,7 @@ export default function LightningFormItems({
                 onBlur={handleInvoiceChange}
                 autoSize={{
                   minRows: 2,
-                  maxRows: 6,
+                  maxRows: 6
                 }}
               />
             </Form.Item>
@@ -255,22 +220,20 @@ export default function LightningFormItems({
           <Col span={24}>
             <Form.Item name="amount" noStyle>
               <div className="lightning-withdraw">
-                <span className="lightning-withdraw-amount">
-                  {withdrawAmount}
-                </span>
+                <span className="lightning-withdraw-amount">{withdrawAmount}</span>
               </div>
             </Form.Item>
           </Col>
         </Row>
       </Form.Item>
-      <Row justify="center" className="lightning-withdraw-tip">
+      {/*  <Row justify="center" className="lightning-withdraw-tip">
         <span>
           Lightning network send asset needs to create an invoice before the
           transaction. You can create an invoice in the platform or wallet
           account you want to deposit, or you can create it directly when
           sending asset from NostrAssets.
         </span>
-      </Row>
+      </Row> */}
       <Row justify="center" className="mb20 fixed-btn">
         {memoWithdrawBtn}
       </Row>

@@ -4,10 +4,13 @@ import "./ConnectWallet.scss";
 
 import { useCallback, useEffect, useState } from "react";
 import useGetNostrAccount from "hooks/useGetNostrAccount";
+import { useDispatch } from "react-redux";
+import { setNostrModalVisible } from "store/reducer/modalReducer";
 // import { useQueryBalance } from "hooks/useNostrMarket";
 // import { nip19 } from "nostr-tools";
 export default function ConnectNostr() {
   const { handleGetNostrAccount } = useGetNostrAccount();
+  const dispatch = useDispatch();
   // const { handleQueryBalance } = useQueryBalance();
   const [loading, setLoading] = useState(false);
   const handleConnectNostr = useCallback(async () => {
@@ -15,24 +18,21 @@ export default function ConnectNostr() {
     const nostrAccount = await handleGetNostrAccount().catch((e) => {
       window._message.open({
         type: "error",
-        content: e.message,
+        content: e.message
       });
     });
     if (nostrAccount) {
       window._message.open({
         type: "success",
-        content: "Connect success.",
+        content: "Connect success."
       });
+      dispatch(setNostrModalVisible(false));
     }
     setLoading(false);
-  }, [handleGetNostrAccount]);
+  }, [dispatch, handleGetNostrAccount]);
   return (
     <div className="connect-wallet-common">
-      <ConnectWalletButton
-        onClick={handleConnectNostr}
-        imgSrc={logo}
-        loading={loading}
-      >
+      <ConnectWalletButton onClick={handleConnectNostr} imgSrc={logo} loading={loading}>
         Connect Nostr
       </ConnectWalletButton>
     </div>

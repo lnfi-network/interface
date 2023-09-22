@@ -27,7 +27,7 @@ import { useParams } from "react-router-dom";
 import { useWithdraw, useQueryBalance } from "hooks/useNostrMarket";
 import LightningFormItems from "./LightningFormItems";
 import TaprootFormItems from "./TaprootFormItems";
-
+import AlertTip from "components/AlertTip";
 function WithdrawForm() {
   const { width } = useSize(document.querySelector("body"));
   const [form] = Form.useForm();
@@ -287,6 +287,10 @@ function WithdrawForm() {
     <>
       {contextHolder}
       {notifiContextHolder}
+      <AlertTip
+        id="withdrawAlertTip"
+        description="Withdraw assets from your currently connected Nostr account to your Lightning wallet or Taproot wallet or other Nostr accounts. The Lightning Network is currently using real assets, while Taproot is temporarily using test assets."
+      />
       <div className="withdraw-form">
         <Form
           {...layout}

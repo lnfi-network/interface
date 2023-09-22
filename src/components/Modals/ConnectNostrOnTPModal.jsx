@@ -2,8 +2,8 @@ import { Modal, Timeline, Row, Col, message, Typography, Button } from "antd";
 import { useSelector, useDispatch } from "react-redux";
 import { useCallback, useMemo, useState } from "react";
 import { setConnectNostrModalVisible } from "store/reducer/modalReducer";
-import ConnectWalletButton from "components/Common/ConnectWalletButton";
-import IconTPWallet from "img/ico-tp.svg";
+/* import ConnectWalletButton from "components/Common/ConnectWalletButton";
+import IconTPWallet from "img/ico-tp.svg"; */
 
 const { Paragraph } = Typography;
 // import { t } from "@lingui/macro";
@@ -35,14 +35,11 @@ export default function ConnectNostrOnTPModal() {
           onCancel={onCancel}
         >
           <p className="connect-nostr-modal-description color-dark f12">
-            Similar to other Web3 websites, using NostrAssets requires connecting your Nostr account to approve each account operation.
+            Similar to other Web3 websites, using NostrAssets requires connecting your Nostr account to approve each
+            account operation.
           </p>
-          <p className="connect-nostr-modal-description mt10 f12">
-            2 ways to connect NostrAssets to Nostr:
-          </p>
-          <p className="connect-nostr-modal-description b mt10 f12">
-            1. Connect via Nostr Web Browser Extensions
-          </p>
+          <p className="connect-nostr-modal-description mt10 f12">2 ways to connect NostrAssets to Nostr:</p>
+          <p className="connect-nostr-modal-description b mt10 f12">1. Connect via Nostr Web Browser Extensions</p>
           <p className="connect-nostr-modal-description f10">
             Eg. Alby Browser Extension which is referred to as the Metamask for Nostr
           </p>
@@ -61,17 +58,15 @@ export default function ConnectNostrOnTPModal() {
             </Button>
           </div>
           <div className="connect-nostr-modal-btn">
-
             <Paragraph
               copyable={{
                 text: location.href,
                 tooltips: false,
                 onCopy: (e) => message.success("Copied"),
-                icon: [<Button className="copy-url">
-                  Copy URL visit on Web
-                </Button>, <Button className="copy-url">
-                  Copy URL visit on Web
-                </Button>]
+                icon: [
+                  <Button className="copy-url">Copy URL visit on Web</Button>,
+                  <Button className="copy-url">Copy URL visit on Web</Button>
+                ]
               }}
             >
               {/* <Button className="copy-url">
