@@ -201,10 +201,10 @@ export default function ImportAssets() {
             Import Assets
           </div>
           <div className="import-asset-subtitle">
-            Search assets and import. Only support importing token temporarily.
+            Search for assets and import to NostrAssets Asset List. Non-fungible Tokens currently not supported yet.
           </div>
           <div className="import-asset-search">
-            <span>Search Asset </span><Input onChange={assetIdChange} size="large" placeholder="Search asset by asset name or asset ID" />
+            <span>Search Asset </span><Input onChange={assetIdChange} size="large" placeholder="Search by asset name or asset ID" />
           </div>
           <div className="import-asset-list">
             {assetList}
