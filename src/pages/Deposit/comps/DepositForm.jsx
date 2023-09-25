@@ -582,6 +582,7 @@ The deposit will be deducted from the balance of you connected wallet account an
                 BRC20
               </Radio.Button> */}
               <Radio.Button className="network-selector-btn" value="Taproot">
+                <div className="network-selector-btn-test">Test</div>
                 Taproot
               </Radio.Button>
               {hasErc20Token && (

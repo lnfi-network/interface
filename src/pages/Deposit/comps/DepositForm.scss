@@ -9,6 +9,19 @@
     width: 150px;
     text-align: center;
     max-width: 50%;
+    position: relative;
+    &-test {
+      position: absolute;
+      right: -10px;
+      top: -10px;
+      height: 18px;
+      line-height: 18px;
+      border-radius: 5px;
+      padding: 0 5px;
+      font-size: 12px;
+      background-color: var(--color-yellow);
+      color: var(--color-text-light);
+    }
   }
   .deposit-plat {
     padding-left: 10px;
