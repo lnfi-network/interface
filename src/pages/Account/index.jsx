@@ -2,7 +2,7 @@ import "./index.scss";
 import { useState, useRef, useMemo, memo, useCallback, useEffect } from "react";
 import { Table, Tooltip, Button, message, Spin } from "antd";
 import { t } from "@lingui/macro";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { nip19 } from "nostr-tools";
 import EllipsisMiddle from "components/EllipsisMiddle";
 /* import AppNostrHeaderUser from "components/Header/AppNostrHeaderUser"; */
@@ -25,6 +25,8 @@ import { ReloadOutlined } from "@ant-design/icons";
 import ConnectNostr from "components/Common/ConnectNostr";
 import CheckNostrButton from "components/CheckNostrButton";
 import useDevice from "hooks/useDevice";
+import { setAboutModalVisible } from "store/reducer/modalReducer";
+import * as Lockr from "lockr";
 const ASSET_PLAT_MAP = {
   ETHEREUM: "ETH",
   BRC20: "BTC",
@@ -34,6 +36,7 @@ const ASSET_PLAT_MAP = {
 function Account() {
   const { width } = useSize(document.querySelector("body"));
   const device = useDevice();
+  const dispatch = useDispatch();
   const [isTransferShow, setIsTransferShow] = useState(false);
   const [isAddressBookShow, setIsAddressBookShow] = useState(false);
   const [detail, setDetail] = useState(null);
@@ -85,6 +88,13 @@ function Account() {
     },
     [history]
   );
+  const goImportAssets = useCallback(() => {
+    if (!Lockr.get("aboutModal")) {
+      dispatch(setAboutModalVisible(true));
+    } else {
+      onHandleRedirect("importAssets");
+    }
+  }, [dispatch, onHandleRedirect]);
   const columns = useMemo(() => {
     if (width > 768) {
       return [
@@ -133,11 +143,11 @@ function Account() {
             const priceDetail = list.find((item) => item?.name == text);
             return priceDetail?.deal_price && usdtDetail
               ? `$${numberWithCommas(
-                limitDecimals(
-                  BigNumber(priceDetail.deal_price).div(usdtDetail?.decimals).div(row?.decimals).toNumber(),
-                  2
-                )
-              )}`
+                  limitDecimals(
+                    BigNumber(priceDetail.deal_price).div(usdtDetail?.decimals).div(row?.decimals).toNumber(),
+                    2
+                  )
+                )}`
               : "--";
           }
         },
@@ -165,15 +175,15 @@ function Account() {
             const priceDetail = list.find((item) => item?.name == text);
             return priceDetail?.deal_price && usdtDetail
               ? `$${numberWithCommas(
-                limitDecimals(
-                  BigNumber(priceDetail.deal_price)
-                    .div(usdtDetail?.decimals)
-                    .div(row?.decimals)
-                    .times(balance)
-                    .toNumber(),
-                  2
-                )
-              )}`
+                  limitDecimals(
+                    BigNumber(priceDetail.deal_price)
+                      .div(usdtDetail?.decimals)
+                      .div(row?.decimals)
+                      .times(balance)
+                      .toNumber(),
+                    2
+                  )
+                )}`
               : "--";
           }
         },
@@ -274,15 +284,15 @@ function Account() {
                 usdValue =
                   priceDetail?.deal_price && usdtDetail
                     ? `$${numberWithCommas(
-                      limitDecimals(
-                        BigNumber(priceDetail.deal_price)
-                          .div(usdtDetail?.decimals)
-                          .div(row?.decimals)
-                          .times(balance)
-                          .toNumber(),
-                        2
-                      )
-                    )}`
+                        limitDecimals(
+                          BigNumber(priceDetail.deal_price)
+                            .div(usdtDetail?.decimals)
+                            .div(row?.decimals)
+                            .times(balance)
+                            .toNumber(),
+                          2
+                        )
+                      )}`
                     : "--";
               }
             } else {
@@ -305,9 +315,7 @@ function Account() {
       {!nostrAccount && (
         <div className="account-nologin">
           <div className="account-nologin-content">
-            <div className="account-nologin-content-text f18 b mt15">
-              {t`First Asset Management Platform`}
-            </div>
+            <div className="account-nologin-content-text f18 b mt15">{t`First Asset Management Platform`}</div>
             <div className="account-nologin-content-text mt15">
               {t`Powered by Nostr Protocol, Secured by Lightning Network. `}
             </div>
@@ -406,7 +414,7 @@ function Account() {
                       icon={<AssetSvg width={26} height={26} />}
                       // onClick={() => message.info("Coming soon")}
                       onClick={() => {
-                        onHandleRedirect("importAssets");
+                        goImportAssets();
                       }}
                     >
                       {t`Import Assets`}
