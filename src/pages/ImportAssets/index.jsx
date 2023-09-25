@@ -10,6 +10,7 @@ import ImportModal from "./comps/ImportModal"
 import EllipsisMiddle from "components/EllipsisMiddle";
 import { useImportAsset, useHandleQueryTokenList } from "hooks/useNostrMarket";
 import tapdLogo from "img/tapd-logo.jpg"
+import CheckNostrButton from "components/CheckNostrButton";
 import {
   CheckCircleOutlined,
   CloseCircleOutlined,
@@ -80,7 +81,7 @@ function ImportButton({ item, setImportingOpen, setImportingMap }) {
     }
 
   }, [handleImportAsset, handleQueryTokenList, item.asset_id, setImportingMap, setImportingOpen])
-  return <Button type="primary" loading={loading} onClick={() => handleImport()}>Import Asset</Button>
+  return <CheckNostrButton><Button type="primary" loading={loading} onClick={() => handleImport()}>Import Asset</Button></CheckNostrButton>
 }
 export default function ImportAssets() {
   const history = useHistory();
@@ -158,7 +159,7 @@ export default function ImportAssets() {
     } else {
       return <div className="import-asset-list-empty">
         <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} imageStyle={{ color: "#fff" }} description={<span className="color-base f16">Can't find this asset, maybe this haven’t import to NostrAssets from the universe, please sync the universe and import.</span>} />
-        <Button type="primary" onClick={() => setOpen(true)}>Sync and Import</Button>
+        <CheckNostrButton><Button type="primary" onClick={() => setOpen(true)}>Sync and Import</Button></CheckNostrButton>
       </div>
     }
   }, [fetching, list, tokenList])
@@ -195,7 +196,7 @@ export default function ImportAssets() {
         </div>
         <div className="import-asset-content">
           <div className="import-asset-content-sync">
-            <span>Can't find asset?</span> <span className="sync-link" onClick={() => setOpen(true)}>Sync and Import</span>
+            <span>Can't find asset?</span> <CheckNostrButton><span className="sync-link" onClick={() => setOpen(true)}>Sync and Import</span></CheckNostrButton>
           </div>
           <div className="import-asset-title">
             Import Assets
