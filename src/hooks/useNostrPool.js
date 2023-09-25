@@ -47,14 +47,6 @@ const useNostrPool = () => {
         return false;
       }
       if (!isUseLocalRobotToSend) {
-        if (!nostrAccount) {
-          window._message.destroy("albyWarning");
-          window._message.warning({
-            content: "Please connect alby extension first.",
-            key: "albyWarning"
-          });
-          return false;
-        }
         if (!window.nostr) {
           if (!device.isMobile) {
             const isFirefox = navigator.userAgent.indexOf("Firefox") > -1;
@@ -110,6 +102,14 @@ const useNostrPool = () => {
             }
           }
           return false
+        }
+        if (!nostrAccount) {
+          window._message.destroy("albyWarning");
+          window._message.warning({
+            content: "Please connect alby extension first.",
+            key: "albyWarning"
+          });
+          return false;
         }
       }
 
