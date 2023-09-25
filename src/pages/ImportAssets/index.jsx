@@ -157,7 +157,7 @@ export default function ImportAssets() {
       });
     } else {
       return <div className="import-asset-list-empty">
-        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} imageStyle={{ color: "#fff" }} description={<span className="color-base f16">Can't find this asset, maybe this haven’t import to NostrAssets from the universal, please sync the universal and import.</span>} />
+        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} imageStyle={{ color: "#fff" }} description={<span className="color-base f16">Can't find this asset, maybe this haven’t import to NostrAssets from the universe, please sync the universe and import.</span>} />
         <Button type="primary" onClick={() => setOpen(true)}>Sync and Import</Button>
       </div>
     }
