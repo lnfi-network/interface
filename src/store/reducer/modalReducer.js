@@ -8,7 +8,8 @@ export const modalSlice = createSlice({
     languageModalVisible: false,
     turnOnNostrDrawerVisible: false,
     onlyMobileSupportedVisible: false,
-    signatureValidErrorVisible: false
+    signatureValidErrorVisible: false,
+    aboutModalVisible: false
   },
   reducers: {
     setNostrModalVisible(state, action) {
@@ -31,6 +32,9 @@ export const modalSlice = createSlice({
     },
     setSignatureValidErrorVisible(state, action) {
       state.signatureValidErrorVisible = action.payload
+    },
+    setAboutModalVisible(state, action) {
+      state.aboutModalVisible = action.payload
     }
   }
 });
@@ -41,6 +45,7 @@ export const {
   setConnectNostrModalVisible,
   setTurnOnNostrDrawerVisible,
   setOnlyMobileSupportedVisible,
-  setSignatureValidErrorVisible
+  setSignatureValidErrorVisible,
+  setAboutModalVisible
 } = modalSlice.actions;
 export default modalSlice.reducer;

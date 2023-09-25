@@ -14,7 +14,7 @@
     padding: 30px;
     border-radius: 10px;
     position: relative;
-    .import-asset-content-sync{
+    .import-asset-content-about{
       position: absolute;
       top: 24px;
       right: 40px;
@@ -23,6 +23,7 @@
         cursor: pointer;
       }
     }
+    
     .import-asset-title{
       font-size: 20px;
       font-weight: bold;
@@ -42,8 +43,21 @@
         margin-left: 10px;
       }
     }
+    .relative {
+      position: relative;
+    }
+    .import-asset-content-sync{
+      position: absolute;
+      bottom: -24px;
+      right: 0;
+      text-align: right;
+      .sync-link{
+        color: var(--color-green-light);
+        cursor: pointer;
+      }
+    }
     .import-asset-list{
-      padding: 30px 50px 20px;
+      padding: 50px 50px 20px;
       .import-asset-list-empty{
         width: 65%;
         margin: 0 auto;

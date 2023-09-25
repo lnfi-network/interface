@@ -74,3 +74,38 @@
   padding: 20px 0px 10px;
   text-align: center;
 }
+
+.import-asset-about-modal {
+  .ant-modal-header{
+    background-color: #1C232B;
+    .ant-modal-title{
+      font-size: 18px;
+      text-align: center;
+    }
+  }
+  .ant-modal-content{
+    background-color: #1C232B;
+    .about-modal-content{
+      padding: 0 50px;
+    }
+    .about-num{
+      display: inline-block;
+      width: 26px;
+      height: 26px;
+      text-align: center;
+      line-height: 26px;
+      background-color: var(--color-green-light);
+      border-radius: 20px;
+      margin-right: 8px;
+    }
+  }
+  .ant-modal-footer{
+    text-align: center;
+    .ant-btn{
+      margin-top: 10px;
+      width: 180px;
+      height: 40px;
+      margin-bottom: 20px;
+    }
+  }
+}
