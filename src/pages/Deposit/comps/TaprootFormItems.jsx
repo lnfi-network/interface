@@ -125,6 +125,11 @@ export default function TaprootFormItems({ form, nostrAccount, notifiApi, messag
     }
     form.setFieldValue("amount", 0);
   }, [form, nostrAccount, tokens]);
+  useEffect(() => {
+    if (nostrAccount) {
+      setPaymentInvoice(null);
+    }
+  }, [nostrAccount]);
   return (
     <>
       <Form.Item

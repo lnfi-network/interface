@@ -94,7 +94,6 @@ export default function LightningFormItems({ form, nostrAccount, balance, messag
       const willDecodeInvoice = invoice.paymentRequest || invoice;
       form.setFieldValue("invoice", willDecodeInvoice);
       const parsedData = window.lightningPayReq.decode(willDecodeInvoice);
-      console.log("🚀 ~ file: LightningFormItems.jsx:94 ~ handleMakeInvoice ~ parsedData:", parsedData);
       const amount = parsedData.satoshis;
       setWithdrawAmount(amount);
       await form.validateFields();
@@ -152,6 +151,11 @@ export default function LightningFormItems({ form, nostrAccount, balance, messag
     }
     form.setFieldValue("depositOrWithdrawToken", "SATS");
   }, [form, nostrAccount, tokens]);
+  useEffect(() => {
+    if (nostrAccount) {
+      form.setFieldValue("invoice", null);
+    }
+  }, [form, nostrAccount]);
 
   const memoTitle = useMemo(() => {
     return <div className="create-invoice-modal-title">Create Invoice</div>;

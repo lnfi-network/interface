@@ -140,6 +140,12 @@ export default function TaprootFormItems({ form, nostrAccount, balance, notifiAp
       form.setFieldValue("depositOrWithdrawToken", tokens[0].name);
     }
   }, [form, nostrAccount, tokens]);
+
+  useEffect(() => {
+    if (nostrAccount) {
+      form.setFieldValue("invoice", null);
+    }
+  }, [form, nostrAccount]);
   return (
     <>
       <Form.Item

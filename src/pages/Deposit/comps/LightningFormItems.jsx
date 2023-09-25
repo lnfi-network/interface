@@ -68,6 +68,7 @@ export default function LightningFormItems({ form, nostrAccount, notifiApi, mess
         content: `Deposit Submit Successfully.`
       });
       await sleep(4000);
+      setPaymentInvoice(null);
     } catch (e) {
       messageApi.error({
         content: e.message
@@ -148,6 +149,12 @@ export default function LightningFormItems({ form, nostrAccount, notifiApi, mess
     }
     form.setFieldValue("amount", 0);
   }, [form, nostrAccount, tokens]);
+
+  useEffect(() => {
+    if (nostrAccount) {
+      setPaymentInvoice(null);
+    }
+  }, [nostrAccount]);
   return (
     <>
       <Form.Item
