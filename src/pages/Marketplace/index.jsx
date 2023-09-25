@@ -1,14 +1,7 @@
 import { useState, useRef, useMemo, memo, useCallback, useEffect } from "react";
 import { Layout, Menu, Button } from "antd";
 import { t } from "@lingui/macro";
-import {
-  Switch,
-  Route,
-  Link,
-  useHistory,
-  useRouteMatch,
-  Redirect,
-} from "react-router-dom";
+import { Switch, Route, Link, useHistory, useRouteMatch, Redirect } from "react-router-dom";
 import Listing from "./Listing";
 import OrderHistory from "./OrderHistory";
 import MyOrder from "./MyOrder";
@@ -19,13 +12,14 @@ import { nip19 } from "nostr-tools";
 // import { useQueryBalance } from "hooks/useNostrMarket";
 // import { useDebounceEffect, useMount } from "ahooks";
 import "./index.scss";
+import CheckNostrButton from "components/CheckNostrButton";
 const { Content } = Layout;
 function getItem(label, key, icon, children) {
   return {
     label,
     key,
     icon,
-    children,
+    children
   };
 }
 
@@ -47,14 +41,8 @@ export default function Marketplace() {
   const items = useMemo(() => {
     return [
       getItem(<Link to={`${match.url}/listing`}>{t`Listing`}</Link>, "listing"),
-      getItem(
-        <Link to={`${match.url}/order-history`}>{t`Order History`}</Link>,
-        "orderhistory"
-      ),
-      getItem(
-        <Link to={`${match.url}/my-order`}>{t`My Order`}</Link>,
-        "myorder"
-      ),
+      getItem(<Link to={`${match.url}/order-history`}>{t`Order History`}</Link>, "orderhistory"),
+      getItem(<Link to={`${match.url}/my-order`}>{t`My Order`}</Link>, "myorder")
     ];
   }, [match.url]);
   const pathNames = useMemo(() => {
@@ -62,7 +50,7 @@ export default function Marketplace() {
       [match.url]: ["listing"],
       [match.url + "/listing"]: ["listing"],
       [match.url + "/order-history"]: ["orderhistory"],
-      [match.url + "/my-order"]: ["myorder"],
+      [match.url + "/my-order"]: ["myorder"]
     };
   }, [match.url]);
   const switchMemo = useMemo(() => {
@@ -130,13 +118,11 @@ export default function Marketplace() {
               className="marketplace-menu"
             />
             <div className="marketplace-listing-btn">
-              <Button
-                className="buy-list-btn"
-                type="primary"
-                onClick={handleList}
-              >
-                {t`Make New Listing`}
-              </Button>
+              <CheckNostrButton>
+                <Button className="buy-list-btn" type="primary" onClick={handleList}>
+                  {t`Make New Listing`}
+                </Button>
+              </CheckNostrButton>
             </div>
           </div>
 

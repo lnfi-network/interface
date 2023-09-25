@@ -19,7 +19,8 @@ import { getQueryVariable } from "lib/url";
 // import { useCancelOrder } from "hooks/useNostrMarket";
 import { nip19 } from "nostr-tools";
 import BigNumber from "bignumber.js";
-import { utcToClient } from "lib/dates"
+import { utcToClient } from "lib/dates";
+import CheckNostrButton from "components/CheckNostrButton";
 // import { add, cut, nul, division } from "lib/utils/math";
 
 // const initQuery = {
@@ -216,11 +217,11 @@ export default function Listing({ refListing }) {
             <div className="trade-item-value">
               {item?.total_price && row && curToken
                 ? numberWithCommas(
-                  limitDecimals(
-                    BigNumber(item?.total_price).div(curToken?.decimals).div(row?.decimals).toNumber(),
-                    row?.reserve
+                    limitDecimals(
+                      BigNumber(item?.total_price).div(curToken?.decimals).div(row?.decimals).toNumber(),
+                      row?.reserve
+                    )
                   )
-                )
                 : "--"}{" "}
               USDT
             </div>
@@ -233,24 +234,24 @@ export default function Listing({ refListing }) {
           </div>
           <div className="trade-item-section bg-grey">
             <div className="trade-item-label">{t`Date`}</div>
-            <div className="trade-item-value">
-              {utcToClient(item?.create_time)}
-            </div>
+            <div className="trade-item-value">{utcToClient(item?.create_time)}</div>
           </div>
           <div className="trade-item-section bg-grey">
             <Tooltip
               color="#6f6e84"
               title={item.owner == nostrAccount ? "Trading your own orders is not supported" : ""}
             >
-              <Button
-                type="primary"
-                className={type == "Buy" ? "buy-btn" : "sell-btn"}
-                // onClick={handleBuyOrSellByMarket}
-                disabled={item.owner == nostrAccount}
-                onClick={() => handleBuyOrSellByMarket(item)}
-              >
-                {type == "Buy" ? `Buy ${item.token}` : `Sell ${item.token}`}
-              </Button>
+              <CheckNostrButton>
+                <Button
+                  type="primary"
+                  className={type == "Buy" ? "buy-btn" : "sell-btn"}
+                  // onClick={handleBuyOrSellByMarket}
+                  disabled={item.owner == nostrAccount}
+                  onClick={() => handleBuyOrSellByMarket(item)}
+                >
+                  {type == "Buy" ? `Buy ${item.token}` : `Sell ${item.token}`}
+                </Button>
+              </CheckNostrButton>
             </Tooltip>
           </div>
         </div>
