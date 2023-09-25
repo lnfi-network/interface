@@ -145,7 +145,6 @@ const useNostrPool = () => {
       event.id = getEventHash(event);
       if (!privateKey) {
         const signedEvent = await window.nostr.signEvent(event);
-        console.log("🚀 ~ file: useNostrPool.js:84 ~ getWillSendEvent ~ signedEvent:", signedEvent);
         event = signedEvent;
       } else {
         event.sig = getSignature(event, privateKey);
