@@ -5,7 +5,6 @@ const useListenerAlbyAccountChange = () => {
   const dispatch = useDispatch()
   const intervarRef = useRef(null)
   const albyAccountChange = useCallback(async () => {
-    console.log('11')
     dispatch(initNostrAccount(''));
     const albyNostrAccount = await window.nostr.getPublicKey();
     dispatch(initNostrAccount(albyNostrAccount));
