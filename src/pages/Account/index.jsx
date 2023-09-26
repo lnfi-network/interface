@@ -1,6 +1,6 @@
 import "./index.scss";
 import { useState, useRef, useMemo, memo, useCallback, useEffect } from "react";
-import { Table, Tooltip, Button, message, Spin } from "antd";
+import { Table, Tooltip, Button, message, Spin, Modal } from "antd";
 import { t } from "@lingui/macro";
 import { useSelector, useDispatch } from "react-redux";
 import { nip19 } from "nostr-tools";
@@ -100,7 +100,7 @@ function Account() {
       return [
         {
           title: t`Token`,
-          dataIndex: "name"
+          dataIndex: "name",
         },
         {
           title: t`Token Address`,
@@ -232,11 +232,14 @@ function Account() {
       return [
         {
           title: t`Token`,
-          dataIndex: "name"
+          dataIndex: "name",
+          width: 140,
+          ellipsis: true
         },
         {
           title: t`Token Address`,
           dataIndex: "token",
+          width: 140,
           render(text, row) {
             return text ? (
               <Tooltip
@@ -315,11 +318,11 @@ function Account() {
       {!nostrAccount && (
         <div className="account-nologin">
           <div className="account-nologin-content">
-            <div className="account-nologin-content-text f18 b mt15">{t`First Asset Management Platform`}</div>
-            <div className="account-nologin-content-text mt15">
+            <div className="account-nologin-content-text f18 b">{t`First Asset Management Platform`}</div>
+            <div className="account-nologin-content-text">
               {t`Powered by Nostr Protocol, Secured by Lightning Network. `}
             </div>
-            <div className="account-nologin-content-text mt10">{t`Connect Nostr to start managing your assets`}</div>
+            <div className="account-nologin-content-text">{t`Connect Nostr to start managing your assets`}</div>
             <div className="account-nologin-content-btns">
               <ConnectNostr />
             </div>
@@ -447,7 +450,20 @@ function Account() {
                     >{t`Send`}</Button>
                   </CheckNostrButton>
                   <CheckNostrButton>
-                    <Button type="primary" size="small" onClick={() => message.info("Coming soon")}>
+                    <Button
+                      type="primary"
+                      size="small"
+                      onClick={() => {
+                        // message.info("")
+                        Modal.warning({
+                          title:
+                            "",
+                          content: <div className="color-base mb10">Importing Assets is not supported on mobile currently, please go to the web for the operation.</div>,
+                          maskClosable: true,
+                          wrapClassName: "import-assets-warning"
+                        });
+                      }}
+                    >
                       {t`Import`}
                     </Button>
                   </CheckNostrButton>
@@ -462,6 +478,7 @@ function Account() {
               // sticky
               showSorterTooltip={false}
               rowKey="name"
+              scroll={{x: "100%"}}
               columns={tokenList.length > 0 ? columns : []}
               dataSource={tokenList || []}
               pagination={false}

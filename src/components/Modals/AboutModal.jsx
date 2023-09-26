@@ -30,7 +30,7 @@ export default function AboutModal() {
       <Modal
         className="import-asset-about-modal"
         open={aboutModalVisible}
-        width="850px"
+        width="800px"
         title={"About Import Assets"}
         zIndex={1002}
         footer={
@@ -55,14 +55,14 @@ export default function AboutModal() {
         // closeIcon={null}
       >
         <div className="about-modal-content">
-          <div className="color-dark mt20 f16">
+          <div className="about-modal-content-info">
             Import Assets refers to the process of importing assets from the Universe of NostrAssets or other daemon
             Universes to NostrAssets Asset List. You can manage these assets once they are imported.
           </div>
           <div className="mt30 f16"><span className="about-num">1</span>Importing Assets from the Universe of NostrAssets</div>
           <img style={{ width: "100%" }} src={assetsAbout1} alt="" />
           <div className="mt20 f16"><span className="about-num">2</span>Importing Assets from other daemon Universes</div>
-          <img style={{ width: "100%" }} src={assetsAbout2} alt="" />
+          <img className="mt10" style={{ width: "100%" }} src={assetsAbout2} alt="" />
         </div>
       </Modal>
     </>

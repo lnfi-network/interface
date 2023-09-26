@@ -149,6 +149,7 @@
     border-radius: 15px;
     .account-nologin-content-text {
       font-size: 17px;
+      margin-top: 15px;
     }
     .account-nologin-content-btns {
       margin-top: 20px;
@@ -162,6 +163,51 @@
           background: var(--color-green-light);
           color: #fff;
         }
+      }
+    }
+  }
+}
+.import-assets-warning{
+    .ant-modal-confirm-title{
+      color: var(--color-text-base);
+    }
+  .ant-modal-content{
+    background-color: #1C232B;
+    .about-modal-content{
+      padding: 0 50px;
+    }
+    .about-modal-content-info{
+      margin-top: 20px;
+      font-size: 16px;
+      color: #ccc;
+      text-align: justify;
+    }
+    .anticon-exclamation-circle{
+      display: none;
+    }
+    .about-num{
+      display: inline-block;
+      width: 26px;
+      height: 26px;
+      text-align: center;
+      line-height: 26px;
+      background-color: var(--color-green-light);
+      border-radius: 20px;
+      margin-right: 8px;
+    }
+  }
+  .ant-modal-confirm-btns{
+    text-align: center;
+    .ant-btn{
+      width: 160px;
+      height: 32px;
+      color: #fff;
+      background-color: #38c89d;
+      box-shadow: 0 2px 0 rgba(31, 242, 198, 0.09);
+      &:hover{
+        color: #fff;
+        background-color: #38c89d;
+        box-shadow: 0 2px 0 rgba(31, 242, 198, 0.09);
       }
     }
   }
@@ -292,7 +338,10 @@
       .account-nologin-content-text {
         font-size: 14px;
         line-height: 20px;
-        // margin-top: 10px;
+        margin-top: 10px;
+      }
+      .account-nologin-content-text:first-child{
+        margin-top: 0;
       }
       .mt15{
         margin-top: 15px;
