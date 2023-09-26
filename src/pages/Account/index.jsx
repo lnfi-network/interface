@@ -233,13 +233,12 @@ function Account() {
         {
           title: t`Token`,
           dataIndex: "name",
-          width: 140,
+          width: 100,
           ellipsis: true
         },
         {
           title: t`Token Address`,
           dataIndex: "token",
-          width: 140,
           render(text, row) {
             return text ? (
               <Tooltip
@@ -250,7 +249,7 @@ function Account() {
                     <div>
                       Token address:
                       {row?.token
-                        ? row?.token?.substring(0, 10) + "..." + row?.token?.substring(row?.token?.length - 6)
+                        ? row?.token?.substring(0, 8) + "..." + row?.token?.substring(row?.token?.length - 6)
                         : "--"}
                     </div>
                     {/*  <div>Token Channel: {row?.symbol || "--"}</div> */}
@@ -478,7 +477,6 @@ function Account() {
               // sticky
               showSorterTooltip={false}
               rowKey="name"
-              scroll={{x: "100%"}}
               columns={tokenList.length > 0 ? columns : []}
               dataSource={tokenList || []}
               pagination={false}
