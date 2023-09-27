@@ -30,10 +30,6 @@ msgid "Add"
 msgstr ""
 
 #: src/pages/Account/comps/AddressBook/index.jsx
-msgid "Add Addres"
-msgstr ""
-
-#: src/pages/Account/comps/AddressBook/index.jsx
 msgid "Add Address"
 msgstr ""
 

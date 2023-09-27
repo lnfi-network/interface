@@ -296,14 +296,14 @@ function AddressBook({ isAddressBookShow, setIsAddressBookShow }) {
             addressBookItems
           )}
         </div>
-        <div className="add-addres-btn-box">
+        <div className="add-address-btn-box">
           <Button
             type="primary"
-            className="add-addres-btn"
+            className="add-address-btn"
             onClick={() => {
               setAdd(true);
             }}
-          >{t`Add Addres`}</Button>
+          >{t`Add Address`}</Button>
         </div>
       </Modal>
       <AddAddressBook
