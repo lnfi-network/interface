@@ -80,8 +80,8 @@ export default function LightningFormItems({ form, nostrAccount, notifiApi, mess
   const memoSubmitButton = useMemo(() => {
     return nostrAccount ? (
       <>
-        <Space>
-          <Button
+        {!(payInvoice && device.isMobile) && <Space>
+        <Button
             type="primary"
             size="large"
             loading={btnLoading}
@@ -98,12 +98,12 @@ export default function LightningFormItems({ form, nostrAccount, notifiApi, mess
               <InfoCircleOutlined />
             </Tooltip>
           )}
-        </Space>
+        </Space>}
       </>
     ) : (
       <ConnectNostr />
     );
-  }, [btnLoading, handleCreateInvoice, handleDirectPayInvoice, nostrAccount, payInvoice]);
+  }, [btnLoading, device.isMobile, handleCreateInvoice, handleDirectPayInvoice, nostrAccount, payInvoice]);
 
   const memoPaymentInvoice = useMemo(() => {
     return payInvoice ? (

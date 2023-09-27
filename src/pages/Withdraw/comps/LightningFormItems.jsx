@@ -222,7 +222,7 @@ export default function LightningFormItems({ form, nostrAccount, balance, messag
       </Form.Item>
       <Form.Item label="Invoice">
         <Row className="withdraw-amount-row" align="middle">
-          <Col span={16}>
+          <Col span={device.isMobile ? 24 : 16}>
             <Form.Item
               name="invoice"
               label="Invoice"
@@ -255,17 +255,19 @@ export default function LightningFormItems({ form, nostrAccount, balance, messag
               />
             </Form.Item>
           </Col>
-          <Col span={8}>
-            <Button
-              type="link"
-              onClick={() => {
-                setWillCreateInvoiceAmount(1);
-                setCreateInvoiceModal(true);
-              }}
-            >
-              Create Invoice
-            </Button>
-          </Col>
+          {!device.isMobile && (
+            <Col span={8}>
+              <Button
+                type="link"
+                onClick={() => {
+                  setWillCreateInvoiceAmount(1);
+                  setCreateInvoiceModal(true);
+                }}
+              >
+                Create Invoice
+              </Button>
+            </Col>
+          )}
         </Row>
       </Form.Item>
 
