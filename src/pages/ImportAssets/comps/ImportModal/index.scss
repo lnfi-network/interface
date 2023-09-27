@@ -8,3 +8,15 @@
     padding: 20px;
   }
 }
+@media screen and (max-width: 768px) {
+  .import-asset-modal{
+    .ant-modal-title{
+      padding-bottom: 10px;
+      text-align: center;
+    }
+    .import-asset-form{
+      // margin-top: 20px;
+      padding: 0;
+    }
+  }
+}

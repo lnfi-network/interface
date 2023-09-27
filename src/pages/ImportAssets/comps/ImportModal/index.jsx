@@ -5,14 +5,20 @@ import {
   Form,
   Row,
   Modal,
+  AutoComplete,
+  Select
 } from "antd";
 
 import { useState, useCallback, useMemo, memo, useRef, useEffect } from "react";
 import "./index.scss";
 import { t } from "@lingui/macro";
 import { useImportAsset, useHandleQueryTokenList } from "hooks/useNostrMarket";
-
+const universeList = [
+  "universe.tiramisuwallet.com:10029",
+  "testnet.universe.lightning.finance"
+]
 function ImportModalForm({ open, setOpen, importingOpen, setImportingOpen, setImportingMap }) {
+  const Option = Select.Option;
   const [form] = Form.useForm();
   const [messageApi, contextHolder] = message.useMessage();
   const [btnLoading, setBtnLoading] = useState(false);
@@ -70,7 +76,22 @@ function ImportModalForm({ open, setOpen, importingOpen, setImportingOpen, setIm
       </Button>
     );
   }, [btnLoading, onImportSubmit]);
-
+  const universeItem = useMemo(() => {
+    return universeList?.map((item) => {
+      // const _address = nip19.npubEncode(item.contacts);
+      return (
+        <Option value={item} key={item}>
+          {/* <div>
+            <span className="b">Name:</span> {item.description}
+          </div>
+          <div title={_address}>
+            <span className="b">Nostr:</span> {_address}
+          </div> */}
+          {item}
+        </Option>
+      );
+    });
+  }, []);
   return (
     <>
       {contextHolder}
@@ -101,11 +122,14 @@ function ImportModalForm({ open, setOpen, importingOpen, setImportingOpen, setIm
                 message: 'Please enter the universe_host!',
               }
             ]}>
-            <Input
+              <AutoComplete>
+                {universeItem}
+              </AutoComplete>
+            {/* <Input
               type="text"
               size={"middle"}
               placeholder="Please enter the universe_host"
-            />
+            /> */}
           </Form.Item>
           <div className="f12 color-dark" style={{ marginBottom: "20px" }}>eg. tapd.nostrassets.com:10029, this is our universe_host</div>
           <Form.Item

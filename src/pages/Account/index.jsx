@@ -89,12 +89,13 @@ function Account() {
     [history]
   );
   const goImportAssets = useCallback(() => {
-    if (!Lockr.get("aboutModal")) {
-      dispatch(setAboutModalVisible(true));
-    } else {
-      onHandleRedirect("importAssets");
-    }
-  }, [dispatch, onHandleRedirect]);
+    dispatch(setAboutModalVisible(true));
+    // if (!Lockr.get("aboutModal")) {
+    //   dispatch(setAboutModalVisible(true));
+    // } else {
+    //   onHandleRedirect("importAssets");
+    // }
+  }, [dispatch]);
   const columns = useMemo(() => {
     if (width > 768) {
       return [
@@ -451,6 +452,18 @@ function Account() {
                   <CheckNostrButton>
                     <Button
                       type="primary"
+                      // icon={<AssetSvg width={26} height={26} />}
+                      // onClick={() => message.info("Coming soon")}
+                      onClick={() => {
+                        goImportAssets();
+                      }}
+                    >
+                      {t`Import`}
+                    </Button>
+                  </CheckNostrButton>
+                  {/* <CheckNostrButton>
+                    <Button
+                      type="primary"
                       size="small"
                       onClick={() => {
                         // message.info("")
@@ -465,7 +478,7 @@ function Account() {
                     >
                       {t`Import`}
                     </Button>
-                  </CheckNostrButton>
+                  </CheckNostrButton> */}
                 </>
               )}
             </div>
