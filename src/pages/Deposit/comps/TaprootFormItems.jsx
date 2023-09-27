@@ -39,10 +39,10 @@ export default function TaprootFormItems({ form, nostrAccount, notifiApi, messag
     create invoice from nostr
   */
   const handleCreateInvoice = useCallback(async () => {
-    if (device.isMobile) {
-      dispatch(setOnlyMobileSupportedVisible(true));
-      return;
-    }
+    // if (device.isMobile) {
+    //   dispatch(setOnlyMobileSupportedVisible(true));
+    //   return;
+    // }
     const [validateErr, _] = await to(form.validateFields());
     if (validateErr) {
       return;
@@ -67,7 +67,7 @@ export default function TaprootFormItems({ form, nostrAccount, notifiApi, messag
     } finally {
       setBtnLoading(false);
     }
-  }, [device.isMobile, dispatch, form, handleGetTaprootDepositInvoice, messageApi]);
+  }, [form, handleGetTaprootDepositInvoice, messageApi]);
 
   const memoSubmitButton = useMemo(() => {
     return nostrAccount ? (

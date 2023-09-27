@@ -23,10 +23,10 @@ export default function TaprootFormItems({ form, nostrAccount, balance, notifiAp
   const dispatch = useDispatch();
   const device = useDevice();
   const handleWithdraw = useCallback(async () => {
-    if (device.isMobile) {
-      dispatch(setOnlyMobileSupportedVisible(true));
-      return;
-    }
+    // if (device.isMobile) {
+    //   dispatch(setOnlyMobileSupportedVisible(true));
+    //   return;
+    // }
     try {
       const [validateErr] = await to(form.validateFields());
       if (validateErr) {
@@ -67,17 +67,7 @@ export default function TaprootFormItems({ form, nostrAccount, balance, notifiAp
     } finally {
       setBtnLoading(false);
     }
-  }, [
-    balance,
-    device.isMobile,
-    dispatch,
-    form,
-    handleQueryBalance,
-    handleTaprootWithdrawAsync,
-    messageApi,
-    npubNostrAccount,
-    withdrawAmount
-  ]);
+  }, [balance, form, handleQueryBalance, handleTaprootWithdrawAsync, messageApi, npubNostrAccount, withdrawAmount]);
   const tokens = useMemo(() => {
     return tokenList.filter((item) => item.assetType === "TAPROOT");
   }, [tokenList]);

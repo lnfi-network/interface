@@ -27,10 +27,10 @@ export default function LightningFormItems({ form, nostrAccount, notifiApi, mess
     create invoice from nostr
   */
   const handleCreateInvoice = useCallback(async () => {
-    if (device.isMobile) {
-      dispatch(setOnlyMobileSupportedVisible(true));
-      return;
-    }
+    // if (device.isMobile) {
+    //   dispatch(setOnlyMobileSupportedVisible(true));
+    //   return;
+    // }
     const [validateErr, _] = await to(form.validateFields());
     if (validateErr) {
       return;
@@ -51,7 +51,7 @@ export default function LightningFormItems({ form, nostrAccount, notifiApi, mess
     } finally {
       setBtnLoading(false);
     }
-  }, [device.isMobile, dispatch, form, handleGetWeblnDepositInvoice, messageApi]);
+  }, [form, handleGetWeblnDepositInvoice, messageApi]);
 
   const handleDirectPayInvoice = useCallback(async () => {
     if (device.isMobile) {

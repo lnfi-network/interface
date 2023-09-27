@@ -26,10 +26,10 @@ export default function LightningFormItems({ form, nostrAccount, balance, messag
   const dispatch = useDispatch();
   const device = useDevice();
   const handleWithdraw = useCallback(async () => {
-    if (device.isMobile) {
-      dispatch(setOnlyMobileSupportedVisible(true));
-      return;
-    }
+    // if (device.isMobile) {
+    //   dispatch(setOnlyMobileSupportedVisible(true));
+    //   return;
+    // }
     try {
       const [validateErr] = await to(form.validateFields());
       if (validateErr) {
@@ -68,17 +68,7 @@ export default function LightningFormItems({ form, nostrAccount, balance, messag
       form.setFieldValue("invoice", "");
       setWithdrawAmount(0);
     }
-  }, [
-    balance,
-    device.isMobile,
-    dispatch,
-    form,
-    handleQueryBalance,
-    handleWeblnWithdrawAsync,
-    messageApi,
-    npubNostrAccount,
-    withdrawAmount
-  ]);
+  }, [balance, form, handleQueryBalance, handleWeblnWithdrawAsync, messageApi, npubNostrAccount, withdrawAmount]);
 
   const handleMakeInvoice = useCallback(async () => {
     setBtnCreateLoading(true);
