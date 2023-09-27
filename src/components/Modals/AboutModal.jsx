@@ -5,21 +5,24 @@ import { useHistory } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import assetsAbout1 from "img/assets-about-1.jpg";
 import assetsAbout2 from "img/assets-about-2.jpg";
+import assetsAbout1_m from "img/assets-about-1-m.jpg";
+import assetsAbout2_m from "img/assets-about-2-m.jpg";
 import * as Lockr from "lockr";
 import { setAboutModalVisible } from "store/reducer/modalReducer";
 import "./index.scss";
+import useDevice from "hooks/useDevice";
 export default function AboutModal() {
   const { aboutModalVisible } = useSelector(({ modal }) => modal);
-
+  const device = useDevice();
   const dispatch = useDispatch();
   const handleCancel = useCallback(() => {
-    Lockr.set("aboutModal", true)
+    Lockr.set("aboutModal", true);
     dispatch(setAboutModalVisible(false));
   }, [dispatch]);
   const history = useHistory();
   const onHandleRedirect = useCallback(
     (redirectTo) => {
-      if(!(history?.location?.pathname?.indexOf("importAssets") > -1)) {
+      if (!(history?.location?.pathname?.indexOf("importAssets") > -1)) {
         history.push(`/${redirectTo}`);
       }
     },
@@ -38,19 +41,17 @@ export default function AboutModal() {
             <Button
               type="primary"
               size={"middle"}
-              onClick={
-                () => {
-                  handleCancel()
-                  onHandleRedirect("importAssets")
-                }
-              }
+              onClick={() => {
+                handleCancel();
+                onHandleRedirect("importAssets");
+              }}
             >
               Continue
             </Button>
           </>
         }
         onCancel={() => {
-          handleCancel()
+          handleCancel();
         }}
         // closeIcon={null}
       >
@@ -59,10 +60,14 @@ export default function AboutModal() {
             Import Assets refers to the process of importing assets from the Universe of NostrAssets or other daemon
             Universes to NostrAssets Asset List. You can manage these assets once they are imported.
           </div>
-          <div className="mt30 about-modal-content-title"><span className="about-num">1</span>Importing Assets from the Universe of NostrAssets</div>
-          <img style={{ width: "100%" }} src={assetsAbout1} alt="" />
-          <div className="mt20 about-modal-content-title"><span className="about-num">2</span>Importing Assets from other daemon Universes</div>
-          <img className="mt10" style={{ width: "100%" }} src={assetsAbout2} alt="" />
+          <div className="mt30 about-modal-content-title">
+            <span className="about-num">1</span>Importing Assets from the Universe of NostrAssets
+          </div>
+          <img style={{ width: "100%" }} src={device.isMobile ? assetsAbout1_m : assetsAbout1} alt="" />
+          <div className="mt20 about-modal-content-title">
+            <span className="about-num">2</span>Importing Assets from other daemon Universes
+          </div>
+          <img className="mt10" style={{ width: "100%" }} src={device.isMobile ? assetsAbout2_m : assetsAbout2} alt="" />
         </div>
       </Modal>
     </>

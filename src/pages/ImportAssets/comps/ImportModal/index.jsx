@@ -14,8 +14,8 @@ import "./index.scss";
 import { t } from "@lingui/macro";
 import { useImportAsset, useHandleQueryTokenList } from "hooks/useNostrMarket";
 const universeList = [
-  "universe.tiramisuwallet.com:10029",
-  "testnet.universe.lightning.finance"
+  "testnet.universe.lightning.finance",
+  "universe.tiramisuwallet.com:10029"
 ]
 function ImportModalForm({ open, setOpen, importingOpen, setImportingOpen, setImportingMap }) {
   const Option = Select.Option;
