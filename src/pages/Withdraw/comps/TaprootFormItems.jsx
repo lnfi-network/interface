@@ -11,17 +11,21 @@ import { useDispatch } from "react-redux";
 import { setOnlyMobileSupportedVisible } from "store/reducer/modalReducer";
 import useDevice from "hooks/useDevice";
 import { nip19 } from "nostr-tools";
-export default function TaprootFormItems({ form, nostrAccount, balance, notifiApi, messageApi, handleQueryBalance }) {
+export default function TaprootFormItems({ form, nostrAccount, notifiApi, messageApi, handleQueryBalance }) {
   const { TextArea } = Input;
   const [btnLoading, setBtnLoading] = useState(false);
   const { handleTaprootWithdrawAsync } = useTaprootWithdraw();
   const { handleTaprootDecodeAsync } = useTaprootDecode();
   const [withdrawAmount, setWithdrawAmount] = useState(0);
   const [decodeLoading, setDecodeloding] = useState(false);
-  const { npubNostrAccount } = useSelector(({ user }) => user);
+  const { npubNostrAccount, balanceList } = useSelector(({ user }) => user);
   const { tokenList } = useSelector(({ market }) => market);
   const dispatch = useDispatch();
   const device = useDevice();
+  const [token, setToken] = useState("");
+  const balance = useMemo(() => {
+    return balanceList[token] ? balanceList[token]?.balanceShow : 0.0;
+  }, [balanceList, token]);
   const handleWithdraw = useCallback(async () => {
     // if (device.isMobile) {
     //   dispatch(setOnlyMobileSupportedVisible(true));
@@ -79,8 +83,13 @@ export default function TaprootFormItems({ form, nostrAccount, balance, notifiAp
     ));
   }, [tokens]);
   const memoWithdrawBalance = useMemo(() => {
-    return <span className="withdraw-amount-balance">Nostr Account balance: {balance} TAPROOT</span>;
-  }, [balance]);
+    // return <span className="withdraw-amount-balance">Nostr Account balance: {balance} TAPROOT</span>;
+    return (
+      <span className="withdraw-amount-balance">
+        Nostr Account balance: {balance} {token}
+      </span>
+    );
+  }, [balance, token]);
   const memoWithdrawBtn = useMemo(() => {
     return nostrAccount ? (
       <Button
@@ -128,6 +137,7 @@ export default function TaprootFormItems({ form, nostrAccount, balance, notifiAp
     form.setFieldValue("depositOrWithdrawFormNostrAddress", nostrAccount);
     if (tokens.length > 0) {
       form.setFieldValue("depositOrWithdrawToken", tokens[0].name);
+      setToken(tokens[0].name);
     }
   }, [form, nostrAccount, tokens]);
 
@@ -136,6 +146,10 @@ export default function TaprootFormItems({ form, nostrAccount, balance, notifiAp
       form.setFieldValue("invoice", null);
     }
   }, [form, nostrAccount]);
+  const tokenChange = useCallback((value) => {
+    // console.log(value);s
+    setToken(value);
+  }, []);
   return (
     <>
       <Form.Item
@@ -168,6 +182,7 @@ export default function TaprootFormItems({ form, nostrAccount, balance, notifiAp
           allowClear={false}
           size="large"
           style={{ maxWidth: "460px" }}
+          onChange={tokenChange}
         >
           {options}
         </Select>

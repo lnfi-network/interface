@@ -12,7 +12,7 @@ import { setConnectNostrModalVisible, setOnlyMobileSupportedVisible } from "stor
 import useDevice from "hooks/useDevice";
 import { nip19 } from "nostr-tools";
 import "./LightningFormItems.scss";
-export default function LightningFormItems({ form, nostrAccount, balance, messageApi, handleQueryBalance }) {
+export default function LightningFormItems({ form, nostrAccount, messageApi, handleQueryBalance }) {
   const { TextArea } = Input;
   const [btnLoading, setBtnLoading] = useState(false);
   const [createBtnLoading, setBtnCreateLoading] = useState(false);
@@ -20,11 +20,14 @@ export default function LightningFormItems({ form, nostrAccount, balance, messag
   const [withdrawAmount, setWithdrawAmount] = useState(0);
   const [createInvoiceModal, setCreateInvoiceModal] = useState(false);
   const [willCreateInvoiceAmount, setWillCreateInvoiceAmount] = useState(1);
-  const { npubNostrAccount } = useSelector(({ user }) => user);
+  const { npubNostrAccount, balanceList } = useSelector(({ user }) => user);
   const { tokenList } = useSelector(({ market }) => market);
   const { makeInvoice } = useWebln();
   const dispatch = useDispatch();
   const device = useDevice();
+  const balance = useMemo(() => {
+    return balanceList["SATS"] ? balanceList["SATS"]?.balanceShow : 0.0;
+  }, [balanceList]);
   const handleWithdraw = useCallback(async () => {
     // if (device.isMobile) {
     //   dispatch(setOnlyMobileSupportedVisible(true));
