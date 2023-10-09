@@ -26,7 +26,7 @@ if ("ethereum" in window) {
 }
 
 const GlobalHooks = () => {
-  // useAccountInit();
+  useAccountInit();
   useGlobalNostrAssetsEvent();
   useListenerRelayStatus();
   useListenerAlbyAccountChange();
@@ -57,21 +57,21 @@ function App() {
     dynamicActivate(defaultLanguage);
   }, []);
   return (
-    //<WagmiConfig config={wagmiConfig}>
-    <I18nProvider i18n={i18n} forceRenderOnLocaleChange={false}>
-      <NostrProvider debug={true}>
-        <GraphProvider value={client}>
-          <SEO>
-            <Router>
-              <Routes />
-            </Router>
-          </SEO>
-        </GraphProvider>
-        <GlobalHooks />
-        <GlobalModalInit />
-      </NostrProvider>
-    </I18nProvider>
-    //</WagmiConfig>
+    <WagmiConfig config={wagmiConfig}>
+      <I18nProvider i18n={i18n} forceRenderOnLocaleChange={false}>
+        <NostrProvider debug={true}>
+          <GraphProvider value={client}>
+            <SEO>
+              <Router>
+                <Routes />
+              </Router>
+            </SEO>
+          </GraphProvider>
+          <GlobalHooks />
+          <GlobalModalInit />
+        </NostrProvider>
+      </I18nProvider>
+    </WagmiConfig>
   );
 }
 
