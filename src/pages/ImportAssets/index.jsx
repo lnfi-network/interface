@@ -7,6 +7,7 @@ import { Button, Input, Spin, Empty, Tooltip, Image, Modal, Pagination } from "a
 import { useImportAssetsQuery } from "hooks/graphQuery/useExplore";
 import { useCallback, useMemo, useState } from "react";
 import ImportModal from "./comps/ImportModal";
+import SyncImportModal from "./comps/SyncImportModal";
 import EllipsisMiddle from "components/EllipsisMiddle";
 import { useImportAsset, useHandleQueryTokenList } from "hooks/useNostrMarket";
 import tapdLogo from "img/tapd-logo.jpg";
@@ -14,6 +15,7 @@ import CheckNostrButton from "components/CheckNostrButton";
 import { setAboutModalVisible } from "store/reducer/modalReducer";
 import { CheckCircleOutlined, CloseCircleOutlined, SwapOutlined } from "@ant-design/icons";
 import useDevice from "hooks/useDevice";
+import { set } from "lodash";
 const assetsTypeMap = {
   0: "Token",
   1: "NFT"
@@ -91,14 +93,16 @@ export default function ImportAssets() {
   const device = useDevice();
   const { tokenList } = useSelector(({ market }) => market);
   const [open, setOpen] = useState(false);
+  const [syncOpen, setSyncOpen] = useState(false);
   const [pageSize, setPageSize] = useState(20);
   const [pageIndex, setPageIndex] = useState(1);
   const [assetId, setAssetId] = useState("");
+  const [curAsset, setCurAsset] = useState(null);
   const [importingOpen, setImportingOpen] = useState(false);
   const [importingMap, setImportingMap] = useState({
     type: "success",
     content:
-      "Greate! You just imported a Taproot Asset to NostrAssets, you can back to Assets page to manage your asset now."
+      "Great! You just imported a Taproot Asset to NostrAssets. You can return to Asset List to manage your asset now."
   });
   const { handleQueryBalance } = useQueryBalance();
   const { npubNostrAccount } = useSelector(({ user }) => user);
@@ -107,6 +111,10 @@ export default function ImportAssets() {
     pageIndex: pageIndex,
     assetId
   });
+  const importAssetShow = useCallback((item) => {
+    setCurAsset(item)
+    setOpen(true)
+  },[])
   const assetList = useMemo(() => {
     if (fetching) {
       return (
@@ -154,13 +162,20 @@ export default function ImportAssets() {
               <Transfer item={item}></Transfer>
 
               <div className="import-asset-item-section-btn">
-                {!isImported ? (
-                  <ImportButton
-                    item={item}
-                    setImportingOpen={setImportingOpen}
-                    setImportingMap={setImportingMap}
-                  ></ImportButton>
-                ) : (
+                {!isImported ? 
+                <CheckNostrButton>
+                  <Button type="primary" onClick={() => importAssetShow(item)}>
+                    Import Asset
+                  </Button>
+                </CheckNostrButton>
+                // (
+                //   <ImportButton
+                //     item={item}
+                //     setImportingOpen={setImportingOpen}
+                //     setImportingMap={setImportingMap}
+                //   ></ImportButton>
+                // ) 
+                : (
                   "Imported"
                 )}
               </div>
@@ -189,7 +204,7 @@ export default function ImportAssets() {
         </div>
       );
     }
-  }, [device.isMobile, fetching, list, tokenList]);
+  }, [device.isMobile, fetching, importAssetShow, list, tokenList]);
   const assetIdChange = useCallback((e) => {
     //
     setPageIndex(1);
@@ -253,7 +268,15 @@ export default function ImportAssets() {
           </div>
         </div>
       </div>
+      <SyncImportModal
+        open={syncOpen}
+        setOpen={setSyncOpen}
+        importingOpen={importingOpen}
+        setImportingOpen={setImportingOpen}
+        setImportingMap={setImportingMap}
+      ></SyncImportModal>
       <ImportModal
+        asset={curAsset}
         open={open}
         setOpen={setOpen}
         importingOpen={importingOpen}

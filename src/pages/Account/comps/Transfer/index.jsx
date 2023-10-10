@@ -166,7 +166,7 @@ function TransferModalForm({ detail, isTransferShow, setIsTransferShow }) {
         address,
       });
       if (ret?.code === 0) {
-        message.success(t`Submit successfully`);
+        message.success(t`Transfer successful`);
 
         await handleQueryBalance(nip19.npubEncode(nostrAccount));
         setTimeout(() => {

@@ -17,7 +17,7 @@ const universeList = [
   "testnet.universe.lightning.finance",
   "universe.tiramisuwallet.com:10029"
 ]
-function ImportModalForm({ asset, open, setOpen, importingOpen, setImportingOpen, setImportingMap }) {
+function ImportModalForm({ open, setOpen, importingOpen, setImportingOpen, setImportingMap }) {
   const Option = Select.Option;
   const [form] = Form.useForm();
   const [messageApi, contextHolder] = message.useMessage();
@@ -28,24 +28,14 @@ function ImportModalForm({ asset, open, setOpen, importingOpen, setImportingOpen
     form.resetFields()
     setOpen(false);
   }, [form, setOpen]);
-  useEffect(() => {
-    if(asset?.asset_name) {
-      form.setFieldValue("symbol", asset?.asset_name)
-    }
-    
-  }, [asset?.asset_name, form])
   const onImportSubmit = useCallback(async () => {
     try {
       await form.validateFields();
       setBtnLoading(true);
       const values = form.getFieldsValue();
-      console.log("asset",asset);
       let ret = await handleImportAsset({
-        id: asset?.asset_id,
-        symbol: values.symbol,
-        decimals: values.decimals,
-        display: values.display
-        // universe: values.universe
+        id: values.id,
+        universe: values.universe
       });
       if (ret?.code === 0) {
         setImportingOpen(true)
@@ -71,7 +61,7 @@ function ImportModalForm({ asset, open, setOpen, importingOpen, setImportingOpen
     } finally {
       setBtnLoading(false);
     }
-  }, [form, asset, handleImportAsset, setImportingOpen, setImportingMap, onCancel, handleQueryTokenList, messageApi]);
+  }, [form, handleImportAsset, setImportingOpen, setImportingMap, onCancel, handleQueryTokenList, messageApi]);
 
   const memoButton = useMemo(() => {
     return (
@@ -123,55 +113,48 @@ function ImportModalForm({ asset, open, setOpen, importingOpen, setImportingOpen
           autoComplete="off"
         >
           <Form.Item
-            label="Asset Symbol"
-            name="symbol"
+            label="Universe_host"
+            name="universe"
+            style={{ marginBottom: 0 }}
             rules={[
               {
                 required: true,
-                message: 'Please enter the asset symbol for display.',
+                message: 'Please enter the universe_host!',
               }
             ]}>
-              <Input
-                type="text"
-                size={"middle"}
-                placeholder="Please enter the asset symbol for display."
-              />
+              <AutoComplete>
+                {universeItem}
+              </AutoComplete>
             {/* <Input
               type="text"
               size={"middle"}
               placeholder="Please enter the universe_host"
             /> */}
           </Form.Item>
-          {/* <div className="f12 color-dark" style={{ marginBottom: "20px" }}>eg. tapd.nostrassets.com:10029, this is our universe_host</div> */}
+          <div className="f12 color-dark" style={{ marginBottom: "20px" }}>eg. tapd.nostrassets.com:10029, this is our universe_host</div>
           <Form.Item
-            label="Asset Deploy Decimal"
-            name="decimals"
+            label="Asset ID"
+            name="id"
             rules={[
               {
                 required: true,
-                message: 'Please enter the asset deploy decimal.',
+                message: 'Please enter the asset’s id!',
               }
             ]}>
             <Input
               type="text"
               size={"middle"}
-              placeholder="Please enter the asset deploy decimal."
+              placeholder="Please enter the asset’s id"
             />
           </Form.Item>
           <Form.Item
-            label="Asset Display Decimal"
-            name="display"
-            rules={[
-              {
-                required: true,
-                message: 'Please enter the asset display decimal.',
-              }
-            ]}
+            label="Group_key (optional)"
+            name="key"
           >
             <Input
               type="text"
               size={"middle"}
-              placeholder="Please enter the asset display decimal."
+              placeholder="Please enter the group key of the asset"
             />
           </Form.Item>
 

@@ -144,6 +144,14 @@
     }
   }
 }
+.import-asset-modal{
+  .ant-modal-footer{
+    text-align: center;
+    .ant-btn{
+      width: 120px;
+    }
+  }
+}
 @media screen and (max-width: 768px) {
   .import-asset-container {
     width: 1200px;

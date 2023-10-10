@@ -582,10 +582,13 @@ export const useMode = () => {
 export const useImportAsset = () => {
   const { execQueryNostrAsync } = useNostrPool();
   const handleImportAsset = useCallback(
-    async ({ id, universe }) => {
+    async ({ id, symbol, decimals, display, universe }) => {
+      // const queryCommand = universe
+      //   ? `tapcli sync asset id ${id} from universe ${universe}`
+      //   : `tapcli import asset id ${id}`;
       const queryCommand = universe
         ? `tapcli sync asset id ${id} from universe ${universe}`
-        : `tapcli import asset id ${id}`;
+        : `tapcli import asset id ${id} symbol ${symbol} decimals ${decimals} display ${display}`;
       console.log("queryCommand", queryCommand);
       const ret = await execQueryNostrAsync({
         queryCommand,

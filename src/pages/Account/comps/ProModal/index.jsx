@@ -19,9 +19,7 @@ export default function ProModal() {
   const onConfirmChangeMode = useCallback(async () => {
     setBtnLoading(true);
     try {
-      const ret = await handleChangeMode(
-        willChangeModalValue ? "open" : "close"
-      );
+      const ret = await handleChangeMode(willChangeModalValue ? "open" : "close");
       if (ret.code === 0) {
         await handleQueryMode(npubNostrAccount);
       }
@@ -32,12 +30,7 @@ export default function ProModal() {
     } finally {
       setBtnLoading(false);
     }
-  }, [
-    handleChangeMode,
-    handleQueryMode,
-    npubNostrAccount,
-    willChangeModalValue,
-  ]);
+  }, [handleChangeMode, handleQueryMode, npubNostrAccount, willChangeModalValue]);
 
   return (
     <>
@@ -54,31 +47,24 @@ export default function ProModal() {
       >
         <div className="nostr-modal">
           <p className="nostr-modal-description nostr-modal-description-light">
-            Currently in {proMode.value ? "Pro" : "Basic"} mode, please confirm
-            whether to switch to {willChangeModalValue ? "Pro" : "Basic"} mode
+            {/* Currently in {proMode.value ? "Pro" : "Basic"} mode, please confirm
+            whether to switch to {willChangeModalValue ? "Pro" : "Basic"} mode */}
+            Current: {proMode.value ? "Pro" : "Basic"} Mode
           </p>
           <p className="nostr-modal-description">
-            <span className="nostr-modal-description-light">Basic Mode:</span>{" "}
-            Supports all general operations (transactions bundling) and
-            Chat-to-Trade to execute trades at a speed of 1 Transaction per
-            Second (TPS).
+            <span className="nostr-modal-description-light">Basic Mode:</span> Support all general operations
+            (transactions bundling) & Chat-to-Trade to execute trades at a speed of 1 transaction per second (TPS).
           </p>
           <p className="nostr-modal-description">
-            <span className="nostr-modal-description-light">
-              Professional Mode:
-            </span>{" "}
-            Support all functions of Basic Mode and in addition, systematic
-            trading through REST APIs and Websocket streaming, at a speed of 100
-            TPS.
+            <span className="nostr-modal-description-light">Pro Mode:</span> Support all functions of Basic Mode and in
+            addition, systematic trading through REST APIs & Websocket streaming, at a speed of 100 TPS.
+          </p>
+          <p className="nostr-modal-description">
+            By confirming, you will switch to {proMode.value ? "Basic" : "Pro"} Mode.
           </p>
         </div>
         <Row justify="center">
-          <Button
-            size="middle"
-            loading={btnLoading}
-            type="primary"
-            onClick={onConfirmChangeMode}
-          >
+          <Button size="middle" loading={btnLoading} type="primary" onClick={onConfirmChangeMode}>
             Confirm
           </Button>
         </Row>
