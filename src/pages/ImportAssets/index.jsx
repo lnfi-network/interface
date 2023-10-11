@@ -15,7 +15,6 @@ import CheckNostrButton from "components/CheckNostrButton";
 import { setAboutModalVisible } from "store/reducer/modalReducer";
 import { CheckCircleOutlined, CloseCircleOutlined, SwapOutlined } from "@ant-design/icons";
 import useDevice from "hooks/useDevice";
-import { set } from "lodash";
 const assetsTypeMap = {
   0: "Token",
   1: "NFT"
@@ -197,7 +196,7 @@ export default function ImportAssets() {
             }
           />
           <CheckNostrButton>
-            <Button type="primary" onClick={() => setOpen(true)}>
+            <Button type="primary" onClick={() => setSyncOpen(true)}>
               Sync and Import
             </Button>
           </CheckNostrButton>
@@ -254,7 +253,7 @@ export default function ImportAssets() {
               <div className="import-asset-content-sync">
                 <span>Can't find asset?</span>{" "}
                 <CheckNostrButton>
-                  <span className="sync-link" onClick={() => setOpen(true)}>
+                  <span className="sync-link" onClick={() => setSyncOpen(true)}>
                     Sync and Import
                   </span>
                 </CheckNostrButton>

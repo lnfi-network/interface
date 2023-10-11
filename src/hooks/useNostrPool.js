@@ -242,7 +242,18 @@ const useNostrPool = () => {
       const content = retEvent.content;
       const decryptContent = await nip04.decrypt(ROBOT_PRIVATE_KEY, decodeSendTo, content);
       if (decryptContent) {
-        result = JSON.parse(decryptContent);
+        try {
+          result = JSON.parse(decryptContent);
+        } catch (error) {
+          const errRet = {
+            retEvent: null,
+            sendEvent: sendEvent,
+            result: { code: 500, data: decryptContent, msg: decryptContent }
+          };
+          log(debug, "info", `❌ ${queryCommand}`, errRet);
+          return errRet;
+        }
+
         const sucRet = {
           sendEvent: sendEvent,
           retEvent: retEvent,
@@ -256,6 +267,21 @@ const useNostrPool = () => {
 
         return sucRet;
       }
+      // if (decryptContent) {
+      //   result = JSON.parse(decryptContent);
+      //   const sucRet = {
+      //     sendEvent: sendEvent,
+      //     retEvent: retEvent,
+      //     result
+      //   };
+      //   if (result.code === 0) {
+      //     log(debug, "info", `✅ ${queryCommand}`, sucRet);
+      //   } else {
+      //     log(debug, "info", `❗️${queryCommand}`, sucRet);
+      //   }
+
+      //   return sucRet;
+      // }
     },
     [checkRuntime, debug, getWillSendEvent, pool, relays]
   );

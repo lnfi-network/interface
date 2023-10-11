@@ -39,7 +39,7 @@ function ImportModalForm({ asset, open, setOpen, importingOpen, setImportingOpen
       await form.validateFields();
       setBtnLoading(true);
       const values = form.getFieldsValue();
-      console.log("asset",asset);
+      // console.log("asset",asset);
       let ret = await handleImportAsset({
         id: asset?.asset_id,
         symbol: values.symbol,
@@ -114,6 +114,10 @@ function ImportModalForm({ asset, open, setOpen, importingOpen, setImportingOpen
         footer={null}
         zIndex={1000}
         onCancel={onCancel}
+        initialValues={{
+          decimals: "1",
+          display: "1"
+        }}
       >
         <Form
           className="import-asset-form"
@@ -134,6 +138,7 @@ function ImportModalForm({ asset, open, setOpen, importingOpen, setImportingOpen
               <Input
                 type="text"
                 size={"middle"}
+                maxLength={50}
                 placeholder="Please enter the asset symbol for display."
               />
             {/* <Input

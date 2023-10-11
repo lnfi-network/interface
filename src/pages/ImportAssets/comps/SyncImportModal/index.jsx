@@ -20,6 +20,7 @@ const universeList = [
 function ImportModalForm({ open, setOpen, importingOpen, setImportingOpen, setImportingMap }) {
   const Option = Select.Option;
   const [form] = Form.useForm();
+  const [step, setStep] = useState(1);
   const [messageApi, contextHolder] = message.useMessage();
   const [btnLoading, setBtnLoading] = useState(false);
   const { handleImportAsset } = useImportAsset();
@@ -28,14 +29,32 @@ function ImportModalForm({ open, setOpen, importingOpen, setImportingOpen, setIm
     form.resetFields()
     setOpen(false);
   }, [form, setOpen]);
+  useEffect(() => {
+    if(open) {
+      setStep(1)
+    }
+  },[open])
   const onImportSubmit = useCallback(async () => {
+    try {
+      await form.validateFields(["universe", "id"])
+      if(step == 1) {
+        setStep(2)
+        return
+      }
+    } catch (error) {
+      return
+    }
+    
     try {
       await form.validateFields();
       setBtnLoading(true);
       const values = form.getFieldsValue();
       let ret = await handleImportAsset({
         id: values.id,
-        universe: values.universe
+        universe: values.universe,
+        symbol: values.symbol,
+        decimals: values.decimals,
+        display: values.display
       });
       if (ret?.code === 0) {
         setImportingOpen(true)
@@ -61,7 +80,7 @@ function ImportModalForm({ open, setOpen, importingOpen, setImportingOpen, setIm
     } finally {
       setBtnLoading(false);
     }
-  }, [form, handleImportAsset, setImportingOpen, setImportingMap, onCancel, handleQueryTokenList, messageApi]);
+  }, [step, form, handleImportAsset, setImportingOpen, setImportingMap, onCancel, handleQueryTokenList, messageApi]);
 
   const memoButton = useMemo(() => {
     return (
@@ -72,10 +91,10 @@ function ImportModalForm({ open, setOpen, importingOpen, setImportingOpen, setIm
         loading={btnLoading}
         onClick={onImportSubmit}
       >
-        {t`Import`}
+        {step == 1 ? "Next" : t`Import`}
       </Button>
     );
-  }, [btnLoading, onImportSubmit]);
+  }, [btnLoading, onImportSubmit, step]);
   const universeItem = useMemo(() => {
     return universeList?.map((item) => {
       // const _address = nip19.npubEncode(item.contacts);
@@ -111,11 +130,15 @@ function ImportModalForm({ open, setOpen, importingOpen, setImportingOpen, setIm
           form={form}
           name="transferForm"
           autoComplete="off"
+          initialValues={{
+            decimals: "1",
+            display: "1"
+          }}
         >
           <Form.Item
             label="Universe_host"
             name="universe"
-            style={{ marginBottom: 0 }}
+            style={{ marginBottom: 0, display: step == 1 ? "block" : "none" }}
             rules={[
               {
                 required: true,
@@ -131,10 +154,11 @@ function ImportModalForm({ open, setOpen, importingOpen, setImportingOpen, setIm
               placeholder="Please enter the universe_host"
             /> */}
           </Form.Item>
-          <div className="f12 color-dark" style={{ marginBottom: "20px" }}>eg. tapd.nostrassets.com:10029, this is our universe_host</div>
+          <div className="f12 color-dark" style={{ marginBottom: "20px", display: step == 1 ? "block" : "none" }}>eg. tapd.nostrassets.com:10029, this is our universe_host</div>
           <Form.Item
             label="Asset ID"
             name="id"
+            style={{ display: step == 1 ? "block" : "none" }}
             rules={[
               {
                 required: true,
@@ -148,6 +172,63 @@ function ImportModalForm({ open, setOpen, importingOpen, setImportingOpen, setIm
             />
           </Form.Item>
           <Form.Item
+            label="Asset Symbol"
+            name="symbol"
+            style={{ display: step == 2 ? "block" : "none" }}
+            rules={[
+              {
+                required: true,
+                message: 'Please enter the asset symbol for display.',
+              }
+            ]}
+            >
+              <Input
+                type="text"
+                size={"middle"}
+                maxLength={50}
+                placeholder="Please enter the asset symbol for display."
+              />
+            {/* <Input
+              type="text"
+              size={"middle"}
+              placeholder="Please enter the universe_host"
+            /> */}
+          </Form.Item>
+          {/* <div className="f12 color-dark" style={{ marginBottom: "20px" }}>eg. tapd.nostrassets.com:10029, this is our universe_host</div> */}
+          <Form.Item
+            label="Asset Deploy Decimal"
+            name="decimals"
+            style={{ display: step == 2 ? "block" : "none" }}
+            rules={[
+              {
+                required: true,
+                message: 'Please enter the asset deploy decimal.',
+              }
+            ]}>
+            <Input
+              type="text"
+              size={"middle"}
+              placeholder="Please enter the asset deploy decimal."
+            />
+          </Form.Item>
+          <Form.Item
+            label="Asset Display Decimal"
+            name="display"
+            style={{ display: step == 2 ? "block" : "none" }}
+            rules={[
+              {
+                required: true,
+                message: 'Please enter the asset display decimal.',
+              }
+            ]}
+          >
+            <Input
+              type="text"
+              size={"middle"}
+              placeholder="Please enter the asset display decimal."
+            />
+          </Form.Item>
+          {/* <Form.Item
             label="Group_key (optional)"
             name="key"
           >
@@ -156,7 +237,7 @@ function ImportModalForm({ open, setOpen, importingOpen, setImportingOpen, setIm
               size={"middle"}
               placeholder="Please enter the group key of the asset"
             />
-          </Form.Item>
+          </Form.Item> */}
 
           <Form.Item wrapperCol={24} align="middle" className="">
             <Row justify="center" style={{ marginTop: "10px" }}>

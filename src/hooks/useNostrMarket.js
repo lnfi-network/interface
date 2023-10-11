@@ -587,7 +587,7 @@ export const useImportAsset = () => {
       //   ? `tapcli sync asset id ${id} from universe ${universe}`
       //   : `tapcli import asset id ${id}`;
       const queryCommand = universe
-        ? `tapcli sync asset id ${id} from universe ${universe}`
+        ? `tapcli sync asset id ${id} from universe ${universe} symbol ${symbol} decimals ${decimals} display ${display}`
         : `tapcli import asset id ${id} symbol ${symbol} decimals ${decimals} display ${display}`;
       console.log("queryCommand", queryCommand);
       const ret = await execQueryNostrAsync({
