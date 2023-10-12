@@ -119,7 +119,7 @@ function ImportModalForm({ open, setOpen, importingOpen, setImportingOpen, setIm
         className="import-asset-modal"
         open={open}
         width="500px"
-        title={t`Import`}
+        title={t`Import Assets`}
         footer={null}
         zIndex={1000}
         onCancel={onCancel}
@@ -135,6 +135,9 @@ function ImportModalForm({ open, setOpen, importingOpen, setImportingOpen, setIm
             display: "1"
           }}
         >
+          <div className="f14 mb20" style={{ display: step == 2 ? "block" : "none" }}>
+            To better operate within the NostrAssets protocol, it is recommended to set the following for imported assets:
+          </div>
           <Form.Item
             label="Universe_host"
             name="universe"

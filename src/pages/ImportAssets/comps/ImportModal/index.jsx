@@ -110,7 +110,7 @@ function ImportModalForm({ asset, open, setOpen, importingOpen, setImportingOpen
         className="import-asset-modal"
         open={open}
         width="500px"
-        title={t`Import`}
+        title={t`Import Assets`}
         footer={null}
         zIndex={1000}
         onCancel={onCancel}
@@ -119,6 +119,7 @@ function ImportModalForm({ asset, open, setOpen, importingOpen, setImportingOpen
           display: "1"
         }}
       >
+        
         <Form
           className="import-asset-form"
           layout="vertical"
@@ -126,6 +127,9 @@ function ImportModalForm({ asset, open, setOpen, importingOpen, setImportingOpen
           name="transferForm"
           autoComplete="off"
         >
+          <div className="f14 mb20">
+            To better operate within the NostrAssets protocol, it is recommended to set the following for imported assets:
+          </div>
           <Form.Item
             label="Asset Symbol"
             name="symbol"
