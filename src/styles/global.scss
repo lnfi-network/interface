@@ -319,23 +319,23 @@ li {
   color: var(--color-text-light) !important;
 }
 input::input-placeholder {
-  color: var(--color-text-dark) !important;
+  color: #666 !important;
 }
 ::-webkit-input-placeholder {
   /* WebKit browsers */
-  color: var(--color-text-dark) !important;
+  color: #666 !important;
 }
 :-moz-placeholder {
   /* Mozilla Firefox 4 to 18 */
-  color: var(--color-text-dark) !important;
+  color: #666 !important;
 }
 ::-moz-placeholder {
   /* Mozilla Firefox 19  */
-  color: var(--color-text-dark) !important;
+  color: #666 !important;
 }
 :-ms-input-placeholder {
   /* Internet Explorer 10  */
-  color: var(--color-text-dark) !important;
+  color: #666 !important;
 }
 .ant-select-dropdown.drop {
   background-color: var(--color-layer-lighter) !important;

@@ -114,10 +114,6 @@ function ImportModalForm({ asset, open, setOpen, importingOpen, setImportingOpen
         footer={null}
         zIndex={1000}
         onCancel={onCancel}
-        initialValues={{
-          decimals: "1",
-          display: "1"
-        }}
       >
         
         <Form
@@ -126,6 +122,10 @@ function ImportModalForm({ asset, open, setOpen, importingOpen, setImportingOpen
           form={form}
           name="transferForm"
           autoComplete="off"
+          initialValues={{
+            decimals: "1",
+            display: "1"
+          }}
         >
           <div className="f14 mb20">
             To better operate within the NostrAssets protocol, it is recommended to set the following for imported assets:
