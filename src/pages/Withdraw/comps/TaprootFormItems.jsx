@@ -20,8 +20,8 @@ export default function TaprootFormItems({ form, nostrAccount, notifiApi, messag
   const [decodeLoading, setDecodeloding] = useState(false);
   const { npubNostrAccount, balanceList } = useSelector(({ user }) => user);
   const { tokenList } = useSelector(({ market }) => market);
-  const dispatch = useDispatch();
-  const device = useDevice();
+  /*  const dispatch = useDispatch();
+  const device = useDevice(); */
   const [token, setToken] = useState("");
   const balance = useMemo(() => {
     return balanceList[token] ? balanceList[token]?.balanceShow : 0.0;
@@ -117,7 +117,14 @@ export default function TaprootFormItems({ form, nostrAccount, notifiApi, messag
         const parsedData = await handleTaprootDecodeAsync(value);
         if (parsedData.code === 0) {
           const jsonData = JSON.parse(parsedData.data);
-          setWithdrawAmount(jsonData.amount);
+          const assetId = jsonData.assetId;
+          const token = tokenList.find((tokenItem) => tokenItem.token === assetId);
+          const tokenName = token?.name;
+          setToken(tokenName);
+          const decimals = token?.decimals;
+          form.setFieldValue("depositOrWithdrawToken", tokenName);
+          const amount = jsonData.amount / decimals;
+          setWithdrawAmount(amount);
         } else {
           setWithdrawAmount(0);
           setDecodeloding(false);
