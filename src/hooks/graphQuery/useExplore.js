@@ -652,7 +652,11 @@ export const useImportAssetsQuery = ({ pageSize = 20, pageIndex = 1, assetId }) 
         asset_name
         asset_type
         genesis_height
+        genesis_point
         group_key
+        meta_data
+        meta_hash
+        meta_type
         total_proofs
         total_supply
         total_syncs

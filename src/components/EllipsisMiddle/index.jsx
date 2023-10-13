@@ -6,6 +6,7 @@ const EllipsisMiddle = ({
   copyable = true,
   suffixCountMore = 2,
   suffixEnable = true,
+  handleClick
 }) => {
   const formatChildren = suffixEnable && (children?.length > suffixCount * 2 + suffixCountMore)
     ? `${children.substring(
@@ -25,6 +26,7 @@ const EllipsisMiddle = ({
           }
           : false
       }
+      onClick={() => handleClick && handleClick()}
     >
       {formatChildren}
     </Text>

@@ -227,7 +227,7 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
       if (Number(value)) {
         let reg = new RegExp('\\d+\\.?\\d{0,' + (selectedToken?.reserve) + '}')
         const match = value.match(reg);
-        console.log("match", match);
+        // console.log("match", match);
         if (selectedToken?.reserve == 0) {
           form.setFieldValue("amount", Math.floor(value));
           setAmountValue(Math.floor(value));

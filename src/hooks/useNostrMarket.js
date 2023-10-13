@@ -132,7 +132,7 @@ export const useAllowance = () => {
           queryCommand,
           sendToNostrAddress: NOSTAR_TOKEN_SEND_TO
         });
-
+        
         if (!ret) {
           setAllowance({ amount: 0, amountShow: "0.0000" });
           return { amount: 0, amountShow: "0.0000" };
