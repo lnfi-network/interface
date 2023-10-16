@@ -24,6 +24,7 @@ import { useParams } from "react-router-dom";
 import LightningFormItems from "./LightningFormItems";
 import TaprootFormItems from "./TaprootFormItems";
 import AlertTip from "components/AlertTip";
+import { getTansferableInscriptions } from "service/unisatApis";
 const layout = {
   labelCol: {
     span: 7
@@ -124,9 +125,15 @@ function DepositForm() {
     let pageIndex = 0;
     let allInscriptions = [];
     const getInscriptionsByPage = async () => {
-      const ret = await getInscriptions(pageIndex * pageSize, pageSize);
-      if (ret && ret?.list.length > 0) {
-        allInscriptions = allInscriptions.concat([...ret.list]);
+      const values = form.getFieldsValue(true);
+      const { token } = values;
+      const ret = await getTansferableInscriptions(memoAccount, token, {
+        offset: pageIndex * pageSize,
+        limit: pageSize
+      });
+
+      if (ret && ret?.code === 0) {
+        allInscriptions = allInscriptions.concat([...ret.data.detail]);
       }
       const total = ret.total;
       const maxPage = Math.round(total / pageSize);
@@ -139,33 +146,52 @@ function DepositForm() {
     await getInscriptionsByPage();
 
     return allInscriptions;
-  }, [getInscriptions]);
+  }, [form, memoAccount]);
   const handleGetInsciptions = useCallback(async () => {
     setLoadingBRC20(true);
     const allInscriptions =
       (await getAllInscriptions().catch((e) => {
         setLoadingBRC20(false);
       })) || [];
-    const requstInscriptinContent = allInscriptions.map(async (inscription) => {
-      const promiseRet = await fetch(inscription.content);
+    const transferableInscriptions = allInscriptions.map((inscription) => {
+      /* const promiseRet = await fetch(inscription.content);
       const parseRet = await promiseRet.json().catch((e) => {
         return {};
-      });
-      return { ...inscription, ...parseRet, checked: false };
+      }); */
+      return { ...inscription, checked: false };
     });
+    console.log(
+      "🚀 ~ file: DepositForm.jsx:163 ~ transferableInscriptions ~ transferableInscriptions:",
+      transferableInscriptions
+    );
 
-    const inscriptionsContent = await Promise.all(requstInscriptinContent);
-    setLoadingBRC20(false);
-    const values = form.getFieldsValue(true);
+    //const inscriptionsContent = requstInscriptinContent;
+    /* const values = form.getFieldsValue(true);
     const { token } = values;
-
+    const tiker = "ETH3"; */
     if (allInscriptions.length > 0) {
-      const currentList = inscriptionsContent.filter((item) => item.tick.toLowerCase() === token.toLowerCase());
-      setInscriptions([...currentList]);
+      /* let currentList = inscriptionsContent.filter((item) => item.tick?.toLowerCase() === tiker.toLowerCase());
+      const retInscriptions = [];
+      //todo get transferable inscriptions by api
+      const transferableInscriptionsRet = await getTansferableInscriptions(memoAccount, tiker).catch((err) => {});
+      if (transferableInscriptionsRet?.code === 0) {
+        const transferableInscriptions = transferableInscriptionsRet.data.detail;
+        currentList.forEach((item) => {
+          if (
+            transferableInscriptions.find(
+              (transferableInscription) => transferableInscription.inscriptionId === item.inscriptionId
+            )
+          ) {
+            retInscriptions.push(item);
+          }
+        });
+      } */
+      setInscriptions([...transferableInscriptions]);
     } else {
       setInscriptions([]);
     }
-  }, [form, getAllInscriptions]);
+    setLoadingBRC20(false);
+  }, [getAllInscriptions]);
   const handlePlatformChange = useCallback(
     async ({ target: { value } }) => {
       /* if (value === "Taproot") {
@@ -182,10 +208,6 @@ function DepositForm() {
           setRouteParams(null);
         }
       }
-      //const nostrAddress = form.getFieldValue("nostrAddress");
-      /* if (nostrAddress) {
-        handleQueryIsBindWallet(nostrAddress);
-      } */
     },
     [dispatch, params]
   );
@@ -272,7 +294,6 @@ function DepositForm() {
     notifiApi
   ]);
   const handleApproveERC20 = useCallback(async () => {
-    //todo approve
     const willApproveAmount = utils.parseUnits("" + erc20Amount, decimals).toString();
     setBtnLoading(true);
     try {
@@ -578,9 +599,9 @@ The deposit will be deducted from the balance of you connected wallet account an
                 Lightning
               </Radio.Button>
 
-              {/* <Radio.Button className="network-selector-btn" value="BTC">
+              <Radio.Button className="network-selector-btn" value="BTC">
                 BRC20
-              </Radio.Button> */}
+              </Radio.Button>
               <Radio.Button className="network-selector-btn" value="Taproot">
                 <div className="network-selector-btn-test">Test</div>
                 Taproot

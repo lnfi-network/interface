@@ -10,18 +10,10 @@ export default function Inscription({ inscription, onInscriptionChange }) {
 
   return (
     <>
-      <Card
-        hoverable
-        className="inscription-card"
-        onClick={handleToggleChecked}
-      >
-        <Radio
-          value={inscription.inscriptionId}
-          className="inscription-card-radio"
-          checked={inscription.checked}
-        />
-        <div className="inscription-name">{inscription?.tick}</div>
-        <div className="inscription-amount">{inscription?.amt}</div>
+      <Card hoverable className="inscription-card" onClick={handleToggleChecked}>
+        <Radio value={inscription.inscriptionId} className="inscription-card-radio" checked={inscription.checked} />
+        <div className="inscription-name">{inscription?.data?.tick}</div>
+        <div className="inscription-amount">{inscription?.data?.amt}</div>
         <div className="inscription-num">#{inscription?.inscriptionNumber}</div>
       </Card>
     </>
