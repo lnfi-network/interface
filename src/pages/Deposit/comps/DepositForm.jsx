@@ -160,11 +160,6 @@ function DepositForm() {
       }); */
       return { ...inscription, checked: false };
     });
-    console.log(
-      "🚀 ~ file: DepositForm.jsx:163 ~ transferableInscriptions ~ transferableInscriptions:",
-      transferableInscriptions
-    );
-
     //const inscriptionsContent = requstInscriptinContent;
     /* const values = form.getFieldsValue(true);
     const { token } = values;
