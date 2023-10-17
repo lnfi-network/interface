@@ -48,7 +48,7 @@ function WithdrawForm() {
   const { handleWithdrawAsync } = useWithdraw();
   const { handleQueryBalance } = useQueryBalance();
   const layout = useMemo(() => {
-    return selectedTokenPlatform === "Lightning" || selectedTokenPlatform === "Taproot"
+    return selectedTokenPlatform === "LIGHTNING" || selectedTokenPlatform === "TAPROOT"
       ? {
           labelCol: {
             span: 8
@@ -67,7 +67,7 @@ function WithdrawForm() {
         };
   }, [selectedTokenPlatform]);
   const memoCurrentPlatformTokenList = useMemo(() => {
-    const filterdTokenList = tokenList.filter((tokenItem) => tokenItem.chainName === selectedTokenPlatform);
+    const filterdTokenList = tokenList.filter((tokenItem) => tokenItem.assetType === selectedTokenPlatform);
 
     return [...filterdTokenList];
   }, [selectedTokenPlatform, tokenList]);
@@ -257,15 +257,15 @@ function WithdrawForm() {
   );
   useEffect(() => {
     if (params.platform) {
-      dispatch(setSelectedTokenPlatForm(params.platform));
-      dispatch(setConnectPlat(params.platform));
-      form.setFieldValue("platform", params.platform);
+      dispatch(setSelectedTokenPlatForm(params.platform.toUpperCase()));
+      dispatch(setConnectPlat(params.platform.toUpperCase()));
+      form.setFieldValue("platform", params.platform.toUpperCase());
     }
   }, [connectPlat, dispatch, form, params.platform]);
   useEffect(() => {
     if (memoCurrentPlatformTokenList.length > 0) {
       const tokenFirst = memoCurrentPlatformTokenList[0];
-      if (params?.symbol && selectedTokenPlatform === "BTC") {
+      if (params?.symbol && selectedTokenPlatform === "BRC20") {
         setSelectedToken(params.symbol);
         form.setFieldValue("token", params.symbol);
       } else {
@@ -318,26 +318,26 @@ function WithdrawForm() {
               }
             ]}
           >
-            <Radio.Group value={selectedTokenPlatform || "Lightning"} onChange={handlePlatformChange}>
-              <Radio.Button className="network-selector-btn" value="Lightning">
+            <Radio.Group value={selectedTokenPlatform || "LIGHTNING"} onChange={handlePlatformChange}>
+              <Radio.Button className="network-selector-btn" value="LIGHTNING">
                 Lightning
               </Radio.Button>
 
-              {/* <Radio.Button className="network-selector-btn" value="BTC">
+              {/* <Radio.Button className="network-selector-btn" value="BRC20">
                 BRC20
               </Radio.Button> */}
-              <Radio.Button className="network-selector-btn" value="Taproot">
+              <Radio.Button className="network-selector-btn" value="TAPROOT">
                 <div className="network-selector-btn-test">Test</div>
                 Taproot
               </Radio.Button>
               {hasErc20Token && (
-                <Radio.Button className="network-selector-btn" value="ETH">
+                <Radio.Button className="network-selector-btn" value="ERC20">
                   ERC20
                 </Radio.Button>
               )}
             </Radio.Group>
           </Form.Item>
-          {(selectedTokenPlatform === "ETH" || selectedTokenPlatform === "BTC") && (
+          {(selectedTokenPlatform === "ERC20" || selectedTokenPlatform === "BRC20") && (
             <>
               <Form.Item
                 label="Token"
@@ -370,10 +370,10 @@ function WithdrawForm() {
                   ({ getFieldValue }) => ({
                     validator(_, value) {
                       if (value) {
-                        if (selectedTokenPlatform === "ETH" && !/^0x\w{40}$/.test(value)) {
+                        if (selectedTokenPlatform === "ERC20" && !/^0x\w{40}$/.test(value)) {
                           return Promise.reject(new Error(`Please input a valid wallet address.`));
                         }
-                        if (selectedTokenPlatform === "BTC" && !/^bc\w{40}$/.test(value)) {
+                        if (selectedTokenPlatform === "BRC20" && !/^bc\w{40}$/.test(value)) {
                           return Promise.reject(new Error(`Please input a valid wallet address.`));
                         }
 
@@ -460,7 +460,7 @@ function WithdrawForm() {
               )}
             </>
           )}
-          {selectedTokenPlatform === "Taproot" && (
+          {selectedTokenPlatform === "TAPROOT" && (
             <TaprootFormItems
               nostrAccount={npubNostrAccount}
               form={form}
@@ -470,7 +470,7 @@ function WithdrawForm() {
               messageApi={messageApi}
             />
           )}
-          {selectedTokenPlatform === "Lightning" && (
+          {selectedTokenPlatform === "LIGHTNING" && (
             <LightningFormItems
               nostrAccount={npubNostrAccount}
               form={form}

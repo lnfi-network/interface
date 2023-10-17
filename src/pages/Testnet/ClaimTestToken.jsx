@@ -8,35 +8,26 @@ import ClaimDescription from "./comps/ClaimDescription";
 import { useSelector, useDispatch } from "react-redux";
 import { useSize } from "ahooks";
 import { useBRC20Deposit } from "hooks/useNostrDeposit";
-import {
-  useQueryClaimTestnetTokens,
-  useQueryBalance,
-  useQueryClaimPoints,
-} from "hooks/useNostrMarket";
+import { useQueryClaimTestnetTokens, useQueryBalance, useQueryClaimPoints } from "hooks/useNostrMarket";
 import { isMobile } from "lib/utils/userAgent";
 
 import {
   setNostrModalVisible,
   setWalletConnectModalVisible,
-  setOnlyMobileSupportedVisible,
+  setOnlyMobileSupportedVisible
 } from "store/reducer/modalReducer";
 import { setSelectedTokenPlatForm } from "store/reducer/userReducer";
 import { useHistory } from "react-router-dom";
 // import {selectorGetSimpleTokens} from 'hooks/useSelectors'
 const layout = {
   labelCol: {
-    span: 6,
+    span: 6
   },
   wrapperCol: {
-    span: 18,
-  },
+    span: 18
+  }
 };
-function ClaimModal({
-  isClaimOpen,
-  setIsClaimOpen,
-  userTokens,
-  setUserTokens,
-}) {
+function ClaimModal({ isClaimOpen, setIsClaimOpen, userTokens, setUserTokens }) {
   const [claimLoading, setClaimLoading] = useState(false);
   const { handleClaimPoints } = useQueryClaimPoints();
   const { account } = useSelector(({ user }) => user);
@@ -48,8 +39,7 @@ function ClaimModal({
     if (userTokens.length) {
       setClaimLoading(true);
       try {
-        const points =
-          userTokens.length * 10 > 100 ? 100 : userTokens.length * 10;
+        const points = userTokens.length * 10 > 100 ? 100 : userTokens.length * 10;
         const ret = await handleClaimPoints({ points, account });
         //
         if (ret.code == 0) {
@@ -65,11 +55,8 @@ function ClaimModal({
               closable: true,
               mask: false,
               content: (
-                <>
-                  This BRC20 address has already claimed the bonus pioneer
-                  points and is not eligible to claim again.
-                </>
-              ),
+                <>This BRC20 address has already claimed the bonus pioneer points and is not eligible to claim again.</>
+              )
             });
             // message.error("This BRC20 address has already claimed the bonus pioneer points and is not eligible to claim again. ")
           } else {
@@ -108,15 +95,10 @@ function ClaimModal({
           onCancel={onCancel}
         >
           <div className="claim-bonus-modal-content">
-            <div className="claim-bonus-modal-account">
-              Wallet Address：{account}
-            </div>
+            <div className="claim-bonus-modal-account">Wallet Address：{account}</div>
             <div className="claim-bonus-modal-desc">
-              You currently hold{" "}
-              <span className="color-yellow">{userTokens.length}</span> token
-              types. You are eligible to claim{" "}
-              <span className="color-yellow">{userTokens.length * 10}</span>{" "}
-              bonus pioneer points.
+              You currently hold <span className="color-yellow">{userTokens.length}</span> token types. You are eligible
+              to claim <span className="color-yellow">{userTokens.length * 10}</span> bonus pioneer points.
             </div>
             {userTokens.map((item) => {
               return <div>{item?.tick?.toUpperCase()}</div>;
@@ -156,7 +138,7 @@ export default function ClaimTestToken() {
       "MEME",
       "SATS",
       "BANK",
-      "$ORE",
+      "$ORE"
       // "LVDI"
     ];
   }, []);
@@ -211,12 +193,8 @@ export default function ClaimTestToken() {
     if (allInscriptions.length > 0) {
       const currentList = inscriptionsContent.reduce((accumulator, current) => {
         if (
-          !accumulator.some(
-            (item) => item?.tick?.toUpperCase() === current?.tick?.toUpperCase()
-          ) &&
-          receiveTokens.some(
-            (k) => k?.toUpperCase() == current?.tick?.toUpperCase()
-          )
+          !accumulator.some((item) => item?.tick?.toUpperCase() === current?.tick?.toUpperCase()) &&
+          receiveTokens.some((k) => k?.toUpperCase() == current?.tick?.toUpperCase())
         ) {
           accumulator.push(current);
         }
@@ -259,7 +237,7 @@ export default function ClaimTestToken() {
           onOk: async () => {
             await handleQueryBalance(npubNostrAccount);
             history.push("/account");
-          },
+          }
         });
       } else {
         message.error(ret?.data || "Claim Fail");
@@ -268,14 +246,7 @@ export default function ClaimTestToken() {
     } catch (error) {
       setTokenLoading(false);
     }
-  }, [
-    dispatch,
-    form,
-    handleClaimTestnetTokens,
-    handleQueryBalance,
-    history,
-    npubNostrAccount,
-  ]);
+  }, [dispatch, form, handleClaimTestnetTokens, handleQueryBalance, history, npubNostrAccount]);
 
   const onClaimBonusPoints = useCallback(async () => {
     if (isMobile()) {
@@ -289,7 +260,7 @@ export default function ClaimTestToken() {
     }
 
     if (!account) {
-      dispatch(setSelectedTokenPlatForm("BTC"));
+      dispatch(setSelectedTokenPlatForm("BRC20"));
       dispatch(setWalletConnectModalVisible(true));
       return;
     }
@@ -305,14 +276,7 @@ export default function ClaimTestToken() {
     } catch (error) {
       setBonusLoading(false);
     }
-  }, [
-    account,
-    checkIsSupported,
-    dispatch,
-    form,
-    handleGetInsciptions,
-    npubNostrAccount,
-  ]);
+  }, [account, checkIsSupported, dispatch, form, handleGetInsciptions, npubNostrAccount]);
   useEffect(() => {
     if (npubNostrAccount && nostrModalVisible) {
       dispatch(setNostrModalVisible(false));
@@ -333,7 +297,7 @@ export default function ClaimTestToken() {
             autoComplete="off"
             style={{
               maxWidth: "1000px",
-              width: "100%",
+              width: "100%"
             }}
             initialValues={{ nostrAddress: npubNostrAccount || "" }}
           >
@@ -342,22 +306,20 @@ export default function ClaimTestToken() {
               label="Your Nostr Address"
               rules={[
                 {
-                  required: true,
+                  required: true
                 },
                 ({ getFieldValue }) => ({
                   validator(_, value) {
                     if (value) {
                       if (!/npub\w{59}/.test(value)) {
-                        return Promise.reject(
-                          new Error(t`Please input a valid Nostr address.`)
-                        );
+                        return Promise.reject(new Error(t`Please input a valid Nostr address.`));
                       }
                       nip19.decode(value).data;
                       return Promise.resolve();
                     }
                     return Promise.resolve();
-                  },
-                }),
+                  }
+                })
               ]}
             >
               <Input
@@ -373,7 +335,7 @@ export default function ClaimTestToken() {
                 width > 800
                   ? {
                       xs: { span: 19, offset: 5 },
-                      md: { span: 19, offset: 5 },
+                      md: { span: 19, offset: 5 }
                     }
                   : {}
               }
@@ -395,7 +357,7 @@ export default function ClaimTestToken() {
                 width > 800
                   ? {
                       xs: { span: 18, offset: 6 },
-                      md: { span: 18, offset: 6 },
+                      md: { span: 18, offset: 6 }
                     }
                   : {}
               }

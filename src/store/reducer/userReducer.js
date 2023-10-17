@@ -5,8 +5,8 @@ import { nip19 } from "nostr-tools";
 export const userSlice = createSlice({
   name: "user",
   initialState: {
-    connectPlat: Lockr.get("connectPlat") || "ETH",
-    selectedTokenPlatform: "Lightning",
+    connectPlat: Lockr.get("connectPlat") || "ERC20",
+    selectedTokenPlatform: "LIGHTNING",
     account: "", //
     chainId: 1,
     library: null,

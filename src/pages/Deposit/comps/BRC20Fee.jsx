@@ -6,14 +6,9 @@ const MAPFEE = {
   Slow: { feeKey: "hourFee", tips: "Abount 1 hours" },
   Avg: { feeKey: "halfHourFee", tips: "Abount 30 minutes" },
   Fast: { feeKey: "fastestFee", tips: "Abount 10 minutes" },
-  Custom: { feeKey: "custom" },
+  Custom: { feeKey: "custom" }
 };
-export default function BRC20Fee({
-  feeRate,
-  setFee,
-  setFeeRate,
-  ready = false,
-}) {
+export default function BRC20Fee({ feeRate, setFee, setFeeRate, ready = false }) {
   const { feesRecommended } = useGetRecommendFee(ready);
 
   const onChange = useCallback(
@@ -33,8 +28,7 @@ export default function BRC20Fee({
     return feesRecommended
       ? Object.keys(MAPFEE).map((itemKey) => {
           const value = itemKey;
-          const fee =
-            itemKey !== "Custom" ? feesRecommended[MAPFEE[itemKey].feeKey] : "";
+          const fee = itemKey !== "Custom" ? feesRecommended[MAPFEE[itemKey].feeKey] : "";
           const tips = itemKey === "Custom" ? "" : MAPFEE[itemKey].tips;
           return {
             label: (
@@ -45,7 +39,7 @@ export default function BRC20Fee({
                 {itemKey !== "Custom" && (
                   <>
                     <Col align="center" className="fee-value" span={24}>
-                      {fee} <span>salt/vB</span>
+                      {fee} <span>sat/vB</span>
                     </Col>
 
                     <Col align="center" className="fee-tip" span={24}>
@@ -55,7 +49,7 @@ export default function BRC20Fee({
                 )}
               </Row>
             ),
-            value: value,
+            value: value
           };
         })
       : [];

@@ -10,16 +10,11 @@ import { useCallback } from "react";
 import { isInTokenPocket, isApple } from "lib/utils/userAgent";
 import useNostrDisconnect from "hooks/useNostrDisconnect";
 
-export function ConnectWalletWithOnlyDeposit({
-  connectType,
-  btnText = t`Connect wallet`,
-}) {
+export function ConnectWalletWithOnlyDeposit({ connectType, btnText = t`Connect wallet` }) {
   const { chains } = useNetwork();
   const dispatch = useDispatch();
   const { handleDisconnect } = useNostrDisconnect();
-  const selectedTokenPlatform = useSelector(
-    ({ user }) => user.selectedTokenPlatform
-  );
+  const selectedTokenPlatform = useSelector(({ user }) => user.selectedTokenPlatform);
   /*   const { selectedTokenPlatform } = useSelector(({ user }) => user); */
   const handleConnect = useCallback(() => {
     // handleDisconnect();
@@ -40,7 +35,7 @@ export function ConnectWalletWithOnlyDeposit({
     //   });
     //   return false;
     // }
-    if (selectedTokenPlatform === "BTC" && isInTokenPocket() && isApple()) {
+    if (selectedTokenPlatform === "BRC20" && isInTokenPocket() && isApple()) {
       Modal.info({
         width: 326,
         footer: null,
@@ -50,15 +45,11 @@ export function ConnectWalletWithOnlyDeposit({
           <>
             <div>{t`​Deposit only supported on Goerli Network at the moment. Switch network in wallet！`}</div>
           </>
-        ),
+        )
       });
       return false;
     }
-    if (
-      selectedTokenPlatform === "BTC" &&
-      isInTokenPocket() &&
-      !window.unisat
-    ) {
+    if (selectedTokenPlatform === "BRC20" && isInTokenPocket() && !window.unisat) {
       Modal.info({
         width: 326,
         footer: null,
@@ -68,11 +59,11 @@ export function ConnectWalletWithOnlyDeposit({
           <>
             <div>{t`​You selected an BRC20 token to deposit, please click to switch your wallet connect from ERC20 to BRC20.`}</div>
           </>
-        ),
+        )
       });
       return false;
     }
-    if (selectedTokenPlatform === "ETH" && isInTokenPocket() && window.unisat) {
+    if (selectedTokenPlatform === "ERC20" && isInTokenPocket() && window.unisat) {
       Modal.info({
         width: 326,
         footer: null,
@@ -82,7 +73,7 @@ export function ConnectWalletWithOnlyDeposit({
           <>
             <div>{t`You selected an ERC20 token to deposit, please click to switch your wallet connect from BRC20 to Goerli Network.`}</div>
           </>
-        ),
+        )
       });
       return false;
     }
@@ -90,12 +81,7 @@ export function ConnectWalletWithOnlyDeposit({
   }, [connectType, dispatch, handleDisconnect, selectedTokenPlatform]);
   return (
     <div className="connect-wallet-common">
-      <ConnectWalletButton
-        size="middle"
-        type="default"
-        onClick={handleConnect}
-        imgSrc={connectWalletImg}
-      >
+      <ConnectWalletButton size="middle" type="default" onClick={handleConnect} imgSrc={connectWalletImg}>
         {btnText}
       </ConnectWalletButton>
     </div>
@@ -108,10 +94,7 @@ export default function ConnectWallet() {
       <div className="connect-wallet-text">
         <Trans>Connect your wallet to deposit funds and start trading.</Trans>
       </div>
-      <ConnectWalletButton
-        onClick={() => dispatch(setWalletConnectModalVisible(true))}
-        imgSrc={connectWalletImg}
-      >
+      <ConnectWalletButton onClick={() => dispatch(setWalletConnectModalVisible(true))} imgSrc={connectWalletImg}>
         <Trans>Connect wallet</Trans>
       </ConnectWalletButton>
     </div>

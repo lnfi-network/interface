@@ -77,18 +77,41 @@ function DepositForm() {
 
   const memoAccount = useMemo(() => {
     if (account) {
-      if (account && selectedTokenPlatform === connectPlat) {
+      if (account) {
         return account;
       }
       return "--";
     } else {
       return "--";
     }
-  }, [account, connectPlat, selectedTokenPlatform]);
+  }, [account]);
   const memoCurrentPlatformTokenList = useMemo(() => {
-    const filterdTokenList = tokenList.filter((tokenItem) => tokenItem.chainName === selectedTokenPlatform);
+    const filterdTokenList = tokenList.filter((tokenItem) => tokenItem.assetType === selectedTokenPlatform);
+    if (selectedTokenPlatform === "BRC20") {
+      return [
+        {
+          assetType: "BRC20",
+          name: "ORDI",
+          id: 1000096
+        },
+        {
+          assetType: "BRC20",
+          name: "MEME",
+          id: 1000097
+        },
+        {
+          assetType: "BRC20",
+          name: "PUFF",
+          id: 1000098
+        }
+      ];
+    }
     return [...filterdTokenList];
   }, [selectedTokenPlatform, tokenList]);
+  console.log(
+    "🚀 ~ file: DepositForm.jsx:92 ~ memoCurrentPlatformTokenList ~ memoCurrentPlatformTokenList:",
+    memoCurrentPlatformTokenList
+  );
 
   const hasErc20Token = useMemo(() => {
     return tokenList.find((token) => token.assetType === "ERC20");
@@ -102,13 +125,13 @@ function DepositForm() {
   }, [memoCurrentPlatformTokenList]);
 
   const balance = useMemo(() => {
-    if (selectedTokenPlatform === "ETH") {
+    if (selectedTokenPlatform === "ERC20") {
       return Number(erc20Balance) > 0 ? (
         <span className="deposit-balance-value">
           Available {numberWithCommas(erc20Balance)}
           <span> {symbol}</span>
         </span>
-      ) : account && connectPlat === selectedTokenPlatform ? (
+      ) : account && MAPPLATFORM[connectPlat] === selectedTokenPlatform ? (
         <span className="deposit-balance-value">
           Available 0<span> {symbol}</span>
         </span>
@@ -214,7 +237,7 @@ function DepositForm() {
         if (selectedToken) {
           setSelectedToken(selectedToken);
         }
-        if (selectedTokenPlatform === "BTC" && selectedTokenPlatform === connectPlat && account) {
+        if (selectedTokenPlatform === "BRC20" && account) {
           handleGetInsciptions();
         }
       } catch (e) {
@@ -223,7 +246,7 @@ function DepositForm() {
         });
       }
     },
-    [account, connectPlat, handleGetInsciptions, messageApi, selectedTokenPlatform]
+    [account, handleGetInsciptions, messageApi, selectedTokenPlatform]
   );
   //
   const { run: handleAmountOnChange } = useThrottleFn(
@@ -388,13 +411,13 @@ The deposit will be deducted from the balance of you connected wallet account an
   }, []);
 
   const memoSwitchWalletBtn = useMemo(() => {
-    if (connectPlat !== selectedTokenPlatform && account) {
+    if (MAPPLATFORM[connectPlat] && MAPPLATFORM[connectPlat] !== selectedTokenPlatform && account) {
       return (
         <>
           <span style={{ display: "inline-block" }}>
             <ConnectWalletWithOnlyDeposit
               connectType="switch"
-              btnText={isInTokenPocket() ? t`Connect wallet` : `Switch To ${MAPPLATFORM[selectedTokenPlatform]} Wallet`}
+              btnText={isInTokenPocket() ? t`Connect wallet` : `Switch To ${selectedTokenPlatform} Wallet`}
             />
           </span>
         </>
@@ -403,7 +426,7 @@ The deposit will be deducted from the balance of you connected wallet account an
     return null;
   }, [account, connectPlat, selectedTokenPlatform]);
   const memoSubmitButton = useMemo(() => {
-    if (selectedTokenPlatform === "Lightning") {
+    if (selectedTokenPlatform === "LIGHTNING") {
       return null;
       /*  return nostrAccount ? (
         <Button
@@ -421,25 +444,23 @@ The deposit will be deducted from the balance of you connected wallet account an
       ); */
     }
     if (account) {
-      if (connectPlat !== selectedTokenPlatform && account) {
+      if (MAPPLATFORM[connectPlat] && MAPPLATFORM[connectPlat] !== selectedTokenPlatform) {
         return (
           <>
             <Col span={24} className="deposit-form-switch__tip">
               {`You selected an ${MAPPLATFORM[selectedTokenPlatform]} token to deposit, please click to switch your
-              wallet connect from ${MAPPLATFORM[connectPlat]} to ${MAPPLATFORM[selectedTokenPlatform]}.`}
+              wallet connect from ${MAPPLATFORM[connectPlat]} to ${selectedTokenPlatform}.`}
             </Col>
             <Col span={24}>
               <ConnectWalletWithOnlyDeposit
                 connectType="switch"
-                btnText={
-                  isInTokenPocket() ? t`Connect wallet` : `Switch To ${MAPPLATFORM[selectedTokenPlatform]} Wallet`
-                }
+                btnText={isInTokenPocket() ? t`Connect wallet` : `Switch To ${selectedTokenPlatform} Wallet`}
               />
             </Col>
           </>
         );
       }
-      if (selectedTokenPlatform === "ETH") {
+      if (selectedTokenPlatform === "ERC20") {
         if (
           allowanceValue !== undefined &&
           decimals &&
@@ -450,7 +471,7 @@ The deposit will be deducted from the balance of you connected wallet account an
               <Button
                 type="primary"
                 size="large"
-                disabled={!account || connectPlat !== selectedTokenPlatform}
+                disabled={!account || MAPPLATFORM[connectPlat] !== selectedTokenPlatform}
                 onClick={handleApproveERC20}
                 loading={btnLoading}
                 style={{ width: "160px" }}
@@ -465,7 +486,7 @@ The deposit will be deducted from the balance of you connected wallet account an
             <Button
               type="primary"
               size="large"
-              disabled={!account || connectPlat !== selectedTokenPlatform}
+              disabled={!account || MAPPLATFORM[connectPlat] !== selectedTokenPlatform}
               onClick={handleTranserERC20}
               loading={btnLoading}
               style={{ width: "160px" }}
@@ -474,7 +495,7 @@ The deposit will be deducted from the balance of you connected wallet account an
             </Button>
           </>
         );
-      } else if (selectedTokenPlatform === "BTC") {
+      } else if (selectedTokenPlatform === "BRC20") {
         return (
           <>
             <Button
@@ -482,7 +503,10 @@ The deposit will be deducted from the balance of you connected wallet account an
               size="large"
               loading={btnLoading}
               disabled={
-                isInTokenPocket() || !checkedInscriptionValue || !account || connectPlat !== selectedTokenPlatform
+                isInTokenPocket() ||
+                !checkedInscriptionValue ||
+                !account ||
+                MAPPLATFORM[connectPlat] !== selectedTokenPlatform
               }
               onClick={handleTranserBRC20}
               style={{ width: "160px" }}
@@ -533,7 +557,7 @@ The deposit will be deducted from the balance of you connected wallet account an
         setSelectedToken(routeParams.symbol);
         form.setFieldValue("token", routeParams.symbol);
       }
-      if (connectPlat === "BTC" && selectedTokenPlatform === "BTC") {
+      if (connectPlat === "BTC" && selectedTokenPlatform === "BRC20") {
         handleGetInsciptions();
       }
     }
@@ -548,11 +572,11 @@ The deposit will be deducted from the balance of you connected wallet account an
 
   useEffect(() => {
     if (routeParams?.platform) {
-      dispatch(setSelectedTokenPlatForm(routeParams.platform));
-      dispatch(setConnectPlat(routeParams.platform));
-      form.setFieldValue("platform", routeParams.platform);
+      dispatch(setSelectedTokenPlatForm(routeParams.platform.toUpperCase()));
+      dispatch(setConnectPlat(routeParams.platform.toUpperCase()));
+      form.setFieldValue("platform", routeParams.platform.toUpperCase());
     } else {
-      form.setFieldValue("platform", selectedTokenPlatform);
+      form.setFieldValue("platform", selectedTokenPlatform.toUpperCase());
     }
   }, [connectPlat, dispatch, form, routeParams?.platform, selectedTokenPlatform]);
   return (
@@ -571,7 +595,7 @@ The deposit will be deducted from the balance of you connected wallet account an
           name="depositForm"
           autoComplete="off"
           initialValues={{
-            platform: selectedTokenPlatform || "ETH",
+            platform: selectedTokenPlatform || "LIGHTNING",
             amount: "0.00"
           }}
           style={{
@@ -589,26 +613,26 @@ The deposit will be deducted from the balance of you connected wallet account an
               }
             ]}
           >
-            <Radio.Group value={selectedTokenPlatform || "BTC"} onChange={handlePlatformChange}>
-              <Radio.Button className="network-selector-btn" value="Lightning">
+            <Radio.Group value={selectedTokenPlatform || "LIGHTNING"} onChange={handlePlatformChange}>
+              <Radio.Button className="network-selector-btn" value="LIGHTNING">
                 Lightning
               </Radio.Button>
 
-              <Radio.Button className="network-selector-btn" value="BTC">
+              <Radio.Button className="network-selector-btn" value="BRC20">
                 BRC20
               </Radio.Button>
-              <Radio.Button className="network-selector-btn" value="Taproot">
+              <Radio.Button className="network-selector-btn" value="TAPROOT">
                 <div className="network-selector-btn-test">Test</div>
                 Taproot
               </Radio.Button>
               {hasErc20Token && (
-                <Radio.Button className="network-selector-btn" value="ETH">
+                <Radio.Button className="network-selector-btn" value="ERC20">
                   ERC20
                 </Radio.Button>
               )}
             </Radio.Group>
           </Form.Item>
-          {(selectedTokenPlatform === "ETH" || selectedTokenPlatform === "BTC") && (
+          {(selectedTokenPlatform === "ERC20" || selectedTokenPlatform === "BRC20") && (
             <>
               <Form.Item name="walletAddress" label={memoWalletAddressLabel}>
                 {width > 768 ? (
@@ -673,7 +697,7 @@ The deposit will be deducted from the balance of you connected wallet account an
             </>
           )}
 
-          {selectedTokenPlatform === "ETH" && (
+          {selectedTokenPlatform === "ERC20" && (
             <Form.Item
               name="amount"
               label="Amount"
@@ -708,9 +732,9 @@ The deposit will be deducted from the balance of you connected wallet account an
             </Form.Item>
           )}
 
-          {selectedTokenPlatform === "BTC" && (
+          {selectedTokenPlatform === "BRC20" && (
             <div className="deposit-inscriptions">
-              <div className="deposit-inscriptions-label">Select inscription you want to deposit</div>
+              <div className="deposit-inscriptions-label">Select transferable inscription you want to deposit</div>
               <Spin spinning={loadingBRC20}>
                 <div className="deposit-inscriptions-list">
                   {inscriptions.length > 0 ? (
@@ -729,14 +753,14 @@ The deposit will be deducted from the balance of you connected wallet account an
             </div>
           )}
 
-          {connectPlat === "BTC" && selectedTokenPlatform === "BTC" && account && (
+          {connectPlat === "BTC" && selectedTokenPlatform === "BRC20" && account && (
             <>
               <Form.Item label="Fee" wrapperCol={18}>
                 <BRC20Fee feeRate={feeRate} setFee={setFee} setFeeRate={onChangeFeeRate} ready={true} />
               </Form.Item>
             </>
           )}
-          {connectPlat === "BTC" && selectedTokenPlatform === "BTC" && feeRate === "Custom" && (
+          {connectPlat === "BTC" && selectedTokenPlatform === "BRC20" && feeRate === "Custom" && (
             <Form.Item
               name="fee"
               label=" "
@@ -764,13 +788,13 @@ The deposit will be deducted from the balance of you connected wallet account an
               />
             </Form.Item>
           )}
-          {(selectedTokenPlatform === "ETH" || selectedTokenPlatform === "BTC") && (
+          {(selectedTokenPlatform === "ERC20" || selectedTokenPlatform === "BRC20") && (
             <Row justify="center" className="mb20 fixed-btn">
               {memoSubmitButton}
             </Row>
           )}
 
-          {selectedTokenPlatform === "Lightning" && (
+          {selectedTokenPlatform === "LIGHTNING" && (
             <LightningFormItems
               form={form}
               nostrAccount={npubNostrAccount}
@@ -778,7 +802,7 @@ The deposit will be deducted from the balance of you connected wallet account an
               notifiApi={notifiApi}
             />
           )}
-          {selectedTokenPlatform === "Taproot" && (
+          {selectedTokenPlatform === "TAPROOT" && (
             <TaprootFormItems
               form={form}
               nostrAccount={npubNostrAccount}

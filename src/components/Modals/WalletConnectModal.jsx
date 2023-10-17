@@ -35,7 +35,7 @@ function ERCWalletConnectButton() {
   const handleSetConnectPlat = useCallback(() => {
     Lockr.set("connectPlat", "ETH");
     dispatch(setConnectPlat("ETH"));
-    dispatch(setSelectedTokenPlatForm("ETH"));
+    dispatch(setSelectedTokenPlatForm("ERC20"));
   }, [dispatch]);
   const handleConnectMetaMask = useCallback(() => {
     if (!metaMaskConnector.ready) {
@@ -59,33 +59,23 @@ function ERCWalletConnectButton() {
       return;
     }
     handleSetConnectPlat();
-    return connect({ connector: metaMaskConnector })?.catch((e) => {
-
-    });
+    return connect({ connector: metaMaskConnector })?.catch((e) => {});
   }, [connect, handleSetConnectPlat, metaMaskConnector, noticeApi]);
 
   const handleConnectCoinbase = useCallback(() => {
     handleSetConnectPlat();
-    return connect({ connector: coinbaseConnector })?.catch((e) => {
-
-    });
+    return connect({ connector: coinbaseConnector })?.catch((e) => {});
   }, [connect, handleSetConnectPlat, coinbaseConnector]);
 
   const handleInjected = useCallback(() => {
     handleSetConnectPlat();
-    return connect({ connector: injectedConnector })?.catch((e) => {
-
-    });
+    return connect({ connector: injectedConnector })?.catch((e) => {});
   }, [connect, handleSetConnectPlat, injectedConnector]);
   const handleConnectWalletConnect = useCallback(() => {
     try {
       handleSetConnectPlat();
-      return connect({ connector: walletConnectConnector })?.catch((e) => {
-
-      });
-    } catch (e) {
-
-    }
+      return connect({ connector: walletConnectConnector })?.catch((e) => {});
+    } catch (e) {}
   }, [connect, handleSetConnectPlat, walletConnectConnector]);
   useEffect(() => {
     if (isInTokenPocket() && !account && !window.unisat) {
@@ -201,7 +191,6 @@ function BRCWalletConnectButton() {
     }
     setConnectLoading(true);
     const ret = await connectUnisat().catch((e) => {
-
       noticeApi.error({
         duration: 3000,
         message: e.message
@@ -212,7 +201,7 @@ function BRCWalletConnectButton() {
       dispatch(setAccount(ret[0]));
       Lockr.set("connectPlat", "BTC");
       dispatch(setConnectPlat("BTC"));
-      dispatch(setSelectedTokenPlatForm("BTC"));
+      dispatch(setSelectedTokenPlatForm("BRC20"));
       dispatch(setWalletConnectModalVisible(false));
     }
     setConnectLoading(false);
@@ -237,7 +226,7 @@ export default function WalletConnectModal() {
   const dispatch = useDispatch();
 
   const items = useMemo(() => {
-    if (selectedTokenPlatform === "ETH") {
+    if (selectedTokenPlatform === "ERC20") {
       return [
         {
           key: "ERC-Wallet",
@@ -245,7 +234,7 @@ export default function WalletConnectModal() {
           children: <ERCWalletConnectButton />
         }
       ];
-    } else if (selectedTokenPlatform === "BTC") {
+    } else if (selectedTokenPlatform === "BRC20") {
       return [
         {
           key: "BRC-wallet",
