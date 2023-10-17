@@ -127,7 +127,7 @@ function DepositForm() {
     const getInscriptionsByPage = async () => {
       const values = form.getFieldsValue(true);
       const { token } = values;
-      const ret = await getTansferableInscriptions(memoAccount, token, {
+      const ret = await getTansferableInscriptions(memoAccount, "PUFF", {
         offset: pageIndex * pageSize,
         limit: pageSize
       });
