@@ -21,7 +21,8 @@ const Transfer = lazy(() => import("pages/Transfer/index"));
 const Marketplace = lazy(() => import("pages/Marketplace/index"));
 const Faucet = lazy(() => import("pages/Testnet/ClaimTestToken"));
 const PioneerPoints = lazy(() => import("pages/Testnet/PioneerPoints"));
-const Test = lazy(() => import("pages/Test/index"));
+const Mint = lazy(() => import("pages/Mint/index"));
+const MintCreate = lazy(() => import("pages/Mint/MintCreate"));
 function Routes({ children }) {
   return (
     <>
@@ -43,8 +44,11 @@ function Routes({ children }) {
               <Route exact path="/faucet">
                 <Faucet />
               </Route>
-              <Route exact path="/test">
-                <Test />
+              <Route exact path="/mint">
+                <Mint />
+              </Route>
+              <Route exact path="/mint/create">
+                <MintCreate />
               </Route>
               <Route exact path="/pioneer-points">
                 <PioneerPoints />

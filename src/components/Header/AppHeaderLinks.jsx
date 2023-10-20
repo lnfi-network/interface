@@ -13,10 +13,7 @@ export function AppHeaderLinks({ small, clickCloseIcon }) {
   };
 
   return (
-    <div
-      className="App-header-links"
-      onClick={() => clickCloseIcon && clickCloseIcon()}
-    >
+    <div className="App-header-links" onClick={() => clickCloseIcon && clickCloseIcon()}>
       {small && (
         <div className="App-header-links-header">
           <Link className="App-header-link-main" to="/">
@@ -59,6 +56,11 @@ export function AppHeaderLinks({ small, clickCloseIcon }) {
           <Trans>Faucet</Trans>
         </HeaderLink>
       </div>
+      <div className="App-header-link-container">
+        <HeaderLink to="/mint">
+          <Trans>Mint Assets</Trans>
+        </HeaderLink>
+      </div>
       {/* <div className="App-header-link-container">
         <a
           href="https://doc.nostrassets.com"
@@ -79,7 +81,7 @@ export function AppHeaderLinks({ small, clickCloseIcon }) {
             marginTop: "40px",
             position: "absolute",
             bottom: "30px",
-            left: 0,
+            left: 0
           }}
           onClick={stopProp}
         >
