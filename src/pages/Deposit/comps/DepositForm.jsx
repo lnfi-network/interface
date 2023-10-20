@@ -618,9 +618,12 @@ The deposit will be deducted from the balance of you connected wallet account an
                 Lightning
               </Radio.Button>
 
-              <Radio.Button className="network-selector-btn" value="BRC20">
-                BRC20
-              </Radio.Button>
+              {process.env.REACT_APP_CURRENT_ENV === "dev" && (
+                <Radio.Button className="network-selector-btn" value="BRC20">
+                  BRC20
+                </Radio.Button>
+              )}
+
               <Radio.Button className="network-selector-btn" value="TAPROOT">
                 <div className="network-selector-btn-test">Test</div>
                 Taproot
