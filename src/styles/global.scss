@@ -599,6 +599,15 @@ input::input-placeholder {
 .ant-form-item .ant-form-item-label > label::after {
   content: "";
 }
+.nostr-assets-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 20px auto;
+  padding: 20px;
+  background: var(--color-layer-light);
+  border-radius: 10px;
+}
+
 /* #webpack-dev-server-client-overlay {
   display: none !important;
 }

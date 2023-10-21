@@ -1,0 +1,29 @@
+.nostr-assets-card {
+  background-color: var(--color-layer-base);
+  border-radius: 10px;
+  width: 80%;
+  margin: 0 auto;
+  padding: 10px 20px 20px;
+  &-item {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 10px;
+
+    &__value {
+      &.finished {
+        color: var(--color-text-yellow);
+      }
+      &.handing {
+        color: var(--color-unift-green);
+      }
+      &.error {
+        color: var(--color-red);
+      }
+      &.link {
+        span {
+          color: #1668dc;
+        }
+      }
+    }
+  }
+}

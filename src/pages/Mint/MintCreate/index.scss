@@ -1,0 +1,38 @@
+.nostr-assets {
+  &-titleh3 {
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--color-text-light);
+    text-align: center;
+    &-description {
+      font-size: 14px;
+      padding-top: 10px;
+      color: var(--color-text-light);
+      text-align: center;
+    }
+  }
+  &-form {
+    &-groupInfo {
+      color: var(--color-text-light);
+      font-weight: bold;
+      font-size: 16px;
+      padding: 30px 60px 20px;
+    }
+
+    .ant-input-number {
+      width: 100%;
+    }
+    .submit {
+      margin-top: 20px;
+      width: 100%;
+    }
+    &-servicefee {
+      width: 100%;
+    }
+  }
+  &-mint {
+    width: 100%;
+    padding-top: 30px;
+    text-align: center;
+  }
+}
