@@ -60,8 +60,10 @@
   "scripts": {
     "start": "dotenv -e .env.development react-app-rewired start",
     "start:test": "dotenv -e .env.test react-app-rewired start",
+    "start:prod": "dotenv -e .env.prod react-app-rewired start",
     "build:dev": "CI=false && dotenv -e .env.development react-app-rewired build",
     "build:test": "CI=false && dotenv -e .env.test react-app-rewired build",
+    "build:prod": "CI=false && dotenv -e .env.prod react-app-rewired build",
     "extract": "lingui extract",
     "compile": "lingui compile"
   },
