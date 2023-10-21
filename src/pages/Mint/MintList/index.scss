@@ -1,0 +1,269 @@
+.mint-list {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  .mint-list-head {
+    text-align: center;
+    background: var(--color-layer-light);
+    padding: 20px;
+    margin-top: 20px;
+    border-radius: 10px;
+  }
+  .mint-list-content{
+    margin-top: 20px;
+    border-radius: 10px;
+    margin-bottom: 40px;
+    padding: 20px;
+    background: var(--color-layer-light);
+  }
+  .mint-list-tabs {
+    padding: 20px 0 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #303030;
+    .mint-list-tabs-btns {
+      display: flex;
+      .mint-list-tabs-btns-btns {
+        display: flex;
+        align-items: center;
+      }
+      .ant-btn {
+        display: inline-flex;
+        align-items: center;
+        .ant-btn-icon {
+          svg {
+            path {
+              fill: #fff;
+            }
+          }
+        }
+      }
+    }
+    .account-table-btns {
+      display: flex;
+      justify-content: space-between;
+      // margin-left: -15px;
+      // .ant-btn{
+      //   font-size: 12px;
+      // }
+    }
+  }
+}
+.token-address-tooltip {
+  max-width: 500px;
+}
+.account-nologin {
+  // padding-top: 100px;
+  margin: 0 auto;
+  padding: 20px 20px 0;
+  width: 100%;
+  max-width: 1200px;
+  .account-nologin-content {
+    padding: 20px 0;
+    text-align: center;
+    background: var(--color-layer-light);
+    border-radius: 15px;
+    .account-nologin-content-text {
+      font-size: 17px;
+      margin-top: 15px;
+    }
+    .account-nologin-content-btns {
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+      .account-nologin-content-btns-deposit {
+        background-color: transparent;
+        border: 1px solid var(--color-green-light);
+        height: 36px;
+        &:hover {
+          background: var(--color-green-light);
+          color: #fff;
+        }
+      }
+    }
+  }
+}
+.import-assets-warning {
+  .ant-modal-confirm-title {
+    color: var(--color-text-base);
+  }
+  .ant-modal-content {
+    background-color: #1c232b;
+    .about-modal-content {
+      padding: 0 50px;
+    }
+    .about-modal-content-info {
+      margin-top: 20px;
+      font-size: 16px;
+      color: #ccc;
+      text-align: justify;
+    }
+    .anticon-exclamation-circle {
+      display: none;
+    }
+    .about-num {
+      display: inline-block;
+      width: 26px;
+      height: 26px;
+      text-align: center;
+      line-height: 26px;
+      background-color: var(--color-green-light);
+      border-radius: 20px;
+      margin-right: 8px;
+    }
+  }
+  .ant-modal-confirm-btns {
+    text-align: center;
+    .ant-btn {
+      width: 160px;
+      height: 32px;
+      color: #fff;
+      background-color: #38c89d;
+      box-shadow: 0 2px 0 rgba(31, 242, 198, 0.09);
+      &:hover {
+        color: #fff;
+        background-color: #38c89d;
+        box-shadow: 0 2px 0 rgba(31, 242, 198, 0.09);
+      }
+    }
+  }
+}
+@media screen and (max-width: 768px) {
+  .account {
+    padding: 0 10px;
+    .account-head {
+      padding: 20px 10px;
+      display: block;
+      justify-content: space-between;
+      align-items: center;
+      .account-head-left {
+        display: flex;
+        .account-head-left-logo {
+          img {
+            width: 70px;
+          }
+        }
+        .account-head-left-nostr {
+          margin-left: 10px;
+          .account-head-left-nostr-text {
+            margin-top: 5px;
+            .ant-typography {
+              color: #fff;
+              font-size: 18px;
+              font-weight: bold;
+            }
+          }
+          // .account-head-left-nostr-u{
+          //   margin-top: 6px;
+          //   font-size: 22px;
+          //   font-weight: bold;
+          //   color: #fff;
+          // }
+        }
+      }
+      .account-head-right {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 20px;
+        .ant-btn {
+          padding: 4px 8px;
+          height: 28px;
+          font-size: 12px;
+        }
+        .ant-btn + .ant-btn {
+          margin-left: 4px;
+        }
+      }
+    }
+    .account-table-box {
+      margin-top: 20px;
+      padding: 20px 0 0;
+      margin-bottom: 40px;
+      border-radius: 10px;
+      .account-tokenList-title {
+        // margin-top: 30px;
+        display: flex;
+        justify-content: space-between;
+        &-left {
+          width: 100px;
+          padding: 0;
+          font-size: 18px;
+          font-weight: bold;
+          color: #fff;
+
+          img {
+            width: 24px;
+            margin-right: 10px;
+          }
+        }
+        &__reload {
+          padding-left: 0px;
+        }
+        &-right {
+          flex: 1;
+          padding-left: 10px;
+          padding-right: 0;
+          font-size: 12px;
+        }
+      }
+      .account-tokenList-actions {
+        // justify-content: left;
+        margin-top: 0;
+        align-items: flex-start;
+        flex-direction: column;
+        padding: 0 10px 20px;
+        .account-tokenList-total {
+          margin-top: 6px;
+          font-size: 20px;
+          font-weight: bold;
+          color: #fff;
+        }
+        .account-tokenList-actions-btns {
+          width: 100%;
+          flex-wrap: wrap;
+          justify-content: space-between;
+          .ant-btn + .ant-btn {
+            margin-left: 0;
+          }
+          .ant-btn {
+            margin-top: 8px;
+            width: calc(25% - 10px);
+            text-align: center;
+            justify-content: center;
+            font-size: 13px;
+            // padding: 2px 7px;
+            height: 28px;
+          }
+        }
+      }
+      .account-tokenList-title {
+        // margin-top: 30px;
+        padding: 0 10px;
+        img {
+          width: 24px;
+          margin-right: 10px;
+        }
+      }
+    }
+  }
+
+  .account-nologin {
+    padding: 20px 10px 0;
+    .account-nologin-content {
+      padding: 20px 20px;
+      .account-nologin-content-text {
+        font-size: 14px;
+        line-height: 20px;
+        margin-top: 10px;
+      }
+      .account-nologin-content-text:first-child {
+        margin-top: 0;
+      }
+      .mt15 {
+        margin-top: 15px;
+      }
+    }
+  }
+}
