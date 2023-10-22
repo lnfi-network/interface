@@ -165,8 +165,8 @@ export default function ImportAssets() {
                 <div className="import-asset-item-section-label color-dark">TX</div>
                 <div className="import-asset-item-section-value">
                   {item.genesis_point ? (
-                    <EllipsisMiddle suffixCount={8} suffixCountMore={6} handleClick={() => window.open(`https://mempool.space/testnet/tx/${item.genesis_point}`)}>
-                      {`https://mempool.space/testnet/tx/${item.genesis_point}`}
+                    <EllipsisMiddle suffixCount={8} suffixCountMore={6} handleClick={() => window.open(`${process.env.REACT_APP_TX}${item.genesis_point}`)}>
+                      {`${process.env.REACT_APP_TX}${item.genesis_point}`}
                     </EllipsisMiddle>
                   ) : (
                     "--"
