@@ -321,7 +321,7 @@ function MintList() {
         <div className="mint-list-content">
           <div className="mint-list-content-create">
             <Button type="primary">{t`Launch Mint Activity`}</Button>
-            <Button type="primary" onClick={onHandleRedirect(`/mint/create`)}>{t`Create Asset`}</Button>
+            <Button type="primary" onClick={() => onHandleRedirect(`mint/create`)}>{t`Create Asset`}</Button>
           </div>
           <div className="mint-list-tabs">
             <div className="mint-list-tabs-btns">
