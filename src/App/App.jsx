@@ -7,6 +7,7 @@ import { HashRouter as Router } from "react-router-dom";
 import { Buffer } from "buffer";
 Buffer.from("anything", "base64");
 window.Buffer = Buffer;
+
 import "./App.scss";
 import "antd/dist/reset.css";
 import Routes from "./Routes";

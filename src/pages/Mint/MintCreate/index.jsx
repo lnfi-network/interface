@@ -1,22 +1,110 @@
 import { Button, Checkbox, Form, Input, InputNumber, Row, Col } from "antd";
+import { useMintAsset, useUnisatPay } from "hooks/useMintAssets";
 import PayAndMintProgress from "../comps/PayAndMintProgress";
 import SubmitModal from "../comps/SubmitModal";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
+import { useHistory, useParams } from "react-router-dom";
+import { LeftOutlined } from "@ant-design/icons";
 import "./index.scss";
 export default function MintCreate() {
   const [form] = Form.useForm();
+  const params = useParams();
+  const history = useHistory();
   const [submitModalVisible, setSubmitModalVisible] = useState(false);
-  const onPaymentAndCreateAsset = useCallback(() => {
-    setSubmitModalVisible(true);
-  }, []);
-  const onFinish = useCallback((values) => {
-    console.log(values);
-  }, []);
+  // const [createdId, setCreatedId] = useState("85215b48fa3ca73e55f24d6ac55db97e5b25056909439bc9e31c7e0338a778d4");
+  const [saveLoding, setSaveLoding] = useState(false);
+  const [payBtnLoading, setPayBtnLoading] = useState(false);
+
+  const { handleUnisatPay } = useUnisatPay();
+  const { handleCreateAssetAsync, handleUpdateAssetAsync, handleCreateMintPayAsync } = useMintAsset();
+  const [payTxId, setPayTxId] = useState(null);
+  const payBtnDisable = useMemo(() => {
+    const enable = params?.eventId && !!payTxId;
+    return !enable;
+  }, [params?.eventId, payTxId]);
+
+  const memoEventId = useMemo(() => {
+    const { eventId } = params;
+    return eventId ? eventId : "";
+  }, [params]);
+  const onSave = useCallback(
+    async (values) => {
+      try {
+        const jsonStr = JSON.stringify(values);
+        const encodeAssetData = window.btoa(jsonStr);
+        setSaveLoding(true);
+        if (!memoEventId) {
+          // create
+          const ret = await handleCreateAssetAsync({ encodeAssetData });
+          const { sendEvent, result } = ret;
+          if (result.code === 0) {
+            window._message.success(result.data);
+            const sendEventId = sendEvent.id;
+            history.replace(`/mint/create/${sendEventId}`);
+          } else {
+            throw new Error(result.msg);
+          }
+        } else {
+          // update existing asset
+          const ret = await handleUpdateAssetAsync({ id: memoEventId, encodeAssetData });
+          const { result } = ret;
+          if (result.code === 0) {
+            window._message.success("Update Asset submitted successfully");
+          } else {
+            throw new Error(result.msg);
+          }
+        }
+      } catch (err) {
+        window._message.error(err.message);
+      } finally {
+        setSaveLoding(false);
+      }
+    },
+    [memoEventId, handleCreateAssetAsync, history, handleUpdateAssetAsync]
+  );
+  const onPaymentAndCreateAsset = useCallback(async () => {
+    try {
+      setPayBtnLoading(true);
+      //await form.validateFields();
+      const formData = form.getFieldsValue();
+      const encodeAssetData = window.btoa(JSON.stringify(formData));
+      const txId = await handleUnisatPay(memoEventId);
+
+      /* setPayTxId(txId);
+      const ret = await handleCreateMintPayAsync({ id: memoEventId, txId, encodeAssetData });
+      const { result } = ret;
+      if (result.code !== 0) {
+        throw new Error(result.data);
+      } */
+      //window._message.success(result.data);
+      setSubmitModalVisible(true);
+    } catch (err) {
+      if (err.message) {
+        window._message.error(err.message);
+      }
+    } finally {
+      setPayBtnLoading(false);
+    }
+  }, [form, handleCreateMintPayAsync, handleUnisatPay, memoEventId]);
+
+  //todo setPayTxId;
+  //TODO getTxStatusByEventId
 
   return (
     <>
       <SubmitModal visible={submitModalVisible} setVisible={setSubmitModalVisible} />
       <div className="nostr-assets-container">
+        <div className="nostr-assets-back">
+          <Button
+            type="link"
+            onClick={() => {
+              history.replace("/mint");
+            }}
+            icon={<LeftOutlined />}
+          >
+            Back
+          </Button>
+        </div>
         <h3 className="nostr-assets-titleh3">Create Asset</h3>
         <div className="nostr-assets-titleh3-description">
           Deploy Taproot
@@ -38,7 +126,7 @@ export default function MintCreate() {
             maxWidth: "100%"
           }}
           initialValues={{}}
-          onFinish={onFinish}
+          onFinish={onSave}
           autoComplete="off"
         >
           <h4 className="nostr-assets-form-groupInfo">Asset info</h4>
@@ -46,7 +134,7 @@ export default function MintCreate() {
             <Col span={12}>
               <Form.Item
                 label="Asset Name"
-                name="assetName"
+                name="name"
                 rules={[
                   {
                     required: true,
@@ -60,7 +148,7 @@ export default function MintCreate() {
             <Col span={12}>
               <Form.Item
                 label="Asset Symbol"
-                name="assetSymbol"
+                name="symbol"
                 rules={[
                   {
                     required: true,
@@ -74,7 +162,7 @@ export default function MintCreate() {
             <Col span={12}>
               <Form.Item
                 label="Total Supply"
-                name="totalSupply"
+                name="amount"
                 rules={[
                   {
                     required: true,
@@ -93,7 +181,7 @@ export default function MintCreate() {
             <Col span={12}>
               <Form.Item
                 label="Asset Deploy Decimal"
-                name="deployDecimal"
+                name="decimal"
                 rules={[
                   {
                     required: true,
@@ -131,7 +219,7 @@ export default function MintCreate() {
             <Col span={12}>
               <Form.Item
                 label="Logo URL"
-                name="logoURL"
+                name="logo"
                 rules={[
                   {
                     required: true,
@@ -173,7 +261,7 @@ export default function MintCreate() {
           </Row>
 
           <Row justify="center" className="submit">
-            <Button type="primary" size="middle" htmlType="submit">
+            <Button type="primary" size="middle" htmlType="submit" loading={saveLoding}>
               Save
             </Button>
           </Row>
@@ -192,7 +280,7 @@ export default function MintCreate() {
           </Row>
         </Form>
         <div className="nostr-assets-mint">
-          <Button type="primary" size="middle" onClick={onPaymentAndCreateAsset}>
+          <Button type="primary" size="middle" onClick={onPaymentAndCreateAsset} loading={payBtnLoading}>
             Cofirm Payment and Create Asset
           </Button>
         </div>

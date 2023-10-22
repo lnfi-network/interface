@@ -3,8 +3,10 @@ import React, { useState, useCallback, useEffect, useMemo } from "react";
 
 import "./index.scss";
 import EllipsisMiddle from "components/EllipsisMiddle";
+import { useSelector } from "react-redux";
 
 export default function SubmitModal({ visible, setVisible }) {
+  const { npubNostrAccount } = useSelector(({ user }) => user);
   const handleCancel = useCallback(() => {
     setVisible(false);
   }, [setVisible]);
@@ -41,9 +43,7 @@ export default function SubmitModal({ visible, setVisible }) {
             mint流程，mint成功后，asset将会发送至您当前链接的NostrAssets地址:
           </p>
           <div className="nostr-address">
-            <EllipsisMiddle suffixCount={18}>
-              npub1ymg98cxxd6almphpm778x9jdw3qsmdnu08wpu3kfmjqk5c3qeunqyhkvrw
-            </EllipsisMiddle>
+            <EllipsisMiddle suffixCount={18}>{npubNostrAccount}</EllipsisMiddle>
           </div>
           <div className="submit-modal-tip">您可关闭弹窗在当前页面关注状态变化。</div>
         </div>

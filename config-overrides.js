@@ -1,12 +1,12 @@
 /* eslint-disable no-undef */
 const { override, addBabelPlugin, useBabelRc, addWebpackPlugin, addWebpackModuleRule } = require("customize-cra");
+
+
 const ProgressBarPlugin = require("progress-bar-webpack-plugin");
 
 const rewiredMap = () => (config) => {
   config.devtool = config.mode === "development" ? "cheap-module-source-map" : false;
-  /* config.externals = {
-    'nostr-tools': 'NostrTools'
-  } */
+
   if (config.mode !== "development") {
     config.devtool = false;
     /* invade(config.optimization.minimizer, "TerserPlugin", (e) => {
@@ -52,6 +52,13 @@ const rewiredMap = () => (config) => {
       }
     };
   }
+  const fallback = config.resolve.fallback || {};
+  Object.assign(fallback, {
+    "stream": require.resolve("stream-browserify"),
+    "buffer": require.resolve('buffer'),
+  })
+  config.resolve.fallback = fallback;
+
   return config;
 };
 
@@ -65,5 +72,6 @@ module.exports = override(
   }),
   addWebpackPlugin(
     new ProgressBarPlugin()
-  )
+  ),
+
 );
