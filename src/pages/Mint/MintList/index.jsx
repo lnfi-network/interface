@@ -393,7 +393,7 @@ function MintList() {
                 }
               />
               <CheckNostrButton>
-                <Button type="primary">{t`Create Asset`}</Button>
+                <Button type="primary" onClick={() => onHandleRedirect(`mint/create`)}>{t`Create Asset`}</Button>
               </CheckNostrButton>
             </div>
           ) : (
