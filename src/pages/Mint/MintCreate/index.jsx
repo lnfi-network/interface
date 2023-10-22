@@ -85,7 +85,7 @@ export default function MintCreate() {
     } finally {
       setPayBtnLoading(false);
     }
-  }, [form, handleCreateMintPayAsync, handleUnisatPay, memoEventId]);
+  }, [form, handleUnisatPay, memoEventId]);
 
   //todo setPayTxId;
   //TODO getTxStatusByEventId

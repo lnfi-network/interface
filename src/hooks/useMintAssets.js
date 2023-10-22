@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState, useRef, useMemo } from "react";
 import { NOSTAR_TOKEN_SEND_TO } from 'config/constants.js'
 import { useSelector } from "react-redux";
 import useNostrPool from "hooks/useNostrPool";
-//import { buildPSBT } from 'lib/buildPsbt/buildPsbt'
+import { buildPSBT } from 'lib/buildPsbt/buildPsbt'
 export const useMintAsset = () => {
   const { execQueryNostrAsync } = useNostrPool();
   const handleCreateAssetAsync = useCallback(
@@ -50,6 +50,21 @@ export const useMintAsset = () => {
     handleCreateMintPayAsync
   };
 }
+const getBuildPSBTResult = async (eventId, fee) => {
+  const networkstr = await window.unisat.getNetwork();
+  const publicKey = await window.unisat.getPublicKey();
+  const memeList = [eventId]
+
+  return await buildPSBT(
+    networkstr,
+    publicKey,
+    memeList,
+    [{ value: 4000, address: "tb1pa0w5chlch70lwqkf65szf9lpgpla4du6j5appvc420h04uu0xj0sguvtf5" }, { value: 2000, address: "tb1pa0w5chlch70lwqkf65szf9lpgpla4du6j5appvc420h04uu0xj0sguvtf5" }],
+    "tb1pa0w5chlch70lwqkf65szf9lpgpla4du6j5appvc420h04uu0xj0sguvtf5",
+    fee
+  );
+}
+
 export const useUnisatPay = () => {
   const { account } = useSelector(({ user }) => user);
   const handleUnisatPay = useCallback(async (eventId) => {
@@ -58,30 +73,33 @@ export const useUnisatPay = () => {
     if (!window.unisat) {
       throw new Error('No unisat provider.')
     }
-    //TODO
-    const networkstr = await window.unisat.getNetwork();
-    const publicKey = await window.unisat.getPublicKey();
-    const memeList = [eventId]
-    const targetList = [{ value: 1000000, address: "tb1pa0w5chlch70lwqkf65szf9lpgpla4du6j5appvc420h04uu0xj0sguvtf5" }]
+
+    let feeRate = 5;
+
+
+    let dummy = await getBuildPSBTResult(eventId, 5000)
+    let estimateFee = dummy.bytesize * feeRate;
+
     //const constructPsbtHex = await buildPSBT(networkstr, publicKey, memeList, targetList)
-    const constructPsbtHex = ''
-    console.log("🚀 ~ file: useMintAssets.js:67 ~ handleUnisatPay ~ constructPsbtHex:", constructPsbtHex)
-    return;
-    const signedPsbt = await window.unisat.signPsbt(constructPsbtHex, {
+    const constructPsbtRet = await getBuildPSBTResult(eventId, estimateFee);
+    console.log("🚀 ~ file: useMintAssets.js:85 ~ handleUnisatPay ~ constructPsbtRet:", constructPsbtRet)
+    if (!constructPsbtRet) {
+      throw new Error('Create Psbt failed.')
+    }
+    const { signList, unsignedHex } = constructPsbtRet
+    const signedPsbt = await window.unisat.signPsbt(unsignedHex, {
       autoFinalized: true,
       toSignInputs: [
-        {
-          index: 0,
-          address: account
-        }
+        ...signList
       ]
     });
-
+    console.log("🚀 ~ file: useMintAssets.js:96 ~ handleUnisatPay ~ signedPsbt:", signedPsbt)
+    return;
     if (signedPsbt) {
       sendTx = await window.unisat.pushPsbt(signedPsbt);
     }
     return sendTx
-  }, [account])
+  }, [])
 
   return {
     handleUnisatPay
