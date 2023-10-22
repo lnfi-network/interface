@@ -19,7 +19,7 @@ export default function PayAndMintProgress({ assetMintProgress }) {
           <span className="nostr-assets-card-item__label">Payment Tx:</span>
           <span className="nostr-assets-card-item__value link">
             {assetMintProgress?.payTxHash ? (
-              <a href={`${process.env.REACT_APP_TX}${assetMintProgress?.payTxHash}`}>
+              <a href={`${process.env.REACT_APP_TX}${assetMintProgress?.payTxHash}`} target="_blank">
                 <EllipsisMiddle suffixCount={10} copyable={false}>
                   {assetMintProgress?.payTxHash}
                 </EllipsisMiddle>
@@ -51,13 +51,17 @@ export default function PayAndMintProgress({ assetMintProgress }) {
           </span>
         </div>
         <div className="nostr-assets-card-item ">
-          <span className="nostr-assets-card-item__label">Submit payment success</span>
+          <span className="nostr-assets-card-item__label">Create Tx</span>
           <span className="nostr-assets-card-item__value link">
-            <a href="">
-              <EllipsisMiddle suffixCount={10} copyable={false}>
-                --
-              </EllipsisMiddle>
-            </a>
+            {assetMintProgress?.createTxHash ? (
+              <a href={`${process.env.REACT_APP_TX}${assetMintProgress.createTxHash}`} target="_blank">
+                <EllipsisMiddle suffixCount={10} copyable={false}>
+                  {assetMintProgress.createTxHash}
+                </EllipsisMiddle>
+              </a>
+            ) : (
+              "--"
+            )}
           </span>
         </div>
       </div>

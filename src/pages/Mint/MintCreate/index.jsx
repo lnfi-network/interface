@@ -116,7 +116,8 @@ export default function MintCreate() {
         setPayTxId(payTxHash);
         setAssetMintProgress({
           status: assetItem.status,
-          payTxHash: payTxHash
+          payTxHash: payTxHash,
+          createTxHash: assetItem.create_tx_hash
         });
       }
     }
@@ -330,9 +331,12 @@ export default function MintCreate() {
             </Row>
 
             <h4 className="nostr-assets-form-groupInfo">Payment & Asset mint Progress</h4>
-            <Row style={{ width: "100%" }}>
-              <PayAndMintProgress assetMintProgress={assetMintProgress} />
-            </Row>
+
+            {!!payTxId && (
+              <Row style={{ width: "100%" }}>
+                <PayAndMintProgress assetMintProgress={assetMintProgress} />
+              </Row>
+            )}
           </Form>
         </Spin>
         <div className="nostr-assets-mint">
