@@ -51,7 +51,7 @@ function Routes({ children }) {
               <Route exact path={["/mint/create", "/mint/create/:eventId"]}>
                 <MintCreate />
               </Route>
-              <Route exact path="/mint/detail">
+              <Route exact path="/mint/detail/:eventId">
                 <MintDetail />
               </Route>
               <Route exact path="/pioneer-points">

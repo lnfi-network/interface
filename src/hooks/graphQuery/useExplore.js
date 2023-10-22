@@ -575,7 +575,7 @@ export const useOrderDetailQuery = ({ pageSize = 20, pageIndex = 1, id, type }) 
     reexcuteQuery
   };
 };
-export const useCreateAssetsQuery = ({ pageSize = 20, pageIndex = 1, type, creator, event_id }) => {
+export const useCreateAssetsQuery = ({ pageSize = 20, pageIndex = 1, type, creator, event_id, search }) => {
   const tableName = `${GRAPH_BASE}nostr_create_assets`;
   const limit = useMemo(() => {
     return pageSize;
@@ -586,11 +586,20 @@ export const useCreateAssetsQuery = ({ pageSize = 20, pageIndex = 1, type, creat
 
   let whereMemo = useMemo(() => {
     let where = "{";
-    if(type == "My") {
+    if (type == "My") {
       where += `creator: {_eq: "${creator}"} `;
     }
-    if(event_id) {
+    if (event_id) {
       where += `event_id: {_eq: "${event_id}"} `;
+    }
+    if (type == "In-Progress") {
+      where += `status: { _in: [0,1,2]} `;
+    }
+    if (type == "Completed") {
+      where += `status: { _in: [9,99]} `;
+    }
+    if (search) {
+      where += `_or:[{ asset_id: {_iregex: "${search}"} }, { name: {_iregex: "${search}"} }] `;
     }
     // where += `status: { _in: ["INIT", "PUSH_MARKET_SUCCESS", "PUSH_MARKET_FAIL", "PART_SUCCESS"]}`;
     // where += `owner: {_eq: "${owner}"} `;
@@ -612,7 +621,7 @@ export const useCreateAssetsQuery = ({ pageSize = 20, pageIndex = 1, type, creat
 
     where += "}";
     return where;
-  }, [type]);
+  }, [creator, event_id, search, type]);
   let sortMemo = useMemo(() => {
     let order_by = `order_by:{create_time: desc} `;
     return order_by;
