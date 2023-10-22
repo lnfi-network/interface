@@ -120,7 +120,7 @@ function Account() {
                         : "--"}
                     </div>
                     {/* <div>Token Channel: {row?.symbol || "--"}</div> */}
-                    <div>Total supply: {row?.totalSupply || "--"}</div>
+                    <div>Total supply: {row?.totalSupply ? numberWithCommas(row?.totalSupply) : "--"}</div>
                   </div>
                 }
               >
@@ -254,7 +254,7 @@ function Account() {
                         : "--"}
                     </div>
                     {/*  <div>Token Channel: {row?.symbol || "--"}</div> */}
-                    <div>Total supply: {row?.totalSupply || "--"}</div>
+                    <div>Total supply: {row?.totalSupply ? numberWithCommas(row?.totalSupply) : "--"}</div>
                   </div>
                 }
               >

@@ -74,139 +74,34 @@
   }
 }
 @media screen and (max-width: 768px) {
-  .account {
-    padding: 0 10px;
-    .account-head {
-      padding: 20px 10px;
-      display: block;
-      justify-content: space-between;
-      align-items: center;
-      .account-head-left {
-        display: flex;
-        .account-head-left-logo {
-          img {
-            width: 70px;
-          }
-        }
-        .account-head-left-nostr {
-          margin-left: 10px;
-          .account-head-left-nostr-text {
-            margin-top: 5px;
-            .ant-typography {
-              color: #fff;
-              font-size: 18px;
-              font-weight: bold;
-            }
-          }
-          // .account-head-left-nostr-u{
-          //   margin-top: 6px;
-          //   font-size: 22px;
-          //   font-weight: bold;
-          //   color: #fff;
-          // }
-        }
-      }
-      .account-head-right {
-        display: flex;
-        justify-content: space-between;
-        margin-top: 20px;
-        .ant-btn {
-          padding: 4px 8px;
-          height: 28px;
-          font-size: 12px;
-        }
-        .ant-btn + .ant-btn {
-          margin-left: 4px;
-        }
-      }
-    }
-    .account-table-box {
+  .mint-list {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    .mint-list-head {
+      text-align: center;
+      // background: var(--color-layer-light);
+      padding: 0 20px;
       margin-top: 20px;
-      padding: 20px 0 0;
-      margin-bottom: 40px;
       border-radius: 10px;
-      .account-tokenList-title {
-        // margin-top: 30px;
-        display: flex;
-        justify-content: space-between;
-        &-left {
-          width: 100px;
-          padding: 0;
-          font-size: 18px;
-          font-weight: bold;
-          color: #fff;
-
-          img {
-            width: 24px;
-            margin-right: 10px;
-          }
-        }
-        &__reload {
-          padding-left: 0px;
-        }
-        &-right {
-          flex: 1;
-          padding-left: 10px;
-          padding-right: 0;
-          font-size: 12px;
-        }
-      }
-      .account-tokenList-actions {
-        // justify-content: left;
-        margin-top: 0;
-        align-items: flex-start;
-        flex-direction: column;
-        padding: 0 10px 20px;
-        .account-tokenList-total {
-          margin-top: 6px;
-          font-size: 20px;
-          font-weight: bold;
-          color: #fff;
-        }
-        .account-tokenList-actions-btns {
-          width: 100%;
-          flex-wrap: wrap;
-          justify-content: space-between;
-          .ant-btn + .ant-btn {
-            margin-left: 0;
-          }
-          .ant-btn {
-            margin-top: 8px;
-            width: calc(25% - 10px);
-            text-align: center;
-            justify-content: center;
-            font-size: 13px;
-            // padding: 2px 7px;
-            height: 28px;
-          }
-        }
-      }
-      .account-tokenList-title {
-        // margin-top: 30px;
-        padding: 0 10px;
-        img {
-          width: 24px;
-          margin-right: 10px;
-        }
-      }
+      
     }
-    
-  }
-
-  .account-nologin {
-    padding: 20px 10px 0;
-    .account-nologin-content {
-      padding: 20px 20px;
-      .account-nologin-content-text {
-        font-size: 14px;
-        line-height: 20px;
-        margin-top: 10px;
-      }
-      .account-nologin-content-text:first-child {
-        margin-top: 0;
-      }
-      .mt15 {
-        margin-top: 15px;
+    .mint-list-content{
+      margin-top: 30px;
+      border-radius: 10px;
+      margin-bottom: 40px;
+      padding: 0;
+      background: var(--color-layer-light);
+      .mint-list-tabs {
+        padding: 20px 0 30px;
+        display: block;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid #303030;
+        // .mint-list-tabs-btns {
+        //   display: block;
+        // }
       }
     }
   }
