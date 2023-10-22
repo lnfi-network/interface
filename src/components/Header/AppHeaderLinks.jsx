@@ -52,17 +52,19 @@ export function AppHeaderLinks({ small, clickCloseIcon }) {
       </div> */}
 
       {process.env.REACT_APP_CURRENT_ENV !== "prod" && (
-        <div className="App-header-link-container">
-          <HeaderLink to="/faucet">
-            <Trans>Faucet</Trans>
-          </HeaderLink>
-        </div>
+        <>
+          <div className="App-header-link-container">
+            <HeaderLink to="/faucet">
+              <Trans>Faucet</Trans>
+            </HeaderLink>
+          </div>
+          <div className="App-header-link-container">
+            <HeaderLink to="/mint">
+              <Trans>Mint Assets</Trans>
+            </HeaderLink>
+          </div>
+        </>
       )}
-      <div className="App-header-link-container">
-        <HeaderLink to="/mint">
-          <Trans>Mint Assets</Trans>
-        </HeaderLink>
-      </div>
 
       {/* <div className="App-header-link-container">
         <a
