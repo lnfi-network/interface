@@ -52,7 +52,8 @@
     "slick-carousel": "^1.8.1",
     "urql": "^4.0.0",
     "viem": "^0.3.19",
-    "wagmi": "^1.0.5"
+    "wagmi": "^1.0.5",
+    "react-share": "4.4.1"
   },
   "resolutions": {
     "react-error-overlay": "6.0.11"

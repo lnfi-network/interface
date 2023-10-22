@@ -5,17 +5,34 @@
   padding: 0 20px;
   .mint-list-head {
     text-align: center;
-    background: var(--color-layer-light);
-    padding: 20px;
+    // background: var(--color-layer-light);
+    padding: 0 20px;
     margin-top: 20px;
     border-radius: 10px;
+    
   }
   .mint-list-content{
-    margin-top: 20px;
+    margin-top: 30px;
     border-radius: 10px;
     margin-bottom: 40px;
-    padding: 20px;
+    padding: 0 20px;
     background: var(--color-layer-light);
+    .mint-list-content-create{
+      // margin-top: 20px;
+      text-align: right;
+    }
+    .my-empty{
+      width: 65%;
+      margin: 0 auto;
+      text-align: center;
+      svg{
+        g{
+          g{
+            stroke: #ccc
+          }
+        }
+      }
+    }
   }
   .mint-list-tabs {
     padding: 20px 0 30px;
@@ -53,37 +70,6 @@
 }
 .token-address-tooltip {
   max-width: 500px;
-}
-.account-nologin {
-  // padding-top: 100px;
-  margin: 0 auto;
-  padding: 20px 20px 0;
-  width: 100%;
-  max-width: 1200px;
-  .account-nologin-content {
-    padding: 20px 0;
-    text-align: center;
-    background: var(--color-layer-light);
-    border-radius: 15px;
-    .account-nologin-content-text {
-      font-size: 17px;
-      margin-top: 15px;
-    }
-    .account-nologin-content-btns {
-      margin-top: 20px;
-      display: flex;
-      justify-content: center;
-      .account-nologin-content-btns-deposit {
-        background-color: transparent;
-        border: 1px solid var(--color-green-light);
-        height: 36px;
-        &:hover {
-          background: var(--color-green-light);
-          color: #fff;
-        }
-      }
-    }
-  }
 }
 .import-assets-warning {
   .ant-modal-confirm-title {

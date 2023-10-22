@@ -22,6 +22,7 @@ const Marketplace = lazy(() => import("pages/Marketplace/index"));
 const Faucet = lazy(() => import("pages/Testnet/ClaimTestToken"));
 const PioneerPoints = lazy(() => import("pages/Testnet/PioneerPoints"));
 const Mint = lazy(() => import("pages/Mint/index"));
+const MintDetail = lazy(() => import("pages/Mint/MintDetail"));
 const MintCreate = lazy(() => import("pages/Mint/MintCreate"));
 function Routes({ children }) {
   return (
@@ -46,6 +47,9 @@ function Routes({ children }) {
               </Route>
               <Route exact path="/mint">
                 <Mint />
+              </Route>
+              <Route exact path="/mint/detail">
+                <MintDetail />
               </Route>
               <Route exact path="/mint/create">
                 <MintCreate />
