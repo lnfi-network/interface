@@ -98,10 +98,9 @@ export default function MintCreate() {
   }, [form, handleCreateMintPayAsync, handleUnisatPay, memoEventId]);
 
   const formReadOnly = useMemo(() => {
-    return !!params?.eventId && nostrAccount !== creator;
-  }, [creator, nostrAccount, params?.eventId]);
+    return (!!params?.eventId && nostrAccount !== creator) || !!payTxId;
+  }, [creator, nostrAccount, params?.eventId, payTxId]);
 
-  const memoConfirmBtn = useMemo(() => {}, []);
   useEffect(() => {
     if (list.length > 0) {
       const assetItem = list[0];
@@ -317,7 +316,7 @@ export default function MintCreate() {
             </Row>
 
             <Row justify="center" className="submit">
-              <Button type="primary" size="middle" htmlType="submit" loading={saveLoding}>
+              <Button type="primary" disabled={!!payTxId} size="middle" htmlType="submit" loading={saveLoding}>
                 Save
               </Button>
             </Row>
