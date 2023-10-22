@@ -342,10 +342,10 @@ export const useListingOrderQuery = ({ pageSize = 20, pageIndex = 1, type, token
     //   where += `status: { _in: [INIT","PUSH_MARKET_SUCCESS","PUSH_MARKET_FAIL","TAKE_LOCK","TRADE_PENDING","CANCEL_PENDING","TRADE_PENDING","PART_SUCCESS","SUCCESS","CANCEL"]} `;
     // }
     if (!status) {
-      where += `status: { _in: ["INIT","PUSH_MARKET_SUCCESS","TAKE_LOCK","TRADE_PENDING","PART_SUCCESS","SUCCESS","CANCEL"]} `;
+      where += `status: { _in: ["INIT","PUSH_MARKET_SUCCESS","TAKE_LOCK","TRADE_PENDING","PART_SUCCESS","SUCCESS","CANCEL","CANCEL_FAIL"]} `;
     }
     if (status == "Open Orders") {
-      where += `status: { _in: ["INIT","PUSH_MARKET_SUCCESS","TAKE_LOCK","TRADE_PENDING","PART_SUCCESS"]} `;
+      where += `status: { _in: ["INIT","PUSH_MARKET_SUCCESS","TAKE_LOCK","TRADE_PENDING","PART_SUCCESS","CANCEL_FAIL"]} `;
     }
     if (status == "History Orders") {
       where += `status: { _in: ["SUCCESS","CANCEL"]} `;
@@ -445,10 +445,10 @@ export const useMyOrderQuery = ({ pageSize = 20, pageIndex = 1, type, token, sta
       where += `token:{_eq: "${token.toUpperCase()}"} `;
     }
     if (!status) {
-      where += `status: { _in: ["INIT","PUSH_MARKET_SUCCESS","TAKE_LOCK","TRADE_PENDING","PART_SUCCESS","SUCCESS","CANCEL"]} `;
+      where += `status: { _in: ["INIT","PUSH_MARKET_SUCCESS","TAKE_LOCK","TRADE_PENDING","PART_SUCCESS","SUCCESS","CANCEL","CANCEL_FAIL"]} `;
     }
     if (status == "Open Orders") {
-      where += `status: { _in: ["INIT","PUSH_MARKET_SUCCESS","TAKE_LOCK","TRADE_PENDING","PART_SUCCESS"]} `;
+      where += `status: { _in: ["INIT","PUSH_MARKET_SUCCESS","TAKE_LOCK","TRADE_PENDING","PART_SUCCESS","CANCEL_FAIL"]} `;
     }
     if (status == "History Orders") {
       where += `status: { _in: ["SUCCESS","CANCEL"]} `;
@@ -575,7 +575,7 @@ export const useOrderDetailQuery = ({ pageSize = 20, pageIndex = 1, id, type }) 
     reexcuteQuery
   };
 };
-export const useCreateAssetsQuery = ({ pageSize = 20, pageIndex = 1, type, creator }) => {
+export const useCreateAssetsQuery = ({ pageSize = 20, pageIndex = 1, type, creator, event_id }) => {
   const tableName = `${GRAPH_BASE}nostr_create_assets`;
   const limit = useMemo(() => {
     return pageSize;
@@ -586,6 +586,12 @@ export const useCreateAssetsQuery = ({ pageSize = 20, pageIndex = 1, type, creat
 
   let whereMemo = useMemo(() => {
     let where = "{";
+    if(type == "My") {
+      where += `creator: {_eq: "${creator}"} `;
+    }
+    if(event_id) {
+      where += `event_id: {_eq: "${event_id}"} `;
+    }
     // where += `status: { _in: ["INIT", "PUSH_MARKET_SUCCESS", "PUSH_MARKET_FAIL", "PART_SUCCESS"]}`;
     // where += `owner: {_eq: "${owner}"} `;
     // if (type) {
@@ -606,7 +612,7 @@ export const useCreateAssetsQuery = ({ pageSize = 20, pageIndex = 1, type, creat
 
     where += "}";
     return where;
-  }, []);
+  }, [type]);
   let sortMemo = useMemo(() => {
     let order_by = `order_by:{create_time: desc} `;
     return order_by;

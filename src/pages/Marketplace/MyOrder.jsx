@@ -327,6 +327,9 @@ export default function MyOrder() {
               cls = "color-green";
               txt = "Filled";
               break;
+            case "CANCEL_FAIL":
+              txt = "Cancel Fail";
+              break;
             case "CANCEL":
               txt = "Cancelled";
               break;
