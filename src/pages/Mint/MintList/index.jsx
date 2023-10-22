@@ -12,7 +12,7 @@ import avatar from "img/avatar.png";
 import asset from "img/asset.png";
 import { limitDecimals, numberWithCommas } from "lib/numbers";
 import BigNumber from "bignumber.js";
-import { useSize } from "ahooks";
+import { useSize, useDebounce } from "ahooks";
 import { useHistory } from "react-router-dom";
 import { useCreateAssetsQuery } from "hooks/graphQuery/useExplore";
 // import ProModal from "./comps/ProModal";
@@ -22,6 +22,7 @@ import ConnectNostr from "components/Common/ConnectNostr";
 import CheckNostrButton from "components/CheckNostrButton";
 import useDevice from "hooks/useDevice";
 import { setAboutModalVisible } from "store/reducer/modalReducer";
+import { PlusOutlined } from "@ant-design/icons";
 import * as Lockr from "lockr";
 const ASSET_PLAT_MAP = {
   ETHEREUM: "ETH",
@@ -34,6 +35,8 @@ function MintList() {
   const device = useDevice();
   const dispatch = useDispatch();
   const [type, setType] = useState("All");
+  const [search, setSearch] = useState("");
+  const debouncedSearch = useDebounce(search, { wait: 500 });
   const [pageSize, setPageSize] = useState(100);
   const [pageIndex, setPageIndex] = useState(1);
   const history = useHistory();
@@ -44,6 +47,7 @@ function MintList() {
   }, [tokenList]);
   // const { handleQueryBalance } = useQueryBalance();
   const { list, fetching, total, reexcuteQuery } = useCreateAssetsQuery({
+    search: debouncedSearch,
     type,
     pageSize,
     pageIndex,
@@ -65,9 +69,13 @@ function MintList() {
     setPageIndex(page);
     setPageSize(pageSize);
   }, []);
+  const searchChange = useCallback((e) => {
+    // console.log("value", value);
+    setSearch(e.target.value);
+  }, []);
   const columns = useMemo(() => {
     if (width > 768) {
-      return type == "My" ? [
+      return [
         {
           title: t`Asset`,
           dataIndex: "name",
@@ -83,7 +91,7 @@ function MintList() {
                     src={row.logo}
                     fallback="data:image/png;base64,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"
                   />
-                  <span style={{marginLeft: "8px"}}>{text}</span>
+                  <span style={{ marginLeft: "8px" }}>{text}</span>
                 </div>
               </div>
             );
@@ -105,7 +113,14 @@ function MintList() {
           title: t`Asset ID`,
           dataIndex: "asset_id",
           render: (text) => {
-            return text || "--";
+            return text ? <EllipsisMiddle suffixCount={8}>{text}</EllipsisMiddle> : "--";
+          }
+        },
+        {
+          title: t`Creator`,
+          dataIndex: "creator",
+          render: (text) => {
+            return text ? <EllipsisMiddle suffixCount={6}>{nip19.npubEncode(text)}</EllipsisMiddle> : text || "--";
           }
         },
         // {
@@ -166,237 +181,13 @@ function MintList() {
                 break;
             }
             return (
-              <div className="mint-table-status" onClick={() => {
-                onHandleRedirect(`mint/create/${row.event_id}`);
-              }}>
+              <div
+                className="mint-table-status"
+                onClick={() => {
+                  onHandleRedirect(`mint/create/${row.event_id}`);
+                }}
+              >
                 <span>{txt || text}</span>
-                <span className="ml5 f18 pointer">{">"}</span>
-              </div>
-            );
-          }
-        }
-        // {
-        //   title: t`Action`,
-        //   dataIndex: "status",
-        //   // width: 260,
-        //   render: (text, row) => {
-        //     return (
-        //       <div className="account-table-btns">
-        //         <CheckNostrButton>
-        //           <Button
-        //             type="primary"
-        //             // size="small"
-        //             onClick={() => {
-        //               // const platform = ASSET_PLAT_MAP[row.assetType];
-        //               onHandleRedirect(`mint/detail`);
-        //             }}
-        //           >
-        //             {t`Mint`}
-        //           </Button>
-        //         </CheckNostrButton>
-        //         <span className="ml5 f18 pointer">{">"}</span>
-        //       </div>
-        //     );
-        //   }
-        // }
-      ] : [
-        {
-          title: t`Asset`,
-          dataIndex: "name",
-          render: (text, row) => {
-            return (
-              <div>
-                <div>
-                  <Image
-                    width={36}
-                    height={36}
-                    style={{ borderRadius: "20px" }}
-                    preview={false}
-                    src={row.logo}
-                    fallback="data:image/png;base64,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"
-                  />
-                  <span style={{marginLeft: "8px"}}>{text}</span>
-                </div>
-              </div>
-            );
-          }
-        },
-        {
-          title: t`Create Date`,
-          dataIndex: "create_time",
-          render: (text) => utcToClient(text)
-        },
-        {
-          title: t`Asset TX`,
-          dataIndex: "create_tx_hash",
-          render: (text) => {
-            return text || "--";
-          }
-        },
-        {
-          title: t`Asset ID`,
-          dataIndex: "asset_id",
-          render: (text) => {
-            return text || "--";
-          }
-        },
-        // {
-        //   title: t`Progress`,
-        //   dataIndex: "name",
-        //   // width: "140px",
-        //   render: (text, row) => {
-        //     if (!nostrAccount) {
-        //       return "--";
-        //     }
-        //     const balance = balanceList?.[text]?.balanceShow || 0;
-        //     if (text == "USDT") {
-        //       return `$${numberWithCommas(limitDecimals(balance, 2))}`;
-        //     }
-        //     const priceDetail = list.find((item) => item?.name == text);
-        //     return priceDetail?.deal_price && usdtDetail
-        //       ? `$${numberWithCommas(
-        //           limitDecimals(
-        //             BigNumber(priceDetail.deal_price)
-        //               .div(usdtDetail?.decimals)
-        //               .div(row?.decimals)
-        //               .times(balance)
-        //               .toNumber(),
-        //             2
-        //           )
-        //         )}`
-        //       : "--";
-        //   }
-        // },
-        // {
-        //   title: t`Minter`,
-        //   dataIndex: "name",
-        //   // width: "140px",
-        //   render: (text) => {
-        //     const balance = balanceList?.[text]?.balanceShow;
-        //     return balance ? numberWithCommas(balance) : "--";
-        //   }
-        // },
-        {
-          title: t`Action`,
-          dataIndex: "status",
-          // width: 260,
-          render: (text, row) => {
-            return (
-              <div className="account-table-btns">
-                <CheckNostrButton>
-                  <Button
-                    type="primary"
-                    // size="small"
-                    onClick={() => {
-                      // const platform = ASSET_PLAT_MAP[row.assetType];
-                      onHandleRedirect(`mint/detail`);
-                    }}
-                  >
-                    {t`Mint`}
-                  </Button>
-                </CheckNostrButton>
-                <span className="ml5 f18 pointer">{">"}</span>
-              </div>
-            );
-          }
-        }
-      ];
-      return [
-        {
-          title: t`Asset`,
-          dataIndex: "name",
-          render: (text, row) => {
-            return (
-              <div>
-                <div>
-                  <Image
-                    width={36}
-                    height={36}
-                    style={{ borderRadius: "20px" }}
-                    preview={false}
-                    src={row.logo}
-                    fallback="data:image/png;base64,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"
-                  />
-                  <span style={{marginLeft: "8px"}}>{text}</span>
-                </div>
-              </div>
-            );
-          }
-        },
-        {
-          title: t`Create Date`,
-          dataIndex: "create_time",
-          render: (text) => utcToClient(text)
-        },
-        {
-          title: t`Asset TX`,
-          dataIndex: "create_tx_hash",
-          render: (text) => {
-            return text || "--";
-          }
-        },
-        {
-          title: t`Asset ID`,
-          dataIndex: "asset_id",
-          render: (text) => {
-            return text || "--";
-          }
-        },
-        // {
-        //   title: t`Progress`,
-        //   dataIndex: "name",
-        //   // width: "140px",
-        //   render: (text, row) => {
-        //     if (!nostrAccount) {
-        //       return "--";
-        //     }
-        //     const balance = balanceList?.[text]?.balanceShow || 0;
-        //     if (text == "USDT") {
-        //       return `$${numberWithCommas(limitDecimals(balance, 2))}`;
-        //     }
-        //     const priceDetail = list.find((item) => item?.name == text);
-        //     return priceDetail?.deal_price && usdtDetail
-        //       ? `$${numberWithCommas(
-        //           limitDecimals(
-        //             BigNumber(priceDetail.deal_price)
-        //               .div(usdtDetail?.decimals)
-        //               .div(row?.decimals)
-        //               .times(balance)
-        //               .toNumber(),
-        //             2
-        //           )
-        //         )}`
-        //       : "--";
-        //   }
-        // },
-        // {
-        //   title: t`Minter`,
-        //   dataIndex: "name",
-        //   // width: "140px",
-        //   render: (text) => {
-        //     const balance = balanceList?.[text]?.balanceShow;
-        //     return balance ? numberWithCommas(balance) : "--";
-        //   }
-        // },
-        {
-          title: t`Action`,
-          dataIndex: "status",
-          // width: 260,
-          render: (text, row) => {
-            return (
-              <div className="account-table-btns">
-                <CheckNostrButton>
-                  <Button
-                    type="primary"
-                    // size="small"
-                    onClick={() => {
-                      // const platform = ASSET_PLAT_MAP[row.assetType];
-                      onHandleRedirect(`mint/detail`);
-                    }}
-                  >
-                    {t`Mint`}
-                  </Button>
-                </CheckNostrButton>
                 <span className="ml5 f18 pointer">{">"}</span>
               </div>
             );
@@ -486,24 +277,9 @@ function MintList() {
         }
       ];
     }
-  }, [balanceList, list, nostrAccount, onHandleRedirect, type, usdtDetail, width]);
+  }, [balanceList, list, nostrAccount, onHandleRedirect, usdtDetail, width]);
   return (
     <>
-      {/* {!nostrAccount && (
-        <div className="account-nologin">
-          <div className="account-nologin-content">
-            <div className="account-nologin-content-text f18 b">{t`First Asset Management Platform`}</div>
-            <div className="account-nologin-content-text">
-              {t`Powered by Nostr Protocol, Secured by Lightning Network. `}
-            </div>
-            <div className="account-nologin-content-text">{t`Connect Nostr to start managing your assets`}</div>
-            <div className="account-nologin-content-btns">
-              <ConnectNostr />
-            </div>
-          </div>
-        </div>
-      )} */}
-
       <div className="mint-list">
         <div className="mint-list-head">
           <div className="account-head-left-nostr">
@@ -517,7 +293,7 @@ function MintList() {
         <div className="mint-list-content">
           <div className="mint-list-content-create">
             <Button type="primary" onClick={() => message.info("Coming soon")}>{t`Launch Mint Activity`}</Button>
-            <Button type="primary" onClick={() => onHandleRedirect(`mint/create`)}>{t`Create Asset`}</Button>
+            <Button type="primary">{t`Create Asset`}</Button>
           </div>
           <div className="mint-list-tabs">
             <div className="mint-list-tabs-btns">
@@ -539,6 +315,11 @@ function MintList() {
                   <CheckNostrButton>
                     <Button type={type == "My" ? "primary" : "default"} size="large" onClick={() => setType("My")}>
                       {t`My Created`}
+                    </Button>
+                  </CheckNostrButton>
+                  <CheckNostrButton>
+                    <Button type="primary" size="large" onClick={() => onHandleRedirect(`mint/create`)}>
+                      <PlusOutlined />
                     </Button>
                   </CheckNostrButton>
                 </>
@@ -567,14 +348,14 @@ function MintList() {
             </div>
             <div>
               <Input
-                // onChange={assetIdChange}
+                onChange={searchChange}
                 style={{ width: "500px" }}
                 size={device.isMobile ? "middle" : "large"}
                 placeholder="Search by asset ID or Asset name"
               />
             </div>
           </div>
-          {type == "My" && !fetching && !list ? (
+          {type == "My" && !fetching && !list?.length ? (
             <div className="my-empty">
               <Empty
                 image={Empty.PRESENTED_IMAGE_SIMPLE}

@@ -52,6 +52,10 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
     },
     [balanceList]
   );
+  const usdtVolume = useMemo(() => {
+    return tokenList.filter((tokenItem) => tokenItem?.name?.toLowerCase() == "usdt")?.volume || 10;
+  }, [tokenList]);
+
   const memoTokenList = useMemo(() => {
     return tokenList.filter((tokenItem) => tokenItem.name !== "USDT") || [];
   }, [tokenList]);
@@ -142,8 +146,8 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
     // form.validateFields();
     try {
       await form.validateFields();
-      if (Number(memoTotalValue) < 10) {
-        message.warning(t`Minimum Qty is 10 USDT`);
+      if (Number(memoTotalValue) < selectedToken?.volume * usdtVolume) {
+        message.warning(`Minimum Qty is ${selectedToken?.volume * usdtVolume} USDT`);
         return;
       }
       setBtnLoading(true);
@@ -194,14 +198,16 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
   }, [
     form,
     memoTotalValue,
-    buyOrSell,
+    selectedToken?.volume,
     selectedToken?.name,
+    usdtVolume,
+    buyOrSell,
     handleLimitOrderAsync,
-    onCancel,
-    reexcuteQuery,
-    messageApi,
     handleQueryBalance,
     nostrAccount,
+    reexcuteQuery,
+    onCancel,
+    messageApi,
     handleQueryAllowance
   ]);
   const onPriceChange = useCallback(
@@ -225,7 +231,7 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
   const onAmountChange = useCallback(
     ({ target: { value } }) => {
       if (Number(value)) {
-        let reg = new RegExp('\\d+\\.?\\d{0,' + (selectedToken?.reserve) + '}')
+        let reg = new RegExp("\\d+\\.?\\d{0," + selectedToken?.reserve + "}");
         const match = value.match(reg);
         // console.log("match", match);
         if (selectedToken?.reserve == 0) {
@@ -235,18 +241,20 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
           form.setFieldValue("amount", match[0]);
           setAmountValue(match[0]);
         }
-
       } else if (value && !Number.isNaN(value) && Number(value) >= 0) {
         setAmountValue(value);
       } else {
         setAmountValue(0);
       }
+      if (Number(value) && Number(form.getFieldValue("price"))) {
+        form.validateFields(["price"]);
+      }
     },
     [form, selectedToken]
   );
   const onApprove = useCallback(async () => {
-    if (Number(memoTotalValue) < 10) {
-      message.warning(t`Minimum Qty is 10 USDT`);
+    if (Number(memoTotalValue) < selectedToken?.volume * usdtVolume) {
+      message.warning(`Minimum Qty is ${selectedToken?.volume * usdtVolume} USDT`);
       return;
     }
     try {
@@ -279,12 +287,14 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
       setBtnLoading(false);
     }
   }, [
+    memoTotalValue,
+    selectedToken?.volume,
+    selectedToken?.name,
+    usdtVolume,
     buyOrSell,
     handleApproveAsync,
-    memoTotalValue,
     handleQueryAllowance,
     amountValue,
-    selectedToken?.name,
     messageApi
   ]);
   /*  const initForm = useCallback(() => {
@@ -474,7 +484,14 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
                       if (!Number(value)) {
                         return Promise.reject(new Error(t`Invalid input format.`));
                       }
-
+                      const amount = form.getFieldValue("amount");
+                      // if (
+                      //   Number(value) &&
+                      //   Number(amount) &&
+                      //   Number(value) * Number(amount) < selectedToken?.volume * usdtVolume
+                      // ) {
+                      //   return Promise.reject(new Error(`Minimum Qty is ${selectedToken?.volume * usdtVolume} USDT`));
+                      // }
                       return Promise.resolve();
                     }
                     return Promise.resolve();
@@ -503,18 +520,21 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
                       // if (selectedToken?.reserve == 0 && !/^\d+$/.test(value)) {
                       //   return Promise.reject(new Error(t`Invalid input format1.`));
                       // }
-                      if (Number(value) < selectedToken.volume) {
-                        return Promise.reject(
-                          new Error(`Minimum Qty is ${selectedToken.volume} ${selectedToken?.name}`)
-                        );
-                      }
+                      const price = form.getFieldValue("price");
                       if (
-                        Number(form.getFieldValue("price")) &&
                         Number(value) &&
-                        Number(form.getFieldValue("price")) * Number(value) < 10
+                        Number(price) &&
+                        Number(value) * Number(price) < selectedToken?.volume * usdtVolume
                       ) {
-                        return Promise.reject(new Error(t`Minimum Qty is 10 USDT`));
+                        return Promise.reject(new Error(`Minimum Qty is ${selectedToken?.volume * usdtVolume} USDT`));
                       }
+                      // if (
+                      //   Number(form.getFieldValue("price")) &&
+                      //   Number(value) &&
+                      //   Number(form.getFieldValue("price")) * Number(value) < 10
+                      // ) {
+                      //   return Promise.reject(new Error(t`Minimum Qty is 10 USDT`));
+                      // }
                       return Promise.resolve();
                     }
                     return Promise.resolve();

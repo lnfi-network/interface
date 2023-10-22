@@ -1,6 +1,7 @@
 import "./index.scss";
+import { useDeepCompareEffect } from "ahooks";
 import { LeftOutlined } from "@ant-design/icons";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import { useQueryBalance } from "hooks/useNostrMarket";
 import { useSelector, useDispatch } from "react-redux";
 import { Button, Popover, Input, Spin, Empty, Tooltip, Image, Modal, Pagination } from "antd";
@@ -80,6 +81,21 @@ export default function MintDetail() {
     content:
       "Great! You just imported a Taproot Asset to NostrAssets. You can return to Asset List to manage your asset now."
   });
+  const params = useParams();
+  // const exchangeRef = useRef(null);
+  // const basic = useSelector(({ basic }) => basic);
+  // const selectedTokenContract = useSelector(reselectSelectorTokenContract);
+  // const { contractList } = useSelector(selectorContractList);
+  const { marketList, selectedTokenContract } = useSelector(({ market }) => market);
+  // 应对刷新和首次进来的状况
+  useDeepCompareEffect(() => {
+    console.log("params.eventId",params.eventId);
+    // if (selectedContract) {
+    //   dispatch(setSelectedMarket(selectedContract));
+    // } else {
+    //   dispatch(setSelectedMarket(marketList[0]));
+    // }
+  }, [marketList, dispatch, params]);
   const { list, fetching, total, reexcuteQuery } = useImportAssetsQuery({
     pageSize: pageSize,
     pageIndex: pageIndex,
@@ -112,10 +128,10 @@ export default function MintDetail() {
                 content={
                   <>
                     <TelegramShareButton url={"http://localhost:3011/#/mint"} quote={"hahahha"}>
-                      <TelegramIcon size={32} style={{marginRight: "10px"}} round={true}></TelegramIcon>
+                      <TelegramIcon size={32} style={{ marginRight: "10px" }} round={true}></TelegramIcon>
                     </TelegramShareButton>
                     <TwitterShareButton url={"http://localhost:3011/#/mint"} quote={"hahahha"}>
-                      <TwitterIcon size={32} style={{marginRight: "10px"}} round={true}></TwitterIcon>
+                      <TwitterIcon size={32} style={{ marginRight: "10px" }} round={true}></TwitterIcon>
                     </TwitterShareButton>
                   </>
                 }
