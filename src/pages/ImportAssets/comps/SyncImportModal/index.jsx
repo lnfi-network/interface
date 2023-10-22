@@ -14,7 +14,7 @@ import "./index.scss";
 import { t } from "@lingui/macro";
 import { useImportAsset, useHandleQueryTokenList } from "hooks/useNostrMarket";
 const universeList = [
-  "testnet.universe.lightning.finance",
+  process.env.REACT_APP_LIGHTNING,
   "universe.tiramisuwallet.com:10029"
 ]
 function ImportModalForm({ open, setOpen, importingOpen, setImportingOpen, setImportingMap }) {
