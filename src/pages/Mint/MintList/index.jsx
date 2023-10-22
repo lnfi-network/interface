@@ -106,7 +106,17 @@ function MintList() {
           title: t`Asset TX`,
           dataIndex: "create_tx_hash",
           render: (text) => {
-            return text || "--";
+            return text ? (
+              <EllipsisMiddle
+                suffixCount={8}
+                suffixCountMore={6}
+                handleClick={() => window.open(`${process.env.REACT_APP_TX}${text}`)}
+              >
+                {`${process.env.REACT_APP_TX}${text}`}
+              </EllipsisMiddle>
+            ) : (
+              "--"
+            );
           }
         },
         {
@@ -117,7 +127,7 @@ function MintList() {
           }
         },
         {
-          title: t`Creator`,
+          title: t`Deployer Address`,
           dataIndex: "creator",
           render: (text) => {
             return text ? <EllipsisMiddle suffixCount={6}>{nip19.npubEncode(text)}</EllipsisMiddle> : text || "--";
@@ -174,10 +184,8 @@ function MintList() {
                 txt = "部署中";
                 break;
               case 9:
-                txt = "部署成功";
-                break;
               case 99:
-                txt = "部署失败";
+                txt = "已完成";
                 break;
             }
             return (
@@ -226,7 +234,17 @@ function MintList() {
           title: t`Asset TX`,
           dataIndex: "create_tx_hash",
           render: (text) => {
-            return text || "--";
+            return text ? (
+              <EllipsisMiddle
+                suffixCount={8}
+                suffixCountMore={6}
+                handleClick={() => window.open(`${process.env.REACT_APP_TX}${text}`)}
+              >
+                {`${process.env.REACT_APP_TX}${text}`}
+              </EllipsisMiddle>
+            ) : (
+              "--"
+            );
           }
         },
         {
