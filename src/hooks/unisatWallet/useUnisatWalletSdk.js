@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect, useRef } from "react";
 import { setAccount, setChainId } from 'store/reducer/userReducer'
 import { useDispatch } from "react-redux";
-export default function useUnisatSdk() {
+export default function useUnisatSdk(connectPlat) {
   const [network, setNetwork] = useState(null);
   const dispatch = useDispatch();
   const [unisatAccount, setUnisatAccount] = useState(null);
@@ -97,7 +97,7 @@ export default function useUnisatSdk() {
 
   useEffect(() => {
     let timer = null;
-    if (window.unisat) {
+    if (window.unisat && connectPlat === 'BTC') {
       timer = setTimeout(() => {
         getAccount();
         getNetwork();
@@ -106,7 +106,7 @@ export default function useUnisatSdk() {
     return () => {
       clearTimeout(timer);
     }
-  }, [getAccount, getNetwork]);
+  }, [connectPlat, getAccount, getNetwork]);
 
   return {
     isReady: !!window.unisat,

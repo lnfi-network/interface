@@ -674,6 +674,81 @@ export const useCreateAssetsQuery = ({ pageSize = 20, pageIndex = 1, type, creat
     reexcuteQuery
   };
 };
+
+export const useQueryAssetByEventIdOrAssetName = ({ eventId, assetName }) => {
+  const tableName = `${GRAPH_BASE}nostr_create_assets`;
+  let whereMemo = useMemo(() => {
+    let where = "{";
+    if (eventId) {
+      where += `event_id: {_eq: "${eventId}"} `;
+    }
+    if (assetName) {
+      where += `name: {_eq: "${assetName}"} `;
+    }
+    where += "}";
+    return where;
+  }, [assetName, eventId]);
+
+  let queryGraphsql = useMemo(() => {
+    return gql`
+    query(){
+      ${tableName}(where:${whereMemo}) {
+        asset_id
+        batch_key
+        create_time
+        create_tx_hash
+        creator
+        data
+        event_id
+        id
+        logo
+        name
+        pay_tx_hash
+        status
+        update_time
+      }
+      ${tableName}_aggregate(where:${whereMemo}){
+        aggregate {
+          count
+        }
+      }
+    }
+  `;
+  }, [tableName, whereMemo]);
+
+  const [result, reexcuteQuery] = useQuery({
+    query: queryGraphsql,
+    pause: !eventId && !assetName,
+
+  });
+
+  const { data, fetching } = result;
+  const list = data ? data[tableName] : [];
+  const total = data ? data[`${tableName}_aggregate`]?.aggregate?.count : 0;
+
+  return {
+    list,
+    total,
+    fetching,
+    reexcuteQuery
+  };
+};
+
+export const useQueryAssetByName = () => {
+  const tableName = `${GRAPH_BASE}nostr_create_assets`;
+
+  const qeryGraphaql = gql`
+  query ($name: String!,$creator:String!) {
+    ${tableName}(where: { name: { _eq: $name },creator:{_neq:$creator} }) {
+      name,
+      creator
+    }
+  }
+`;
+  return qeryGraphaql
+}
+
+
 export const useTokenChangeQuery = ({ pageSize = 20, pageIndex = 1 }) => {
   const tableName = `${GRAPH_BASE}nostr_token`;
   const limit = useMemo(() => {

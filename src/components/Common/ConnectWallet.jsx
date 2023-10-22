@@ -6,6 +6,7 @@ import "./ConnectWallet.scss";
 import { useNetwork } from "wagmi";
 import { useDispatch, useSelector } from "react-redux";
 import { setWalletConnectModalVisible } from "store/reducer/modalReducer";
+import { setSelectedTokenPlatForm } from "store/reducer/userReducer";
 import { useCallback } from "react";
 import { isInTokenPocket, isApple } from "lib/utils/userAgent";
 import useNostrDisconnect from "hooks/useNostrDisconnect";
@@ -87,14 +88,20 @@ export function ConnectWalletWithOnlyDeposit({ connectType, btnText = t`Connect 
     </div>
   );
 }
-export default function ConnectWallet() {
+export default function ConnectWallet({ tokenPlatform = "" }) {
   const dispatch = useDispatch();
+  const onConnectHandler = useCallback(() => {
+    if (tokenPlatform === "BRC20") {
+      dispatch(setSelectedTokenPlatForm("BRC20"));
+    }
+    dispatch(setWalletConnectModalVisible(true));
+  }, [dispatch, tokenPlatform]);
   return (
     <div className="connect-wallet-common">
       <div className="connect-wallet-text">
-        <Trans>Connect your wallet to deposit funds and start trading.</Trans>
+        <Trans>Connect your wallet to start trading.</Trans>
       </div>
-      <ConnectWalletButton onClick={() => dispatch(setWalletConnectModalVisible(true))} imgSrc={connectWalletImg}>
+      <ConnectWalletButton onClick={onConnectHandler} imgSrc={connectWalletImg}>
         <Trans>Connect wallet</Trans>
       </ConnectWalletButton>
     </div>
