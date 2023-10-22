@@ -1,33 +1,61 @@
 import EllipsisMiddle from "components/EllipsisMiddle";
+import classNames from "classnames";
+import { useMemo } from "react";
 import "./index.scss";
-export default function PayAndMintProgress() {
+export default function PayAndMintProgress({ assetMintProgress }) {
+  const status = assetMintProgress?.status;
   return (
     <>
       <div className="nostr-assets-card">
         <div className="nostr-assets-card-item">
           <span className="nostr-assets-card-item__label">Submit payment success</span>
-          <span className="nostr-assets-card-item__value handing">Waiting for payment result</span>
+          <span
+            className={classNames("nostr-assets-card-item__value", { handing: status === 0, finished: status > 0 })}
+          >
+            {assetMintProgress?.status === 0 ? "Waiting for payment result" : "Received Payment"}
+          </span>
         </div>
         <div className="nostr-assets-card-item">
           <span className="nostr-assets-card-item__label">Payment Tx:</span>
           <span className="nostr-assets-card-item__value link">
-            <a href="">
-              <EllipsisMiddle suffixCount={10} copyable={false}>
-                xxxxxx
-              </EllipsisMiddle>
-            </a>
+            {assetMintProgress?.payTxHash ? (
+              <a href={`${process.env.REACT_APP_TX}${assetMintProgress?.payTxHash}`}>
+                <EllipsisMiddle suffixCount={10} copyable={false}>
+                  {assetMintProgress?.payTxHash}
+                </EllipsisMiddle>
+              </a>
+            ) : (
+              "--"
+            )}
           </span>
         </div>
         <div className="nostr-assets-card-item">
           <span className="nostr-assets-card-item__label">Mint Asset on Taproot Asset</span>
-          <span className="nostr-assets-card-item__value error">Waiting for Start</span>
+
+          <span
+            className={classNames("nostr-assets-card-item__value", {
+              handing: status === 2,
+              finished: status === 9,
+              error: status === 99
+            })}
+          >
+            {useMemo(() => {
+              if (status === 2) {
+                return "Minting";
+              } else if (status === 9) {
+                return "Mint Success";
+              } else if (status === 99) {
+                return "Mint Failed";
+              }
+            }, [status])}
+          </span>
         </div>
         <div className="nostr-assets-card-item ">
           <span className="nostr-assets-card-item__label">Submit payment success</span>
           <span className="nostr-assets-card-item__value link">
             <a href="">
               <EllipsisMiddle suffixCount={10} copyable={false}>
-                xxxxxx
+                --
               </EllipsisMiddle>
             </a>
           </span>

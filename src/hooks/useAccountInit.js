@@ -5,11 +5,14 @@ import { useAccount, useNetwork } from "wagmi";
 import { initNostrAccount } from "store/reducer/userReducer";
 import { setAccount, setChainId, setActive } from "store/reducer/userReducer";
 import { isInTokenPocket } from "lib/utils/userAgent";
+import useUnisatSdk from 'hooks/unisatWallet/useUnisatWalletSdk'
 export default function useAccountInit() {
+
   const { address, connector, isConnected } = useAccount();
   const { nostrAccount, account } = useSelector(({ user }) => user);
   const { chain } = useNetwork();
   const connectPlat = useSelector(({ user }) => user.connectPlat);
+  useUnisatSdk(connectPlat);
   const walletConnectModalVisible = useSelector(({ modal }) => modal.walletConnectModalVisible);
   const dispatch = useDispatch();
   useEffect(() => {
