@@ -16,6 +16,7 @@ import { useSelector } from "react-redux";
 import useGetNostrAccount from "hooks/useGetNostrAccount";
 import { limitDecimals, numberWithCommas, padDecimals } from "lib/numbers";
 import { getQueryVariable } from "lib/url";
+import { QUOTE_ASSET } from "config/constants";
 // import { useCancelOrder } from "hooks/useNostrMarket";
 import { nip19 } from "nostr-tools";
 import BigNumber from "bignumber.js";
@@ -96,7 +97,7 @@ export default function Listing({ refListing }) {
     }
   ];
   const memoTokenList = useMemo(() => {
-    return tokenList.filter((tokenItem) => tokenItem.name !== "USDT") || [];
+    return tokenList.filter((tokenItem) => tokenItem.name !== QUOTE_ASSET) || [];
   }, [tokenList]);
   const typeChange = useCallback(
     (e) => {
@@ -170,7 +171,7 @@ export default function Listing({ refListing }) {
     [handleGetNostrAccount, nostrAccount]
   );
   const listingList = useMemo(() => {
-    const row = tokenList.find((item) => item.name == "USDT");
+    const row = tokenList.find((item) => item.name == QUOTE_ASSET);
     const curToken = tokenList.find((item) => item.name == token);
     return list && list.length ? (
       list.map((item) => (
@@ -189,7 +190,7 @@ export default function Listing({ refListing }) {
                   ? numberWithCommas(limitDecimals(BigNumber(item?.price).div(row?.decimals).toNumber(), row?.reserve))
                   : "--"}
               </span>{" "}
-              USDT
+              {QUOTE_ASSET}
             </div>
           </div>
           <div className="trade-item-section">
@@ -223,7 +224,7 @@ export default function Listing({ refListing }) {
                     )
                   )
                 : "--"}{" "}
-              USDT
+              {QUOTE_ASSET}
             </div>
           </div>
           <div className="trade-item-section bg-grey mt5 pt10">

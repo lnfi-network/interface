@@ -9,6 +9,7 @@ import { nip19 } from "nostr-tools";
 import { useAllowance, useApprove, useSendListOrder, useQueryBalance } from "hooks/useNostrMarket";
 import { limitDecimals } from "lib/numbers";
 import { nul } from "lib/utils/math";
+import { QUOTE_ASSET } from "config/constants";
 const layout = {
   labelCol: {
     span: 7
@@ -51,12 +52,12 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
     },
     [balanceList]
   );
-  const usdtVolume = useMemo(() => {
-    return tokenList.filter((tokenItem) => tokenItem?.name?.toLowerCase() == "usdt")?.volume || 10;
+  const qutoAssetVolume = useMemo(() => {
+    return tokenList.filter((tokenItem) => tokenItem?.name === QUOTE_ASSET)?.volume || 10;
   }, [tokenList]);
 
   const memoTokenList = useMemo(() => {
-    return tokenList.filter((tokenItem) => tokenItem.name !== "USDT") || [];
+    return tokenList.filter((tokenItem) => tokenItem.name !== QUOTE_ASSET) || [];
   }, [tokenList]);
   const onCancel = useCallback(() => {
     setIsListFormShow(false);
@@ -92,7 +93,7 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
         form.setFieldValue("amount", maxAmount);
         setAmountValue(0);
       } else {
-        const maxAmount = parseInt(getTokenBalance("USDT") / priceValue);
+        const maxAmount = parseInt(getTokenBalance(QUOTE_ASSET) / priceValue);
         form.setFieldValue("amount", maxAmount);
         setAmountValue(maxAmount);
       }
@@ -108,7 +109,7 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
   }, [handleMax]);
   const balance = useMemo(() => {
     if (Object.keys(balanceList).length > 0) {
-      return balanceList["USDT"].balanceShow;
+      return balanceList[QUOTE_ASSET].balanceShow;
     }
   }, [balanceList]);
 
@@ -145,8 +146,8 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
     // form.validateFields();
     try {
       await form.validateFields();
-      if (Number(memoTotalValue) < selectedToken?.volume * usdtVolume) {
-        message.warning(`Minimum Qty is ${selectedToken?.volume * usdtVolume} USDT`);
+      if (Number(memoTotalValue) < selectedToken?.volume * qutoAssetVolume) {
+        message.warning(`Minimum Qty is ${selectedToken?.volume * qutoAssetVolume} ${QUOTE_ASSET}`);
         return;
       }
       setBtnLoading(true);
@@ -156,7 +157,7 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
       const amount = values.amount;
       const buyTokenName = selectedToken?.name;
       const price = values.price;
-      const payTokenName = "usdt";
+      const payTokenName = QUOTE_ASSET;
       let ret = await handleLimitOrderAsync({
         side,
         amount,
@@ -189,7 +190,7 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
       //refresh balanceList
 
       if (buyOrSell === "buy") {
-        handleQueryAllowance("USDT");
+        handleQueryAllowance(QUOTE_ASSET);
       } else {
         handleQueryAllowance(selectedToken?.name);
       }
@@ -199,7 +200,7 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
     memoTotalValue,
     selectedToken?.volume,
     selectedToken?.name,
-    usdtVolume,
+    qutoAssetVolume,
     buyOrSell,
     handleLimitOrderAsync,
     handleQueryBalance,
@@ -252,16 +253,16 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
     [form, selectedToken]
   );
   const onApprove = useCallback(async () => {
-    if (Number(memoTotalValue) < selectedToken?.volume * usdtVolume) {
-      message.warning(`Minimum Qty is ${selectedToken?.volume * usdtVolume} USDT`);
+    if (Number(memoTotalValue) < selectedToken?.volume * qutoAssetVolume) {
+      message.warning(`Minimum Qty is ${selectedToken?.volume * qutoAssetVolume} ${QUOTE_ASSET}`);
       return;
     }
     try {
       setBtnLoading(true);
       let ret = null;
       if (buyOrSell === "buy") {
-        ret = await handleApproveAsync(Number(memoTotalValue), "USDT");
-        handleQueryAllowance("USDT");
+        ret = await handleApproveAsync(Number(memoTotalValue), QUOTE_ASSET);
+        handleQueryAllowance(QUOTE_ASSET);
       } else {
         ret = await handleApproveAsync(Number(amountValue), selectedToken?.name);
         handleQueryAllowance(selectedToken?.name);
@@ -289,7 +290,7 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
     memoTotalValue,
     selectedToken?.volume,
     selectedToken?.name,
-    usdtVolume,
+    qutoAssetVolume,
     buyOrSell,
     handleApproveAsync,
     handleQueryAllowance,
@@ -432,7 +433,7 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
   useEffect(() => {
     if (buyOrSell === "buy" && selectedToken?.name) {
       //
-      handleQueryAllowance("USDT");
+      handleQueryAllowance(QUOTE_ASSET);
     } else if (buyOrSell === "sell" && selectedToken?.name) {
       handleQueryAllowance(selectedToken?.name);
     }
@@ -487,9 +488,9 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
                       // if (
                       //   Number(value) &&
                       //   Number(amount) &&
-                      //   Number(value) * Number(amount) < selectedToken?.volume * usdtVolume
+                      //   Number(value) * Number(amount) < selectedToken?.volume * qutoAssetVolume
                       // ) {
-                      //   return Promise.reject(new Error(`Minimum Qty is ${selectedToken?.volume * usdtVolume} USDT`));
+                      //   return Promise.reject(new Error(`Minimum Qty is ${selectedToken?.volume * qutoAssetVolume} USDT`));
                       // }
                       return Promise.resolve();
                     }
@@ -500,7 +501,7 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
             >
               <Input className="listing-input" onChange={onPriceChange} />
             </Form.Item>
-            <span className="listing-form-usdt f12">USDT</span>
+            <span className="listing-form-usdt f12">{QUOTE_ASSET}</span>
           </Form.Item>
           <Form.Item label={buyOrSell === "buy" ? "Buy Amount" : "Sell Amount"}>
             <Form.Item
@@ -523,9 +524,11 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
                       if (
                         Number(value) &&
                         Number(price) &&
-                        Number(value) * Number(price) < selectedToken?.volume * usdtVolume
+                        Number(value) * Number(price) < selectedToken?.volume * qutoAssetVolume
                       ) {
-                        return Promise.reject(new Error(`Minimum Qty is ${selectedToken?.volume * usdtVolume} USDT`));
+                        return Promise.reject(
+                          new Error(`Minimum Qty is ${selectedToken?.volume * qutoAssetVolume} ${QUOTE_ASSET}`)
+                        );
                       }
                       // if (
                       //   Number(form.getFieldValue("price")) &&
@@ -554,13 +557,13 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
 
           <Form.Item label="Total Value" className="listing-form-total-stats">
             <div className="listing-form-total-value">
-              {memoTotalValue} <span>USDT</span>
+              {memoTotalValue} <span>{QUOTE_ASSET}</span>
             </div>
           </Form.Item>
           {
             buyOrSell == "buy" && (
               <div className="limit-buy-available">
-                Balance: {balance} <span>USDT</span>
+                Balance: {balance} <span>{QUOTE_ASSET}</span>
               </div>
             )
             // <Form.Item label="Balance" className="listing-form-total-stats">

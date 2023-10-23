@@ -1,18 +1,7 @@
 import "./index.scss";
 import { useCallback, useState, useEffect, useMemo } from "react";
 
-import {
-  Spin,
-  Table,
-  Select,
-  Pagination,
-  Collapse,
-  Button,
-  Row,
-  Col,
-  Form,
-  message,
-} from "antd";
+import { Spin, Table, Select, Pagination, Collapse, Button, Row, Col, Form, message } from "antd";
 import { t } from "@lingui/macro";
 import * as dayjs from "dayjs";
 const { Panel } = Collapse;
@@ -25,12 +14,13 @@ import useGetNostrAccount from "hooks/useGetNostrAccount";
 import { nip19 } from "nostr-tools";
 import { useCancelOrder } from "hooks/useNostrMarket";
 import BigNumber from "bignumber.js";
-import { utcToClient } from "lib/dates"
+import { utcToClient } from "lib/dates";
+import { QUOTE_ASSET } from "config/constants";
 const initQuery = {
   type: "",
   token: "",
   nostrAddress: "",
-  status: "",
+  status: ""
 };
 function CancelButton({ reexcuteQuery, row }) {
   const [cancelLoading, setCancelLoading] = useState(false);
@@ -84,7 +74,7 @@ export default function MyOrder() {
     type,
     token,
     status,
-    owner: nostrAccount,
+    owner: nostrAccount
   });
   useEffect(() => {
     if (!nostrAccount) {
@@ -94,7 +84,7 @@ export default function MyOrder() {
   const memoTokenList = useMemo(() => {
     var arr = [{ label: "All Token", value: "" }];
     tokenList.forEach((item) => {
-      if (item.name !== "USDT") {
+      if (item.name !== QUOTE_ASSET) {
         arr.push({ ...item, label: item.name, value: item.name });
       }
     });
@@ -105,16 +95,16 @@ export default function MyOrder() {
   const typeOptions = [
     {
       value: "",
-      label: t`Buy/Sell`,
+      label: t`Buy/Sell`
     },
     {
       value: "buy",
-      label: t`Buy`,
+      label: t`Buy`
     },
     {
       value: "sell",
-      label: t`Sell`,
-    },
+      label: t`Sell`
+    }
   ];
   const typeChange = useCallback((value) => {
     setPageIndex(1);
@@ -132,16 +122,16 @@ export default function MyOrder() {
     return [
       {
         value: "",
-        label: t`All Status`,
+        label: t`All Status`
       },
       {
         value: "Open Orders",
-        label: t`Open Orders`,
+        label: t`Open Orders`
       },
       {
         value: "History Orders",
-        label: t`History Orders`,
-      },
+        label: t`History Orders`
+      }
     ];
   }, []);
   const handleResize = useCallback(() => {
@@ -175,14 +165,8 @@ export default function MyOrder() {
         dataIndex: "event_id",
         width: 180,
         render(text, _) {
-          return text ? (
-            <EllipsisMiddle suffixCount={6}>
-              {nip19.noteEncode(text)}
-            </EllipsisMiddle>
-          ) : (
-            "--"
-          );
-        },
+          return text ? <EllipsisMiddle suffixCount={6}>{nip19.noteEncode(text)}</EllipsisMiddle> : "--";
+        }
       },
       {
         title: t`Time`,
@@ -195,7 +179,7 @@ export default function MyOrder() {
         dataIndex: "id",
         render: (text) => {
           return text || "--";
-        },
+        }
       },
       {
         title: t`Type`,
@@ -213,47 +197,35 @@ export default function MyOrder() {
             default:
               cls = "";
           }
-          return (
-            <span className={cls}>
-              {row?.label ? row?.label : text || "--"}
-            </span>
-          );
-        },
+          return <span className={cls}>{row?.label ? row?.label : text || "--"}</span>;
+        }
       },
 
       {
         title: t`Token`,
-        dataIndex: "token",
+        dataIndex: "token"
       },
       {
         title: t`Price`,
         dataIndex: "price",
         render: (text, row) => {
-          const cur = tokenList.find((item) => item.name == "USDT");
+          const cur = tokenList.find((item) => item.name == QUOTE_ASSET);
           return (
             <span className="color-yellow">
               {text && cur
-                ? `${numberWithCommas(
-                  limitDecimals(text / cur?.decimals, cur?.reserve)
-                )} USDT`
+                ? `${numberWithCommas(limitDecimals(text / cur?.decimals, cur?.reserve))} ${QUOTE_ASSET}`
                 : "--"}
             </span>
           );
-        },
+        }
       },
       {
         title: t`Remaining`,
         dataIndex: "deal_volume",
         render: (text, row) => {
           const cur = tokenList.find((item) => item.name == row.token);
-          return (
-            <span>
-              {numberWithCommas(
-                BigNumber(row.volume).minus(text).div(cur?.decimals).toNumber()
-              )}
-            </span>
-          );
-        },
+          return <span>{numberWithCommas(BigNumber(row.volume).minus(text).div(cur?.decimals).toNumber())}</span>;
+        }
       },
       {
         title: t`Amount`,
@@ -261,12 +233,8 @@ export default function MyOrder() {
         // render: (text) => <span>{text ? numberWithCommas(text) : "--"}</span>,
         render: (text, row) => {
           const cur = tokenList.find((item) => item.name == row.token);
-          return (
-            <span>
-              {numberWithCommas(BigNumber(text).div(cur?.decimals).toNumber())}
-            </span>
-          );
-        },
+          return <span>{numberWithCommas(BigNumber(text).div(cur?.decimals).toNumber())}</span>;
+        }
       },
       {
         title: t`Address`,
@@ -276,17 +244,11 @@ export default function MyOrder() {
           return (
             <Row>
               <Col className="f12 Poppins">
-                {text ? (
-                  <EllipsisMiddle suffixCount={6}>
-                    {nip19.npubEncode(text)}
-                  </EllipsisMiddle>
-                ) : (
-                  text || "--"
-                )}
+                {text ? <EllipsisMiddle suffixCount={6}>{nip19.npubEncode(text)}</EllipsisMiddle> : text || "--"}
               </Col>
             </Row>
           );
-        },
+        }
       },
       {
         title: t`Status`,
@@ -338,21 +300,13 @@ export default function MyOrder() {
               txt = "";
           }
           return <span className={cls}>{txt || text || "--"}</span>;
-        },
+        }
       },
       {
         title: t`Action`,
         dataIndex: "status",
         render: (text, row) => {
-          if (
-            [
-              "INIT",
-              "PUSH_MARKET_SUCCESS",
-              "PUSH_MARKET_FAIL",
-              "TAKE_LOCK",
-              "PART_SUCCESS",
-            ].includes(text)
-          ) {
+          if (["INIT", "PUSH_MARKET_SUCCESS", "PUSH_MARKET_FAIL", "TAKE_LOCK", "PART_SUCCESS"].includes(text)) {
             return (
               // <Button
               //   className="cancel"
@@ -363,16 +317,13 @@ export default function MyOrder() {
               //     onCancelOrder(row.id);
               //   }}
               // >{t`Cancel`}</Button>
-              <CancelButton
-                reexcuteQuery={reexcuteQuery}
-                row={row}
-              ></CancelButton>
+              <CancelButton reexcuteQuery={reexcuteQuery} row={row}></CancelButton>
             );
           } else {
             return <span>--</span>;
           }
-        },
-      },
+        }
+      }
     ];
   }, [reexcuteQuery, tokenList, typeOptions]);
 
@@ -389,7 +340,7 @@ export default function MyOrder() {
   const onFinish = useCallback(
     (values) => {
       let filterObj = {
-        ...values,
+        ...values
       };
       //
       setFilter(filterObj);
@@ -409,7 +360,7 @@ export default function MyOrder() {
         initialValues={{
           type: "",
           token: "",
-          status: "",
+          status: ""
         }}
       >
         <Form.Item label={t``} name="type" className="token-item">
@@ -419,7 +370,7 @@ export default function MyOrder() {
             onChange={typeChange}
             style={{
               width: "100%",
-              minWidth: "140px",
+              minWidth: "140px"
             }}
           />
         </Form.Item>
@@ -430,7 +381,7 @@ export default function MyOrder() {
             options={memoTokenList}
             style={{
               width: "100%",
-              minWidth: "140px",
+              minWidth: "140px"
             }}
           />
         </Form.Item>
@@ -441,7 +392,7 @@ export default function MyOrder() {
             options={statusOptions}
             style={{
               width: "100%",
-              minWidth: "140px",
+              minWidth: "140px"
             }}
           />
         </Form.Item>
@@ -466,22 +417,12 @@ export default function MyOrder() {
         </Collapse>
       );
     }
-  }, [
-    form,
-    memoTokenList,
-    onFinish,
-    statusChange,
-    statusOptions,
-    tokenChange,
-    typeChange,
-    typeOptions,
-    width,
-  ]);
+  }, [form, memoTokenList, onFinish, statusChange, statusOptions, tokenChange, typeChange, typeOptions, width]);
   const listMemo = useMemo(() => {
     return list.map((item) => {
       const typeOpt = typeOptions.find((k) => k.value == item.type);
       const cur = tokenList.find((l) => l.name == item.token);
-      const usdtToken = tokenList.find((j) => j.name == "USDT");
+      const qutoAsset = tokenList.find((j) => j.name == QUOTE_ASSET);
       let cls;
       switch (item?.type?.toLowerCase()) {
         case "buy":
@@ -522,9 +463,7 @@ export default function MyOrder() {
           <div className="my-order-section">
             <div className="key title">{item?.token}</div>
             <div className="value time">
-              {item.create_time
-                ? dayjs(item.create_time).format("YYYY-MM-DD HH:mm:ss")
-                : "--"}
+              {item.create_time ? dayjs(item.create_time).format("YYYY-MM-DD HH:mm:ss") : "--"}
             </div>
           </div>
           <div className="my-order-section">
@@ -534,41 +473,27 @@ export default function MyOrder() {
           <div className="my-order-section">
             <div className="key">Direction</div>
             <div className="value">
-              <span className={cls}>
-                {typeOpt?.label ? typeOpt?.label : item?.type || "--"}
-              </span>
+              <span className={cls}>{typeOpt?.label ? typeOpt?.label : item?.type || "--"}</span>
             </div>
           </div>
           <div className="my-order-section">
             <div className="key">Amount</div>
-            <div className="value">
-              {numberWithCommas(
-                BigNumber(item.volume).div(cur?.decimals).toNumber()
-              )}
-            </div>
+            <div className="value">{numberWithCommas(BigNumber(item.volume).div(cur?.decimals).toNumber())}</div>
           </div>
           <div className="my-order-section">
             <div className="key">Remaining</div>
             <div className="value">
-              {numberWithCommas(
-                BigNumber(item.volume)
-                  .minus(item.deal_volume)
-                  .div(cur?.decimals)
-                  .toNumber()
-              )}
+              {numberWithCommas(BigNumber(item.volume).minus(item.deal_volume).div(cur?.decimals).toNumber())}
             </div>
           </div>
           <div className="my-order-section">
             <div className="key">Price</div>
             <div className="value">
               <span className="color-yellow">
-                {item.price && usdtToken
+                {item.price && qutoAsset
                   ? `${numberWithCommas(
-                    limitDecimals(
-                      item.price / usdtToken?.decimals,
-                      usdtToken?.reserve
-                    )
-                  )} USDT`
+                      limitDecimals(item.price / qutoAsset?.decimals, qutoAsset?.reserve)
+                    )} ${QUOTE_ASSET}`
                   : "--"}
               </span>
             </div>
@@ -580,9 +505,7 @@ export default function MyOrder() {
           <div className="my-order-section">
             <div className="key">Status</div>
             <div className="value">
-              <span className={statusCls}>
-                {statusTxt || item?.status || "--"}
-              </span>
+              <span className={statusCls}>{statusTxt || item?.status || "--"}</span>
             </div>
           </div>
           <div className="my-order-section">
@@ -597,25 +520,19 @@ export default function MyOrder() {
               <EllipsisMiddle suffixCount={6}>{item?.owner}</EllipsisMiddle>
             </div>
           </div>
-          {[
-            "INIT",
-            "PUSH_MARKET_SUCCESS",
-            "PUSH_MARKET_FAIL",
-            "TAKE_LOCK",
-            "PART_SUCCESS",
-          ].includes(item.status) && (
-              <div>
-                <Button
-                  className="btn-grey btn-Cancel"
-                  onClick={() => {
-                    //
-                    onCancelOrder(item.id);
-                  }}
-                >
-                  Cancel
-                </Button>
-              </div>
-            )}
+          {["INIT", "PUSH_MARKET_SUCCESS", "PUSH_MARKET_FAIL", "TAKE_LOCK", "PART_SUCCESS"].includes(item.status) && (
+            <div>
+              <Button
+                className="btn-grey btn-Cancel"
+                onClick={() => {
+                  //
+                  onCancelOrder(item.id);
+                }}
+              >
+                Cancel
+              </Button>
+            </div>
+          )}
         </div>
       );
     });
@@ -629,7 +546,7 @@ export default function MyOrder() {
             className="table-light explore-table"
             loading={fetching}
             scroll={{
-              x: 1200,
+              x: 1200
             }}
             // sticky
             showSorterTooltip={false}
@@ -643,7 +560,7 @@ export default function MyOrder() {
               position: ["bottomCenter"],
               onChange: (page, pageSize) => {
                 onPageChange(page, pageSize);
-              },
+              }
             }}
           />
         ) : (
@@ -656,12 +573,7 @@ export default function MyOrder() {
               <>
                 {listMemo}
                 <div className="tc mt20 mb20">
-                  <Pagination
-                    current={pageIndex}
-                    pageSize={pageSize}
-                    total={total}
-                    onChange={onPageChange}
-                  />
+                  <Pagination current={pageIndex} pageSize={pageSize} total={total} onChange={onPageChange} />
                 </div>
               </>
             )}
