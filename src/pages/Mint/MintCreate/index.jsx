@@ -172,10 +172,6 @@ export default function MintCreate() {
                   name="name"
                   validateTrigger="onBlur"
                   rules={[
-                    {
-                      required: true,
-                      message: "Please input asset name"
-                    },
                     () => ({
                       async validator(_, value) {
                         if (value) {
@@ -188,12 +184,12 @@ export default function MintCreate() {
                           }
                           return Promise.resolve();
                         }
-                        return Promise.reject(new Error("Please input asset name!"));
+                        return Promise.reject(new Error("Please input asset name."));
                       }
                     })
                   ]}
                 >
-                  <Input />
+                  <Input placeholder="Please input asset name" />
                 </Form.Item>
               </Col>
               <Col span={12}>
