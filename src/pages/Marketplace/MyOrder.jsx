@@ -295,6 +295,12 @@ export default function MyOrder() {
             case "CANCEL":
               txt = "Cancelled";
               break;
+            case "CANCEL_PENDING":
+              txt = "Canceling";
+              break;
+            case "INIT_FAIL":
+              txt = "Init Fail";
+              break;
             default:
               cls = "";
               txt = "";
@@ -453,6 +459,15 @@ export default function MyOrder() {
           break;
         case "CANCEL":
           statusTxt = "Cancelled";
+          break;
+        case "CANCEL_PENDING":
+          txt = "Canceling";
+          break;
+        case "INIT_FAIL":
+          statusTxt = "Init Fail";
+          break;
+        case "CANCEL_FAIL":
+          statusTxt = "Cancel Fail";
           break;
         default:
           statusCls = "";

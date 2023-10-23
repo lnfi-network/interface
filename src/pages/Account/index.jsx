@@ -26,6 +26,7 @@ import ConnectNostr from "components/Common/ConnectNostr";
 import CheckNostrButton from "components/CheckNostrButton";
 import useDevice from "hooks/useDevice";
 import { setAboutModalVisible } from "store/reducer/modalReducer";
+import { QUOTE_ASSET } from "config/constants";
 import * as Lockr from "lockr";
 const ASSET_PLAT_MAP = {
   ETHEREUM: "ETH",
@@ -43,8 +44,11 @@ function Account() {
   const history = useHistory();
   const { nostrAccount, balanceList, npubNostrAccount } = useSelector(({ user }) => user);
   const { tokenList } = useSelector(({ market }) => market);
-  const usdtDetail = useMemo(() => {
-    return tokenList.find((k) => k?.name?.toUpperCase() == "USDT");
+  // const qutoAsset = useMemo(() => {
+  //   return tokenList.find((k) => k?.name?.toUpperCase() == "USDT");
+  // }, [tokenList]);
+  const qutoAsset = useMemo(() => {
+    return tokenList.find((tokenItem) => tokenItem?.name === QUOTE_ASSET);
   }, [tokenList]);
   const { handleQueryBalance } = useQueryBalance();
   const { list, fetching, reexcuteQuery } = useTokenChangeQuery({});
@@ -72,12 +76,12 @@ function Account() {
         if (item?.name == "USDT") {
           total += BigNumber(balance).toNumber();
         } else if (item?.deal_price && row && balance) {
-          total += BigNumber(item.deal_price).div(usdtDetail?.decimals).div(row?.decimals).times(balance).toNumber();
+          total += BigNumber(item.deal_price).div(qutoAsset?.decimals).div(row?.decimals).times(balance).toNumber();
         }
       });
     }
-    return total ? numberWithCommas(limitDecimals(total, 2)) : "0.00";
-  }, [balanceList, list, nostrAccount, tokenList, usdtDetail?.decimals]);
+    return total ? numberWithCommas(limitDecimals(total, qutoAsset?.reserve || 0)) : "0.00";
+  }, [nostrAccount, tokenList, qutoAsset?.reserve, qutoAsset?.decimals, list, balanceList]);
   const transferShow = useCallback((row) => {
     setDetail(row);
     setIsTransferShow(true);
@@ -100,11 +104,11 @@ function Account() {
     if (width > 768) {
       return [
         {
-          title: t`Token`,
-          dataIndex: "name",
+          title: t`Asset`,
+          dataIndex: "name"
         },
         {
-          title: t`Token Address`,
+          title: t`Asset ID`,
           dataIndex: "token",
           render(text, row) {
             return text ? (
@@ -112,9 +116,9 @@ function Account() {
                 overlayClassName="token-address-tooltip"
                 title={
                   <div>
-                    <div>Token name: {row?.name || "--"}</div>
+                    <div>Asset name: {row?.name || "--"}</div>
                     <div>
-                      Token address:{" "}
+                      Asset ID:{" "}
                       {row?.token
                         ? row?.token?.substring(0, 10) + "..." + row?.token?.substring(row?.token?.length - 6)
                         : "--"}
@@ -134,19 +138,20 @@ function Account() {
           }
         },
         {
-          title: t`Last Price`,
+          title: `Last Price (${qutoAsset?.name?.toLowerCase()})`,
           dataIndex: "name",
           width: "140px",
           render: (text, row) => {
-            if (text == "USDT") {
-              return `$1.00`;
-            }
+            // if (text == "USDT") {
+            //   return `$1.00`;
+            // }
+            // console.log("qutoAsset",qutoAsset,row, qutoAsset?.decimals);
             const priceDetail = list.find((item) => item?.name == text);
-            return priceDetail?.deal_price && usdtDetail
-              ? `$${numberWithCommas(
+            return priceDetail?.deal_price && qutoAsset
+              ? `${numberWithCommas(
                   limitDecimals(
-                    BigNumber(priceDetail.deal_price).div(usdtDetail?.decimals).div(row?.decimals).toNumber(),
-                    2
+                    BigNumber(priceDetail.deal_price).div(qutoAsset?.decimals).toNumber(),
+                    qutoAsset?.reserve || 0
                   )
                 )}`
               : "--";
@@ -162,7 +167,7 @@ function Account() {
           }
         },
         {
-          title: t`USD Value`,
+          title: `Value (${qutoAsset?.name?.toLowerCase()})`,
           dataIndex: "name",
           width: "140px",
           render: (text, row) => {
@@ -170,19 +175,20 @@ function Account() {
               return "--";
             }
             const balance = balanceList?.[text]?.balanceShow || 0;
-            if (text == "USDT") {
-              return `$${numberWithCommas(limitDecimals(balance, 2))}`;
-            }
+            // if (text == "USDT") {
+            //   return `$${numberWithCommas(limitDecimals(balance, 2))}`;
+            // }
+            console.log("row", );
             const priceDetail = list.find((item) => item?.name == text);
-            return priceDetail?.deal_price && usdtDetail
-              ? `$${numberWithCommas(
+            return priceDetail?.deal_price && qutoAsset
+              ? `${numberWithCommas(
                   limitDecimals(
                     BigNumber(priceDetail.deal_price)
-                      .div(usdtDetail?.decimals)
+                      .div(qutoAsset?.decimals)
                       .div(row?.decimals)
                       .times(balance)
                       .toNumber(),
-                    2
+                    qutoAsset?.reserve || 0
                   )
                 )}`
               : "--";
@@ -238,7 +244,7 @@ function Account() {
           ellipsis: true
         },
         {
-          title: t`Token Address`,
+          title: t`Asset ID`,
           dataIndex: "token",
           render(text, row) {
             return text ? (
@@ -285,11 +291,11 @@ function Account() {
               } else {
                 const priceDetail = list.find((item) => item?.name == text);
                 usdValue =
-                  priceDetail?.deal_price && usdtDetail
+                  priceDetail?.deal_price && qutoAsset
                     ? `$${numberWithCommas(
                         limitDecimals(
                           BigNumber(priceDetail.deal_price)
-                            .div(usdtDetail?.decimals)
+                            .div(qutoAsset?.decimals)
                             .div(row?.decimals)
                             .times(balance)
                             .toNumber(),
@@ -312,7 +318,7 @@ function Account() {
         }
       ];
     }
-  }, [balanceList, list, nostrAccount, onHandleRedirect, transferShow, usdtDetail, width]);
+  }, [balanceList, list, nostrAccount, onHandleRedirect, transferShow, qutoAsset, width]);
   return (
     <>
       {!nostrAccount && (
@@ -374,7 +380,7 @@ function Account() {
           </div>
           <div className="account-tokenList-actions">
             <div className="account-tokenList-total">
-              ${totalUsd}{" "}
+              {totalUsd}{" "}{qutoAsset?.name?.toLowerCase()}{" "}
               <CheckNostrButton>
                 <span className="account-tokenList-title__reload" onClick={handleReloadBalance}>
                   <ReloadOutlined />

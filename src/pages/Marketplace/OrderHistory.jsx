@@ -272,6 +272,9 @@ export default function OrderHistory() {
             case "CANCEL":
               txt = "Cancelled";
               break;
+            case "INIT_FAIL":
+              txt = "Init Fail";
+              break;
             default:
               cls = "";
               txt = "";

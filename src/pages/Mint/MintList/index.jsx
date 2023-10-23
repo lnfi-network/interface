@@ -103,7 +103,7 @@ function MintList() {
           render: (text) => utcToClient(text)
         },
         {
-          title: t`TX ID`,
+          title: t`TxID`,
           dataIndex: "pay_tx_hash",
           render: (text) => {
             return text ? (
@@ -113,7 +113,7 @@ function MintList() {
                 className="pointer"
                 handleClick={() => window.open(`${process.env.REACT_APP_TX}${text}`)}
               >
-                {`${process.env.REACT_APP_TX}${text}`}
+                {`${text}`}
               </EllipsisMiddle>
             ) : (
               "--"
@@ -206,8 +206,8 @@ function MintList() {
           render: (text) => utcToClient(text)
         },
         {
-          title: t`TX ID`,
-          dataIndex: "pay_tx_hash",
+          title: t`TxID`,
+          dataIndex: "create_tx_hash",
           render: (text) => {
             return text ? (
               <EllipsisMiddle
@@ -215,7 +215,7 @@ function MintList() {
                 suffixCountMore={6}
                 handleClick={() => window.open(`${process.env.REACT_APP_TX}${text}`)}
               >
-                {`${process.env.REACT_APP_TX}${text}`}
+                {`${text}`}
               </EllipsisMiddle>
             ) : (
               "--"

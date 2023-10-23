@@ -27,7 +27,7 @@ function MarketModalForm({ setIsMarketModalForm, isMarketModalForm, reexcuteQuer
   }, [data?.type]);
   const balance = useMemo(() => {
     if (Object.keys(balanceList).length > 0) {
-      return balanceList[QUOTE_ASSET].balanceShow;
+      return balanceList[QUOTE_ASSET]?.balanceShow || 0;
     }
   }, [balanceList]);
   const getTokenBalance = useCallback(

@@ -53,9 +53,11 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
     [balanceList]
   );
   const qutoAssetVolume = useMemo(() => {
-    return tokenList.filter((tokenItem) => tokenItem?.name === QUOTE_ASSET)?.volume || 10;
+    return tokenList.find((tokenItem) => tokenItem?.name === QUOTE_ASSET)?.volume || 10;
   }, [tokenList]);
-
+  const qutoAsset = useMemo(() => {
+    return tokenList.find((tokenItem) => tokenItem?.name === QUOTE_ASSET);
+  }, [tokenList]);
   const memoTokenList = useMemo(() => {
     return tokenList.filter((tokenItem) => tokenItem.name !== QUOTE_ASSET) || [];
   }, [tokenList]);
@@ -109,7 +111,7 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
   }, [handleMax]);
   const balance = useMemo(() => {
     if (Object.keys(balanceList).length > 0) {
-      return balanceList[QUOTE_ASSET].balanceShow;
+      return balanceList[QUOTE_ASSET]?.balanceShow || 0;
     }
   }, [balanceList]);
 
@@ -214,9 +216,17 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
     ({ target: { value } }) => {
       if (Number(value)) {
         // let reg = new RegExp('/\d+\.?\d{0,' + selectedToken?.reserve || 4 + '}/')
-        const match = value.match(/\d+\.?\d{0,4}/);
-        form.setFieldValue("price", match[0]);
-        setPriceValue(match[0]);
+        // const match = value.match(/\d+\.?\d{0,4}/);
+        let reg = new RegExp("\\d+\\.?\\d{0," + qutoAsset?.reserve + "}");
+        const match = value.match(reg);
+        console.log("match", qutoAsset,qutoAsset?.reserve, qutoAsset?.reserve == 0);
+        if (qutoAsset?.reserve == 0) {
+          form.setFieldValue("price", Math.floor(value));
+          setPriceValue(Math.floor(value));
+        } else {
+          form.setFieldValue("price", match[0]);
+          setPriceValue(match[0]);
+        }
       } else if (value && !Number.isNaN(value) && Number(value) >= 0) {
         setPriceValue(value);
       } else {
@@ -226,7 +236,7 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
         form.validateFields(["amount"]);
       }
     },
-    [form]
+    [form, qutoAsset]
   );
   const onAmountChange = useCallback(
     ({ target: { value } }) => {
@@ -524,10 +534,25 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
                       if (
                         Number(value) &&
                         Number(price) &&
-                        Number(value) * Number(price) < selectedToken?.volume * qutoAssetVolume
+                        Number(value) * Number(price) < 10000
                       ) {
+                        // return Promise.reject(
+                        //   new Error(`Minimum Qty is ${selectedToken?.volume * qutoAssetVolume} ${QUOTE_ASSET}`)
+                        // );
                         return Promise.reject(
-                          new Error(`Minimum Qty is ${selectedToken?.volume * qutoAssetVolume} ${QUOTE_ASSET}`)
+                          new Error(`Min limit of total value is 10000 sats`)
+                        );
+                      }
+                      if (
+                        Number(value) &&
+                        Number(price) &&
+                        Number(value) * Number(price) > 30000
+                      ) {
+                        // return Promise.reject(
+                        //   new Error(`Minimum Qty is ${selectedToken?.volume * qutoAssetVolume} ${QUOTE_ASSET}`)
+                        // );
+                        return Promise.reject(
+                          new Error(`Max limit of total value is 30000 sats`)
                         );
                       }
                       // if (
