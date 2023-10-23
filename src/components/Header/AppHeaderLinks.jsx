@@ -58,12 +58,14 @@ export function AppHeaderLinks({ small, clickCloseIcon }) {
               <Trans>Faucet</Trans>
             </HeaderLink>
           </div>
-          <div className="App-header-link-container">
-            <HeaderLink to="/mintassets">
-              <Trans>Mint Assets</Trans>
-            </HeaderLink>
-          </div>
         </>
+      )}
+      {process.env.REACT_APP_CURRENT_ENV === "dev" && (
+        <div className="App-header-link-container">
+          <HeaderLink to="/mintassets">
+            <Trans>Mint Assets</Trans>
+          </HeaderLink>
+        </div>
       )}
 
       {/* <div className="App-header-link-container">
