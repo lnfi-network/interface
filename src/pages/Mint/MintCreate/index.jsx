@@ -329,7 +329,7 @@ export default function MintCreate() {
             <Row justify="center" className="submit">
               <Button
                 type="primary"
-                disabled={!!payTxId || creator !== nostrAccount}
+                disabled={!!payTxId || (creator !== nostrAccount && params?.eventId)}
                 size="middle"
                 htmlType="submit"
                 loading={saveLoding}

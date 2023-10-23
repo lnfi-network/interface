@@ -51,7 +51,7 @@ export const useMintAsset = () => {
     handleCreateMintPayAsync
   };
 };
-const getBuildPSBTResult = async (eventId, fee, account, utxos) => {
+const getBuildPSBTResult = async (eventId, fee, account) => {
   const networkstr = await window.unisat.getNetwork();
   const publicKey = await window.unisat.getPublicKey();
   const memeList = [eventId];
@@ -66,7 +66,6 @@ const getBuildPSBTResult = async (eventId, fee, account, utxos) => {
     ],
     account,
     fee,
-    utxos
   );
 };
 
@@ -103,7 +102,7 @@ export const useUnisatPay = () => {
     let estimateFee = dummy.bytesize * feeRate;
     let utxos = dummy.utxos;
 
-    const constructPsbtRet = await getBuildPSBTResult(eventId, estimateFee, account, utxos);
+    const constructPsbtRet = await getBuildPSBTResult(eventId, estimateFee, account);
     console.log("🚀 ~ file: useMintAssets.js:85 ~ handleUnisatPay ~ constructPsbtRet:", constructPsbtRet);
     if (!constructPsbtRet) {
       throw new Error("Create Psbt failed.");
