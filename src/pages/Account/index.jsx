@@ -178,14 +178,12 @@ function Account() {
             // if (text == "USDT") {
             //   return `$${numberWithCommas(limitDecimals(balance, 2))}`;
             // }
-            console.log("row", );
             const priceDetail = list.find((item) => item?.name == text);
             return priceDetail?.deal_price && qutoAsset
               ? `${numberWithCommas(
                   limitDecimals(
                     BigNumber(priceDetail.deal_price)
                       .div(qutoAsset?.decimals)
-                      .div(row?.decimals)
                       .times(balance)
                       .toNumber(),
                     qutoAsset?.reserve || 0

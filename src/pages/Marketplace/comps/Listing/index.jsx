@@ -219,7 +219,7 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
         // const match = value.match(/\d+\.?\d{0,4}/);
         let reg = new RegExp("\\d+\\.?\\d{0," + qutoAsset?.reserve + "}");
         const match = value.match(reg);
-        console.log("match", qutoAsset,qutoAsset?.reserve, qutoAsset?.reserve == 0);
+        // console.log("match", qutoAsset,qutoAsset?.reserve, qutoAsset?.reserve == 0);
         if (qutoAsset?.reserve == 0) {
           form.setFieldValue("price", Math.floor(value));
           setPriceValue(Math.floor(value));
