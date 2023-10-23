@@ -6,7 +6,8 @@ const EllipsisMiddle = ({
   copyable = true,
   suffixCountMore = 2,
   suffixEnable = true,
-  handleClick
+  handleClick,
+  className
 }) => {
   const formatChildren = suffixEnable && (children?.length > suffixCount * 2 + suffixCountMore)
     ? `${children.substring(
@@ -19,6 +20,7 @@ const EllipsisMiddle = ({
       style={{
         maxWidth: "100%",
       }}
+      className={className || ""}
       copyable={
         copyable
           ? {

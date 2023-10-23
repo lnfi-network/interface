@@ -59,7 +59,7 @@ export function AppHeaderLinks({ small, clickCloseIcon }) {
             </HeaderLink>
           </div>
           <div className="App-header-link-container">
-            <HeaderLink to="/mint">
+            <HeaderLink to="/mintassets">
               <Trans>Mint Assets</Trans>
             </HeaderLink>
           </div>

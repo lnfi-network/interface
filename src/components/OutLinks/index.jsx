@@ -16,7 +16,7 @@ export default function OutLinks() {
         <a href="https://doc.nostrassets.com/" target="_blank">
           <Gitbook className="svg-icon" style={{ width: "30px", height: "30px" }}></Gitbook>
         </a>
-        <a href="https://github.com/nostrassets/interface/#readme" target="_blank">
+        <a href="https://github.com/nostrassets" target="_blank">
           <Git className="svg-icon" width={30} height={30} />
         </a>
       </div>

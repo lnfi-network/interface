@@ -593,10 +593,10 @@ export const useCreateAssetsQuery = ({ pageSize = 20, pageIndex = 1, type, creat
       where += `event_id: {_eq: "${event_id}"} `;
     }
     if (type == "In-Progress") {
-      where += `status: { _in: [0,1,2]} `;
+      where += `status: { _in: [0,1,2,99]} `;
     }
     if (type == "Completed") {
-      where += `status: { _in: [9,99]} `;
+      where += `status: { _in: [9]} `;
     }
     if (search) {
       where += `_or:[{ asset_id: {_iregex: "${search}"} }, { name: {_iregex: "${search}"} }] `;

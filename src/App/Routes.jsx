@@ -45,7 +45,7 @@ function Routes({ children }) {
               <Route exact path="/faucet">
                 <Faucet />
               </Route>
-              <Route exact path="/mint">
+              <Route path="/mintassets">
                 <Mint />
               </Route>
               <Route exact path={["/mint/create", "/mint/create/:eventId"]}>

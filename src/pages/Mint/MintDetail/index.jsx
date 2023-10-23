@@ -102,7 +102,7 @@ export default function MintDetail() {
     assetId
   });
   const handleBack = useCallback(() => {
-    history.push("/mint");
+    history.push("/mintassets");
   }, [history]);
   return (
     <>

@@ -2,14 +2,15 @@
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 20px;
-  .mint-list-head {
-    text-align: center;
-    // background: var(--color-layer-light);
-    padding: 0 20px;
+  // padding: 0 20px;
+  
+  .mint-list-content-create{
     margin-top: 20px;
-    border-radius: 10px;
-    
+    text-align: center;
+    .ant-btn{
+      display: inline-flex;
+    align-items: center;
+    }
   }
   .mint-list-content{
     margin-top: 30px;
@@ -17,10 +18,7 @@
     margin-bottom: 40px;
     padding: 0 20px;
     background: var(--color-layer-light);
-    .mint-list-content-create{
-      // margin-top: 20px;
-      text-align: right;
-    }
+    
     .my-empty{
       width: 65%;
       margin: 0 auto;

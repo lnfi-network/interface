@@ -1,10 +1,11 @@
 import "./index.scss";
 import { useState, useRef, useMemo, memo, useCallback, useEffect } from "react";
-import { Table, Tooltip, Button, message, Spin, Modal, Empty, Input, Image } from "antd";
+import { Table, Tooltip, Button, message, Spin, Modal, Empty, Menu, Input, Image } from "antd";
 import { t } from "@lingui/macro";
 import { useSelector, useDispatch } from "react-redux";
 import { nip19 } from "nostr-tools";
 import EllipsisMiddle from "components/EllipsisMiddle";
+import { Switch, Route, Link, useHistory, useRouteMatch, Redirect } from "react-router-dom";
 /* import AppNostrHeaderUser from "components/Header/AppNostrHeaderUser"; */
 // import Transfer from "./comps/Transfer";
 // import AddressBook from "./comps/AddressBook";
@@ -13,7 +14,6 @@ import asset from "img/asset.png";
 import { limitDecimals, numberWithCommas } from "lib/numbers";
 import BigNumber from "bignumber.js";
 import { useSize, useDebounce } from "ahooks";
-import { useHistory } from "react-router-dom";
 import { useCreateAssetsQuery } from "hooks/graphQuery/useExplore";
 // import ProModal from "./comps/ProModal";
 import { utcToClient } from "lib/dates";
@@ -103,13 +103,14 @@ function MintList() {
           render: (text) => utcToClient(text)
         },
         {
-          title: t`Asset TX`,
-          dataIndex: "create_tx_hash",
+          title: t`TX ID`,
+          dataIndex: "pay_tx_hash",
           render: (text) => {
             return text ? (
               <EllipsisMiddle
                 suffixCount={8}
                 suffixCountMore={6}
+                className="pointer"
                 handleClick={() => window.open(`${process.env.REACT_APP_TX}${text}`)}
               >
                 {`${process.env.REACT_APP_TX}${text}`}
@@ -133,64 +134,38 @@ function MintList() {
             return text ? <EllipsisMiddle suffixCount={6}>{nip19.npubEncode(text)}</EllipsisMiddle> : text || "--";
           }
         },
-        // {
-        //   title: t`Progress`,
-        //   dataIndex: "name",
-        //   // width: "140px",
-        //   render: (text, row) => {
-        //     if (!nostrAccount) {
-        //       return "--";
-        //     }
-        //     const balance = balanceList?.[text]?.balanceShow || 0;
-        //     if (text == "USDT") {
-        //       return `$${numberWithCommas(limitDecimals(balance, 2))}`;
-        //     }
-        //     const priceDetail = list.find((item) => item?.name == text);
-        //     return priceDetail?.deal_price && usdtDetail
-        //       ? `$${numberWithCommas(
-        //           limitDecimals(
-        //             BigNumber(priceDetail.deal_price)
-        //               .div(usdtDetail?.decimals)
-        //               .div(row?.decimals)
-        //               .times(balance)
-        //               .toNumber(),
-        //             2
-        //           )
-        //         )}`
-        //       : "--";
-        //   }
-        // },
-        // {
-        //   title: t`Minter`,
-        //   dataIndex: "name",
-        //   // width: "140px",
-        //   render: (text) => {
-        //     const balance = balanceList?.[text]?.balanceShow;
-        //     return balance ? numberWithCommas(balance) : "--";
-        //   }
-        // },
         {
           title: t`Status`,
           dataIndex: "status",
           // width: 260,
           render: (text, row) => {
             let txt;
+            let cls;
             switch (text) {
               case 0:
+                txt = "待支付";
+                cls = "color-yellow";
+                break;
               case 1:
-                txt = "待部署";
+                txt = "待广播";
+                cls = "color-yellow";
                 break;
               case 2:
-                txt = "部署中";
+                txt = "已广播";
+                cls = "color-yellow";
                 break;
               case 9:
+                txt = "完成";
+                cls = "color-green";
+                break;
               case 99:
-                txt = "已完成";
+                txt = "失败";
+                cls = "color-red";
                 break;
             }
             return (
               <div
-                className="mint-table-status"
+                className={cls + " mint-table-status"}
                 onClick={() => {
                   onHandleRedirect(`mint/create/${row.event_id}`);
                 }}
@@ -231,8 +206,8 @@ function MintList() {
           render: (text) => utcToClient(text)
         },
         {
-          title: t`Asset TX`,
-          dataIndex: "create_tx_hash",
+          title: t`TX ID`,
+          dataIndex: "pay_tx_hash",
           render: (text) => {
             return text ? (
               <EllipsisMiddle
@@ -261,42 +236,6 @@ function MintList() {
             return text ? <EllipsisMiddle suffixCount={6}>{nip19.npubEncode(text)}</EllipsisMiddle> : text || "--";
           }
         },
-        // {
-        //   title: t`Progress`,
-        //   dataIndex: "name",
-        //   // width: "140px",
-        //   render: (text, row) => {
-        //     if (!nostrAccount) {
-        //       return "--";
-        //     }
-        //     const balance = balanceList?.[text]?.balanceShow || 0;
-        //     if (text == "USDT") {
-        //       return `$${numberWithCommas(limitDecimals(balance, 2))}`;
-        //     }
-        //     const priceDetail = list.find((item) => item?.name == text);
-        //     return priceDetail?.deal_price && usdtDetail
-        //       ? `$${numberWithCommas(
-        //           limitDecimals(
-        //             BigNumber(priceDetail.deal_price)
-        //               .div(usdtDetail?.decimals)
-        //               .div(row?.decimals)
-        //               .times(balance)
-        //               .toNumber(),
-        //             2
-        //           )
-        //         )}`
-        //       : "--";
-        //   }
-        // },
-        // {
-        //   title: t`Minter`,
-        //   dataIndex: "name",
-        //   // width: "140px",
-        //   render: (text) => {
-        //     const balance = balanceList?.[text]?.balanceShow;
-        //     return balance ? numberWithCommas(balance) : "--";
-        //   }
-        // },
         {
           title: t`Status`,
           dataIndex: "status",
@@ -335,20 +274,7 @@ function MintList() {
   return (
     <>
       <div className="mint-list">
-        <div className="mint-list-head">
-          <div className="account-head-left-nostr">
-            <div className="f18 b color-light">Mint Assets</div>
-            <div className="f14 mt20">
-              NostrAssets领先支持Deploy/Mint Taproot Assets，可以快速Deploy您的token，或参与已有token的mint.
-            </div>
-          </div>
-        </div>
-
         <div className="mint-list-content">
-          <div className="mint-list-content-create">
-            <Button type="primary" onClick={() => message.info("Coming soon")}>{t`Launch Mint Activity`}</Button>
-            <Button type="primary">{t`Create Asset`}</Button>
-          </div>
           <div className="mint-list-tabs">
             <div className="mint-list-tabs-btns">
               {width > 768 ? (
@@ -356,7 +282,7 @@ function MintList() {
                   <Button type={type == "All" ? "primary" : "default"} size="large" onClick={() => setType("All")}>
                     {t`All`}
                   </Button>
-                  <Button
+                  {/* <Button
                     type={type == "In-Progress" ? "primary" : "default"}
                     size="large"
                     onClick={() => setType("In-Progress")}
@@ -365,24 +291,25 @@ function MintList() {
                     type={type == "Completed" ? "primary" : "default"}
                     size="large"
                     onClick={() => setType("Completed")}
-                  >{t`Completed`}</Button>
+                  >{t`Completed`}</Button> */}
                   <CheckNostrButton>
                     <Button type={type == "My" ? "primary" : "default"} size="large" onClick={() => setType("My")}>
-                      {t`My Created`}
+                      {t`Created`}
                     </Button>
                   </CheckNostrButton>
-                  <CheckNostrButton>
-                    <Button type="primary" size="large" onClick={() => onHandleRedirect(`mint/create`)}>
-                      <PlusOutlined />
-                    </Button>
-                  </CheckNostrButton>
+                  <Input
+                    onChange={searchChange}
+                    style={{ width: "500px", maxWidth: "100%", marginLeft: "20px" }}
+                    size={device.isMobile ? "middle" : "large"}
+                    placeholder="Search by asset ID or Asset name"
+                  />
                 </>
               ) : (
                 <>
                   <Button type={type == "All" ? "primary" : "default"} size="middle" onClick={() => setType("All")}>
                     {t`All`}
                   </Button>
-                  <Button
+                  {/* <Button
                     type={type == "In-Progress" ? "primary" : "default"}
                     size="middle"
                     onClick={() => setType("In-Progress")}
@@ -391,27 +318,27 @@ function MintList() {
                     type={type == "Completed" ? "primary" : "default"}
                     size="middle"
                     onClick={() => setType("Completed")}
-                  >{t`Completed`}</Button>
+                  >{t`Completed`}</Button> */}
                   <CheckNostrButton>
                     <Button type={type == "My" ? "primary" : "default"} size="middle" onClick={() => setType("My")}>
-                      {t`My Created`}
-                    </Button>
-                  </CheckNostrButton>
-                  <CheckNostrButton>
-                    <Button type="primary" size="middle" onClick={() => onHandleRedirect(`mint/create`)}>
-                      <PlusOutlined />
+                      {t`Created`}
                     </Button>
                   </CheckNostrButton>
                 </>
               )}
             </div>
             <div>
-              <Input
-                onChange={searchChange}
-                style={{ width: "500px", maxWidth: "100%" }}
-                size={device.isMobile ? "middle" : "large"}
-                placeholder="Search by asset ID or Asset name"
-              />
+              <CheckNostrButton>
+                <Button
+                  type="primary"
+                  icon={<PlusOutlined />}
+                  size="large"
+                  style={{padding: "0 15px"}}
+                  onClick={() => onHandleRedirect(`mint/create`)}
+                >
+                  {t`Create Asset`}
+                </Button>
+              </CheckNostrButton>
             </div>
           </div>
           {type == "My" && !fetching && !list?.length ? (
@@ -421,15 +348,23 @@ function MintList() {
                 imageStyle={{ color: "#fff" }}
                 description={
                   <>
-                    <div className="color-base f16">您当前链接的Nostr账户尚未创建任何资产</div>
-                    <div className="color-base f14">
-                      NostrAssets是首批支持Taproot资产创建的平台，您可轻松快速创建您的Taproot资产，体验一下吧
+                    <div className="color-base f16">
+                      The Nostr account you're currently linked to hasn't created any assets yet.
+                    </div>
+                    <div className="mt5 color-base f16">
+                      NostrAssets facilitates the creation of Taproot assets, offering a quick and easy way to get
+                      started. Why not create your own Taproot assets and see for yourself?
                     </div>
                   </>
                 }
               />
               <CheckNostrButton>
-                <Button type="primary" onClick={() => onHandleRedirect(`mint/create`)}>{t`Create Asset`}</Button>
+                <Button
+                  type="primary"
+                  size={"large"}
+                  style={{ marginBottom: "30px" }}
+                  onClick={() => onHandleRedirect(`mint/create`)}
+                >{t`Create Asset`}</Button>
               </CheckNostrButton>
             </div>
           ) : (
