@@ -5,10 +5,12 @@
     color: var(--color-text-light);
     text-align: center;
     &-description {
+      width: 90%;
+      margin: 0 auto;
       font-size: 14px;
       padding-top: 10px;
       color: var(--color-text-light);
-      text-align: center;
+      text-align: left;
     }
   }
   &-form {

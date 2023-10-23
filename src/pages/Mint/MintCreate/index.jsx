@@ -1,4 +1,4 @@
-import { Button, Spin, Form, Input, InputNumber, Row, Col } from "antd";
+import { Button, Spin, Form, Input, InputNumber, Tooltip, Row, Col } from "antd";
 import { useMintAsset, useUnisatPay } from "hooks/useMintAssets";
 import { useQueryAssetByEventIdOrAssetName, useQueryAssetByName } from "hooks/graphQuery/useExplore";
 import PayAndMintProgress from "../comps/PayAndMintProgress";
@@ -6,7 +6,7 @@ import SubmitModal from "../comps/SubmitModal";
 import CheckNostrButton from "components/CheckNostrButton";
 import { useState, useCallback, useMemo, useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
-import { LeftOutlined } from "@ant-design/icons";
+import { LeftOutlined, QuestionCircleFilled } from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import { useClient } from "urql";
 import "./index.scss";
@@ -39,10 +39,11 @@ export default function MintCreate() {
   }, [params]);
   const onSave = useCallback(
     async (values) => {
+      console.log(1);
+      setSaveLoding(true);
       try {
         const jsonStr = JSON.stringify(values);
         const encodeAssetData = window.btoa(jsonStr);
-        setSaveLoding(true);
         if (!memoEventId) {
           // create
           const ret = await handleCreateAssetAsync({ encodeAssetData });
@@ -101,6 +102,16 @@ export default function MintCreate() {
     return (!!params?.eventId && nostrAccount !== creator) || !!payTxId;
   }, [creator, nostrAccount, params?.eventId, payTxId]);
 
+  const memoLabelServiceFee = useMemo(() => {
+    return (
+      <>
+        <span style={{ paddingRight: "5px" }}>Service fee</span>
+        <Tooltip title="NostrAssets charges a BTC service fee for minting. Please ensure your connected wallet has enough balance.">
+          <QuestionCircleFilled />
+        </Tooltip>
+      </>
+    );
+  }, []);
   useEffect(() => {
     if (list.length > 0) {
       const assetItem = list[0];
@@ -140,8 +151,8 @@ export default function MintCreate() {
         </div>
         <h3 className="nostr-assets-titleh3">Create Asset</h3>
         <div className="nostr-assets-titleh3-description">
-          Deploy Taproot
-          Assets将会直接发送至您的NostrAssets账户中，deploy出的token完全由您自己管理。您可以自己自行设置mint规则
+          The Taproot assets you create will be sent directly into your NostrAssets account, granting you complete
+          control over them. Additionally, you can launch mint activities for these assets on NostrAssets.
         </div>
 
         <Spin spinning={loadingData}>
@@ -160,7 +171,6 @@ export default function MintCreate() {
             style={{
               maxWidth: "100%"
             }}
-            initialValues={{}}
             onFinish={onSave}
             autoComplete="off"
           >
@@ -172,6 +182,10 @@ export default function MintCreate() {
                   name="name"
                   validateTrigger="onBlur"
                   rules={[
+                    {
+                      required: true,
+                      message: "Please input the asset name."
+                    },
                     () => ({
                       async validator(_, value) {
                         if (value) {
@@ -184,7 +198,7 @@ export default function MintCreate() {
                           }
                           return Promise.resolve();
                         }
-                        return Promise.reject(new Error("Please input asset name."));
+                        //return Promise.reject(new Error("Please input the asset name."));
                       }
                     })
                   ]}
@@ -320,18 +334,19 @@ export default function MintCreate() {
 
             <Row className="nostr-assets-form-servicefee">
               <Col span={12}>
-                <Form.Item label="Service fee:">
+                <Form.Item label={memoLabelServiceFee}>
                   <span className="nostr-assets-form-servicefee__value">1200sat</span>
                 </Form.Item>
               </Col>
             </Row>
 
-            <h4 className="nostr-assets-form-groupInfo">Payment & Asset mint Progress</h4>
-
             {!!payTxId && (
-              <Row style={{ width: "100%" }}>
-                <PayAndMintProgress assetMintProgress={assetMintProgress} />
-              </Row>
+              <>
+                <h4 className="nostr-assets-form-groupInfo">Payment & Asset mint Progress</h4>
+                <Row style={{ width: "100%" }}>
+                  <PayAndMintProgress assetMintProgress={assetMintProgress} />
+                </Row>
+              </>
             )}
           </Form>
         </Spin>
