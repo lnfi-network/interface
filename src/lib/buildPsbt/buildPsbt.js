@@ -9,6 +9,7 @@ bitcoin.initEccLib(ecc);
 
 //buildPSBT(pkstr, ['eventId'], [{value: 1000000, address:"tb1pa0w5chlch70lwqkf65szf9lpgpla4du6j5appvc420h04uu0xj0sguvtf5"}]);
 export async function buildPSBT(networkstr, signerPubKey, memeList, targetList, dustAddress, fee, utxoValue) {
+  console.log("🚀 ~ file: buildPsbt.js:12 ~ buildPSBT ~ utxoValue:", utxoValue)
   let network = networkstr === 'testnet' ? bitcoin.networks.testnet : bitcoin.networks.bitcoin
   const signer = ECPair.fromPublicKey(Buffer.from(signerPubKey, 'hex'), { network });
   const tweakedSigner = signer.tweak(
@@ -38,8 +39,13 @@ export async function buildPSBT(networkstr, signerPubKey, memeList, targetList, 
     })
   }
 
-  let utxos = !utxoValue ? await waitUntilUTXO(p2tr.address, networkstr) : utxoValue;
+  let utxos = utxoValue;
+  if (!utxoValue) {
+    utxos = await waitUntilUTXO(p2tr.address, networkstr)
+
+  }
   utxos.sort((v1, v2) => { return v2.value - v1.value });
+  console.log("🚀 ~ file: buildPsbt.js:45 ~ buildPSBT ~ utxos:", utxos)
   let signList = [];
   for (let i = 0; i < utxos.length; i++) {
     if (utxos[i].status.confirmed) {

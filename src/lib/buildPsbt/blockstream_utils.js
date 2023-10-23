@@ -22,6 +22,7 @@ export const waitUntilUTXO = async function (address, network) {
                 clearInterval(intervalId);
             }
         };
+        checkForUtxo();
         intervalId = setInterval(checkForUtxo, 5000);
     });
 }

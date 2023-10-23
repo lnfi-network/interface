@@ -30,8 +30,8 @@ export default function MintCreate() {
   const { nostrAccount, account } = useSelector(({ user }) => user);
   const [payTxId, setPayTxId] = useState(null);
   const payBtnDisable = useMemo(() => {
-    return !!payTxId || !params?.eventId;
-  }, [params?.eventId, payTxId]);
+    return !!payTxId || !params?.eventId || nostrAccount !== creator;
+  }, [creator, nostrAccount, params?.eventId, payTxId]);
 
   const memoEventId = useMemo(() => {
     const { eventId } = params;
@@ -327,7 +327,13 @@ export default function MintCreate() {
             </Row>
 
             <Row justify="center" className="submit">
-              <Button type="primary" disabled={!!payTxId} size="middle" htmlType="submit" loading={saveLoding}>
+              <Button
+                type="primary"
+                disabled={!!payTxId || creator !== nostrAccount}
+                size="middle"
+                htmlType="submit"
+                loading={saveLoding}
+              >
                 Save
               </Button>
             </Row>
