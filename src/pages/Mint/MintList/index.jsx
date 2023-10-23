@@ -128,7 +128,7 @@ function MintList() {
           }
         },
         {
-          title: t`Deployer Address`,
+          title: t`Creator Address`,
           dataIndex: "creator",
           render: (text) => {
             return text ? <EllipsisMiddle suffixCount={6}>{nip19.npubEncode(text)}</EllipsisMiddle> : text || "--";
@@ -143,23 +143,23 @@ function MintList() {
             let cls;
             switch (text) {
               case 0:
-                txt = "待支付";
-                cls = "color-yellow";
+                txt = "Pending Payment";
+                cls = "";
                 break;
               case 1:
-                txt = "待广播";
-                cls = "color-yellow";
+                txt = "Verifying Payment";
+                cls = "";
                 break;
               case 2:
-                txt = "已广播";
+                txt = "Creating Assets";
                 cls = "color-yellow";
                 break;
               case 9:
-                txt = "完成";
+                txt = "Success";
                 cls = "color-green";
                 break;
               case 99:
-                txt = "失败";
+                txt = "Failed";
                 cls = "color-red";
                 break;
             }
@@ -230,7 +230,7 @@ function MintList() {
           }
         },
         {
-          title: t`Creator`,
+          title: t`Creator Address`,
           dataIndex: "creator",
           render: (text) => {
             return text ? <EllipsisMiddle suffixCount={6}>{nip19.npubEncode(text)}</EllipsisMiddle> : text || "--";
@@ -294,7 +294,7 @@ function MintList() {
                   >{t`Completed`}</Button> */}
                   <CheckNostrButton>
                     <Button type={type == "My" ? "primary" : "default"} size="large" onClick={() => setType("My")}>
-                      {t`Created`}
+                      {t`My Created`}
                     </Button>
                   </CheckNostrButton>
                   <Input
@@ -321,7 +321,7 @@ function MintList() {
                   >{t`Completed`}</Button> */}
                   <CheckNostrButton>
                     <Button type={type == "My" ? "primary" : "default"} size="middle" onClick={() => setType("My")}>
-                      {t`Created`}
+                      {t`My Created`}
                     </Button>
                   </CheckNostrButton>
                 </>
@@ -333,7 +333,7 @@ function MintList() {
                   type="primary"
                   icon={<PlusOutlined />}
                   size="large"
-                  style={{padding: "0 15px"}}
+                  style={{ padding: "0 15px" }}
                   onClick={() => onHandleRedirect(`mint/create`)}
                 >
                   {t`Create Asset`}

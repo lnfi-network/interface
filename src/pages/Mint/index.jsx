@@ -86,8 +86,8 @@ export default function Explore() {
           <div className="account-head-left-nostr">
             <div className="f18 b color-light tc">Mint Assets</div>
             <div className="f16 mt20 sub-title">
-              The ultimate Taproot Assets Hub! NostrAssets is your top choice for minting Taproot assets and launching
-              Fair Mint activities with ease, whether you're creating or importing them.
+              NostrAssets is your top choice for creating、minting Taproot assets and launching Fair Mint activities
+              with ease, whether you're creating or importing them.
             </div>
           </div>
         </div>
