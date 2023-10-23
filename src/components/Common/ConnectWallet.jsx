@@ -36,20 +36,20 @@ export function ConnectWalletWithOnlyDeposit({ connectType, btnText = t`Connect 
     //   });
     //   return false;
     // }
-    if (selectedTokenPlatform === "BRC20" && isInTokenPocket() && isApple()) {
-      Modal.info({
-        width: 326,
-        footer: null,
-        closable: true,
-        title: "Check your network",
-        content: (
-          <>
-            <div>{t`​Deposit only supported on Goerli Network at the moment. Switch network in wallet！`}</div>
-          </>
-        )
-      });
-      return false;
-    }
+    // if (selectedTokenPlatform === "BRC20" && isInTokenPocket() && isApple()) {
+    //   Modal.info({
+    //     width: 326,
+    //     footer: null,
+    //     closable: true,
+    //     title: "Check your network",
+    //     content: (
+    //       <>
+    //         <div>{t`​Deposit only supported on Goerli Network at the moment. Switch network in wallet！`}</div>
+    //       </>
+    //     )
+    //   });
+    //   return false;
+    // }
     if (selectedTokenPlatform === "BRC20" && isInTokenPocket() && !window.unisat) {
       Modal.info({
         width: 326,
