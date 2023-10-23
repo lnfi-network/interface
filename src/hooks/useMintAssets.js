@@ -50,7 +50,7 @@ export const useMintAsset = () => {
     handleCreateMintPayAsync
   };
 };
-const getBuildPSBTResult = async (eventId, fee) => {
+const getBuildPSBTResult = async (eventId, fee, account) => {
   const networkstr = await window.unisat.getNetwork();
   const publicKey = await window.unisat.getPublicKey();
   const memeList = [eventId];
@@ -60,10 +60,10 @@ const getBuildPSBTResult = async (eventId, fee) => {
     publicKey,
     memeList,
     [
-      { value: 4000, address: "tb1pa0w5chlch70lwqkf65szf9lpgpla4du6j5appvc420h04uu0xj0sguvtf5" },
-      { value: 2000, address: "tb1pa0w5chlch70lwqkf65szf9lpgpla4du6j5appvc420h04uu0xj0sguvtf5" }
+      { value: 1000, address: process.env.REACT_APP_GAS_ADDR },
+      { value: 200, address: process.env.REACT_APP_TREASURY_ADDR }
     ],
-    "tb1pa0w5chlch70lwqkf65szf9lpgpla4du6j5appvc420h04uu0xj0sguvtf5",
+    account,// 用户地址。
     fee
   );
 };
@@ -76,11 +76,11 @@ export const useUnisatPay = () => {
       throw new Error("No unisat provider.");
     }
     let feeRate = 5;
-    let dummy = await getBuildPSBTResult(eventId, 5000);
+    let dummy = await getBuildPSBTResult(eventId, 5000, account);
     let estimateFee = dummy.bytesize * feeRate;
 
     //const constructPsbtHex = await buildPSBT(networkstr, publicKey, memeList, targetList)
-    const constructPsbtRet = await getBuildPSBTResult(eventId, estimateFee);
+    const constructPsbtRet = await getBuildPSBTResult(eventId, estimateFee, account);
     console.log("🚀 ~ file: useMintAssets.js:85 ~ handleUnisatPay ~ constructPsbtRet:", constructPsbtRet);
     if (!constructPsbtRet) {
       throw new Error("Create Psbt failed.");
@@ -95,7 +95,7 @@ export const useUnisatPay = () => {
       sendTx = await window.unisat.pushPsbt(signedPsbt);
     }
     return sendTx;
-  }, []);
+  }, [account]);
 
   return {
     handleUnisatPay

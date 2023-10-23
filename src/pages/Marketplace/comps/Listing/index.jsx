@@ -9,7 +9,6 @@ import { nip19 } from "nostr-tools";
 import { useAllowance, useApprove, useSendListOrder, useQueryBalance } from "hooks/useNostrMarket";
 import { limitDecimals } from "lib/numbers";
 import { nul } from "lib/utils/math";
-import { useDeepCompareEffect } from "ahooks";
 const layout = {
   labelCol: {
     span: 7
