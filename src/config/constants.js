@@ -42,3 +42,4 @@ export const AssetDeployStatus = {
   9: "Mint Success",
   99: "Mint Failed",
 }
+export const QUOTE_ASSET = process.env.REACT_APP_QUOTE_TOKEN
