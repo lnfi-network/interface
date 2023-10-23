@@ -93,6 +93,11 @@ export const useUnisatPay = () => {
         throw new Error("Please switch the network to testnet.")
       }
     }
+    // check balance
+    const balance = await window.unisat.getBalance();
+    if (!balance?.confirmed) {
+      throw new Error("Insufficient Balance.")
+    }
     let feeRate = 5;
     let dummy = await getBuildPSBTResult(eventId, 5000, account);
     let estimateFee = dummy.bytesize * feeRate;
