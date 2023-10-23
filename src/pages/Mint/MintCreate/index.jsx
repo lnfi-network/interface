@@ -325,7 +325,7 @@ export default function MintCreate() {
             <Row className="nostr-assets-form-servicefee">
               <Col span={12}>
                 <Form.Item label="Service fee:">
-                  <span className="nostr-assets-form-servicefee__value">0.005BTC</span>
+                  <span className="nostr-assets-form-servicefee__value">1200sat</span>
                 </Form.Item>
               </Col>
             </Row>
