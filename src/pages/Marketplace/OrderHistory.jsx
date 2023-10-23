@@ -13,12 +13,13 @@ import { useSelector } from "react-redux";
 import { nip19 } from "nostr-tools";
 import BigNumber from "bignumber.js";
 import { getQueryVariable } from "lib/url";
-import { utcToClient } from "lib/dates"
+import { utcToClient } from "lib/dates";
+import { QUOTE_ASSET } from "config/constants";
 const initQuery = {
   type: "",
   token: "",
   nostrAddress: "",
-  status: "",
+  status: ""
 };
 
 export default function OrderHistory() {
@@ -27,14 +28,12 @@ export default function OrderHistory() {
   const [type, setType] = useState("");
   const [token, setToken] = useState("");
   const [status, setStatus] = useState("");
-  const [nostrAddress, setNostrAddress] = useState(
-    getQueryVariable("nostrAddress")
-  );
+  const [nostrAddress, setNostrAddress] = useState(getQueryVariable("nostrAddress"));
   const debouncedNostrAddress = useDebounce(nostrAddress, { wait: 1000 });
   const [width, setWidth] = useState(document.body.clientWidth);
   const [filter, setFilter] = useState({
     ...initQuery,
-    nostrAddress: getQueryVariable("nostrAddress"),
+    nostrAddress: getQueryVariable("nostrAddress")
   });
   const [form] = Form.useForm();
   const [pageSize, setPageSize] = useState(100);
@@ -46,12 +45,12 @@ export default function OrderHistory() {
     type,
     token,
     status,
-    nostrAddress: debouncedNostrAddress,
+    nostrAddress: debouncedNostrAddress
   });
   const memoTokenList = useMemo(() => {
     var arr = [{ label: "All Token", value: "" }];
     tokenList.forEach((item) => {
-      if (item.name !== "USDT") {
+      if (item.name !== QUOTE_ASSET) {
         arr.push({ ...item, label: item.name, value: item.name });
       }
     });
@@ -62,31 +61,31 @@ export default function OrderHistory() {
   const typeOptions = [
     {
       value: "",
-      label: t`Buy/Sell`,
+      label: t`Buy/Sell`
     },
     {
       value: "buy",
-      label: t`Buy`,
+      label: t`Buy`
     },
     {
       value: "sell",
-      label: t`Sell`,
-    },
+      label: t`Sell`
+    }
   ];
   const statusOptions = useMemo(() => {
     return [
       {
         value: "",
-        label: t`All Status`,
+        label: t`All Status`
       },
       {
         value: "Open Orders",
-        label: t`Open Orders`,
+        label: t`Open Orders`
       },
       {
         value: "History Orders",
-        label: t`History Orders`,
-      },
+        label: t`History Orders`
+      }
       // {
       //   value: "Unfilled",
       //   label: t`Unfilled`,
@@ -138,14 +137,8 @@ export default function OrderHistory() {
         dataIndex: "event_id",
         width: 180,
         render(text, _) {
-          return text ? (
-            <EllipsisMiddle suffixCount={6}>
-              {nip19.noteEncode(text)}
-            </EllipsisMiddle>
-          ) : (
-            "--"
-          );
-        },
+          return text ? <EllipsisMiddle suffixCount={6}>{nip19.noteEncode(text)}</EllipsisMiddle> : "--";
+        }
       },
       {
         title: t`Time`,
@@ -158,7 +151,7 @@ export default function OrderHistory() {
         dataIndex: "id",
         render: (text) => {
           return text || "--";
-        },
+        }
       },
       {
         title: t`Type`,
@@ -176,47 +169,35 @@ export default function OrderHistory() {
             default:
               cls = "";
           }
-          return (
-            <span className={cls}>
-              {row?.label ? row?.label : text || "--"}
-            </span>
-          );
-        },
+          return <span className={cls}>{row?.label ? row?.label : text || "--"}</span>;
+        }
       },
 
       {
         title: t`Token`,
-        dataIndex: "token",
+        dataIndex: "token"
       },
       {
         title: t`Price`,
         dataIndex: "price",
         render: (text, row) => {
-          const cur = tokenList.find((item) => item.name == "USDT");
+          const cur = tokenList.find((item) => item.name == QUOTE_ASSET);
           return (
             <span className="color-yellow">
               {text && cur
-                ? `${numberWithCommas(
-                  limitDecimals(text / cur?.decimals, cur?.reserve)
-                )} USDT`
+                ? `${numberWithCommas(limitDecimals(text / cur?.decimals, cur?.reserve))} ${QUOTE_ASSET}`
                 : "--"}
             </span>
           );
-        },
+        }
       },
       {
         title: t`Remaining`,
         dataIndex: "deal_volume",
         render: (text, row) => {
           const cur = tokenList.find((item) => item.name == row.token);
-          return (
-            <span>
-              {numberWithCommas(
-                BigNumber(row.volume).minus(text).div(cur?.decimals).toNumber()
-              )}
-            </span>
-          );
-        },
+          return <span>{numberWithCommas(BigNumber(row.volume).minus(text).div(cur?.decimals).toNumber())}</span>;
+        }
       },
       {
         title: t`Amount`,
@@ -224,12 +205,8 @@ export default function OrderHistory() {
         // render: (text) => <span>{text ? numberWithCommas(text) : "--"}</span>
         render: (text, row) => {
           const cur = tokenList.find((item) => item.name == row.token);
-          return (
-            <span>
-              {numberWithCommas(BigNumber(text).div(cur?.decimals).toNumber())}
-            </span>
-          );
-        },
+          return <span>{numberWithCommas(BigNumber(text).div(cur?.decimals).toNumber())}</span>;
+        }
       },
       {
         title: t`Address`,
@@ -239,17 +216,11 @@ export default function OrderHistory() {
           return (
             <Row>
               <Col className="f12 Poppins">
-                {text ? (
-                  <EllipsisMiddle suffixCount={6}>
-                    {nip19.npubEncode(text)}
-                  </EllipsisMiddle>
-                ) : (
-                  text || "--"
-                )}
+                {text ? <EllipsisMiddle suffixCount={6}>{nip19.npubEncode(text)}</EllipsisMiddle> : text || "--"}
               </Col>
             </Row>
           );
-        },
+        }
       },
       {
         title: t`Status`,
@@ -306,7 +277,7 @@ export default function OrderHistory() {
               txt = "";
           }
           return <span className={cls}>{txt || text || "--"}</span>;
-        },
+        }
       },
       {
         title: t`Detail`,
@@ -316,13 +287,13 @@ export default function OrderHistory() {
             className="detail"
             onClick={() => {
               setCurrentRow({
-                ...row,
+                ...row
               });
               setOpenDrawer(true);
             }}
           >{t`Detail`}</span>
-        ),
-      },
+        )
+      }
     ];
   }, [tokenList, typeOptions]);
 
@@ -339,7 +310,7 @@ export default function OrderHistory() {
   const onFinish = useCallback(
     (values) => {
       let filterObj = {
-        ...values,
+        ...values
       };
       //
       setFilter(filterObj);
@@ -359,7 +330,7 @@ export default function OrderHistory() {
         initialValues={{
           type: "",
           token: "",
-          status: "",
+          status: ""
         }}
       >
         <Form.Item label={t``} name="type" className="token-item">
@@ -369,7 +340,7 @@ export default function OrderHistory() {
             onChange={typeChange}
             style={{
               width: "100%",
-              minWidth: "140px",
+              minWidth: "140px"
             }}
           />
         </Form.Item>
@@ -380,7 +351,7 @@ export default function OrderHistory() {
             options={memoTokenList}
             style={{
               width: "100%",
-              minWidth: "140px",
+              minWidth: "140px"
             }}
           />
         </Form.Item>
@@ -391,20 +362,16 @@ export default function OrderHistory() {
             options={statusOptions}
             style={{
               width: "100%",
-              minWidth: "140px",
+              minWidth: "140px"
             }}
           />
         </Form.Item>
-        <Form.Item
-          label={""}
-          name="nostrAddress"
-          initialValue={getQueryVariable("nostrAddress")}
-        >
+        <Form.Item label={""} name="nostrAddress" initialValue={getQueryVariable("nostrAddress")}>
           <Input
             className="input address"
             onChange={addressChange}
             style={{
-              minWidth: "240px",
+              minWidth: "240px"
             }}
             placeholder={t`Please enter Event ID or Address`}
           />
@@ -440,7 +407,7 @@ export default function OrderHistory() {
     tokenChange,
     typeChange,
     typeOptions,
-    width,
+    width
   ]);
   return (
     <>
@@ -450,7 +417,7 @@ export default function OrderHistory() {
           className="table-light explore-table"
           loading={fetching}
           scroll={{
-            x: 1200,
+            x: 1200
           }}
           // sticky
           showSorterTooltip={false}
@@ -464,14 +431,10 @@ export default function OrderHistory() {
             position: ["bottomCenter"],
             onChange: (page, pageSize) => {
               onPageChange(page, pageSize);
-            },
+            }
           }}
         />
-        <OrderDetail
-          detail={currentRow}
-          open={openDrawer}
-          onClose={onCloseDrawer}
-        />
+        <OrderDetail detail={currentRow} open={openDrawer} onClose={onCloseDrawer} />
       </div>
     </>
   );

@@ -1,25 +1,16 @@
 import { Button, Modal, Form, message } from "antd";
 import { useState, useCallback, useMemo, memo, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { limitDecimals, numberWithCommas, padDecimals } from "lib/numbers";
+import { limitDecimals, numberWithCommas } from "lib/numbers";
 import { t } from "@lingui/macro";
 import classNames from "classnames";
 import { nip19 } from "nostr-tools";
 import BigNumber from "bignumber.js";
-import {
-  useAllowance,
-  useApprove,
-  useSendMarketOrder,
-  useQueryBalance,
-} from "hooks/useNostrMarket";
+import { useAllowance, useApprove, useSendMarketOrder, useQueryBalance } from "hooks/useNostrMarket";
+import { QUOTE_ASSET } from "config/constants";
 import "./index.scss";
 
-function MarketModalForm({
-  setIsMarketModalForm,
-  isMarketModalForm,
-  reexcuteQuery,
-  data,
-}) {
+function MarketModalForm({ setIsMarketModalForm, isMarketModalForm, reexcuteQuery, data }) {
   const [form] = Form.useForm();
   const { tokenList } = useSelector(({ market }) => market);
   const { balanceList, nostrAccount } = useSelector(({ user }) => user);
@@ -36,7 +27,7 @@ function MarketModalForm({
   }, [data?.type]);
   const balance = useMemo(() => {
     if (Object.keys(balanceList).length > 0) {
-      return balanceList["USDT"].balanceShow;
+      return balanceList[QUOTE_ASSET].balanceShow;
     }
   }, [balanceList]);
   const getTokenBalance = useCallback(
@@ -45,8 +36,8 @@ function MarketModalForm({
     },
     [balanceList]
   );
-  const usdtToken = useMemo(() => {
-    return tokenList.find((item) => item.name == "USDT");
+  const qutoAsset = useMemo(() => {
+    return tokenList.find((item) => item.name == QUOTE_ASSET);
   }, [tokenList]);
   const curToken = useMemo(() => {
     return tokenList.find((item) => item.name == data?.token);
@@ -58,7 +49,7 @@ function MarketModalForm({
     form.resetFields();
 
     if (isBuy) {
-      handleQueryAllowance("USDT");
+      handleQueryAllowance(QUOTE_ASSET);
     } else {
       handleQueryAllowance(data?.token);
     }
@@ -66,39 +57,22 @@ function MarketModalForm({
     var maxTotal = BigNumber(data.volume)
       .minus(data.deal_volume)
       .div(curToken?.decimals)
-      .times(BigNumber(data?.price).div(usdtToken?.decimals));
+      .times(BigNumber(data?.price).div(qutoAsset?.decimals));
     var total = parseFloat(maxTotal.dp(4).toNumber());
-    var amount = parseFloat(
-      BigNumber(total)
-        .div(BigNumber(data?.price).div(usdtToken?.decimals))
-        .dp(4)
-        .toNumber()
-    );
+    var amount = parseFloat(BigNumber(total).div(BigNumber(data?.price).div(qutoAsset?.decimals)).dp(4).toNumber());
     setTotalValue(total || 0);
     setAmountValue(amount || 0);
-  }, [
-    curToken?.decimals,
-    data,
-    form,
-    getTokenBalance,
-    handleQueryAllowance,
-    isBuy,
-    usdtToken?.decimals,
-  ]);
+  }, [curToken?.decimals, data, form, getTokenBalance, handleQueryAllowance, isBuy, qutoAsset?.decimals]);
 
   const buyOrSellSelect = useMemo(() => {
     return isBuy ? (
       <div className="market-form-title">
-        <span className="market-form-title-tag market-form-title-tag__buy">
-          Buy
-        </span>
+        <span className="market-form-title-tag market-form-title-tag__buy">Buy</span>
         <span className="market-form-title-text">Confirm to Buy</span>
       </div>
     ) : (
       <div className="market-form-title">
-        <span className="market-form-title-tag market-form-title-tag__sell">
-          Sell
-        </span>
+        <span className="market-form-title-tag market-form-title-tag__sell">Sell</span>
         <span className="market-form-title-text">Confirm to Sell</span>
       </div>
     );
@@ -124,21 +98,14 @@ function MarketModalForm({
     } finally {
       setBtnLoading(false);
     }
-  }, [
-    handleTakeOrderAsync,
-    data?.id,
-    onCancel,
-    reexcuteQuery,
-    handleQueryBalance,
-    nostrAccount,
-  ]);
+  }, [handleTakeOrderAsync, data?.id, onCancel, reexcuteQuery, handleQueryBalance, nostrAccount]);
   const onApprove = useCallback(async () => {
     try {
       setBtnLoading(true);
       let ret = null;
       if (isBuy) {
-        ret = await handleApproveAsync(Number(totalValue), "USDT");
-        handleQueryAllowance("USDT");
+        ret = await handleApproveAsync(Number(totalValue), QUOTE_ASSET);
+        handleQueryAllowance(QUOTE_ASSET);
       } else {
         ret = await handleApproveAsync(Number(amountValue), data.token);
         handleQueryAllowance(data.token);
@@ -156,36 +123,17 @@ function MarketModalForm({
     } finally {
       setBtnLoading(false);
     }
-  }, [
-    isBuy,
-    handleApproveAsync,
-    totalValue,
-    handleQueryAllowance,
-    amountValue,
-    data.token,
-  ]);
+  }, [isBuy, handleApproveAsync, totalValue, handleQueryAllowance, amountValue, data.token]);
   const memoButton = useMemo(() => {
     if (isBuy) {
-      if (
-        !Number(balance) ||
-        Number(balance) === 0 ||
-        totalValue > Number(balance)
-      ) {
+      if (!Number(balance) || Number(balance) === 0 || totalValue > Number(balance)) {
         return (
-          <Button
-            type="primary"
-            className={classNames("listing-submit-btn")}
-            loading={btnLoading}
-            disabled={true}
-          >
+          <Button type="primary" className={classNames("listing-submit-btn")} loading={btnLoading} disabled={true}>
             {"Insufficient balance"}
           </Button>
         );
       }
-      if (
-        !Number(allowance?.amountShow) ||
-        Number(allowance?.amountShow) < Number(totalValue)
-      ) {
+      if (!Number(allowance?.amountShow) || Number(allowance?.amountShow) < Number(totalValue)) {
         return (
           <Button
             type="primary"
@@ -222,7 +170,7 @@ function MarketModalForm({
           <Button
             type="primary"
             className={classNames("listing-submit-btn", {
-              "listing-submit-btn__sell": !isBuy,
+              "listing-submit-btn__sell": !isBuy
             })}
             loading={btnLoading}
             onClick={onMarketSubmit}
@@ -232,15 +180,12 @@ function MarketModalForm({
           </Button>
         );
       }
-      if (
-        !Number(allowance?.amountShow) ||
-        Number(allowance?.amountShow) < Number(amountValue)
-      ) {
+      if (!Number(allowance?.amountShow) || Number(allowance?.amountShow) < Number(amountValue)) {
         return (
           <Button
             type="primary"
             className={classNames("listing-submit-btn", {
-              "listing-submit-btn__sell": !isBuy,
+              "listing-submit-btn__sell": !isBuy
             })}
             size="large"
             onClick={onApprove}
@@ -254,7 +199,7 @@ function MarketModalForm({
         <Button
           type="primary"
           className={classNames("listing-submit-btn", {
-            "listing-submit-btn__sell": !isBuy,
+            "listing-submit-btn__sell": !isBuy
           })}
           size="large"
           loading={btnLoading}
@@ -274,7 +219,7 @@ function MarketModalForm({
     data?.token,
     onApprove,
     getTokenBalance,
-    amountValue,
+    amountValue
   ]);
   return (
     <>
@@ -294,32 +239,27 @@ function MarketModalForm({
           <div className="market-buy-item">
             <div className="market-buy-label">Price</div>
             <div className="market-buy-value">
-              {data?.price && usdtToken
-                ? numberWithCommas(
-                  limitDecimals(
-                    data?.price / usdtToken?.decimals,
-                    usdtToken?.reserve
-                  )
-                )
+              {data?.price && qutoAsset
+                ? numberWithCommas(limitDecimals(data?.price / qutoAsset?.decimals, qutoAsset?.reserve))
                 : "--"}{" "}
-              USDT
+              {QUOTE_ASSET}
             </div>
           </div>
           <div className="market-buy-item">
-            <div className="market-buy-label">
-              {isBuy ? "Buy Amount" : "Sell Amount"}
-            </div>
+            <div className="market-buy-label">{isBuy ? "Buy Amount" : "Sell Amount"}</div>
             <div className="market-buy-value">{amountValue}</div>
           </div>
           <div className="market-buy-item">
             <div className="market-buy-label">Total Value</div>
-            <div className="market-buy-value">{totalValue} USDT</div>
+            <div className="market-buy-value">
+              {totalValue} {QUOTE_ASSET}
+            </div>
           </div>
           <div className="market-buy-available">
             {" "}
             Balance:{" "}
             {isBuy
-              ? `${getTokenBalance("USDT") || 0} USDT`
+              ? `${getTokenBalance(QUOTE_ASSET) || 0} ${QUOTE_ASSET}`
               : `${getTokenBalance(data.token) || 0} ${data.token}`}
           </div>
           <div className="market-buy-submit">{memoButton}</div>

@@ -3,6 +3,7 @@ import { NOSTAR_TOKEN_SEND_TO } from "config/constants.js";
 import { useSelector } from "react-redux";
 import useNostrPool from "hooks/useNostrPool";
 import { buildPSBT } from "lib/buildPsbt/buildPsbt";
+import { validate, getAddressInfo } from 'bitcoin-address-validation';
 export const useMintAsset = () => {
   const { execQueryNostrAsync } = useNostrPool();
   const handleCreateAssetAsync = useCallback(
@@ -50,7 +51,7 @@ export const useMintAsset = () => {
     handleCreateMintPayAsync
   };
 };
-const getBuildPSBTResult = async (eventId, fee, account) => {
+const getBuildPSBTResult = async (eventId, fee, account, utxos) => {
   const networkstr = await window.unisat.getNetwork();
   const publicKey = await window.unisat.getPublicKey();
   const memeList = [eventId];
@@ -63,24 +64,41 @@ const getBuildPSBTResult = async (eventId, fee, account) => {
       { value: 1000, address: process.env.REACT_APP_GAS_ADDR },
       { value: 200, address: process.env.REACT_APP_TREASURY_ADDR }
     ],
-    account,// 用户地址。
-    fee
+    account,
+    fee,
+    utxos
   );
 };
 
 export const useUnisatPay = () => {
-  const { account } = useSelector(({ user }) => user);
+  const { account, chainId } = useSelector(({ user }) => user);
   const handleUnisatPay = useCallback(async (eventId) => {
     let sendTx = "";
     if (!window.unisat) {
       throw new Error("No unisat provider.");
     }
+    if (!validate(account)) {
+      throw new Error("Invalid account");
+    }
+    const addressInfo = getAddressInfo(account)
+    if (addressInfo.type !== 'p2tr') {
+      throw new Error("Invalid account,Please switch your address type to P2RT.")
+    }
+    if (process.env.REACT_APP_CURRENT_ENV === 'prod') {
+      if (chainId === 'testnet') {
+        throw new Error("Please switch the network to mainnet.")
+      }
+    } else {
+      if (chainId === 'mainnet') {
+        throw new Error("Please switch the network to testnet.")
+      }
+    }
     let feeRate = 5;
     let dummy = await getBuildPSBTResult(eventId, 5000, account);
     let estimateFee = dummy.bytesize * feeRate;
+    let utxos = dummy.utxos;
 
-    //const constructPsbtHex = await buildPSBT(networkstr, publicKey, memeList, targetList)
-    const constructPsbtRet = await getBuildPSBTResult(eventId, estimateFee, account);
+    const constructPsbtRet = await getBuildPSBTResult(eventId, estimateFee, account, utxos);
     console.log("🚀 ~ file: useMintAssets.js:85 ~ handleUnisatPay ~ constructPsbtRet:", constructPsbtRet);
     if (!constructPsbtRet) {
       throw new Error("Create Psbt failed.");
@@ -95,7 +113,7 @@ export const useUnisatPay = () => {
       sendTx = await window.unisat.pushPsbt(signedPsbt);
     }
     return sendTx;
-  }, [account]);
+  }, [account, chainId]);
 
   return {
     handleUnisatPay
