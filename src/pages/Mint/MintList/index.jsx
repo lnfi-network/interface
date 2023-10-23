@@ -104,7 +104,7 @@ function MintList() {
         },
         {
           title: t`TxID`,
-          dataIndex: "pay_tx_hash",
+          dataIndex: "create_tx_hash",
           render: (text) => {
             return text ? (
               <EllipsisMiddle
