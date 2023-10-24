@@ -676,8 +676,6 @@ export const useCreateAssetsQuery = ({ pageSize = 20, pageIndex = 1, type, creat
 };
 
 export const useQueryAssetByEventIdOrAssetName = ({ eventId, assetName }) => {
-  console.log("🚀 ~ file: useExplore.js:679 ~ useQueryAssetByEventIdOrAssetName ~ assetName:", assetName)
-  console.log("🚀 ~ file: useExplore.js:679 ~ useQueryAssetByEventIdOrAssetName ~ eventId:", eventId)
   const tableName = `${GRAPH_BASE}nostr_create_assets`;
   let whereMemo = useMemo(() => {
     let where = "{";

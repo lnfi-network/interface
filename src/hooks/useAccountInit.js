@@ -6,6 +6,7 @@ import { initNostrAccount } from "store/reducer/userReducer";
 import { setAccount, setChainId, setActive } from "store/reducer/userReducer";
 import { isInTokenPocket } from "lib/utils/userAgent";
 import useUnisatSdk from 'hooks/unisatWallet/useUnisatWalletSdk'
+import * as Lockr from 'lockr'
 export default function useAccountInit() {
 
   const { address, connector, isConnected } = useAccount();
@@ -37,12 +38,10 @@ export default function useAccountInit() {
   }, [account, address, chain?.id, connectPlat, connector, dispatch, isConnected, nostrAccount, walletConnectModalVisible]);
   useEffect(() => {
     const getKey = async () => {
-      if (!nostrAccount) {
-        const albyNostrAccount = await window.nostr.getPublicKey();
-        dispatch(initNostrAccount(albyNostrAccount));
-      }
+      const albyNostrAccount = await window.nostr.getPublicKey();
+      dispatch(initNostrAccount(albyNostrAccount));
     };
-    if (window.nostr && isInTokenPocket() && !nostrAccount) {
+    if (window.nostr && !nostrAccount && !Lockr.get('isUserExit')) {
       getKey().catch((err) => console.log(err));
     }
     return () => null;

@@ -14,12 +14,8 @@ export const userSlice = createSlice({
       hasInit: false,
       value: false
     },
-    nostrAccount: !isInTokenPocket() ? Lockr.get("nostrAccount") : "",
-    npubNostrAccount: !isInTokenPocket()
-      ? Lockr.get("nostrAccount")
-        ? nip19.npubEncode(Lockr.get("nostrAccount"))
-        : ""
-      : "",
+    nostrAccount: "",
+    npubNostrAccount: "",
     balanceList: {},
     userInfo: {},
     active: false,
@@ -42,6 +38,7 @@ export const userSlice = createSlice({
     initNostrAccount(state, action) {
       state.nostrAccount = action.payload;
       Lockr.set("nostrAccount", action.payload);
+      Lockr.set("isUserExit", false)
       state.npubNostrAccount = action.payload ? nip19.npubEncode(action.payload) : "";
 
     },
