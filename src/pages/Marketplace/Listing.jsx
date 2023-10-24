@@ -33,7 +33,7 @@ import CheckNostrButton from "components/CheckNostrButton";
 export default function Listing({ refListing }) {
   // const { handleCancelOrderAsync } = useCancelOrder();
   const [width, setWidth] = useState(document.body.clientWidth);
-  const { tokenList } = useSelector(({ market }) => market);
+  const { tokenList, quote_pirce } = useSelector(({ market }) => market);
   const [timer, setTimer] = useState(false);
   const [type, setType] = useState("Buy");
   const [token, setToken] = useState(getQueryVariable("token"));
@@ -184,13 +184,24 @@ export default function Listing({ refListing }) {
           <div className="trade-item-section">
             <div className="trade-item-label">{t`Price`}</div>
             <div className="trade-item-value color-yellow">
-              {/* to do */}
-              <span className="usd">
+              <div>
+                {/* to do */}
+                <span className="usd">
+                  {item?.price && row
+                    ? numberWithCommas(
+                        limitDecimals(BigNumber(item?.price).div(row?.decimals).toNumber(), row?.reserve)
+                      )
+                    : "--"}
+                </span>{" "}
+                {QUOTE_ASSET}
+              </div>
+              <div className="f12 color-dark" style={{ textAlign: "right" }}>
                 {item?.price && row
-                  ? numberWithCommas(limitDecimals(BigNumber(item?.price).div(row?.decimals).toNumber(), row?.reserve))
+                  ? `≈$${numberWithCommas(
+                      limitDecimals(BigNumber(item?.price).div(row?.decimals).times(quote_pirce).toNumber(), 2)
+                    )}`
                   : "--"}
-              </span>{" "}
-              {QUOTE_ASSET}
+              </div>
             </div>
           </div>
           <div className="trade-item-section">
@@ -216,15 +227,31 @@ export default function Listing({ refListing }) {
           <div className="trade-item-section">
             <div className="trade-item-label">{t`Total Value`}</div>
             <div className="trade-item-value">
-              {item?.total_price && row && curToken
-                ? numberWithCommas(
-                    limitDecimals(
-                      BigNumber(item?.total_price).div(curToken?.decimals).div(row?.decimals).toNumber(),
-                      row?.reserve
+              <div>
+                {item?.total_price && row && curToken
+                  ? numberWithCommas(
+                      limitDecimals(
+                        BigNumber(item?.total_price).div(curToken?.decimals).div(row?.decimals).toNumber(),
+                        row?.reserve
+                      )
                     )
-                  )
-                : "--"}{" "}
-              {QUOTE_ASSET}
+                  : "--"}{" "}
+                {QUOTE_ASSET}
+              </div>
+              <div className="f12 color-dark" style={{ textAlign: "right" }}>
+                {item?.price && row
+                  ? `≈$${numberWithCommas(
+                      limitDecimals(
+                        BigNumber(item?.total_price)
+                          .div(curToken?.decimals)
+                          .div(row?.decimals)
+                          .times(quote_pirce)
+                          .toNumber(),
+                        2
+                      )
+                    )}`
+                  : "--"}
+              </div>
             </div>
           </div>
           <div className="trade-item-section bg-grey mt5 pt10">
@@ -260,7 +287,7 @@ export default function Listing({ refListing }) {
     ) : (
       <Empty style={{ margin: "0 auto" }} image={Empty.PRESENTED_IMAGE_SIMPLE} />
     );
-  }, [handleBuyOrSellByMarket, list, nostrAccount, token, tokenList, type]);
+  }, [handleBuyOrSellByMarket, list, nostrAccount, quote_pirce, token, tokenList, type]);
   const filters = useMemo(() => {
     const _form = (
       <Form

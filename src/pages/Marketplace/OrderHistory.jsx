@@ -38,7 +38,7 @@ export default function OrderHistory() {
   const [form] = Form.useForm();
   const [pageSize, setPageSize] = useState(100);
   const [pageIndex, setPageIndex] = useState(1);
-  const { tokenList } = useSelector(({ market }) => market);
+  const { tokenList, quote_pirce } = useSelector(({ market }) => market);
   const { list, total, fetching, reexcuteQuery } = useListingOrderQuery({
     pageSize: pageSize,
     pageIndex: pageIndex,
@@ -182,13 +182,24 @@ export default function OrderHistory() {
         dataIndex: "price",
         render: (text, row) => {
           const cur = tokenList.find((item) => item.name == QUOTE_ASSET);
-          return (
-            <span className="color-yellow">
-              {text && cur
+          return text && cur ? (
+            <div>
+              <div className="color-yellow">{text && cur
                 ? `${numberWithCommas(limitDecimals(text / cur?.decimals, cur?.reserve))} ${QUOTE_ASSET}`
-                : "--"}
-            </span>
+                : "--"}</div>
+              <div className="color-dark">{quote_pirce ? `≈$${numberWithCommas(limitDecimals(text / cur?.decimals * quote_pirce, 2))}` : "--"}</div>
+            </div>
+          ) : (
+            "--"
           );
+          // return (
+          //   <span className="color-yellow">
+          //     {text && cur
+          //       ? `${numberWithCommas(limitDecimals(text / cur?.decimals, cur?.reserve))} ${QUOTE_ASSET}`
+          //       : "--"}
+          //   </span>
+          //   quote_pirce
+          // );
         }
       },
       {
@@ -298,7 +309,7 @@ export default function OrderHistory() {
         )
       }
     ];
-  }, [tokenList, typeOptions]);
+  }, [quote_pirce, tokenList, typeOptions]);
 
   const onPageChange = useCallback((page, pageSize) => {
     setPageIndex(page);

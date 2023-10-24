@@ -12,7 +12,7 @@ import "./index.scss";
 
 function MarketModalForm({ setIsMarketModalForm, isMarketModalForm, reexcuteQuery, data }) {
   const [form] = Form.useForm();
-  const { tokenList } = useSelector(({ market }) => market);
+  const { tokenList, quote_pirce } = useSelector(({ market }) => market);
   const { balanceList, nostrAccount } = useSelector(({ user }) => user);
   const [btnLoading, setBtnLoading] = useState(false);
   const [totalValue, setTotalValue] = useState(0);
@@ -164,7 +164,7 @@ function MarketModalForm({ setIsMarketModalForm, isMarketModalForm, reexcuteQuer
       if (
         !Number(selectedTokenBalance) ||
         Number(selectedTokenBalance) === 0 ||
-        totalValue > Number(selectedTokenBalance)
+        amountValue > Number(selectedTokenBalance)
       ) {
         return (
           <Button
@@ -243,6 +243,7 @@ function MarketModalForm({ setIsMarketModalForm, isMarketModalForm, reexcuteQuer
                 ? numberWithCommas(limitDecimals(data?.price / qutoAsset?.decimals, qutoAsset?.reserve))
                 : "--"}{" "}
               {QUOTE_ASSET}
+              <span className="f12 color-dark">{"   "}{data?.price && qutoAsset && quote_pirce && `≈$${numberWithCommas(limitDecimals(data?.price / qutoAsset?.decimals * quote_pirce, 2))}`}</span>
             </div>
           </div>
           <div className="market-buy-item">
@@ -252,7 +253,8 @@ function MarketModalForm({ setIsMarketModalForm, isMarketModalForm, reexcuteQuer
           <div className="market-buy-item">
             <div className="market-buy-label">Total Value</div>
             <div className="market-buy-value">
-              {totalValue} {QUOTE_ASSET}
+              {numberWithCommas(limitDecimals(totalValue, qutoAsset?.reserve))} {QUOTE_ASSET}
+              <div className="f12 color-dark">{"   "}{data?.price && qutoAsset && quote_pirce && `≈$${numberWithCommas(limitDecimals(totalValue * quote_pirce, 2))}`}</div>
             </div>
           </div>
           <div className="market-buy-available">

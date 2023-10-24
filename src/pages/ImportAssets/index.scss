@@ -1,5 +1,5 @@
 .import-asset-container {
-  width: 1200px;
+  width: var(--max-width);
   margin: 0 auto;
   padding: 20px;
   max-width: 100%;
@@ -154,7 +154,7 @@
 }
 @media screen and (max-width: 768px) {
   .import-asset-container {
-    width: 1200px;
+    width: var(--max-width);
     margin: 0 auto;
     padding: 20px 10px;
     max-width: 100%;

@@ -7,7 +7,7 @@ import { t } from "@lingui/macro";
 import { useSelector } from "react-redux";
 import { nip19 } from "nostr-tools";
 import { useAllowance, useApprove, useSendListOrder, useQueryBalance } from "hooks/useNostrMarket";
-import { limitDecimals } from "lib/numbers";
+import { limitDecimals, numberWithCommas } from "lib/numbers";
 import { nul } from "lib/utils/math";
 import { QUOTE_ASSET } from "config/constants";
 const layout = {
@@ -29,7 +29,7 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
   const { handleLimitOrderAsync } = useSendListOrder();
   const { handleQueryBalance } = useQueryBalance();
   const [btnLoading, setBtnLoading] = useState(false);
-  const { tokenList } = useSelector(({ market }) => market);
+  const { tokenList, quote_pirce } = useSelector(({ market }) => market);
   const { balanceList, nostrAccount } = useSelector(({ user }) => user);
   const [priceValue, setPriceValue] = useState(0);
   const [amountValue, setAmountValue] = useState(0);
@@ -148,10 +148,10 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
     // form.validateFields();
     try {
       await form.validateFields();
-      if (Number(memoTotalValue) < selectedToken?.volume * qutoAssetVolume) {
-        message.warning(`Minimum Qty is ${selectedToken?.volume * qutoAssetVolume} ${QUOTE_ASSET}`);
-        return;
-      }
+      // if (Number(memoTotalValue) < selectedToken?.volume * qutoAssetVolume) {
+      //   message.warning(`Minimum Qty is ${selectedToken?.volume * qutoAssetVolume} ${QUOTE_ASSET}`);
+      //   return;
+      // }
       setBtnLoading(true);
       const values = form.getFieldsValue();
       const side = buyOrSell;
@@ -199,10 +199,7 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
     }
   }, [
     form,
-    memoTotalValue,
-    selectedToken?.volume,
     selectedToken?.name,
-    qutoAssetVolume,
     buyOrSell,
     handleLimitOrderAsync,
     handleQueryBalance,
@@ -263,11 +260,12 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
     [form, selectedToken]
   );
   const onApprove = useCallback(async () => {
-    if (Number(memoTotalValue) < selectedToken?.volume * qutoAssetVolume) {
-      message.warning(`Minimum Qty is ${selectedToken?.volume * qutoAssetVolume} ${QUOTE_ASSET}`);
-      return;
-    }
+    // if (Number(memoTotalValue) < selectedToken?.volume * qutoAssetVolume) {
+    //   message.warning(`Minimum Qty is ${selectedToken?.volume * qutoAssetVolume} ${QUOTE_ASSET}`);
+    //   return;
+    // }
     try {
+      await form.validateFields();
       setBtnLoading(true);
       let ret = null;
       if (buyOrSell === "buy") {
@@ -292,15 +290,17 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
         });
       }
     } catch (e) {
-      messageApi.error(e.message);
+      // console.log("messageApi.error(e.message);",e, e?.errorField);
+      if (!e?.errorFields?.length) {
+        messageApi.error(e.message);
+      }
     } finally {
       setBtnLoading(false);
     }
   }, [
     memoTotalValue,
-    selectedToken?.volume,
     selectedToken?.name,
-    qutoAssetVolume,
+    form,
     buyOrSell,
     handleApproveAsync,
     handleQueryAllowance,
@@ -512,6 +512,11 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
               <Input className="listing-input" onChange={onPriceChange} />
             </Form.Item>
             <span className="listing-form-usdt f12">{QUOTE_ASSET}</span>
+
+            <span className="f12 color-dark">
+              {"   "}
+              {priceValue && quote_pirce ? `≈$${numberWithCommas(limitDecimals(priceValue * quote_pirce, 2))}` : ""}
+            </span>
           </Form.Item>
           <Form.Item label={buyOrSell === "buy" ? "Buy Amount" : "Sell Amount"}>
             <Form.Item
@@ -531,29 +536,17 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
                       //   return Promise.reject(new Error(t`Invalid input format1.`));
                       // }
                       const price = form.getFieldValue("price");
-                      if (
-                        Number(value) &&
-                        Number(price) &&
-                        Number(value) * Number(price) < 10000
-                      ) {
+                      if (Number(value) && Number(price) && Number(value) * Number(price) < 10000) {
                         // return Promise.reject(
                         //   new Error(`Minimum Qty is ${selectedToken?.volume * qutoAssetVolume} ${QUOTE_ASSET}`)
                         // );
-                        return Promise.reject(
-                          new Error(`Min limit of total value is 10000 sats`)
-                        );
+                        return Promise.reject(new Error(`Min limit of total value is 10000 sats`));
                       }
-                      if (
-                        Number(value) &&
-                        Number(price) &&
-                        Number(value) * Number(price) > 30000
-                      ) {
+                      if (Number(value) && Number(price) && Number(value) * Number(price) > 30000) {
                         // return Promise.reject(
                         //   new Error(`Minimum Qty is ${selectedToken?.volume * qutoAssetVolume} ${QUOTE_ASSET}`)
                         // );
-                        return Promise.reject(
-                          new Error(`Max limit of total value is 30000 sats`)
-                        );
+                        return Promise.reject(new Error(`Max limit of total value is 30000 sats`));
                       }
                       // if (
                       //   Number(form.getFieldValue("price")) &&
@@ -582,7 +575,13 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
 
           <Form.Item label="Total Value" className="listing-form-total-stats">
             <div className="listing-form-total-value">
-              {memoTotalValue} <span>{QUOTE_ASSET}</span>
+              {memoTotalValue} <span>{QUOTE_ASSET}</span>{" "}
+              <span className="f12 color-dark">
+                {"   "}
+                {memoTotalValue && quote_pirce
+                  ? `≈$${numberWithCommas(limitDecimals(memoTotalValue * quote_pirce, 2))}`
+                  : ""}
+              </span>
             </div>
           </Form.Item>
           {

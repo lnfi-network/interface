@@ -66,7 +66,7 @@ export default function MyOrder() {
   const [pageIndex, setPageIndex] = useState(1);
   const { handleGetNostrAccount } = useGetNostrAccount();
   const { nostrAccount } = useSelector(({ user }) => user);
-  const { tokenList } = useSelector(({ market }) => market);
+  const { tokenList, quote_pirce } = useSelector(({ market }) => market);
   const { handleCancelOrderAsync } = useCancelOrder();
   const { list, total, fetching, reexcuteQuery } = useMyOrderQuery({
     pageSize: pageSize,
@@ -210,13 +210,27 @@ export default function MyOrder() {
         dataIndex: "price",
         render: (text, row) => {
           const cur = tokenList.find((item) => item.name == QUOTE_ASSET);
-          return (
-            <span className="color-yellow">
-              {text && cur
-                ? `${numberWithCommas(limitDecimals(text / cur?.decimals, cur?.reserve))} ${QUOTE_ASSET}`
-                : "--"}
-            </span>
+          return text && cur ? (
+            <div>
+              <div className="color-yellow">
+                {text && cur
+                  ? `${numberWithCommas(limitDecimals(text / cur?.decimals, cur?.reserve))} ${QUOTE_ASSET}`
+                  : "--"}
+              </div>
+              <div className="color-dark">
+                {quote_pirce ? `≈$${numberWithCommas(limitDecimals((text / cur?.decimals) * quote_pirce, 2))}` : "--"}
+              </div>
+            </div>
+          ) : (
+            "--"
           );
+          // return (
+          //   <span className="color-yellow">
+          //     {text && cur
+          //       ? `${numberWithCommas(limitDecimals(text / cur?.decimals, cur?.reserve))} ${QUOTE_ASSET}`
+          //       : "--"}
+          //   </span>
+          // );
         }
       },
       {
@@ -331,7 +345,7 @@ export default function MyOrder() {
         }
       }
     ];
-  }, [reexcuteQuery, tokenList, typeOptions]);
+  }, [quote_pirce, reexcuteQuery, tokenList, typeOptions]);
 
   const onPageChange = useCallback((page, pageSize) => {
     setPageIndex(page);
@@ -594,56 +608,6 @@ export default function MyOrder() {
             )}
           </>
         )}
-        {/* <div className="my-order-small">
-          <div className="my-order-section">
-            <div className="key title">token</div>
-            <div className="value">{item?.token}</div>
-          </div>
-          <div className="my-order-section">
-            <div className="key ID">ID</div>
-            <div className="value">{item.id || "--"}</div>
-          </div>
-          <div className="my-order-section">
-            <div className="key">Direction</div>
-            <div className="value">token</div>
-          </div>
-          <div className="my-order-section">
-            <div className="key">Amount</div>
-            <div className="value">token</div>
-          </div>
-          <div className="my-order-section">
-            <div className="key">Remaining</div>
-            <div className="value">token</div>
-          </div>
-          <div className="my-order-section">
-            <div className="key">Price</div>
-            <div className="value">token</div>
-          </div>
-          <div className="my-order-section">
-            <div className="key">Total Value</div>
-            <div className="value">token</div>
-          </div>
-          <div className="my-order-section">
-            <div className="key">Status</div>
-            <div className="value">token</div>
-          </div>
-          <div className="my-order-section">
-            <div className="key">Message ID</div>
-            <div className="value">token</div>
-          </div>
-          <div className="my-order-section">
-            <div className="key">Nostr Address</div>
-            <div className="value">token</div>
-          </div>
-          <div>
-            <Button className="btn-grey btn-Cancel">Cancel</Button>
-          </div>
-        </div> */}
-        {/* <ExploreDetails
-          detail={currentRow}
-          open={openDrawer}
-          onClose={onCloseDrawer}
-        /> */}
       </div>
     </>
   );

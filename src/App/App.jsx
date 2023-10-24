@@ -22,6 +22,7 @@ import { client } from "config/graphqlClient";
 import { notification, message } from "antd";
 import useListenerAlbyAccountChange from "hooks/useListenerAlbyAccountChange";
 import { NostrProvider, useGlobalNostrAssetsEvent, useListenerRelayStatus } from "hooks/useNostrPool";
+import { useGetBtcPriceInterval } from "hooks/useGetBtcPrice";
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;
 }
@@ -31,6 +32,10 @@ const GlobalHooks = () => {
   useGlobalNostrAssetsEvent();
   useListenerRelayStatus();
   useListenerAlbyAccountChange();
+  return null;
+};
+const GlobalHooksInterval = () => {
+  useGetBtcPriceInterval();
   return null;
 };
 const GlobalModalInit = () => {
@@ -65,6 +70,7 @@ function App() {
             <SEO>
               <Router>
                 <Routes />
+                <GlobalHooksInterval />
               </Router>
             </SEO>
           </GraphProvider>

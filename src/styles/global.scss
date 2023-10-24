@@ -1,5 +1,5 @@
 :root {
-  --max-width: 1280px;
+  --max-width: 1360px;
   --color-bg-primary: #101124;
   --color-layer-darkest: #0b0b13;
   --color-layer-darker: #12121a;
@@ -225,6 +225,9 @@ li {
 }
 .tc {
   text-align: center;
+}
+.tr {
+  text-align: right;
 }
 .flex {
   display: flex;
@@ -604,7 +607,7 @@ input::input-placeholder {
 }
 .nostr-assets-container {
   width: 100%;
-  max-width: 1200px;
+  max-width: var(--max-width);
   margin: 20px auto;
   padding: 20px;
   background: var(--color-layer-light);

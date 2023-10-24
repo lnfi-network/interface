@@ -43,7 +43,8 @@ function Account() {
   const [detail, setDetail] = useState(null);
   const history = useHistory();
   const { nostrAccount, balanceList, npubNostrAccount } = useSelector(({ user }) => user);
-  const { tokenList } = useSelector(({ market }) => market);
+  const { tokenList, quote_pirce } = useSelector(({ market }) => market);
+  // console.log("quote_pirce",quote_pirce);
   // const qutoAsset = useMemo(() => {
   //   return tokenList.find((k) => k?.name?.toUpperCase() == "USDT");
   // }, [tokenList]);
@@ -64,7 +65,7 @@ function Account() {
     await handleQueryBalance(npubNostrAccount);
     setReloading(false);
   }, [handleQueryBalance, npubNostrAccount]);
-  const totalUsd = useMemo(() => {
+  const totalValue = useMemo(() => {
     let total = 0;
     if (!nostrAccount) {
       return "--";
@@ -80,8 +81,8 @@ function Account() {
         }
       });
     }
-    return total ? numberWithCommas(limitDecimals(total, qutoAsset?.reserve || 0)) : "0.00";
-  }, [nostrAccount, tokenList, qutoAsset?.reserve, qutoAsset?.decimals, list, balanceList]);
+    return total;
+  }, [nostrAccount, tokenList, qutoAsset?.decimals, list, balanceList]);
   const transferShow = useCallback((row) => {
     setDetail(row);
     setIsTransferShow(true);
@@ -145,16 +146,21 @@ function Account() {
             // if (text == "USDT") {
             //   return `$1.00`;
             // }
-            // console.log("qutoAsset",qutoAsset,row, qutoAsset?.decimals);
+            // console.log("qutoAsset",qutoAsset,row, qutoAsset?.decimals);\
             const priceDetail = list.find((item) => item?.name == text);
-            return priceDetail?.deal_price && qutoAsset
-              ? `${numberWithCommas(
-                  limitDecimals(
-                    BigNumber(priceDetail.deal_price).div(qutoAsset?.decimals).toNumber(),
-                    qutoAsset?.reserve || 0
-                  )
-                )}`
-              : "--";
+            const price =
+              priceDetail?.deal_price && qutoAsset
+                ? BigNumber(priceDetail.deal_price).div(qutoAsset?.decimals).toNumber()
+                : "--";
+            // return;
+            return price != "--" ? (
+              <div>
+                <div>{numberWithCommas(limitDecimals(price, qutoAsset?.reserve || 0))}</div>
+                <div>{price * quote_pirce ? `≈$${numberWithCommas(limitDecimals(price * quote_pirce, 2))}` : "--"}</div>
+              </div>
+            ) : (
+              "--"
+            );
           }
         },
         {
@@ -179,17 +185,30 @@ function Account() {
             //   return `$${numberWithCommas(limitDecimals(balance, 2))}`;
             // }
             const priceDetail = list.find((item) => item?.name == text);
-            return priceDetail?.deal_price && qutoAsset
-              ? `${numberWithCommas(
-                  limitDecimals(
-                    BigNumber(priceDetail.deal_price)
-                      .div(qutoAsset?.decimals)
-                      .times(balance)
-                      .toNumber(),
-                    qutoAsset?.reserve || 0
-                  )
-                )}`
-              : "--";
+            const value =
+              priceDetail?.deal_price && qutoAsset
+                ? BigNumber(priceDetail.deal_price).div(qutoAsset?.decimals).times(balance).toNumber()
+                : "--";
+            // return;
+            return value != "--" ? (
+              <div>
+                <div>{numberWithCommas(limitDecimals(value, qutoAsset?.reserve || 0))}</div>
+                <div className="f12">
+                  {value * quote_pirce ? `≈$${numberWithCommas(limitDecimals(value * quote_pirce, 2))}` : "--"}
+                </div>
+              </div>
+            ) : (
+              "--"
+            );
+
+            // return priceDetail?.deal_price && qutoAsset
+            //   ? `${numberWithCommas(
+            //       limitDecimals(
+            //         BigNumber(priceDetail.deal_price).div(qutoAsset?.decimals).times(balance).toNumber(),
+            //         qutoAsset?.reserve || 0
+            //       )
+            //     )}`
+            //   : "--";
           }
         },
         {
@@ -316,7 +335,7 @@ function Account() {
         }
       ];
     }
-  }, [balanceList, list, nostrAccount, onHandleRedirect, transferShow, qutoAsset, width]);
+  }, [width, qutoAsset, list, quote_pirce, balanceList, nostrAccount, onHandleRedirect, transferShow]);
   return (
     <>
       {!nostrAccount && (
@@ -378,12 +397,20 @@ function Account() {
           </div>
           <div className="account-tokenList-actions">
             <div className="account-tokenList-total">
-              {totalUsd}{" "}{qutoAsset?.name?.toLowerCase()}{" "}
-              <CheckNostrButton>
-                <span className="account-tokenList-title__reload" onClick={handleReloadBalance}>
-                  <ReloadOutlined />
-                </span>
-              </CheckNostrButton>
+              <div className="b">
+                {totalValue ? numberWithCommas(limitDecimals(totalValue, qutoAsset?.reserve || 0)) : "0"}{" "}
+                {qutoAsset?.name?.toLowerCase()}{" "}
+                <CheckNostrButton>
+                  <span className="account-tokenList-title__reload" onClick={handleReloadBalance}>
+                    <ReloadOutlined />
+                  </span>
+                </CheckNostrButton>
+              </div>
+
+              <div className="f14 mt5">
+                {/* {totalValue * quote_pirce} */}
+                {totalValue * quote_pirce ? `≈$${numberWithCommas(limitDecimals(totalValue * quote_pirce, 2))}` : "--"}
+              </div>
             </div>
             <div className="account-tokenList-actions-btns">
               {width > 768 ? (

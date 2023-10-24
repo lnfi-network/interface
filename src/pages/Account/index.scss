@@ -1,8 +1,8 @@
 .account {
   width: 100%;
-  max-width: 1200px;
+  max-width: var(--max-width);
   margin: 0 auto;
-  padding: 0 20px;
+  // padding: 0 20px;
   .account-head {
     // padding-top: 40px;
     display: flex;
@@ -108,7 +108,7 @@
       .account-tokenList-total {
         margin-top: 6px;
         font-size: 24px;
-        font-weight: bold;
+        // font-weight: bold;
         color: #fff;
       }
       .ant-btn {
@@ -141,7 +141,7 @@
   margin: 0 auto;
   padding: 20px 20px 0;
   width: 100%;
-  max-width: 1200px;
+  max-width: var(--max-width);
   .account-nologin-content {
     padding: 20px 0;
     text-align: center;
@@ -299,7 +299,7 @@
         .account-tokenList-total {
           margin-top: 6px;
           font-size: 18px;
-          font-weight: bold;
+          // font-weight: bold;
           color: #fff;
         }
         .account-tokenList-actions-btns {
