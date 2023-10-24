@@ -1,4 +1,4 @@
-import { Button, Modal, Form, message } from "antd";
+import { Button, Modal, Form, message, Tooltip } from "antd";
 import { useState, useCallback, useMemo, memo, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { limitDecimals, numberWithCommas } from "lib/numbers";
@@ -7,7 +7,8 @@ import classNames from "classnames";
 import { nip19 } from "nostr-tools";
 import BigNumber from "bignumber.js";
 import { useAllowance, useApprove, useSendMarketOrder, useQueryBalance } from "hooks/useNostrMarket";
-import { QUOTE_ASSET } from "config/constants";
+import { QUOTE_ASSET, FEE } from "config/constants";
+import { InfoCircleOutlined } from "@ant-design/icons";
 import "./index.scss";
 
 function MarketModalForm({ setIsMarketModalForm, isMarketModalForm, reexcuteQuery, data }) {
@@ -39,6 +40,9 @@ function MarketModalForm({ setIsMarketModalForm, isMarketModalForm, reexcuteQuer
   const qutoAsset = useMemo(() => {
     return tokenList.find((item) => item.name == QUOTE_ASSET);
   }, [tokenList]);
+  const selectToken = useMemo(() => {
+    return tokenList.find((item) => item?.name?.toUpperCase() == data?.token?.toUpperCase());
+  }, [data?.token, tokenList]);
   const curToken = useMemo(() => {
     return tokenList.find((item) => item.name == data?.token);
   }, [data?.token, tokenList]);
@@ -77,7 +81,33 @@ function MarketModalForm({ setIsMarketModalForm, isMarketModalForm, reexcuteQuer
       </div>
     );
   }, [isBuy]);
-
+  const min = (num) => {
+    let str = "0.";
+    if (num == 0) {
+      return 1;
+    } else {
+      for (let index = 0; index < num; index++) {
+        if (index == num - 1) {
+          str += "1";
+        } else {
+          str += "0";
+        }
+      }
+      return str;
+    }
+  };
+  const fee = useMemo(() => {
+    if (isBuy) {
+      return limitDecimals(amountValue * FEE, selectToken?.reserve, "round") == 0
+        ? min(selectToken?.reserve)
+        : limitDecimals(amountValue * FEE, selectToken?.reserve);
+    } else {
+      console.log("totalValue * FEE", totalValue * FEE);
+      return limitDecimals(totalValue * FEE, qutoAsset?.reserve, "round") == 0
+        ? min(qutoAsset?.reserve)
+        : limitDecimals(totalValue * FEE, qutoAsset?.reserve);
+    }
+  }, [isBuy, amountValue, selectToken?.reserve, totalValue, qutoAsset?.reserve]);
   const onMarketSubmit = useCallback(async () => {
     try {
       setBtnLoading(true);
@@ -243,7 +273,13 @@ function MarketModalForm({ setIsMarketModalForm, isMarketModalForm, reexcuteQuer
                 ? numberWithCommas(limitDecimals(data?.price / qutoAsset?.decimals, qutoAsset?.reserve))
                 : "--"}{" "}
               {QUOTE_ASSET}
-              <span className="f12 color-dark">{"   "}{data?.price && qutoAsset && quote_pirce && `≈$${numberWithCommas(limitDecimals(data?.price / qutoAsset?.decimals * quote_pirce, 2))}`}</span>
+              <span className="f12 color-dark">
+                {"   "}
+                {data?.price &&
+                  qutoAsset &&
+                  quote_pirce &&
+                  `≈$${numberWithCommas(limitDecimals((data?.price / qutoAsset?.decimals) * quote_pirce, 2))}`}
+              </span>
             </div>
           </div>
           <div className="market-buy-item">
@@ -254,7 +290,30 @@ function MarketModalForm({ setIsMarketModalForm, isMarketModalForm, reexcuteQuer
             <div className="market-buy-label">Total Value</div>
             <div className="market-buy-value">
               {numberWithCommas(limitDecimals(totalValue, qutoAsset?.reserve))} {QUOTE_ASSET}
-              <div className="f12 color-dark">{"   "}{data?.price && qutoAsset && quote_pirce && `≈$${numberWithCommas(limitDecimals(totalValue * quote_pirce, 2))}`}</div>
+              <div className="f12 color-dark">
+                {"   "}
+                {data?.price &&
+                  qutoAsset &&
+                  quote_pirce &&
+                  `≈$${numberWithCommas(limitDecimals(totalValue * quote_pirce, 2))}`}
+              </div>
+            </div>
+          </div>
+          <div className="market-buy-item">
+            <div className="market-buy-label">
+              <Tooltip
+                placement="top"
+                title="Service fee rate 0.4%, only charged when order is filled. If the calculated fee less than the of the asset, will be charged in the smallest unit of asset."
+              >
+                Service Fee <InfoCircleOutlined />
+              </Tooltip>
+            </div>
+            <div className="market-buy-value f12">
+              {isBuy ? (
+                <div>{`0.4% ${numberWithCommas(fee)} ${data?.token}`}</div>
+              ) : (
+                <div>{`0.4% ${numberWithCommas(fee)} ${QUOTE_ASSET}`}</div>
+              )}
             </div>
           </div>
           <div className="market-buy-available">

@@ -1,5 +1,5 @@
 import BaseModal from "components/Common/Modal/Modal";
-import { Button, Select, message, Input, Form, Row, Radio, Modal } from "antd";
+import { Button, Select, message, Input, Form, Row, Radio, Modal, Tooltip } from "antd";
 import { useState, useCallback, useMemo, memo, useRef, useEffect } from "react";
 import classNames from "classnames";
 import "./index.scss";
@@ -9,7 +9,8 @@ import { nip19 } from "nostr-tools";
 import { useAllowance, useApprove, useSendListOrder, useQueryBalance } from "hooks/useNostrMarket";
 import { limitDecimals, numberWithCommas } from "lib/numbers";
 import { nul } from "lib/utils/math";
-import { QUOTE_ASSET } from "config/constants";
+import { QUOTE_ASSET, FEE } from "config/constants";
+import { InfoCircleOutlined } from "@ant-design/icons";
 const layout = {
   labelCol: {
     span: 7
@@ -118,6 +119,32 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
   const memoTotalValue = useMemo(() => {
     return limitDecimals(nul(priceValue, amountValue), 4, "round");
   }, [amountValue, priceValue]);
+  const min = (num) => {
+    let str = "0.";
+    if (num == 0) {
+      return 1;
+    } else {
+      for (let index = 0; index < num; index++) {
+        if (index == num - 1) {
+          str += "1";
+        } else {
+          str += "0";
+        }
+      }
+      return str;
+    }
+  };
+  const fee = useMemo(() => {
+    if (buyOrSell == "buy") {
+      return limitDecimals(amountValue * FEE, selectedToken?.reserve, "round") == 0
+        ? min(selectedToken?.reserve)
+        : limitDecimals(amountValue * FEE, selectedToken?.reserve);
+    } else {
+      return limitDecimals(memoTotalValue * FEE, qutoAsset?.reserve, "round") == 0
+        ? min(qutoAsset?.reserve)
+        : limitDecimals(memoTotalValue * FEE, qutoAsset?.reserve);
+    }
+  }, [amountValue, buyOrSell, memoTotalValue, qutoAsset?.reserve, selectedToken?.reserve]);
   //
   const options = useMemo(() => {
     return memoTokenList.map((tokenItem) => {
@@ -582,6 +609,29 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
                   ? `≈$${numberWithCommas(limitDecimals(memoTotalValue * quote_pirce, 2))}`
                   : ""}
               </span>
+            </div>
+          </Form.Item>
+          <Form.Item
+            label={
+              <Tooltip
+                placement="top"
+                title="Service fee rate 0.4%, only charged when order is filled. If the calculated fee less than the of the asset, will be charged in the smallest unit of asset."
+              >
+                Service Fee <InfoCircleOutlined />
+              </Tooltip>
+            }
+            className="listing-form-total-stats"
+          >
+            {/* <div className="listing-form-total-value">
+              {memoTotalValue} <span>{QUOTE_ASSET}</span>{" "}
+              
+            </div> */}
+            <div className="f12">
+              {buyOrSell === "buy" ? (
+                <div>{`0.4% ${numberWithCommas(fee)} ${selectedToken?.name}`}<span className="f12 color-dark">(Only charged when order filled)</span></div>
+              ) : (
+                <div>{`0.4% ${numberWithCommas(fee)} ${QUOTE_ASSET}`}<span className="f12 color-dark">(Only charged when order filled)</span></div>
+              )}
             </div>
           </Form.Item>
           {
