@@ -12,6 +12,7 @@ import OnlyMobileSupportModal from "components/Modals/OnlyMobileSupportModal";
 import SignatureValidErrorModal from "components/Modals/SignatureValidErrorModal";
 import AboutModal from "components/Modals/AboutModal";
 import { Spin } from "antd";
+import Footer from "components/Footer/Footer";
 const Explore = lazy(() => import("pages/Explore/index"));
 const Account = lazy(() => import("pages/Account/index"));
 const Deposit = lazy(() => import("pages/Deposit/index"));
@@ -81,6 +82,7 @@ function Routes({ children }) {
               </Route>
             </Switch>
           </Suspense>
+          <Footer />
         </div>
       </div>
       <WalletConnectModal />
