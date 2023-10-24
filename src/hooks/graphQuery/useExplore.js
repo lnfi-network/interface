@@ -676,6 +676,8 @@ export const useCreateAssetsQuery = ({ pageSize = 20, pageIndex = 1, type, creat
 };
 
 export const useQueryAssetByEventIdOrAssetName = ({ eventId, assetName }) => {
+  console.log("🚀 ~ file: useExplore.js:679 ~ useQueryAssetByEventIdOrAssetName ~ assetName:", assetName)
+  console.log("🚀 ~ file: useExplore.js:679 ~ useQueryAssetByEventIdOrAssetName ~ eventId:", eventId)
   const tableName = `${GRAPH_BASE}nostr_create_assets`;
   let whereMemo = useMemo(() => {
     let where = "{";
@@ -716,10 +718,12 @@ export const useQueryAssetByEventIdOrAssetName = ({ eventId, assetName }) => {
   `;
   }, [tableName, whereMemo]);
 
+  const pause = useMemo(() => {
+    return !eventId && !assetName
+  }, [assetName, eventId])
   const [result, reexcuteQuery] = useQuery({
     query: queryGraphsql,
-    pause: !eventId && !assetName,
-
+    pause: pause,
   });
 
   const { data, fetching } = result;
@@ -738,8 +742,8 @@ export const useQueryAssetByName = () => {
   const tableName = `${GRAPH_BASE}nostr_create_assets`;
 
   const qeryGraphaql = gql`
-  query ($name: String!,$creator:String!) {
-    ${tableName}(where: { name: { _eq: $name },creator:{_neq:$creator} }) {
+  query ($name: String!) {
+    ${tableName}(where: { name: { _eq: $name } }) {
       name,
       creator
     }

@@ -22,24 +22,30 @@ export default function MintCreate() {
   const [payBtnLoading, setPayBtnLoading] = useState(false);
   const [assetMintProgress, setAssetMintProgress] = useState(null);
   const [creator, setCreator] = useState(null);
-  const { list, fetching: loadingData } = useQueryAssetByEventIdOrAssetName({ eventId: params?.eventId });
+  const {
+    list,
+    fetching: loadingData,
+    reexcuteQuery
+  } = useQueryAssetByEventIdOrAssetName({ eventId: params?.eventId });
   const QueryGraphaql = useQueryAssetByName();
   const client = useClient();
   const { handleUnisatPay } = useUnisatPay();
   const { handleCreateAssetAsync, handleUpdateAssetAsync, handleCreateMintPayAsync } = useMintAsset();
   const { nostrAccount, account } = useSelector(({ user }) => user);
   const [payTxId, setPayTxId] = useState(null);
-  const payBtnDisable = useMemo(() => {
-    return !!payTxId || !params?.eventId || nostrAccount !== creator;
-  }, [creator, nostrAccount, params?.eventId, payTxId]);
-
   const memoEventId = useMemo(() => {
     const { eventId } = params;
     return eventId ? eventId : "";
   }, [params]);
+  const payBtnDisable = useMemo(() => {
+    return !!payTxId || !params?.eventId || nostrAccount !== creator;
+  }, [creator, nostrAccount, params?.eventId, payTxId]);
+  const memoSaveDisable = useMemo(() => {
+    return !!payTxId || (creator !== nostrAccount && params?.eventId);
+  }, [creator, nostrAccount, params?.eventId, payTxId]);
+
   const onSave = useCallback(
     async (values) => {
-      console.log(1);
       setSaveLoding(true);
       try {
         const jsonStr = JSON.stringify(values);
@@ -69,9 +75,10 @@ export default function MintCreate() {
         window._message.error(err.message);
       } finally {
         setSaveLoding(false);
+        setCreator(nostrAccount);
       }
     },
-    [memoEventId, handleCreateAssetAsync, history, handleUpdateAssetAsync]
+    [memoEventId, handleCreateAssetAsync, history, handleUpdateAssetAsync, nostrAccount]
   );
   const onPaymentAndCreateAsset = useCallback(async () => {
     try {
@@ -95,13 +102,13 @@ export default function MintCreate() {
       }
     } finally {
       setPayBtnLoading(false);
+      reexcuteQuery();
     }
-  }, [form, handleCreateMintPayAsync, handleUnisatPay, memoEventId]);
+  }, [form, handleCreateMintPayAsync, handleUnisatPay, memoEventId, reexcuteQuery]);
 
   const formReadOnly = useMemo(() => {
     return (!!params?.eventId && nostrAccount !== creator) || !!payTxId;
   }, [creator, nostrAccount, params?.eventId, payTxId]);
-
   const memoLabelServiceFee = useMemo(() => {
     return (
       <>
@@ -118,7 +125,7 @@ export default function MintCreate() {
       if (assetItem) {
         setCreator(assetItem.creator);
       }
-      const payTxHash = assetItem.pay_tx_hash;
+      const payTxHash = assetItem.pay_tx_hash || payTxId;
       const detailData = JSON.parse(assetItem.data);
       form.setFieldsValue({
         ...detailData
@@ -132,7 +139,7 @@ export default function MintCreate() {
         });
       }
     }
-  }, [form, list]);
+  }, [form, list, payTxId]);
 
   return (
     <>
@@ -171,6 +178,7 @@ export default function MintCreate() {
             style={{
               maxWidth: "100%"
             }}
+            initialValues={{ decimal: 1, displayDecimal: 1 }}
             onFinish={onSave}
             autoComplete="off"
           >
@@ -186,24 +194,38 @@ export default function MintCreate() {
                       required: true,
                       message: "Please input the asset name."
                     },
-                    () => ({
-                      async validator(_, value) {
+
+                    {
+                      validator(_, value) {
                         if (value) {
                           const tableName = `${GRAPH_BASE}nostr_create_assets`;
-                          const res = await client
-                            .query(QueryGraphaql, { name: value, creator: nostrAccount })
-                            .toPromise();
-                          if (res.data[tableName].length > 0) {
-                            return Promise.reject(new Error("This assetName already exists"));
-                          }
+                          client
+                            .query(QueryGraphaql, { name: value })
+                            .toPromise()
+                            .then((res) => {
+                              if (!params?.eventId) {
+                                // create
+                                if (res.data[tableName].length > 0) {
+                                  return Promise.reject(new Error("This assetName already exists"));
+                                }
+                              } else {
+                                //update
+                                const isExist = res.data[tableName]?.find(
+                                  (item) => item.name === value && item.creator !== nostrAccount
+                                );
+                                if (isExist) {
+                                  return Promise.reject(new Error("This assetName already exists"));
+                                }
+                              }
+                            });
+
                           return Promise.resolve();
                         }
-                        //return Promise.reject(new Error("Please input the asset name."));
                       }
-                    })
+                    }
                   ]}
                 >
-                  <Input placeholder="Please input asset name" />
+                  <Input placeholder="Please input asset name" maxLength={20} />
                 </Form.Item>
               </Col>
               <Col span={12}>
@@ -213,11 +235,12 @@ export default function MintCreate() {
                   rules={[
                     {
                       required: true,
+                      maxLength: 10,
                       message: "Please input the asset symbol"
                     }
                   ]}
                 >
-                  <Input placeholder="Please input the asset symbol" />
+                  <Input placeholder="Please input the asset symbol" maxLength={10} />
                 </Form.Item>
               </Col>
               <Col span={12}>
@@ -232,7 +255,8 @@ export default function MintCreate() {
                   ]}
                 >
                   <InputNumber
-                    min={1}
+                    min={100}
+                    max={100000000000}
                     size="middle"
                     controls={false}
                     placeholder="How many of this asset will supply"
@@ -241,7 +265,7 @@ export default function MintCreate() {
               </Col>
               <Col span={12}>
                 <Form.Item label="Description (Optional)" name="description">
-                  <Input placeholder="Please input the description" />
+                  <Input placeholder="Please input the description" maxLength={500} />
                 </Form.Item>
               </Col>
               <Col span={12}>
@@ -256,7 +280,8 @@ export default function MintCreate() {
                   ]}
                 >
                   <InputNumber
-                    min={1}
+                    min={0}
+                    max={18}
                     size="middle"
                     controls={false}
                     placeholder="Please enter the asset deploy decimal"
@@ -275,7 +300,8 @@ export default function MintCreate() {
                   ]}
                 >
                   <InputNumber
-                    min={1}
+                    min={0}
+                    max={18}
                     size="middle"
                     controls={false}
                     placeholder="Please enter the asset display decimal"
@@ -327,13 +353,7 @@ export default function MintCreate() {
             </Row>
 
             <Row justify="center" className="submit">
-              <Button
-                type="primary"
-                disabled={!!payTxId || (creator !== nostrAccount && params?.eventId)}
-                size="middle"
-                htmlType="submit"
-                loading={saveLoding}
-              >
+              <Button type="primary" disabled={memoSaveDisable} size="middle" htmlType="submit" loading={saveLoding}>
                 Save
               </Button>
             </Row>
@@ -348,7 +368,7 @@ export default function MintCreate() {
 
             {!!payTxId && (
               <>
-                <h4 className="nostr-assets-form-groupInfo">Payment & Asset mint Progress</h4>
+                <h4 className="nostr-assets-form-groupInfo">Payment & Create Asset Progress</h4>
                 <Row style={{ width: "100%" }}>
                   <PayAndMintProgress assetMintProgress={assetMintProgress} />
                 </Row>

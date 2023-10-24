@@ -93,8 +93,14 @@ export const useUnisatPay = () => {
       }
     }
     // check balance
-    const balance = await window.unisat.getBalance();
-    if (!balance?.confirmed) {
+    const balance = await window.unisat.getBalance().catch(e => {
+      return {
+        confirmed: 0,
+        unconfirmed: 0
+      }
+    });
+
+    if (balance?.confirmed + balance?.unconfirmed === 0) {
       throw new Error("Insufficient Balance.")
     }
     let feeRate = 5;
@@ -103,7 +109,6 @@ export const useUnisatPay = () => {
     let utxos = dummy.utxos;
 
     const constructPsbtRet = await getBuildPSBTResult(eventId, estimateFee, account);
-    console.log("🚀 ~ file: useMintAssets.js:85 ~ handleUnisatPay ~ constructPsbtRet:", constructPsbtRet);
     if (!constructPsbtRet) {
       throw new Error("Create Psbt failed.");
     }

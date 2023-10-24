@@ -8,11 +8,11 @@ export default function PayAndMintProgress({ assetMintProgress }) {
     <>
       <div className="nostr-assets-card">
         <div className="nostr-assets-card-item">
-          <span className="nostr-assets-card-item__label">Submit payment success</span>
+          <span className="nostr-assets-card-item__label">Submit Payment Sucessful</span>
           <span
             className={classNames("nostr-assets-card-item__value", { handing: status === 0, finished: status > 0 })}
           >
-            {assetMintProgress?.status === 0 ? "Waiting for payment result" : "Received Payment"}
+            {assetMintProgress?.status === 0 ? "Waiting for payment verification" : "Payment Received"}
           </span>
         </div>
         <div className="nostr-assets-card-item">
@@ -30,7 +30,7 @@ export default function PayAndMintProgress({ assetMintProgress }) {
           </span>
         </div>
         <div className="nostr-assets-card-item">
-          <span className="nostr-assets-card-item__label">Mint Asset on Taproot Asset</span>
+          <span className="nostr-assets-card-item__label">Create Taproot Assets</span>
 
           <span
             className={classNames("nostr-assets-card-item__value", {
@@ -41,11 +41,13 @@ export default function PayAndMintProgress({ assetMintProgress }) {
           >
             {useMemo(() => {
               if (status === 2) {
-                return "Minting";
+                return "In progress. Creating...";
               } else if (status === 9) {
-                return "Mint Success";
+                return "Create Asset Successful!";
               } else if (status === 99) {
-                return "Mint Failed";
+                return "Create Asset Failed!";
+              } else {
+                return "Not started. Pending verification";
               }
             }, [status])}
           </span>

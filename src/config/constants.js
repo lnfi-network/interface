@@ -38,8 +38,8 @@ export const NOSTR_MARKET_SEND_TO = process.env.REACT_APP_NOSTR_MARKET_SEND_TO;
 export const AssetDeployStatus = {
   0: "Waiting for payment result",
   1: "Received Payment",
-  2: "Minting",
-  9: "Mint Success",
+  2: "In progress. Creating...",
+  9: "Create Asset Successful!",
   99: "Mint Failed",
 }
 export const QUOTE_ASSET = process.env.REACT_APP_QUOTE_TOKEN
