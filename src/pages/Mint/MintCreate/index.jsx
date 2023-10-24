@@ -44,6 +44,20 @@ export default function MintCreate() {
     return !!payTxId || (creator !== nostrAccount && params?.eventId);
   }, [creator, nostrAccount, params?.eventId, payTxId]);
 
+  const showConnectBtn = useMemo(() => {
+    if (!params.eventId) {
+      return true;
+    } else {
+      if (payTxId) {
+        return false;
+      }
+      if (nostrAccount !== creator) {
+        return false;
+      }
+      return true;
+    }
+  }, [creator, nostrAccount, params.eventId, payTxId]);
+
   const onSave = useCallback(
     async (values) => {
       setSaveLoding(true);
@@ -389,9 +403,9 @@ export default function MintCreate() {
                 Cofirm Payment and Create Asset
               </Button>
             </CheckNostrButton>
-          ) : (
-            <ConnectWallet tokenPlatform="BRC20" />
-          )}
+          ) : showConnectBtn ? (
+            <ConnectWallet tokenPlatform="BRC20" connectTip="Connect wallet to pay the service fee." />
+          ) : null}
         </div>
       </div>
     </>

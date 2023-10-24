@@ -88,7 +88,7 @@ export function ConnectWalletWithOnlyDeposit({ connectType, btnText = t`Connect 
     </div>
   );
 }
-export default function ConnectWallet({ tokenPlatform = "" }) {
+export default function ConnectWallet({ tokenPlatform = "", connectTip = "Connect your wallet to start trading." }) {
   const dispatch = useDispatch();
   const onConnectHandler = useCallback(() => {
     if (tokenPlatform === "BRC20") {
@@ -98,9 +98,7 @@ export default function ConnectWallet({ tokenPlatform = "" }) {
   }, [dispatch, tokenPlatform]);
   return (
     <div className="connect-wallet-common">
-      <div className="connect-wallet-text">
-        <Trans>Connect your wallet to start trading.</Trans>
-      </div>
+      <div className="connect-wallet-text">{connectTip}</div>
       <ConnectWalletButton onClick={onConnectHandler} imgSrc={connectWalletImg}>
         <Trans>Connect wallet</Trans>
       </ConnectWalletButton>
