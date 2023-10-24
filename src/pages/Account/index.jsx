@@ -27,7 +27,7 @@ import CheckNostrButton from "components/CheckNostrButton";
 import useDevice from "hooks/useDevice";
 import { setAboutModalVisible } from "store/reducer/modalReducer";
 import { QUOTE_ASSET } from "config/constants";
-import * as Lockr from "lockr";
+import NoticeModal from "./comps/NoticeModal";
 const ASSET_PLAT_MAP = {
   ETHEREUM: "ETH",
   BRC20: "BTC",
@@ -48,9 +48,7 @@ function Account() {
   // const qutoAsset = useMemo(() => {
   //   return tokenList.find((k) => k?.name?.toUpperCase() == "USDT");
   // }, [tokenList]);
-  const [noticeModalVisible, setNoticeModalVisible] = useState(false);
-  const noticeModalRef = useRef(null);
-  const [noticeConfirmBtnEnable, setNoticeConfirmBtnEnable] = useState(false);
+
   const qutoAsset = useMemo(() => {
     return tokenList.find((tokenItem) => tokenItem?.name === QUOTE_ASSET);
   }, [tokenList]);
@@ -340,84 +338,9 @@ function Account() {
     }
   }, [width, qutoAsset, list, quote_pirce, balanceList, nostrAccount, onHandleRedirect, transferShow]);
 
-  const onNoticeModalCancel = useCallback(() => {
-    setNoticeModalVisible(false);
-    Lockr.set("isShowNoticeModal", true);
-  }, []);
-
-  useEffect(() => {
-    const isHasShowNoticeModal = Lockr.get("isShowNoticeModal");
-    if (!isHasShowNoticeModal) {
-      setNoticeModalVisible(true);
-    }
-    const noticeModalRefDom = noticeModalRef.current;
-    const onScroll = () => {
-      if (noticeModalRefDom.scrollTop + noticeModalRefDom.clientHeight >= noticeModalRefDom.scrollHeight) {
-        setNoticeConfirmBtnEnable(true);
-      } else {
-        setNoticeConfirmBtnEnable(false);
-      }
-    };
-    noticeModalVisible && noticeModalRefDom?.addEventListener("scroll", onScroll);
-    return () => {
-      noticeModalVisible && noticeModalRefDom?.removeEventListener("scroll", onScroll);
-    };
-  }, [noticeModalVisible]);
   return (
     <>
-      <Modal
-        width={500}
-        title={null}
-        centered
-        open={noticeModalVisible}
-        footer={null}
-        closable={false}
-        onCancel={onNoticeModalCancel}
-      >
-        <h2 className="nostrswap-modal-title">
-          Disclaimer
-          {/*  <a href="https://doc.nostrassets.com/disclaimer" target="_blank">
-           
-          </a> */}
-        </h2>
-        <div className="nostrswap-modal nostrswap-modal-scroll" ref={noticeModalRef}>
-          <div className="nostrswap-modal-description">
-            <h3 className="nostrswap-modal-subtitle">Disclaimer for Taproot Assets Usage on NostrAssets</h3>
-            <div>
-              Before using Taproot Assets on NostrAssets, it is essential to thoroughly understand and accept the
-              following terms and conditions:
-            </div>
-          </div>
-          <div className="nostrswap-modal-description">
-            <h3 className="nostrswap-modal-subtitle">Emerging Technology and Unforeseen Risks</h3>
-            <div>
-              Taproot Assets represent an emerging technology that carries potential unknown and unforeseen risks. The
-              ever-evolving nature of this technology means that risks may exist that are not yet fully recognized or
-              anticipated.
-            </div>
-          </div>
-          <div className="nostrswap-modal-description">
-            <h3 className="nostrswap-modal-subtitle">Emphasis on Risk</h3>
-            <div>
-              It is imperative to recognize and emphasize the inherent risks associated with Taproot Assets. These risks
-              may encompass, but are not limited to: Market Volatility: The value of Taproot Assets can experience
-              significant fluctuations, leading to potential financial losses.
-            </div>
-          </div>
-        </div>
-        <div className="nostrswap-modal-footer">
-          <Button
-            size="middle"
-            type="primary"
-            onClick={() => {
-              onNoticeModalCancel();
-            }}
-            disabled={!noticeConfirmBtnEnable}
-          >
-            I Understand
-          </Button>
-        </div>
-      </Modal>
+      <NoticeModal />
       {!nostrAccount && (
         <div className="account-nologin">
           <div className="account-nologin-content">
