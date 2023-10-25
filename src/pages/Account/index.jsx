@@ -28,6 +28,7 @@ import useDevice from "hooks/useDevice";
 import { setAboutModalVisible } from "store/reducer/modalReducer";
 import { QUOTE_ASSET } from "config/constants";
 import NoticeModal from "./comps/NoticeModal";
+import { convertDollars } from "lib/utils/index";
 const ASSET_PLAT_MAP = {
   ETHEREUM: "ETH",
   BRC20: "BTC",
@@ -94,242 +95,273 @@ function Account() {
     dispatch(setAboutModalVisible(true));
   }, [dispatch]);
   const columns = useMemo(() => {
-    // if (width > 768) {
-    return [
-      {
-        title: t`Asset`,
-        dataIndex: "name"
-      },
-      {
-        title: t`Asset ID`,
-        dataIndex: "token",
-        render(text, row) {
-          return text ? (
-            <Tooltip
-              overlayClassName="token-address-tooltip"
-              title={
-                <div>
-                  <div>Asset name: {row?.name || "--"}</div>
+    if (width > 768) {
+      return [
+        {
+          title: t`Asset`,
+          dataIndex: "name"
+        },
+        {
+          title: t`Asset ID`,
+          dataIndex: "token",
+          render(text, row) {
+            return text ? (
+              <Tooltip
+                overlayClassName="token-address-tooltip"
+                title={
                   <div>
-                    Asset ID:{" "}
-                    {row?.token
-                      ? row?.token?.substring(0, 10) + "..." + row?.token?.substring(row?.token?.length - 6)
-                      : "--"}
+                    <div>Asset name: {row?.name || "--"}</div>
+                    <div>
+                      Asset ID:{" "}
+                      {row?.token
+                        ? row?.token?.substring(0, 10) + "..." + row?.token?.substring(row?.token?.length - 6)
+                        : "--"}
+                    </div>
+                    <div>Total supply: {row?.totalSupply ? numberWithCommas(row?.totalSupply) : "--"}</div>
                   </div>
-                  <div>Total supply: {row?.totalSupply ? numberWithCommas(row?.totalSupply) : "--"}</div>
+                }
+              >
+                <div>
+                  <EllipsisMiddle suffixCount={6}>{text}</EllipsisMiddle>
                 </div>
-              }
-            >
-              <div>
-                <EllipsisMiddle suffixCount={6}>{text}</EllipsisMiddle>
-              </div>
-            </Tooltip>
-          ) : (
-            "--"
-          );
-        }
-      },
-      {
-        title: `Last Price (${qutoAsset?.name?.toLowerCase()})`,
-        dataIndex: "name",
-        width: "140px",
-        render: (text, row) => {
-          if (text == QUOTE_ASSET) {
-            return `1`;
+              </Tooltip>
+            ) : (
+              "--"
+            );
           }
-          const priceDetail = list.find((item) => item?.name == text);
-          const price =
-            priceDetail?.deal_price && qutoAsset
-              ? BigNumber(priceDetail.deal_price).div(qutoAsset?.decimals).toNumber()
-              : "--";
-          // return;
-          return price != "--" ? (
-            <div>
-              <div className="color-light">{numberWithCommas(limitDecimals(price, qutoAsset?.reserve || 0))}</div>
-              <div className="color-dark">
-                {price * quote_pirce ? `≈$${numberWithCommas(limitDecimals(price * quote_pirce, 2))}` : "--"}
-              </div>
-            </div>
-          ) : (
-            "--"
-          );
-        }
-      },
-      {
-        title: t`Amount`,
-        dataIndex: "name",
-        width: "140px",
-        render: (text) => {
-          const balance = balanceList?.[text]?.balanceShow;
-          return balance ? <span className="color-light">{numberWithCommas(balance)}</span> : "--";
-        }
-      },
-      {
-        title: `Value (${qutoAsset?.name?.toLowerCase()})`,
-        dataIndex: "name",
-        width: "140px",
-        render: (text, row) => {
-          if (!nostrAccount) {
-            return "--";
-          }
-          const balance = balanceList?.[text]?.balanceShow || 0;
-
-          if (text?.toLowerCase() == QUOTE_ASSET?.toLowerCase()) {
-            const value = qutoAsset ? BigNumber(1).times(balance).toNumber() : "--";
-            return value != "--" ? (
+        },
+        {
+          title: `Last Price (${qutoAsset?.name?.toLowerCase()})`,
+          dataIndex: "name",
+          render: (text, row) => {
+            if (text == QUOTE_ASSET) {
+              return `1`;
+            }
+            const priceDetail = list.find((item) => item?.name == text);
+            const price =
+              priceDetail?.deal_price && qutoAsset
+                ? BigNumber(priceDetail.deal_price).div(qutoAsset?.decimals).toNumber()
+                : "--";
+            // return;
+            return price != "--" ? (
               <div>
-                <div className="color-light">{numberWithCommas(limitDecimals(value, qutoAsset?.reserve || 0))}</div>
-                <div className="f12 color-dark">
-                  {value * quote_pirce ? `≈$${numberWithCommas(limitDecimals(value * quote_pirce, 2))}` : "--"}
+                <div className="color-light">{numberWithCommas(limitDecimals(price, qutoAsset?.reserve || 0))}</div>
+                <div className="color-dark">
+                  {convertDollars(price, quote_pirce)}
                 </div>
               </div>
             ) : (
               "--"
             );
           }
-          const priceDetail = list.find((item) => item?.name == text);
-          const value =
-            priceDetail?.deal_price && qutoAsset
-              ? BigNumber(priceDetail.deal_price).div(qutoAsset?.decimals).times(balance).toNumber()
-              : "--";
-          // return;
-          return value != "--" ? (
-            <div>
-              <div className="color-light">{numberWithCommas(limitDecimals(value, qutoAsset?.reserve || 0))}</div>
-              <div className="f12 color-dark">
-                {value * quote_pirce ? `≈$${numberWithCommas(limitDecimals(value * quote_pirce, 2))}` : "--"}
-              </div>
-            </div>
-          ) : (
-            "--"
-          );
-        }
-      },
-      {
-        title: t`Action`,
-        dataIndex: "status",
-        width: 260,
-        render: (text, row) => {
-          return (
-            <div className="account-table-btns">
-              <CheckNostrButton>
-                <Button
-                  type="primary"
-                  size="small"
-                  onClick={() => {
-                    const platform = ASSET_PLAT_MAP[row.assetType];
-                    onHandleRedirect(`receive/${platform}/${row?.name}`);
-                  }}
-                >
-                  {t`Receive`}
-                </Button>
-              </CheckNostrButton>
-              <CheckNostrButton>
-                <Button
-                  type="primary"
-                  size="small"
-                  onClick={() => {
-                    const platform = ASSET_PLAT_MAP[row.assetType];
-                    onHandleRedirect(`send/${platform}/${row?.name}`);
-                  }}
-                >
-                  {t`Send`}
-                </Button>
-              </CheckNostrButton>
-              <CheckNostrButton>
-                <Button type="primary" size="small" onClick={() => transferShow(row)}>
-                  {t`Transfer`}
-                </Button>
-              </CheckNostrButton>
-            </div>
-          );
-        }
-      }
-    ];
-    // } else {
-    // return [
-    //   {
-    //     title: t`Token`,
-    //     dataIndex: "name",
-    //     width: 100,
-    //     ellipsis: true
-    //   },
-    //   {
-    //     title: t`Asset ID`,
-    //     dataIndex: "token",
-    //     render(text, row) {
-    //       return text ? (
-    //         <Tooltip
-    //           overlayClassName="token-address-tooltip"
-    //           title={
-    //             <div>
-    //               <div>Token name: {row?.name || "--"}</div>
-    //               <div>
-    //                 Token address:
-    //                 {row?.token
-    //                   ? row?.token?.substring(0, 8) + "..." + row?.token?.substring(row?.token?.length - 6)
-    //                   : "--"}
-    //               </div>
-    //               {/*  <div>Token Channel: {row?.symbol || "--"}</div> */}
-    //               <div>Total supply: {row?.totalSupply ? numberWithCommas(row?.totalSupply) : "--"}</div>
-    //             </div>
-    //           }
-    //         >
-    //           <div>
-    //             <EllipsisMiddle suffixCount={4}>{text}</EllipsisMiddle>
-    //           </div>
-    //         </Tooltip>
-    //       ) : (
-    //         "--"
-    //       );
-    //     }
-    //   },
-    //   {
-    //     title: (
-    //       <div>
-    //         <div>{t`Amount`}</div>
-    //         <div>{t`USD Value`}</div>
-    //       </div>
-    //     ),
-    //     dataIndex: "name",
-    //     render: (text, row) => {
-    //       const balance = balanceList?.[text]?.balanceShow || 0;
-    //       const amount = balance ? numberWithCommas(balance) : "--";
-    //       let usdValue = "";
-    //       if (nostrAccount) {
-    //         if (text == "USDT") {
-    //           usdValue = `$${numberWithCommas(limitDecimals(balance, 2))}`;
-    //         } else {
-    //           const priceDetail = list.find((item) => item?.name == text);
-    //           usdValue =
-    //             priceDetail?.deal_price && qutoAsset
-    //               ? `$${numberWithCommas(
-    //                   limitDecimals(
-    //                     BigNumber(priceDetail.deal_price)
-    //                       .div(qutoAsset?.decimals)
-    //                       .div(row?.decimals)
-    //                       .times(balance)
-    //                       .toNumber(),
-    //                     2
-    //                   )
-    //                 )}`
-    //               : "--";
-    //         }
-    //       } else {
-    //         usdValue = "--";
-    //       }
+        },
+        {
+          title: t`Amount`,
+          dataIndex: "name",
+          render: (text) => {
+            const balance = balanceList?.[text]?.balanceShow;
+            return balance ? <span className="color-light">{numberWithCommas(balance)}</span> : "--";
+          }
+        },
+        {
+          title: `Value (${qutoAsset?.name?.toLowerCase()})`,
+          dataIndex: "name",
+          render: (text, row) => {
+            if (!nostrAccount) {
+              return "--";
+            }
+            const balance = balanceList?.[text]?.balanceShow || 0;
 
-    //       return (
-    //         <div>
-    //           <div>{amount}</div>
-    //           <div>{usdValue}</div>
-    //         </div>
-    //       );
-    //     }
-    //   }
-    // ];
-    // }
-  }, [qutoAsset, list, quote_pirce, balanceList, nostrAccount, onHandleRedirect, transferShow]);
+            if (text?.toLowerCase() == QUOTE_ASSET?.toLowerCase()) {
+              const value = qutoAsset ? BigNumber(1).times(balance).toNumber() : "--";
+              return value != "--" ? (
+                <div>
+                  <div className="color-light">{numberWithCommas(limitDecimals(value, qutoAsset?.reserve || 0))}</div>
+                  <div className="f12 color-dark">
+                    {/* {value * quote_pirce ? `≈$${numberWithCommas(limitDecimals(value * quote_pirce, 2))}` : "--"} */}
+                    {convertDollars(value, quote_pirce)}
+                  </div>
+                </div>
+              ) : (
+                "--"
+              );
+            }
+            const priceDetail = list.find((item) => item?.name == text);
+            const value =
+              priceDetail?.deal_price && qutoAsset
+                ? BigNumber(priceDetail.deal_price).div(qutoAsset?.decimals).times(balance).toNumber()
+                : "--";
+            // return;
+            return value != "--" ? (
+              <div>
+                <div className="color-light">{numberWithCommas(limitDecimals(value, qutoAsset?.reserve || 0))}</div>
+                <div className="f12 color-dark">
+                  {/* {value * quote_pirce ? `≈$${numberWithCommas(limitDecimals(value * quote_pirce, 2))}` : "--"} */}
+                  {convertDollars(value, quote_pirce)}
+                </div>
+              </div>
+            ) : (
+              "--"
+            );
+          }
+        },
+        {
+          title: t`Action`,
+          dataIndex: "status",
+          width: 260,
+          render: (text, row) => {
+            return (
+              <div className="account-table-btns">
+                <CheckNostrButton>
+                  <Button
+                    type="primary"
+                    size="small"
+                    onClick={() => {
+                      const platform = ASSET_PLAT_MAP[row.assetType];
+                      onHandleRedirect(`receive/${platform}/${row?.name}`);
+                    }}
+                  >
+                    {t`Receive`}
+                  </Button>
+                </CheckNostrButton>
+                <CheckNostrButton>
+                  <Button
+                    type="primary"
+                    size="small"
+                    onClick={() => {
+                      const platform = ASSET_PLAT_MAP[row.assetType];
+                      onHandleRedirect(`send/${platform}/${row?.name}`);
+                    }}
+                  >
+                    {t`Send`}
+                  </Button>
+                </CheckNostrButton>
+                <CheckNostrButton>
+                  <Button type="primary" size="small" onClick={() => transferShow(row)}>
+                    {t`Transfer`}
+                  </Button>
+                </CheckNostrButton>
+              </div>
+            );
+          }
+        }
+      ];
+    } else {
+      return [
+        {
+          title: t`Asset`,
+          dataIndex: "name"
+        },
+        // {
+        //   title: t`Asset ID`,
+        //   dataIndex: "token",
+        //   render(text, row) {
+        //     return text ? (
+        //       <Tooltip
+        //         overlayClassName="token-address-tooltip"
+        //         title={
+        //           <div>
+        //             <div>Asset name: {row?.name || "--"}</div>
+        //             <div>
+        //               Asset ID:{" "}
+        //               {row?.token
+        //                 ? row?.token?.substring(0, 10) + "..." + row?.token?.substring(row?.token?.length - 6)
+        //                 : "--"}
+        //             </div>
+        //             <div>Total supply: {row?.totalSupply ? numberWithCommas(row?.totalSupply) : "--"}</div>
+        //           </div>
+        //         }
+        //       >
+        //         <div>
+        //           <EllipsisMiddle suffixCount={6}>{text}</EllipsisMiddle>
+        //         </div>
+        //       </Tooltip>
+        //     ) : (
+        //       "--"
+        //     );
+        //   }
+        // },
+        // {
+        //   title: `Last Price (${qutoAsset?.name?.toLowerCase()})`,
+        //   dataIndex: "name",
+        //   width: "140px",
+        //   render: (text, row) => {
+        //     if (text == QUOTE_ASSET) {
+        //       return `1`;
+        //     }
+        //     const priceDetail = list.find((item) => item?.name == text);
+        //     const price =
+        //       priceDetail?.deal_price && qutoAsset
+        //         ? BigNumber(priceDetail.deal_price).div(qutoAsset?.decimals).toNumber()
+        //         : "--";
+        //     // return;
+        //     return price != "--" ? (
+        //       <div>
+        //         <div className="color-light">{numberWithCommas(limitDecimals(price, qutoAsset?.reserve || 0))}</div>
+        //         <div className="color-dark">
+        //           {price * quote_pirce ? `≈$${numberWithCommas(limitDecimals(price * quote_pirce, 2))}` : "--"}
+        //         </div>
+        //       </div>
+        //     ) : (
+        //       "--"
+        //     );
+        //   }
+        // },
+        {
+          title: t`Amount`,
+          dataIndex: "name",
+          // width: "140px",
+          render: (text) => {
+            const balance = balanceList?.[text]?.balanceShow;
+            return balance ? <span className="color-light">{numberWithCommas(balance)}</span> : "--";
+          }
+        },
+        {
+          title: `Value (${qutoAsset?.name?.toLowerCase()})`,
+          dataIndex: "name",
+          // width: "140px",
+          render: (text, row) => {
+            if (!nostrAccount) {
+              return "--";
+            }
+            const balance = balanceList?.[text]?.balanceShow || 0;
+
+            if (text?.toLowerCase() == QUOTE_ASSET?.toLowerCase()) {
+              const value = qutoAsset ? BigNumber(1).times(balance).toNumber() : "--";
+              return value != "--" ? (
+                <div>
+                  <div className="color-light">{numberWithCommas(limitDecimals(value, qutoAsset?.reserve || 0))}</div>
+                  <div className="f12 color-dark">
+                    {/* {value * quote_pirce ? `≈$${numberWithCommas(limitDecimals(value * quote_pirce, 2))}` : "--"} */}
+                    {convertDollars(value, quote_pirce)}
+                  </div>
+                </div>
+              ) : (
+                "--"
+              );
+            }
+            const priceDetail = list.find((item) => item?.name == text);
+            const value =
+              priceDetail?.deal_price && qutoAsset
+                ? BigNumber(priceDetail.deal_price).div(qutoAsset?.decimals).times(balance).toNumber()
+                : "--";
+            // return;
+            return value != "--" ? (
+              <div>
+                <div className="color-light">{numberWithCommas(limitDecimals(value, qutoAsset?.reserve || 0))}</div>
+                <div className="f12 color-dark">
+                  {/* {value * quote_pirce ? `≈$${numberWithCommas(limitDecimals(value * quote_pirce, 2))}` : "--"} */}
+                  {convertDollars(value, quote_pirce)}
+                </div>
+              </div>
+            ) : (
+              "--"
+            );
+          }
+        }
+      ];
+    }
+  }, [width, qutoAsset, list, quote_pirce, balanceList, nostrAccount, onHandleRedirect, transferShow]);
 
   return (
     <>
@@ -403,9 +435,10 @@ function Account() {
                 </CheckNostrButton>
               </div>
 
-              <div className="f14 mt5 color-dark">
+              <div className="f12 mt5 color-dark">
                 {/* {totalValue * quote_pirce} */}
-                {totalValue * quote_pirce ? `≈$${numberWithCommas(limitDecimals(totalValue * quote_pirce, 2))}` : "--"}
+                {/* {totalValue * quote_pirce ? `≈$${numberWithCommas(limitDecimals(totalValue * quote_pirce, 2))}` : "--"} */}
+                {convertDollars(totalValue, quote_pirce)}
               </div>
             </div>
             <div className="account-tokenList-actions-btns">
@@ -516,7 +549,7 @@ function Account() {
               loading={!tokenList.length}
               // sticky
               scroll={{
-                x: 1100
+                x: 400
               }}
               showSorterTooltip={false}
               rowKey="name"

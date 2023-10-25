@@ -2,6 +2,7 @@ import { nip19, getPublicKey, generatePrivateKey } from "nostr-tools";
 import { ethers } from "ethers";
 import { t } from "@lingui/macro";
 import dayjs from "dayjs";
+import { limitDecimals, numberWithCommas } from "lib/numbers";
 const { _TypedDataEncoder } = ethers.utils;
 import * as Lockr from "lockr";
 export function throttle(fn, wait) {
@@ -151,4 +152,11 @@ export function sleep(time = 1000) {
 }
 export function parseUSDT(usdtStr) {
   return usdtStr * 10 ** 6;
+}
+export function convertDollars(coin, price) {
+  if(Number(coin) && price > 0) {
+    return `≈$${numberWithCommas(limitDecimals(coin * price, 2))}`
+  } else {
+    return `--`
+  } 
 }

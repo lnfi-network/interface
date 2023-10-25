@@ -16,6 +16,7 @@ import { useCancelOrder } from "hooks/useNostrMarket";
 import BigNumber from "bignumber.js";
 import { utcToClient } from "lib/dates";
 import { QUOTE_ASSET } from "config/constants";
+import { convertDollars } from "lib/utils/index";
 const initQuery = {
   type: "",
   token: "",
@@ -218,7 +219,8 @@ export default function MyOrder() {
                   : "--"}
               </div>
               <div className="color-dark">
-                {quote_pirce ? `≈$${numberWithCommas(limitDecimals((text / cur?.decimals) * quote_pirce, 2))}` : "--"}
+                {/* {quote_pirce ? `≈$${numberWithCommas(limitDecimals((text / cur?.decimals) * quote_pirce, 2))}` : "--"} */}
+                {convertDollars(text / cur?.decimals, quote_pirce)}
               </div>
             </div>
           ) : (

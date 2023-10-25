@@ -11,6 +11,7 @@ import { limitDecimals, numberWithCommas } from "lib/numbers";
 import { nul } from "lib/utils/math";
 import { QUOTE_ASSET, FEE } from "config/constants";
 import { InfoCircleOutlined } from "@ant-design/icons";
+import { convertDollars } from "lib/utils/index";
 const layout = {
   labelCol: {
     span: 7
@@ -545,7 +546,8 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
 
             <span className="f12 color-dark">
               {"   "}
-              {priceValue && quote_pirce ? `≈$${numberWithCommas(limitDecimals(priceValue * quote_pirce, 2))}` : ""}
+              {/* {priceValue && quote_pirce ? `≈$${numberWithCommas(limitDecimals(priceValue * quote_pirce, 2))}` : ""} */}
+              {convertDollars(priceValue, quote_pirce)}
             </span>
           </Form.Item>
           <Form.Item label={buyOrSell === "buy" ? "Buy Amount" : "Sell Amount"}>
@@ -592,9 +594,10 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
               {memoTotalValue} <span>{QUOTE_ASSET}</span>{" "}
               <span className="f12 color-dark">
                 {"   "}
-                {memoTotalValue && quote_pirce
+                {/* {memoTotalValue && quote_pirce
                   ? `≈$${numberWithCommas(limitDecimals(memoTotalValue * quote_pirce, 2))}`
-                  : ""}
+                  : ""} */}
+                {convertDollars(memoTotalValue, quote_pirce)}
               </span>
             </div>
           </Form.Item>

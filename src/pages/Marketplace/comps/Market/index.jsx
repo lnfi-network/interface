@@ -9,6 +9,7 @@ import BigNumber from "bignumber.js";
 import { useAllowance, useApprove, useSendMarketOrder, useQueryBalance } from "hooks/useNostrMarket";
 import { QUOTE_ASSET, FEE } from "config/constants";
 import { InfoCircleOutlined } from "@ant-design/icons";
+import { convertDollars } from "lib/utils/index";
 import "./index.scss";
 
 function MarketModalForm({ setIsMarketModalForm, isMarketModalForm, reexcuteQuery, data }) {
@@ -275,10 +276,11 @@ function MarketModalForm({ setIsMarketModalForm, isMarketModalForm, reexcuteQuer
               {QUOTE_ASSET}
               <span className="f12 color-dark">
                 {"   "}
-                {data?.price &&
+                {/* {data?.price &&
                   qutoAsset &&
                   quote_pirce &&
-                  `≈$${numberWithCommas(limitDecimals((data?.price / qutoAsset?.decimals) * quote_pirce, 2))}`}
+                  `≈$${numberWithCommas(limitDecimals((data?.price / qutoAsset?.decimals) * quote_pirce, 2))}`} */}
+                {convertDollars(data?.price / qutoAsset?.decimals, quote_pirce)}
               </span>
             </div>
           </div>
@@ -292,10 +294,11 @@ function MarketModalForm({ setIsMarketModalForm, isMarketModalForm, reexcuteQuer
               {numberWithCommas(limitDecimals(totalValue, qutoAsset?.reserve))} {QUOTE_ASSET}
               <div className="f12 color-dark">
                 {"   "}
-                {data?.price &&
+                {/* {data?.price &&
                   qutoAsset &&
                   quote_pirce &&
-                  `≈$${numberWithCommas(limitDecimals(totalValue * quote_pirce, 2))}`}
+                  `≈$${numberWithCommas(limitDecimals(totalValue * quote_pirce, 2))}`} */}
+                {convertDollars(totalValue, quote_pirce)}
               </div>
             </div>
           </div>

@@ -22,6 +22,7 @@ import { nip19 } from "nostr-tools";
 import BigNumber from "bignumber.js";
 import { utcToClient } from "lib/dates";
 import CheckNostrButton from "components/CheckNostrButton";
+import { convertDollars } from "lib/utils/index";
 // import { add, cut, nul, division } from "lib/utils/math";
 
 // const initQuery = {
@@ -196,11 +197,12 @@ export default function Listing({ refListing }) {
                 {QUOTE_ASSET}
               </div>
               <div className="f12 color-dark" style={{ textAlign: "right" }}>
-                {item?.price && row
+                {/* {item?.price && row
                   ? `≈$${numberWithCommas(
                       limitDecimals(BigNumber(item?.price).div(row?.decimals).times(quote_pirce).toNumber(), 2)
                     )}`
-                  : "--"}
+                  : "--"} */}
+                {convertDollars(item?.price / row?.decimals, quote_pirce)}
               </div>
             </div>
           </div>
@@ -239,7 +241,7 @@ export default function Listing({ refListing }) {
                 {QUOTE_ASSET}
               </div>
               <div className="f12 color-dark" style={{ textAlign: "right" }}>
-                {item?.price && row
+                {/* {item?.price && row
                   ? `≈$${numberWithCommas(
                       limitDecimals(
                         BigNumber(item?.total_price)
@@ -250,7 +252,8 @@ export default function Listing({ refListing }) {
                         2
                       )
                     )}`
-                  : "--"}
+                  : "--"} */}
+                {convertDollars(item?.total_price / row?.decimals, quote_pirce)}
               </div>
             </div>
           </div>

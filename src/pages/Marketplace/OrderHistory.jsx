@@ -15,6 +15,7 @@ import BigNumber from "bignumber.js";
 import { getQueryVariable } from "lib/url";
 import { utcToClient } from "lib/dates";
 import { QUOTE_ASSET } from "config/constants";
+import { convertDollars } from "lib/utils/index";
 const initQuery = {
   type: "",
   token: "",
@@ -187,7 +188,10 @@ export default function OrderHistory() {
               <div className="color-yellow">{text && cur
                 ? `${numberWithCommas(limitDecimals(text / cur?.decimals, cur?.reserve))} ${QUOTE_ASSET}`
                 : "--"}</div>
-              <div className="color-dark">{quote_pirce ? `≈$${numberWithCommas(limitDecimals(text / cur?.decimals * quote_pirce, 2))}` : "--"}</div>
+              <div className="color-dark">
+                {/* {quote_pirce ? `≈$${numberWithCommas(limitDecimals(text / cur?.decimals * quote_pirce, 2))}` : "--"} */}
+                {convertDollars(text / cur?.decimals, quote_pirce)}
+              </div>
             </div>
           ) : (
             "--"

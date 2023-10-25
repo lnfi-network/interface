@@ -12,6 +12,7 @@ import { useSelector } from "react-redux";
 import BigNumber from "bignumber.js";
 import cx from "classnames";
 import { QUOTE_ASSET } from "config/constants";
+import { convertDollars } from "lib/utils/index";
 export default function ExploreDetails({ detail, open = false, onClose, type }) {
   const { tokenList, quote_pirce } = useSelector(({ market }) => market);
   const { list, fetching, reexcuteQuery } = useOrderDetailQuery({
@@ -127,9 +128,10 @@ export default function ExploreDetails({ detail, open = false, onClose, type }) 
             )}{" "}
             {QUOTE_ASSET}
             <div className="color-dark ml5">
-              {quote_pirce && detail?.price
+              {/* {quote_pirce && detail?.price
                 ? `≈$${numberWithCommas(limitDecimals((detail?.price / quoteAsset?.decimals) * quote_pirce, 2))}`
-                : ""}
+                : ""} */}
+              {convertDollars(detail?.price / quoteAsset?.decimals, quote_pirce)}
             </div>
           </span>
         </div>
@@ -163,9 +165,10 @@ export default function ExploreDetails({ detail, open = false, onClose, type }) 
             )}{" "}
             {QUOTE_ASSET}
             <div className="color-dark ml5">
-              {quote_pirce && detail?.price
+              {/* {quote_pirce && detail?.price
                 ? `≈$${numberWithCommas(limitDecimals((detail?.avg_price / quoteAsset?.decimals) * quote_pirce, 2))}`
-                : ""}
+                : ""} */}
+              {convertDollars(detail?.avg_price / quoteAsset?.decimals, quote_pirce)}
             </div>
           </span>
         </div>
@@ -230,7 +233,7 @@ export default function ExploreDetails({ detail, open = false, onClose, type }) 
                     )}{" "}
                     {QUOTE_ASSET}
                     <div className="color-dark ml5">
-                      {quote_pirce && detail?.price
+                      {/* {quote_pirce && detail?.price
                         ? `≈$${numberWithCommas(
                             limitDecimals(
                               BigNumber(item?.price)
@@ -241,7 +244,8 @@ export default function ExploreDetails({ detail, open = false, onClose, type }) 
                               2
                             )
                           )}`
-                        : ""}
+                        : ""} */}
+                      {convertDollars(item?.price / item?.volume, quote_pirce)}
                     </div>
                   </span>
                 </div>
