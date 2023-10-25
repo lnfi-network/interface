@@ -9,6 +9,7 @@ import { useDebounceEffect } from "ahooks";
 import { getLocalRobotPrivateKey } from "lib/utils/index";
 import useWebln from "./useWebln";
 import * as Lockr from "lockr";
+// import { sleep } from "lib/utils";
 
 const NOSTAR_TOKEN_SEND_TO = process.env.REACT_APP_NOSTR_TOKEN_SEND_TO;
 const NOSTR_MARKET_SEND_TO = process.env.REACT_APP_NOSTR_MARKET_SEND_TO;
@@ -132,12 +133,15 @@ export const useAllowance = () => {
           queryCommand,
           sendToNostrAddress: NOSTAR_TOKEN_SEND_TO
         });
-        
+        console.log("allowance ret", ret);
         if (!ret) {
           setAllowance({ amount: 0, amountShow: "0.0000" });
           return { amount: 0, amountShow: "0.0000" };
         }
         setAllowance(ret.result.data);
+        if(ret?.result?.code == 400) {
+          handleQueryAllowanceAsync(tokenName)
+        }
         return ret.result;
       }
     },

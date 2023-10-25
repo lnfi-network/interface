@@ -11,7 +11,7 @@ const getNostrFeesRecommendFee = async () => {
 
 export const useGetRecommendFee = (ready = false) => {
   const { data, run, loading } = useRequest(getNostrFeesRecommendFee, {
-    pollingInterval: 5000,
+    pollingInterval: 300000,
     ready,
     manual: true
   });

@@ -103,7 +103,7 @@ function Account() {
     // }
   }, [dispatch]);
   const columns = useMemo(() => {
-    if (width > 768) {
+    // if (width > 768) {
       return [
         {
           title: t`Asset`,
@@ -156,8 +156,8 @@ function Account() {
             // return;
             return price != "--" ? (
               <div>
-                <div>{numberWithCommas(limitDecimals(price, qutoAsset?.reserve || 0))}</div>
-                <div>{price * quote_pirce ? `≈$${numberWithCommas(limitDecimals(price * quote_pirce, 2))}` : "--"}</div>
+                <div className="color-light">{numberWithCommas(limitDecimals(price, qutoAsset?.reserve || 0))}</div>
+                <div className="color-dark">{price * quote_pirce ? `≈$${numberWithCommas(limitDecimals(price * quote_pirce, 2))}` : "--"}</div>
               </div>
             ) : (
               "--"
@@ -170,7 +170,7 @@ function Account() {
           width: "140px",
           render: (text) => {
             const balance = balanceList?.[text]?.balanceShow;
-            return balance ? numberWithCommas(balance) : "--";
+            return balance ? <span className="color-light">{numberWithCommas(balance)}</span> : "--";
           }
         },
         {
@@ -193,8 +193,8 @@ function Account() {
             // return;
             return value != "--" ? (
               <div>
-                <div>{numberWithCommas(limitDecimals(value, qutoAsset?.reserve || 0))}</div>
-                <div className="f12">
+                <div className="color-light">{numberWithCommas(limitDecimals(value, qutoAsset?.reserve || 0))}</div>
+                <div className="f12 color-dark">
                   {value * quote_pirce ? `≈$${numberWithCommas(limitDecimals(value * quote_pirce, 2))}` : "--"}
                 </div>
               </div>
@@ -253,90 +253,90 @@ function Account() {
           }
         }
       ];
-    } else {
-      return [
-        {
-          title: t`Token`,
-          dataIndex: "name",
-          width: 100,
-          ellipsis: true
-        },
-        {
-          title: t`Asset ID`,
-          dataIndex: "token",
-          render(text, row) {
-            return text ? (
-              <Tooltip
-                overlayClassName="token-address-tooltip"
-                title={
-                  <div>
-                    <div>Token name: {row?.name || "--"}</div>
-                    <div>
-                      Token address:
-                      {row?.token
-                        ? row?.token?.substring(0, 8) + "..." + row?.token?.substring(row?.token?.length - 6)
-                        : "--"}
-                    </div>
-                    {/*  <div>Token Channel: {row?.symbol || "--"}</div> */}
-                    <div>Total supply: {row?.totalSupply ? numberWithCommas(row?.totalSupply) : "--"}</div>
-                  </div>
-                }
-              >
-                <div>
-                  <EllipsisMiddle suffixCount={4}>{text}</EllipsisMiddle>
-                </div>
-              </Tooltip>
-            ) : (
-              "--"
-            );
-          }
-        },
-        {
-          title: (
-            <div>
-              <div>{t`Amount`}</div>
-              <div>{t`USD Value`}</div>
-            </div>
-          ),
-          dataIndex: "name",
-          render: (text, row) => {
-            const balance = balanceList?.[text]?.balanceShow || 0;
-            const amount = balance ? numberWithCommas(balance) : "--";
-            let usdValue = "";
-            if (nostrAccount) {
-              if (text == "USDT") {
-                usdValue = `$${numberWithCommas(limitDecimals(balance, 2))}`;
-              } else {
-                const priceDetail = list.find((item) => item?.name == text);
-                usdValue =
-                  priceDetail?.deal_price && qutoAsset
-                    ? `$${numberWithCommas(
-                        limitDecimals(
-                          BigNumber(priceDetail.deal_price)
-                            .div(qutoAsset?.decimals)
-                            .div(row?.decimals)
-                            .times(balance)
-                            .toNumber(),
-                          2
-                        )
-                      )}`
-                    : "--";
-              }
-            } else {
-              usdValue = "--";
-            }
+    // } else {
+      // return [
+      //   {
+      //     title: t`Token`,
+      //     dataIndex: "name",
+      //     width: 100,
+      //     ellipsis: true
+      //   },
+      //   {
+      //     title: t`Asset ID`,
+      //     dataIndex: "token",
+      //     render(text, row) {
+      //       return text ? (
+      //         <Tooltip
+      //           overlayClassName="token-address-tooltip"
+      //           title={
+      //             <div>
+      //               <div>Token name: {row?.name || "--"}</div>
+      //               <div>
+      //                 Token address:
+      //                 {row?.token
+      //                   ? row?.token?.substring(0, 8) + "..." + row?.token?.substring(row?.token?.length - 6)
+      //                   : "--"}
+      //               </div>
+      //               {/*  <div>Token Channel: {row?.symbol || "--"}</div> */}
+      //               <div>Total supply: {row?.totalSupply ? numberWithCommas(row?.totalSupply) : "--"}</div>
+      //             </div>
+      //           }
+      //         >
+      //           <div>
+      //             <EllipsisMiddle suffixCount={4}>{text}</EllipsisMiddle>
+      //           </div>
+      //         </Tooltip>
+      //       ) : (
+      //         "--"
+      //       );
+      //     }
+      //   },
+      //   {
+      //     title: (
+      //       <div>
+      //         <div>{t`Amount`}</div>
+      //         <div>{t`USD Value`}</div>
+      //       </div>
+      //     ),
+      //     dataIndex: "name",
+      //     render: (text, row) => {
+      //       const balance = balanceList?.[text]?.balanceShow || 0;
+      //       const amount = balance ? numberWithCommas(balance) : "--";
+      //       let usdValue = "";
+      //       if (nostrAccount) {
+      //         if (text == "USDT") {
+      //           usdValue = `$${numberWithCommas(limitDecimals(balance, 2))}`;
+      //         } else {
+      //           const priceDetail = list.find((item) => item?.name == text);
+      //           usdValue =
+      //             priceDetail?.deal_price && qutoAsset
+      //               ? `$${numberWithCommas(
+      //                   limitDecimals(
+      //                     BigNumber(priceDetail.deal_price)
+      //                       .div(qutoAsset?.decimals)
+      //                       .div(row?.decimals)
+      //                       .times(balance)
+      //                       .toNumber(),
+      //                     2
+      //                   )
+      //                 )}`
+      //               : "--";
+      //         }
+      //       } else {
+      //         usdValue = "--";
+      //       }
 
-            return (
-              <div>
-                <div>{amount}</div>
-                <div>{usdValue}</div>
-              </div>
-            );
-          }
-        }
-      ];
-    }
-  }, [width, qutoAsset, list, quote_pirce, balanceList, nostrAccount, onHandleRedirect, transferShow]);
+      //       return (
+      //         <div>
+      //           <div>{amount}</div>
+      //           <div>{usdValue}</div>
+      //         </div>
+      //       );
+      //     }
+      //   }
+      // ];
+    // }
+  }, [qutoAsset, list, quote_pirce, balanceList, nostrAccount, onHandleRedirect, transferShow]);
 
   return (
     <>
@@ -410,7 +410,7 @@ function Account() {
                 </CheckNostrButton>
               </div>
 
-              <div className="f14 mt5">
+              <div className="f14 mt5 color-dark">
                 {/* {totalValue * quote_pirce} */}
                 {totalValue * quote_pirce ? `≈$${numberWithCommas(limitDecimals(totalValue * quote_pirce, 2))}` : "--"}
               </div>
@@ -522,6 +522,9 @@ function Account() {
               className="table-light"
               loading={!tokenList.length}
               // sticky
+              scroll={{
+                x: 1100
+              }}
               showSorterTooltip={false}
               rowKey="name"
               columns={tokenList.length > 0 ? columns : []}

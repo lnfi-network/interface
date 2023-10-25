@@ -559,29 +559,13 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
                       if (!Number(value)) {
                         return Promise.reject(new Error(t`Invalid input format.`));
                       }
-                      // if (selectedToken?.reserve == 0 && !/^\d+$/.test(value)) {
-                      //   return Promise.reject(new Error(t`Invalid input format1.`));
-                      // }
                       const price = form.getFieldValue("price");
                       if (Number(value) && Number(price) && Number(value) * Number(price) < 10000) {
-                        // return Promise.reject(
-                        //   new Error(`Minimum Qty is ${selectedToken?.volume * qutoAssetVolume} ${QUOTE_ASSET}`)
-                        // );
                         return Promise.reject(new Error(`Min limit of total value is 10000 sats`));
                       }
                       if (Number(value) && Number(price) && Number(value) * Number(price) > 30000) {
-                        // return Promise.reject(
-                        //   new Error(`Minimum Qty is ${selectedToken?.volume * qutoAssetVolume} ${QUOTE_ASSET}`)
-                        // );
                         return Promise.reject(new Error(`Max limit of total value is 30000 sats`));
                       }
-                      // if (
-                      //   Number(form.getFieldValue("price")) &&
-                      //   Number(value) &&
-                      //   Number(form.getFieldValue("price")) * Number(value) < 10
-                      // ) {
-                      //   return Promise.reject(new Error(t`Minimum Qty is 10 USDT`));
-                      // }
                       return Promise.resolve();
                     }
                     return Promise.resolve();
@@ -615,17 +599,13 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
             label={
               <Tooltip
                 placement="top"
-                title="Service fee rate 0.4%, only charged when order is filled. If the calculated fee less than the of the asset, will be charged in the smallest unit of asset."
+                title="Service fee rate 0.4%. If the calculated fee less than the 1 unit of the asset, will be charged in the smallest unit of asset."
               >
                 Service Fee <InfoCircleOutlined />
               </Tooltip>
             }
             className="listing-form-total-stats"
           >
-            {/* <div className="listing-form-total-value">
-              {memoTotalValue} <span>{QUOTE_ASSET}</span>{" "}
-              
-            </div> */}
             <div className="f12">
               {buyOrSell === "buy" ? (
                 <div>{`0.4% ${numberWithCommas(fee)} ${selectedToken?.name}`}<span className="f12 color-dark">(Only charged when order filled)</span></div>

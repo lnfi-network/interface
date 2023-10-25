@@ -289,7 +289,11 @@ function WithdrawForm() {
       {notifiContextHolder}
       <AlertTip
         id="withdrawAlertTip"
-        description="Withdraw assets from your currently connected Nostr account to your Lightning wallet or Taproot wallet or other Nostr accounts. The Lightning Network is currently using real assets, while Taproot is temporarily using test assets."
+        description={
+          selectedTokenPlatform === "LIGHTNING"
+            ? "Withdraw assets from your currently connected Nostr account to your Lightning wallet or Taproot wallet or other Nostr accounts. The Lightning Network is currently using real assets, while Taproot is temporarily using test assets."
+            : "Withdraw assets from your currently connected Nostr account to your Lightning wallet or Taproot wallet or other Nostr accounts."
+        }
       />
       <div className="withdraw-form">
         <Form
@@ -327,7 +331,7 @@ function WithdrawForm() {
                 BRC20
               </Radio.Button> */}
               <Radio.Button className="network-selector-btn" value="TAPROOT">
-                <div className="network-selector-btn-test">Test</div>
+                {/* <div className="network-selector-btn-test">Test</div> */}
                 Taproot
               </Radio.Button>
               {hasErc20Token && (

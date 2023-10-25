@@ -303,7 +303,7 @@ function MarketModalForm({ setIsMarketModalForm, isMarketModalForm, reexcuteQuer
             <div className="market-buy-label">
               <Tooltip
                 placement="top"
-                title="Service fee rate 0.4%, only charged when order is filled. If the calculated fee less than the of the asset, will be charged in the smallest unit of asset."
+                title="Service fee rate 0.4%. If the calculated fee less than the 1 unit of the asset, will be charged in the smallest unit of asset."
               >
                 Service Fee <InfoCircleOutlined />
               </Tooltip>
