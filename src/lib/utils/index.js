@@ -153,10 +153,10 @@ export function sleep(time = 1000) {
 export function parseUSDT(usdtStr) {
   return usdtStr * 10 ** 6;
 }
-export function convertDollars(coin, price) {
+export function convertDollars(coin, price, placeholder = "--") {
   if(Number(coin) && price > 0) {
     return `≈$${numberWithCommas(limitDecimals(coin * price, 2))}`
   } else {
-    return `--`
+    return placeholder
   } 
 }

@@ -547,7 +547,7 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
             <span className="f12 color-dark">
               {"   "}
               {/* {priceValue && quote_pirce ? `≈$${numberWithCommas(limitDecimals(priceValue * quote_pirce, 2))}` : ""} */}
-              {convertDollars(priceValue, quote_pirce)}
+              {convertDollars(priceValue, quote_pirce, " ")}
             </span>
           </Form.Item>
           <Form.Item label={buyOrSell === "buy" ? "Buy Amount" : "Sell Amount"}>
@@ -597,7 +597,7 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
                 {/* {memoTotalValue && quote_pirce
                   ? `≈$${numberWithCommas(limitDecimals(memoTotalValue * quote_pirce, 2))}`
                   : ""} */}
-                {convertDollars(memoTotalValue, quote_pirce)}
+                {convertDollars(memoTotalValue, quote_pirce, " ")}
               </span>
             </div>
           </Form.Item>
