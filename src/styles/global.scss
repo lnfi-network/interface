@@ -591,6 +591,22 @@ input::input-placeholder {
     height: 350px;
     overflow-y: scroll;
     position: relative;
+    &::-webkit-scrollbar {
+      width: 6px;
+      height: 40px;
+      border-radius: 4px;
+      /*background-color: #a1b9db;*/
+    }
+    &::-webkit-scrollbar-track {
+      -webkit-box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.1);
+      border-radius: 2px;
+      /*background-color: #a1b9db;*/
+    }
+    &::-webkit-scrollbar-thumb {
+      border-radius: 2px;
+      -webkit-box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.1);
+      background-color: #8e9092; //355a8f
+    }
   }
   &-subtitle {
     color: var(--color-text-light);

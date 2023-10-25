@@ -949,7 +949,6 @@ button.App-button-option:disabled {
   overflow-y: overlay;
   display: flex;
   flex-direction: column;
-
   // scrollbar-gutter: stable;
 }
 
@@ -1228,6 +1227,9 @@ button.App-button {
 }
 
 @media (max-width: 1033px) {
+  .App-content{
+    padding-bottom: 60px;
+  }
   .long-connect-btn {
     display: none !important;
   }
