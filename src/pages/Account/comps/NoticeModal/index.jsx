@@ -40,7 +40,7 @@ export default function NoticeModal() {
         onCancel={onNoticeModalCancel}
         maskClosable={false}
       >
-        <h2 className="nostrswap-modal-title">Disclaimer</h2>
+        <h2 className="nostrswap-modal-title">Read this before proceeding</h2>
         <div className="nostrswap-modal nostrswap-modal-scroll" ref={noticeModalRef}>
           <div className="nostrswap-modal-description">
             <h3 className="nostrswap-modal-subtitle">Disclaimer for Taproot Assets Usage on NostrAssets</h3>
@@ -64,20 +64,20 @@ export default function NoticeModal() {
               may encompass, but are not limited to: Market Volatility: The value of Taproot Assets can experience
               significant fluctuations, leading to potential financial losses.
               <p>
-                Market Volatility: The value of Taproot Assets can experience significant fluctuations, leading to
-                potential financial losses.
+                <span className="color-base">Market Volatility:</span> The value of Taproot Assets can experience
+                significant fluctuations, leading to potential financial losses.
               </p>
               <p>
-                Security Risks: Safeguarding your assets is your responsibility. The loss of private keys or security
-                breaches can result in the loss of your assets.
+                <span className="color-base">Security Risks:</span> Safeguarding your assets is your responsibility. The
+                loss of private keys or security breaches can result in the loss of your assets.
               </p>
               <p>
-                Regulatory Changes: The regulatory landscape for cryptocurrencies and emerging technologies like Taproot
-                may evolve, potentially impacting their use and value.{" "}
+                <span className="color-base">Regulatory Changes:</span> The regulatory landscape for cryptocurrencies
+                and emerging technologies like Taproot may evolve, potentially impacting their use and value.{" "}
               </p>
               <p>
-                Technological Vulnerabilities: Emerging technologies often face vulnerabilities that may be exploited by
-                malicious actors.
+                <span className="color-base">Technological Vulnerabilities:</span> Emerging technologies often face
+                vulnerabilities that may be exploited by malicious actors.
               </p>
             </div>
           </div>
