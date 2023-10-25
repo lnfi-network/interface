@@ -364,7 +364,7 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
       }
       if (
         (allowance?.amountShow && Number(balance) > 0 && Number(allowance?.amountShow) < Number(memoTotalValue)) ||
-        Number(allowance?.amountShow) === 0
+        Number(allowance?.amountShow) === 0 || !allowance?.amountShow
       ) {
         return (
           <Button
@@ -413,7 +413,7 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
       }
       if (
         (allowance?.amountShow && Number(balance) > 0 && Number(allowance?.amountShow) < Number(amountValue)) ||
-        Number(allowance?.amountShow) === 0
+        Number(allowance?.amountShow) === 0 || !allowance?.amountShow
       ) {
         return (
           <Button
