@@ -117,8 +117,8 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
   }, [balanceList]);
 
   const memoTotalValue = useMemo(() => {
-    return limitDecimals(nul(priceValue, amountValue), 4, "round");
-  }, [amountValue, priceValue]);
+    return limitDecimals(nul(priceValue, amountValue), qutoAsset?.reserve, "round");
+  }, [amountValue, priceValue, qutoAsset?.reserve]);
   const min = (num) => {
     let str = "0.";
     if (num == 0) {
@@ -138,11 +138,11 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
     if (buyOrSell == "buy") {
       return limitDecimals(amountValue * FEE, selectedToken?.reserve, "round") == 0
         ? min(selectedToken?.reserve)
-        : limitDecimals(amountValue * FEE, selectedToken?.reserve);
+        : limitDecimals(amountValue * FEE, selectedToken?.reserve, "round");
     } else {
       return limitDecimals(memoTotalValue * FEE, qutoAsset?.reserve, "round") == 0
         ? min(qutoAsset?.reserve)
-        : limitDecimals(memoTotalValue * FEE, qutoAsset?.reserve);
+        : limitDecimals(memoTotalValue * FEE, qutoAsset?.reserve, "round");
     }
   }, [amountValue, buyOrSell, memoTotalValue, qutoAsset?.reserve, selectedToken?.reserve]);
   //

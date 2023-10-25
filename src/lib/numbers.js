@@ -101,10 +101,12 @@ export const limitDecimalsWithNormal = (amount, maxDecimals) => {
   return amountStr;
 };
 
-export const limitDecimals = (amount, maxDecimals, computedType = "normal") => {
+export const limitDecimals = (amount, maxDecimals, computedType) => {
+  console.log("amount, maxDecimals",amount, maxDecimals, computedType);
   if (computedType === "normal") {
     return limitDecimalsWithNormal(amount, maxDecimals);
   } else if (computedType === "round") {
+    
     return round(amount, maxDecimals);
   } else if (computedType === "floor") {
     return floor(amount, maxDecimals);

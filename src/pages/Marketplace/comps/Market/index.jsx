@@ -100,12 +100,12 @@ function MarketModalForm({ setIsMarketModalForm, isMarketModalForm, reexcuteQuer
     if (isBuy) {
       return limitDecimals(amountValue * FEE, selectToken?.reserve, "round") == 0
         ? min(selectToken?.reserve)
-        : limitDecimals(amountValue * FEE, selectToken?.reserve);
+        : limitDecimals(amountValue * FEE, selectToken?.reserve, "round");
     } else {
       console.log("totalValue * FEE", totalValue * FEE);
       return limitDecimals(totalValue * FEE, qutoAsset?.reserve, "round") == 0
         ? min(qutoAsset?.reserve)
-        : limitDecimals(totalValue * FEE, qutoAsset?.reserve);
+        : limitDecimals(totalValue * FEE, qutoAsset?.reserve, "round");
     }
   }, [isBuy, amountValue, selectToken?.reserve, totalValue, qutoAsset?.reserve]);
   const onMarketSubmit = useCallback(async () => {
