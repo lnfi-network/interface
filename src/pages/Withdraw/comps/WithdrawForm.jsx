@@ -289,11 +289,7 @@ function WithdrawForm() {
       {notifiContextHolder}
       <AlertTip
         id="withdrawAlertTip"
-        description={
-          selectedTokenPlatform === "LIGHTNING"
-            ? "Withdraw assets from your currently connected Nostr account to your Lightning wallet or Taproot wallet or other Nostr accounts. The Lightning Network is currently using real assets, while Taproot is temporarily using test assets."
-            : "Withdraw assets from your currently connected Nostr account to your Lightning wallet or Taproot wallet or other Nostr accounts."
-        }
+        description="Withdraw assets from your currently connected Nostr account to your Lightning wallet or Taproot wallet or other Nostr accounts."
       />
       <div className="withdraw-form">
         <Form
@@ -315,7 +311,7 @@ function WithdrawForm() {
           <Form.Item
             name="platform"
             label="Select Network"
-            tooltip="We currently support Lightning、ERC20 and Taproot network, please select the network of the token you want send asset to."
+            tooltip="We currently support Lightning network and Taproot Assets, please select the network of the token you want send asset to."
             rules={[
               {
                 required: true

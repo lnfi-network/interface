@@ -44,10 +44,6 @@ function Account() {
   const history = useHistory();
   const { nostrAccount, balanceList, npubNostrAccount } = useSelector(({ user }) => user);
   const { tokenList, quote_pirce } = useSelector(({ market }) => market);
-  // console.log("quote_pirce",quote_pirce);
-  // const qutoAsset = useMemo(() => {
-  //   return tokenList.find((k) => k?.name?.toUpperCase() == "USDT");
-  // }, [tokenList]);
 
   const qutoAsset = useMemo(() => {
     return tokenList.find((tokenItem) => tokenItem?.name === QUOTE_ASSET);
@@ -75,7 +71,7 @@ function Account() {
       list.forEach((item) => {
         const row = tokenList.find((k) => k?.name == item?.name);
         const balance = balanceList?.[item?.name]?.balanceShow;
-        if (item?.name == "USDT") {
+        if (item?.name?.toLowerCase() == QUOTE_ASSET?.toLowerCase()) {
           total += BigNumber(balance).toNumber();
         } else if (item?.deal_price && row && balance) {
           total += BigNumber(item.deal_price).div(qutoAsset?.decimals).div(row?.decimals).times(balance).toNumber();
@@ -96,101 +92,90 @@ function Account() {
   );
   const goImportAssets = useCallback(() => {
     dispatch(setAboutModalVisible(true));
-    // if (!Lockr.get("aboutModal")) {
-    //   dispatch(setAboutModalVisible(true));
-    // } else {
-    //   onHandleRedirect("importAssets");
-    // }
   }, [dispatch]);
   const columns = useMemo(() => {
     // if (width > 768) {
-      return [
-        {
-          title: t`Asset`,
-          dataIndex: "name"
-        },
-        {
-          title: t`Asset ID`,
-          dataIndex: "token",
-          render(text, row) {
-            return text ? (
-              <Tooltip
-                overlayClassName="token-address-tooltip"
-                title={
-                  <div>
-                    <div>Asset name: {row?.name || "--"}</div>
-                    <div>
-                      Asset ID:{" "}
-                      {row?.token
-                        ? row?.token?.substring(0, 10) + "..." + row?.token?.substring(row?.token?.length - 6)
-                        : "--"}
-                    </div>
-                    {/* <div>Token Channel: {row?.symbol || "--"}</div> */}
-                    <div>Total supply: {row?.totalSupply ? numberWithCommas(row?.totalSupply) : "--"}</div>
-                  </div>
-                }
-              >
+    return [
+      {
+        title: t`Asset`,
+        dataIndex: "name"
+      },
+      {
+        title: t`Asset ID`,
+        dataIndex: "token",
+        render(text, row) {
+          return text ? (
+            <Tooltip
+              overlayClassName="token-address-tooltip"
+              title={
                 <div>
-                  <EllipsisMiddle suffixCount={6}>{text}</EllipsisMiddle>
+                  <div>Asset name: {row?.name || "--"}</div>
+                  <div>
+                    Asset ID:{" "}
+                    {row?.token
+                      ? row?.token?.substring(0, 10) + "..." + row?.token?.substring(row?.token?.length - 6)
+                      : "--"}
+                  </div>
+                  <div>Total supply: {row?.totalSupply ? numberWithCommas(row?.totalSupply) : "--"}</div>
                 </div>
-              </Tooltip>
-            ) : (
-              "--"
-            );
-          }
-        },
-        {
-          title: `Last Price (${qutoAsset?.name?.toLowerCase()})`,
-          dataIndex: "name",
-          width: "140px",
-          render: (text, row) => {
-            // if (text == "USDT") {
-            //   return `$1.00`;
-            // }
-            // console.log("qutoAsset",qutoAsset,row, qutoAsset?.decimals);\
-            const priceDetail = list.find((item) => item?.name == text);
-            const price =
-              priceDetail?.deal_price && qutoAsset
-                ? BigNumber(priceDetail.deal_price).div(qutoAsset?.decimals).toNumber()
-                : "--";
-            // return;
-            return price != "--" ? (
+              }
+            >
               <div>
-                <div className="color-light">{numberWithCommas(limitDecimals(price, qutoAsset?.reserve || 0))}</div>
-                <div className="color-dark">{price * quote_pirce ? `≈$${numberWithCommas(limitDecimals(price * quote_pirce, 2))}` : "--"}</div>
+                <EllipsisMiddle suffixCount={6}>{text}</EllipsisMiddle>
               </div>
-            ) : (
-              "--"
-            );
+            </Tooltip>
+          ) : (
+            "--"
+          );
+        }
+      },
+      {
+        title: `Last Price (${qutoAsset?.name?.toLowerCase()})`,
+        dataIndex: "name",
+        width: "140px",
+        render: (text, row) => {
+          if (text == QUOTE_ASSET) {
+            return `1`;
           }
-        },
-        {
-          title: t`Amount`,
-          dataIndex: "name",
-          width: "140px",
-          render: (text) => {
-            const balance = balanceList?.[text]?.balanceShow;
-            return balance ? <span className="color-light">{numberWithCommas(balance)}</span> : "--";
+          const priceDetail = list.find((item) => item?.name == text);
+          const price =
+            priceDetail?.deal_price && qutoAsset
+              ? BigNumber(priceDetail.deal_price).div(qutoAsset?.decimals).toNumber()
+              : "--";
+          // return;
+          return price != "--" ? (
+            <div>
+              <div className="color-light">{numberWithCommas(limitDecimals(price, qutoAsset?.reserve || 0))}</div>
+              <div className="color-dark">
+                {price * quote_pirce ? `≈$${numberWithCommas(limitDecimals(price * quote_pirce, 2))}` : "--"}
+              </div>
+            </div>
+          ) : (
+            "--"
+          );
+        }
+      },
+      {
+        title: t`Amount`,
+        dataIndex: "name",
+        width: "140px",
+        render: (text) => {
+          const balance = balanceList?.[text]?.balanceShow;
+          return balance ? <span className="color-light">{numberWithCommas(balance)}</span> : "--";
+        }
+      },
+      {
+        title: `Value (${qutoAsset?.name?.toLowerCase()})`,
+        dataIndex: "name",
+        width: "140px",
+        render: (text, row) => {
+          if (!nostrAccount) {
+            return "--";
           }
-        },
-        {
-          title: `Value (${qutoAsset?.name?.toLowerCase()})`,
-          dataIndex: "name",
-          width: "140px",
-          render: (text, row) => {
-            if (!nostrAccount) {
-              return "--";
-            }
-            const balance = balanceList?.[text]?.balanceShow || 0;
-            // if (text == "USDT") {
-            //   return `$${numberWithCommas(limitDecimals(balance, 2))}`;
-            // }
-            const priceDetail = list.find((item) => item?.name == text);
-            const value =
-              priceDetail?.deal_price && qutoAsset
-                ? BigNumber(priceDetail.deal_price).div(qutoAsset?.decimals).times(balance).toNumber()
-                : "--";
-            // return;
+          const balance = balanceList?.[text]?.balanceShow || 0;
+
+          if (text?.toLowerCase() == QUOTE_ASSET?.toLowerCase()) {
+            const value = qutoAsset ? BigNumber(1).times(balance).toNumber() : "--";
             return value != "--" ? (
               <div>
                 <div className="color-light">{numberWithCommas(limitDecimals(value, qutoAsset?.reserve || 0))}</div>
@@ -201,140 +186,148 @@ function Account() {
             ) : (
               "--"
             );
-
-            // return priceDetail?.deal_price && qutoAsset
-            //   ? `${numberWithCommas(
-            //       limitDecimals(
-            //         BigNumber(priceDetail.deal_price).div(qutoAsset?.decimals).times(balance).toNumber(),
-            //         qutoAsset?.reserve || 0
-            //       )
-            //     )}`
-            //   : "--";
           }
-        },
-        {
-          title: t`Action`,
-          dataIndex: "status",
-          width: 260,
-          render: (text, row) => {
-            return (
-              <div className="account-table-btns">
-                <CheckNostrButton>
-                  <Button
-                    type="primary"
-                    size="small"
-                    onClick={() => {
-                      const platform = ASSET_PLAT_MAP[row.assetType];
-                      onHandleRedirect(`receive/${platform}/${row?.name}`);
-                    }}
-                  >
-                    {t`Receive`}
-                  </Button>
-                </CheckNostrButton>
-                <CheckNostrButton>
-                  <Button
-                    type="primary"
-                    size="small"
-                    onClick={() => {
-                      const platform = ASSET_PLAT_MAP[row.assetType];
-                      onHandleRedirect(`send/${platform}/${row?.name}`);
-                    }}
-                  >
-                    {t`Send`}
-                  </Button>
-                </CheckNostrButton>
-                <CheckNostrButton>
-                  <Button type="primary" size="small" onClick={() => transferShow(row)}>
-                    {t`Transfer`}
-                  </Button>
-                </CheckNostrButton>
+          const priceDetail = list.find((item) => item?.name == text);
+          const value =
+            priceDetail?.deal_price && qutoAsset
+              ? BigNumber(priceDetail.deal_price).div(qutoAsset?.decimals).times(balance).toNumber()
+              : "--";
+          // return;
+          return value != "--" ? (
+            <div>
+              <div className="color-light">{numberWithCommas(limitDecimals(value, qutoAsset?.reserve || 0))}</div>
+              <div className="f12 color-dark">
+                {value * quote_pirce ? `≈$${numberWithCommas(limitDecimals(value * quote_pirce, 2))}` : "--"}
               </div>
-            );
-          }
+            </div>
+          ) : (
+            "--"
+          );
         }
-      ];
+      },
+      {
+        title: t`Action`,
+        dataIndex: "status",
+        width: 260,
+        render: (text, row) => {
+          return (
+            <div className="account-table-btns">
+              <CheckNostrButton>
+                <Button
+                  type="primary"
+                  size="small"
+                  onClick={() => {
+                    const platform = ASSET_PLAT_MAP[row.assetType];
+                    onHandleRedirect(`receive/${platform}/${row?.name}`);
+                  }}
+                >
+                  {t`Receive`}
+                </Button>
+              </CheckNostrButton>
+              <CheckNostrButton>
+                <Button
+                  type="primary"
+                  size="small"
+                  onClick={() => {
+                    const platform = ASSET_PLAT_MAP[row.assetType];
+                    onHandleRedirect(`send/${platform}/${row?.name}`);
+                  }}
+                >
+                  {t`Send`}
+                </Button>
+              </CheckNostrButton>
+              <CheckNostrButton>
+                <Button type="primary" size="small" onClick={() => transferShow(row)}>
+                  {t`Transfer`}
+                </Button>
+              </CheckNostrButton>
+            </div>
+          );
+        }
+      }
+    ];
     // } else {
-      // return [
-      //   {
-      //     title: t`Token`,
-      //     dataIndex: "name",
-      //     width: 100,
-      //     ellipsis: true
-      //   },
-      //   {
-      //     title: t`Asset ID`,
-      //     dataIndex: "token",
-      //     render(text, row) {
-      //       return text ? (
-      //         <Tooltip
-      //           overlayClassName="token-address-tooltip"
-      //           title={
-      //             <div>
-      //               <div>Token name: {row?.name || "--"}</div>
-      //               <div>
-      //                 Token address:
-      //                 {row?.token
-      //                   ? row?.token?.substring(0, 8) + "..." + row?.token?.substring(row?.token?.length - 6)
-      //                   : "--"}
-      //               </div>
-      //               {/*  <div>Token Channel: {row?.symbol || "--"}</div> */}
-      //               <div>Total supply: {row?.totalSupply ? numberWithCommas(row?.totalSupply) : "--"}</div>
-      //             </div>
-      //           }
-      //         >
-      //           <div>
-      //             <EllipsisMiddle suffixCount={4}>{text}</EllipsisMiddle>
-      //           </div>
-      //         </Tooltip>
-      //       ) : (
-      //         "--"
-      //       );
-      //     }
-      //   },
-      //   {
-      //     title: (
-      //       <div>
-      //         <div>{t`Amount`}</div>
-      //         <div>{t`USD Value`}</div>
-      //       </div>
-      //     ),
-      //     dataIndex: "name",
-      //     render: (text, row) => {
-      //       const balance = balanceList?.[text]?.balanceShow || 0;
-      //       const amount = balance ? numberWithCommas(balance) : "--";
-      //       let usdValue = "";
-      //       if (nostrAccount) {
-      //         if (text == "USDT") {
-      //           usdValue = `$${numberWithCommas(limitDecimals(balance, 2))}`;
-      //         } else {
-      //           const priceDetail = list.find((item) => item?.name == text);
-      //           usdValue =
-      //             priceDetail?.deal_price && qutoAsset
-      //               ? `$${numberWithCommas(
-      //                   limitDecimals(
-      //                     BigNumber(priceDetail.deal_price)
-      //                       .div(qutoAsset?.decimals)
-      //                       .div(row?.decimals)
-      //                       .times(balance)
-      //                       .toNumber(),
-      //                     2
-      //                   )
-      //                 )}`
-      //               : "--";
-      //         }
-      //       } else {
-      //         usdValue = "--";
-      //       }
+    // return [
+    //   {
+    //     title: t`Token`,
+    //     dataIndex: "name",
+    //     width: 100,
+    //     ellipsis: true
+    //   },
+    //   {
+    //     title: t`Asset ID`,
+    //     dataIndex: "token",
+    //     render(text, row) {
+    //       return text ? (
+    //         <Tooltip
+    //           overlayClassName="token-address-tooltip"
+    //           title={
+    //             <div>
+    //               <div>Token name: {row?.name || "--"}</div>
+    //               <div>
+    //                 Token address:
+    //                 {row?.token
+    //                   ? row?.token?.substring(0, 8) + "..." + row?.token?.substring(row?.token?.length - 6)
+    //                   : "--"}
+    //               </div>
+    //               {/*  <div>Token Channel: {row?.symbol || "--"}</div> */}
+    //               <div>Total supply: {row?.totalSupply ? numberWithCommas(row?.totalSupply) : "--"}</div>
+    //             </div>
+    //           }
+    //         >
+    //           <div>
+    //             <EllipsisMiddle suffixCount={4}>{text}</EllipsisMiddle>
+    //           </div>
+    //         </Tooltip>
+    //       ) : (
+    //         "--"
+    //       );
+    //     }
+    //   },
+    //   {
+    //     title: (
+    //       <div>
+    //         <div>{t`Amount`}</div>
+    //         <div>{t`USD Value`}</div>
+    //       </div>
+    //     ),
+    //     dataIndex: "name",
+    //     render: (text, row) => {
+    //       const balance = balanceList?.[text]?.balanceShow || 0;
+    //       const amount = balance ? numberWithCommas(balance) : "--";
+    //       let usdValue = "";
+    //       if (nostrAccount) {
+    //         if (text == "USDT") {
+    //           usdValue = `$${numberWithCommas(limitDecimals(balance, 2))}`;
+    //         } else {
+    //           const priceDetail = list.find((item) => item?.name == text);
+    //           usdValue =
+    //             priceDetail?.deal_price && qutoAsset
+    //               ? `$${numberWithCommas(
+    //                   limitDecimals(
+    //                     BigNumber(priceDetail.deal_price)
+    //                       .div(qutoAsset?.decimals)
+    //                       .div(row?.decimals)
+    //                       .times(balance)
+    //                       .toNumber(),
+    //                     2
+    //                   )
+    //                 )}`
+    //               : "--";
+    //         }
+    //       } else {
+    //         usdValue = "--";
+    //       }
 
-      //       return (
-      //         <div>
-      //           <div>{amount}</div>
-      //           <div>{usdValue}</div>
-      //         </div>
-      //       );
-      //     }
-      //   }
-      // ];
+    //       return (
+    //         <div>
+    //           <div>{amount}</div>
+    //           <div>{usdValue}</div>
+    //         </div>
+    //       );
+    //     }
+    //   }
+    // ];
     // }
   }, [qutoAsset, list, quote_pirce, balanceList, nostrAccount, onHandleRedirect, transferShow]);
 

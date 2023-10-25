@@ -364,7 +364,8 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
       }
       if (
         (allowance?.amountShow && Number(balance) > 0 && Number(allowance?.amountShow) < Number(memoTotalValue)) ||
-        Number(allowance?.amountShow) === 0 || !allowance?.amountShow
+        Number(allowance?.amountShow) === 0 ||
+        !allowance?.amountShow
       ) {
         return (
           <Button
@@ -411,9 +412,11 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
           </>
         );
       }
+      console.log("allowance amountShow", Number(allowance?.amountShow), Number(amountValue));
       if (
         (allowance?.amountShow && Number(balance) > 0 && Number(allowance?.amountShow) < Number(amountValue)) ||
-        Number(allowance?.amountShow) === 0 || !allowance?.amountShow
+        Number(allowance?.amountShow) === 0 ||
+        !allowance?.amountShow
       ) {
         return (
           <Button
@@ -599,7 +602,7 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
             label={
               <Tooltip
                 placement="top"
-                title="Service fee rate 0.4%. If the calculated fee less than the 1 unit of the asset, will be charged in the smallest unit of asset."
+                title="Service fee rate 0.4%, only charged when order is filled. If the calculated fee less than the 1 unit of the asset, will be charged in the smallest unit of asset."
               >
                 Service Fee <InfoCircleOutlined />
               </Tooltip>
@@ -608,9 +611,15 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
           >
             <div className="f12">
               {buyOrSell === "buy" ? (
-                <div>{`0.4% ${numberWithCommas(fee)} ${selectedToken?.name}`}<span className="f12 color-dark">(Only charged when order filled)</span></div>
+                <div>
+                  {`0.4% ${numberWithCommas(fee)} ${selectedToken?.name}`}
+                  <span className="f12 color-dark">(Only charged when order filled)</span>
+                </div>
               ) : (
-                <div>{`0.4% ${numberWithCommas(fee)} ${QUOTE_ASSET}`}<span className="f12 color-dark">(Only charged when order filled)</span></div>
+                <div>
+                  {`0.4% ${numberWithCommas(fee)} ${QUOTE_ASSET}`}
+                  <span className="f12 color-dark">(Only charged when order filled)</span>
+                </div>
               )}
             </div>
           </Form.Item>

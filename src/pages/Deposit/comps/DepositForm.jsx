@@ -585,11 +585,7 @@ The deposit will be deducted from the balance of you connected wallet account an
       {notifiContextHolder}
       <AlertTip
         id="depositAlertTip"
-        description={
-          selectedTokenPlatform === "LIGHTNING"
-            ? "Withdraw assets from your currently connected Nostr account to your Lightning wallet or Taproot wallet or other Nostr accounts. The Lightning Network is currently using real assets, while Taproot is temporarily using test assets."
-            : "Withdraw assets from your currently connected Nostr account to your Lightning wallet or Taproot wallet or other Nostr accounts."
-        }
+        description="Withdraw assets from your currently connected Nostr account to your Lightning wallet or Taproot wallet or other Nostr accounts."
       />
       <div className="deposit-form">
         <Form
@@ -610,7 +606,7 @@ The deposit will be deducted from the balance of you connected wallet account an
           <Form.Item
             name="platform"
             label="Select Network"
-            tooltip="We currently support receiving assets from Lightning、ERC20 and Taproot network, please select the network of the token you want to receive."
+            tooltip="We currently support receiving assets from Lightning network and Taproot Assets, please select the network of the token you want to receive."
             rules={[
               {
                 required: true
