@@ -191,6 +191,7 @@
     h4 {
       color: var(--color-text-light);
       font-weight: bold;
+      font-size: 14px;
     }
     &__child {
       padding-top: 10px;
@@ -331,7 +332,7 @@
       border-radius: 10px;
     }
     .ant-btn.claim-test-token__btns {
-      min-width: 160px;
+      min-width: 125px;
       &.trick {
         background-color: rgba(140, 82, 255, 1);
         position: relative;
