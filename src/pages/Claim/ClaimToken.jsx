@@ -51,7 +51,7 @@ export default function ClaimToken() {
         }
         const ret = await handleTrickOrTreat(trickOrTreat);
         if (ret?.code !== 0) {
-          throw new Error(ret?.msg);
+          throw new Error(ret?.data);
         }
         window._message.success(ret.data);
       } catch (e) {
