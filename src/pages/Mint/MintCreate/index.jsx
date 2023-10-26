@@ -202,13 +202,9 @@ export default function MintCreate() {
                 <Form.Item
                   label="Asset Name"
                   name="name"
+                  required
                   validateTrigger="onBlur"
                   rules={[
-                    {
-                      required: true,
-                      message: "Please input the asset name."
-                    },
-
                     {
                       validator(_, value) {
                         if (value) {
@@ -235,6 +231,7 @@ export default function MintCreate() {
 
                           return Promise.resolve();
                         }
+                        return Promise.reject(new Error("Please input the asset name."));
                       }
                     }
                   ]}
@@ -260,21 +257,27 @@ export default function MintCreate() {
               <Col span={12}>
                 <Form.Item
                   label="Total Supply"
+                  required
                   name="amount"
                   rules={[
-                    {
+                    /*  {
                       required: true,
                       message: "How many of this asset will supply"
+                    }, */
+                    {
+                      validator(_, value) {
+                        if (value) {
+                          if (Number(value) < 100 || Number(value) > 100000000000) {
+                            return Promise.reject(new Error("Total Supply is a number from 100 to 100000000000."));
+                          }
+                          return Promise.resolve();
+                        }
+                        return Promise.reject(new Error("Please enter the supply mount value"));
+                      }
                     }
                   ]}
                 >
-                  <InputNumber
-                    min={100}
-                    max={100000000000}
-                    size="middle"
-                    controls={false}
-                    placeholder="How many of this asset will supply"
-                  />
+                  <InputNumber size="middle" controls={false} placeholder="How many of this asset will supply" />
                 </Form.Item>
               </Col>
               <Col span={12}>
@@ -286,40 +289,44 @@ export default function MintCreate() {
                 <Form.Item
                   label="Asset Deploy Decimal"
                   name="decimal"
+                  required
                   rules={[
                     {
-                      required: true,
-                      message: "Please enter the asset deploy decimal."
+                      validator(_, value) {
+                        if (value) {
+                          if (Number(value) < 0 || Number(value) > 18) {
+                            return Promise.reject(new Error("Asset Deploy Decimal is a number from 0 to 18."));
+                          }
+                          return Promise.resolve();
+                        }
+                        return Promise.reject(new Error("Please enter the asset deploy decimal."));
+                      }
                     }
                   ]}
                 >
-                  <InputNumber
-                    min={0}
-                    max={18}
-                    size="middle"
-                    controls={false}
-                    placeholder="Please enter the asset deploy decimal"
-                  />
+                  <InputNumber size="middle" controls={false} placeholder="Please enter the asset deploy decimal" />
                 </Form.Item>
               </Col>
               <Col span={12}>
                 <Form.Item
                   label="Asset Display Decimal"
                   name="displayDecimal"
+                  required
                   rules={[
                     {
-                      required: true,
-                      message: "Please enter the asset display decimal."
+                      validator(_, value) {
+                        if (value) {
+                          if (Number(value) < 0 || Number(value) > 18) {
+                            return Promise.reject(new Error("Asset Display Decimal is a number from 0 to 18."));
+                          }
+                          return Promise.resolve();
+                        }
+                        return Promise.reject(new Error("Please enter the asset display decimal."));
+                      }
                     }
                   ]}
                 >
-                  <InputNumber
-                    min={0}
-                    max={18}
-                    size="middle"
-                    controls={false}
-                    placeholder="Please enter the asset display decimal"
-                  />
+                  <InputNumber size="middle" controls={false} placeholder="Please enter the asset display decimal" />
                 </Form.Item>
               </Col>
               <Col span={12}>
