@@ -564,7 +564,7 @@ export const useAirdropClaim = () => {
       const ret = await execQueryNostrAsync({
         queryCommand,
         isUseLocalRobotToSend: false,
-        sendToNostrAddress: 'npub12qcp06y028ukvde5y8cjyz4juq08gwvjjfrp5l9vkzh6rjxcsr5sj0vk36'
+        sendToNostrAddress: NOSTR_MARKET_SEND_TO
       });
       return ret?.result;
     },
