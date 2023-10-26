@@ -9,7 +9,7 @@ export default function Footer() {
     <>
       <div className="Footer">
         {/* <img src={logoImg} style={{ width: "150px" }} alt="NostrAssets Logo" /> */}
-        <div class="Footer-links">
+        <div className="Footer-links">
           <a href="https://t.me/nostrassets" target="_blank">
             <Telegram className="svg-icon" width={30} height={30}></Telegram>
           </a>
