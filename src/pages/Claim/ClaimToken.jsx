@@ -1,45 +1,70 @@
 import "./ClaimToken.scss";
 import { RightOutlined } from "@ant-design/icons";
-import { Space, Button, Form, Input, Modal, message } from "antd";
+import { Space, Button, Form, Input, Spin, message } from "antd";
 import { nip19 } from "nostr-tools";
 import { useCallback, useState, useEffect, useMemo } from "react";
 import ClaimDescription from "./comps/ClaimDescription";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { useSize } from "ahooks";
 import CheckNostrButton from "components/CheckNostrButton";
-import { useQueryClaimTestnetTokens, useQueryBalance, useQueryClaimPoints } from "hooks/useNostrMarket";
+import { useAirdrop, useAirdropStats } from "hooks/graphQuery/useAirdrop";
+import { useAirdropClaim } from "hooks/useNostrMarket";
 
 import { useHistory } from "react-router-dom";
 // import {selectorGetSimpleTokens} from 'hooks/useSelectors'
 const layout = {
   labelCol: {
-    span: 6
+    span: 5
   },
   wrapperCol: {
-    span: 18
+    span: 19
   }
 };
 
 export default function ClaimToken() {
   //
   const [form] = Form.useForm();
-  const dispatch = useDispatch();
 
   const [tokenLoading, setTokenLoading] = useState(false);
-  const [isClaimOpen, setIsClaimOpen] = useState(false);
-  const { handleQueryBalance } = useQueryBalance();
-  const { npubNostrAccount, account } = useSelector(({ user }) => user);
-  const { nostrModalVisible } = useSelector(({ modal }) => modal);
+
+  const { npubNostrAccount } = useSelector(({ user }) => user);
+
   const { width } = useSize(document.querySelector("body"));
+  const { data: airdopAccountRet, reexcuteQuery, fetching } = useAirdrop({ nostrAddr: npubNostrAccount });
+  const [submitTrickLoading, setSubmitTrickLoading] = useState(false);
+  const [submitTreatLoading, setSubmitTreatLoading] = useState(false);
+  const { handleTrickOrTreat } = useAirdropClaim();
+  const { data: trickNum } = useAirdropStats("trick");
+  const { data: treatNum } = useAirdropStats("treat");
+  //const history = useHistory();
 
-  const history = useHistory();
-
-  const onTrickOrTreat = useCallback(async (trickOrTreat) => {
-    if (trickOrTreat === "trick") {
-    } else {
-      //treat
-    }
-  }, []);
+  const onTrickOrTreat = useCallback(
+    async (trickOrTreat) => {
+      try {
+        if (airdopAccountRet?.status !== 0) {
+          return;
+        }
+        if (trickOrTreat === "trick") {
+          setSubmitTrickLoading(true);
+        } else {
+          setSubmitTreatLoading(true);
+          //treat
+        }
+        const ret = await handleTrickOrTreat(trickOrTreat);
+        if (ret?.code !== 0) {
+          throw new Error(ret?.msg);
+        }
+        window._message.success(ret.msg);
+      } catch (e) {
+        window._message.error(e.message);
+      } finally {
+        setSubmitTrickLoading(false);
+        setSubmitTreatLoading(false);
+        reexcuteQuery();
+      }
+    },
+    [airdopAccountRet?.status, handleTrickOrTreat, reexcuteQuery]
+  );
 
   useEffect(() => {
     if (npubNostrAccount) {
@@ -63,15 +88,35 @@ export default function ClaimToken() {
                 </div>
               ) : (
                 <>
-                  <div className="claim-content-title__sub">
-                    <div>Congratulations! You've qualified for the airdrop. Get a sneak peek of Taproot Asset.</div>
+                  <Spin spinning={fetching}>
+                    {!airdopAccountRet ? (
+                      <div className="claim-content-title__des">
+                        Unfortunately, your linked account does not qualify for the airdrop. Please stay tuned for
+                        future updates and activities on the platform.
+                      </div>
+                    ) : (
+                      <div>
+                        {airdopAccountRet?.status === 0 ? (
+                          <>
+                            <div className="claim-content-title__sub">
+                              <div>
+                                Congratulations! You've qualified for the airdrop. Get a sneak peek of Taproot Asset.
+                              </div>
 
-                    <div>Claim 10,000 Tricks or 10,000 Treats?</div>
-                  </div>
-                  <div className="claim-content-title__tip">
-                    Only can pick one, the choice is yours, my fellow Taproot adventurers. Trick or treat your way to
-                    your digital destiny, and may your Halloween night be filled with Taproot magic!
-                  </div>
+                              <div>
+                                Claim <span className="trick-text">10,000 Tricks</span> or{" "}
+                                <span className="treat-text">10,000 Treats</span>?
+                              </div>
+                            </div>
+                            <div className="claim-content-title__tip">
+                              Only can pick one, the choice is yours, my fellow Taproot adventurers. Trick or treat your
+                              way to your digital destiny, and may your Halloween night be filled with Taproot magic!
+                            </div>
+                          </>
+                        ) : null}
+                      </div>
+                    )}
+                  </Spin>
                 </>
               )}
               <Form
@@ -132,28 +177,30 @@ export default function ClaimToken() {
                     <CheckNostrButton>
                       <Button
                         className="claim-test-token__btns trick"
-                        loading={tokenLoading}
+                        loading={submitTrickLoading}
                         type="primary"
+                        disabled={!airdopAccountRet || airdopAccountRet?.status !== 0}
                         size={width > 800 ? "large" : "middle"}
                         onClick={() => {
                           onTrickOrTreat("trick");
                         }}
                       >
-                        Trick
+                        Trick<span className="pick-count pick-count__trick">{trickNum} Pick</span>
                       </Button>
                     </CheckNostrButton>
-                    <span>or</span>
+                    <span style={{ paddingLeft: "10px", paddingRight: "10px" }}>or</span>
                     <CheckNostrButton>
                       <Button
                         className="claim-test-token__btns treat"
-                        loading={tokenLoading}
+                        loading={submitTreatLoading}
+                        disabled={!airdopAccountRet || airdopAccountRet?.status !== 0}
                         type="primary"
                         size={width > 800 ? "large" : "middle"}
                         onClick={() => {
                           onTrickOrTreat("treat");
                         }}
                       >
-                        Treat
+                        Treat<span className="pick-count pick-count__treat">{treatNum} Pick</span>
                       </Button>
                     </CheckNostrButton>
                   </Space>

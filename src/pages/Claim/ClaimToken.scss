@@ -83,6 +83,12 @@
         font-size: 16px;
 
         margin: 0 auto;
+        .trick-text {
+          color: rgb(140, 82, 255);
+        }
+        .treat-text {
+          color: rgb(255, 102, 196);
+        }
 
         div {
           text-align: center;
@@ -146,51 +152,32 @@
       align-items: center;
     }
   }
-}
-.claim-bonus-modal {
-  .ant-modal-footer {
-    text-align: center;
-    .claim-bonus-modal__btn {
-      min-width: 160px;
-    }
-  }
-  .claim-bonus-modal-content {
-    padding-top: 20px;
-    .claim-bonus-modal-desc {
-      margin-top: 10px;
-      margin-bottom: 10px;
+  .pick-count {
+    position: absolute;
+    bottom: -20px;
+    right: 10px;
+    font-size: 12px;
+    color: rgb(140, 82, 255);
+    &__treat {
+      bottom: -20px;
+      right: 70px;
+      color: rgb(255, 102, 196);
     }
   }
 }
-.ClaimTokenSuccessfullyModal {
-  .ant-modal-content {
-    background: var(--color-layer-light);
-  }
-  .ant-modal-confirm .ant-modal-confirm-body .ant-modal-confirm-title {
-    color: #fff;
-  }
-  .ant-modal-confirm .ant-modal-confirm-body .ant-modal-confirm-title + .ant-modal-confirm-content {
-    color: #fff;
-  }
-  .ant-btn-primary {
-    background: var(--color-green-light);
-    &:hover {
-      background: var(--color-green-light);
-      opacity: 0.9;
-    }
-  }
-  .ant-modal-close-x {
-    color: #fff;
-  }
-}
+
 .claim-description {
   text-decoration: none;
   list-style: none;
   width: 100%;
+  height: 400px;
+
+  overflow-y: scroll;
   // max-width: 750px;
   border: 1px solid #333;
   border-radius: 10px;
   margin: 0px auto;
+  margin-top: 20px;
   padding: 0 20px;
   text-align: left;
   background-color: var(--color-layer-base);
@@ -238,54 +225,158 @@
   }
 }
 @media (max-width: 800px) {
-  .claim-test-token {
-    padding: 20px 10px;
+  .claim-airdrop-token {
+    background-color: rgba(0, 0, 0, 0.8);
+    padding: 0 20px;
     &__banner {
-      padding: 20px 20px;
+      width: 100%;
+      border-radius: 20px;
+      padding: 20px 200px 20px 40px;
+      // text-align: center;
+      background: #00f7d0;
+
+      position: relative;
       &-title {
-        font-size: 20px;
-        padding: 0;
+        font-size: 26px;
+        font-weight: bold;
+        padding: 20px 0;
+        color: var(--color-layer-dark);
+        position: relative;
+        z-index: 10;
       }
       &-description {
-        margin-top: 15px;
-        font-size: 14px;
-        padding: 0 100px 0 0;
+        font-size: 16px;
+        // font-weight: bold;
+        color: var(--color-layer-dark);
+        position: relative;
+        z-index: 10;
       }
       &-more {
-        display: block;
-        text-align: left;
-        padding: 0;
-        margin-top: 5px;
+        padding-left: 20px;
         a {
           color: var(--color-purple);
-          font-size: 14px;
+          font-size: 16px;
         }
+        position: relative;
+        z-index: 10;
       }
       &-coin {
-        width: 100px;
+        width: 170px;
         position: absolute;
-        top: auto;
-        right: 20px;
-        bottom: 20px;
-        transform: translateY(0);
+        top: 50%;
+        right: 30px;
+        transform: translateY(-50%);
         z-index: 5;
+      }
+    }
+    .claim-content-box {
+      width: 100%;
+      margin: 0 auto;
+      position: relative;
+      background: url("../../img/claimBg.png") no-repeat;
+      background-size: contain;
+
+      margin-bottom: 20px;
+      .claim-content-bg {
+        text-align: center;
+        margin: 0 auto;
+        width: 100%;
+        padding-top: 60px;
+        background-color: rgba(0, 0, 0, 0.8);
+      }
+      .claim-content {
+        width: 100%;
+        margin: 0 auto;
+      }
+      .claim-content-title {
+        font-size: 22px;
+        text-align: center;
+        font-weight: bold;
+        line-height: 60px;
+        color: #fff;
+        &__des {
+          text-align: center;
+          margin: 0 auto;
+          padding: 20px;
+        }
+        &__sub {
+          color: #fff;
+          font-size: 16px;
+
+          margin: 0 auto;
+
+          div {
+            text-align: center;
+            padding-top: 20px;
+          }
+        }
+        &__tip {
+          font-size: 14px;
+          padding: 20px;
+          text-align: center;
+        }
       }
     }
     &__form {
       margin: 0 auto;
-      padding-right: 0;
+      padding-top: 20px;
+    }
+    &__item {
+      padding: 20px;
+      background-color: var(--color-layer-light);
+      border-radius: 10px;
     }
     .ant-btn.claim-test-token__btns {
-      min-width: 0px;
-      // max-width: 50%;
-      // font-size: 12px;
+      min-width: 120px;
       &.trick {
         background-color: rgba(140, 82, 255, 1);
+        position: relative;
+        &::before {
+          content: "";
+          position: absolute;
+          width: 80px;
+          height: 80px;
+          background: url("../../img/treak.png") no-repeat;
+          background-size: cover;
+          left: -40px;
+          top: -30px;
+          transform: rotate(-10deg);
+        }
+      }
+      &.treat {
+        background-color: rgba(255, 102, 196, 1);
+        &::after {
+          content: "";
+          position: absolute;
+          width: 80px;
+          height: 80px;
+          background: url("../../img/treat.png") no-repeat;
+          background-size: cover;
+          right: -50px;
+          top: -30px;
+          transform: rotate(10deg);
+        }
       }
     }
     &__btn {
       &-bouns {
-        margin-left: 0;
+        margin-left: 10px;
+        padding: 0;
+        line-height: 20px;
+        display: flex;
+        align-items: center;
+      }
+    }
+    .pick-count {
+      position: absolute;
+      bottom: -20px;
+      right: 10px;
+      font-size: 12px;
+      color: rgb(140, 82, 255);
+      &__treat {
+        bottom: -20px;
+        right: 40px;
+        color: rgb(255, 102, 196);
       }
     }
   }
