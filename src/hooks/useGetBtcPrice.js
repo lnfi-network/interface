@@ -12,7 +12,7 @@ export const useGetBtcPriceInterval = () => {
   const dispatch = useDispatch();
   const QUOTE_UNIT = process.env.REACT_APP_QUOTE_UNIT;
   const { data, run, cancel } = useRequest(getBtcPrice, {
-    pollingInterval: 10000
+    pollingInterval: 180000
   });
   useEffect(() => {
     if (Number(data?.price)) {
