@@ -1,6 +1,6 @@
-.claim-test-token {
-  padding: 20px 40px;
-  min-height: calc(100% - 190px);
+.claim-airdrop-token {
+  /* min-height: calc(100% - 190px); */
+  background-color: rgba(0, 0, 0, 0.8);
   &__banner {
     width: 100%;
     border-radius: 20px;
@@ -50,25 +50,92 @@
     }
   }
   .claim-content-box {
-    width: 100%;
-
-    // padding: 20px;
+    width: 80%;
     margin: 0 auto;
+    position: relative;
+    background: url("../../img/claimBg.png") no-repeat;
+    background-size: cover;
     margin-bottom: 20px;
+    .claim-content-bg {
+      text-align: center;
+      margin: 0 auto;
+      width: 100%;
+      padding-top: 60px;
+      background-color: rgba(0, 0, 0, 0.8);
+    }
+    .claim-content {
+      width: 800px;
+      margin: 0 auto;
+    }
     .claim-content-title {
       font-size: 22px;
       text-align: center;
       font-weight: bold;
       line-height: 60px;
       color: #fff;
+      &__des {
+        text-align: center;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      &__sub {
+        color: #fff;
+        font-size: 16px;
+
+        margin: 0 auto;
+
+        div {
+          text-align: center;
+          padding-top: 20px;
+        }
+      }
+      &__tip {
+        font-size: 14px;
+        padding: 20px 90px;
+        text-align: center;
+      }
     }
   }
   &__form {
     margin: 0 auto;
-    padding-right: 160px;
+    padding-top: 20px;
+  }
+  &__item {
+    padding: 20px;
+    background-color: var(--color-layer-light);
+    border-radius: 10px;
   }
   .ant-btn.claim-test-token__btns {
-    min-width: 210px;
+    min-width: 120px;
+    &.trick {
+      background-color: rgba(140, 82, 255, 1);
+      position: relative;
+      &::before {
+        content: "";
+        position: absolute;
+        width: 80px;
+        height: 80px;
+        background: url("../../img/treak.png") no-repeat;
+        background-size: cover;
+        left: -40px;
+        top: -30px;
+        transform: rotate(-10deg);
+      }
+    }
+    &.treat {
+      background-color: rgba(255, 102, 196, 1);
+      &::after {
+        content: "";
+        position: absolute;
+        width: 80px;
+        height: 80px;
+        background: url("../../img/treat.png") no-repeat;
+        background-size: cover;
+        right: -50px;
+        top: -30px;
+        transform: rotate(10deg);
+      }
+    }
   }
   &__btn {
     &-bouns {
@@ -125,11 +192,18 @@
   border-radius: 10px;
   margin: 0px auto;
   padding: 0 20px;
+  text-align: left;
+  background-color: var(--color-layer-base);
   &-item {
     padding: 10px 0;
     font-size: 12px;
+    h4 {
+      color: var(--color-text-light);
+      font-weight: bold;
+    }
     &__child {
       padding-top: 10px;
+      color: var(--color-text-base);
     }
   }
 }
@@ -205,6 +279,9 @@
       min-width: 0px;
       // max-width: 50%;
       // font-size: 12px;
+      &.trick {
+        background-color: rgba(140, 82, 255, 1);
+      }
     }
     &__btn {
       &-bouns {
