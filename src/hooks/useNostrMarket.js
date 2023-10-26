@@ -109,6 +109,8 @@ export const useQueryBalance = () => {
       if (ret?.result?.code === 0) {
         const data = ret.result.data;
         dispatch(setBalanceList(data));
+      } else {
+        handleQueryBalance(nostrAddress)
       }
     },
     [dispatch, execQueryNostrAsync]
