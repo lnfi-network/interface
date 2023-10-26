@@ -53,7 +53,7 @@ export default function ClaimToken() {
         if (ret?.code !== 0) {
           throw new Error(ret?.msg);
         }
-        window._message.success(ret.msg);
+        window._message.success(ret.data);
       } catch (e) {
         window._message.error(e.message);
       } finally {
