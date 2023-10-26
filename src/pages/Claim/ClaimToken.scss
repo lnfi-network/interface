@@ -83,6 +83,7 @@
         text-align: center;
         margin: 0 auto;
         padding: 20px;
+        color: #fff;
       }
       &__sub {
         color: #fff;
@@ -112,10 +113,13 @@
     border-radius: 10px;
   }
   .ant-btn.claim-test-token__btns {
-    min-width: 120px;
+    min-width: 160px;
+    color: #fff;
+    font-weight: bold;
     &.trick {
       background-color: rgba(140, 82, 255, 1);
       position: relative;
+
       &::before {
         content: "";
         position: absolute;
@@ -156,11 +160,11 @@
     position: absolute;
     bottom: -20px;
     right: 10px;
-    font-size: 12px;
+    font-size: 14px;
     color: rgb(140, 82, 255);
     &__treat {
       bottom: -20px;
-      right: 70px;
+      right: 110px;
       color: rgb(255, 102, 196);
     }
   }
@@ -327,7 +331,7 @@
       border-radius: 10px;
     }
     .ant-btn.claim-test-token__btns {
-      min-width: 120px;
+      min-width: 160px;
       &.trick {
         background-color: rgba(140, 82, 255, 1);
         position: relative;

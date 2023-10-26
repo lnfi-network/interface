@@ -103,8 +103,8 @@ export default function ClaimToken() {
                               </div>
 
                               <div>
-                                Claim <span className="trick-text">{airdopAccountRet?.amount || 0} Tricks</span> or{" "}
-                                <span className="treat-text">{airdopAccountRet?.amount || 0} Treats</span>?
+                                Claim <span className="trick-text">{airdopAccountRet?.amount || 0} TRICK</span> or{" "}
+                                <span className="treat-text">{airdopAccountRet?.amount || 0} TREAT</span>?
                               </div>
                             </div>
                             <div className="claim-content-title__tip">
