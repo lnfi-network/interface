@@ -66,6 +66,12 @@
     .claim-content {
       width: 800px;
       margin: 0 auto;
+      .trick-text {
+        color: rgb(140, 82, 255);
+      }
+      .treat-text {
+        color: rgb(255, 102, 196);
+      }
     }
     .claim-content-title {
       font-size: 22px;
@@ -83,12 +89,6 @@
         font-size: 16px;
 
         margin: 0 auto;
-        .trick-text {
-          color: rgb(140, 82, 255);
-        }
-        .treat-text {
-          color: rgb(255, 102, 196);
-        }
 
         div {
           text-align: center;

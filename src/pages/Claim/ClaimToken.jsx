@@ -9,8 +9,9 @@ import { useSize } from "ahooks";
 import CheckNostrButton from "components/CheckNostrButton";
 import { useAirdrop, useAirdropStats } from "hooks/graphQuery/useAirdrop";
 import { useAirdropClaim } from "hooks/useNostrMarket";
+import classNames from "classnames";
 
-import { useHistory } from "react-router-dom";
+// import { useHistory } from "react-router-dom";
 // import {selectorGetSimpleTokens} from 'hooks/useSelectors'
 const layout = {
   labelCol: {
@@ -25,8 +26,6 @@ export default function ClaimToken() {
   //
   const [form] = Form.useForm();
 
-  const [tokenLoading, setTokenLoading] = useState(false);
-
   const { npubNostrAccount } = useSelector(({ user }) => user);
 
   const { width } = useSize(document.querySelector("body"));
@@ -34,8 +33,8 @@ export default function ClaimToken() {
   const [submitTrickLoading, setSubmitTrickLoading] = useState(false);
   const [submitTreatLoading, setSubmitTreatLoading] = useState(false);
   const { handleTrickOrTreat } = useAirdropClaim();
-  const { data: trickNum } = useAirdropStats("trick");
-  const { data: treatNum } = useAirdropStats("treat");
+  const { data: trickNum } = useAirdropStats("TRICK");
+  const { data: treatNum } = useAirdropStats("TREAT");
   //const history = useHistory();
 
   const onTrickOrTreat = useCallback(
@@ -44,7 +43,7 @@ export default function ClaimToken() {
         if (airdopAccountRet?.status !== 0) {
           return;
         }
-        if (trickOrTreat === "trick") {
+        if (trickOrTreat === "TRICK") {
           setSubmitTrickLoading(true);
         } else {
           setSubmitTreatLoading(true);
@@ -96,7 +95,7 @@ export default function ClaimToken() {
                       </div>
                     ) : (
                       <div>
-                        {airdopAccountRet?.status === 0 ? (
+                        {airdopAccountRet?.status === 0 && (
                           <>
                             <div className="claim-content-title__sub">
                               <div>
@@ -104,8 +103,8 @@ export default function ClaimToken() {
                               </div>
 
                               <div>
-                                Claim <span className="trick-text">10,000 Tricks</span> or{" "}
-                                <span className="treat-text">10,000 Treats</span>?
+                                Claim <span className="trick-text">{airdopAccountRet?.amount || 0} Tricks</span> or{" "}
+                                <span className="treat-text">{airdopAccountRet?.amount || 0} Treats</span>?
                               </div>
                             </div>
                             <div className="claim-content-title__tip">
@@ -113,7 +112,38 @@ export default function ClaimToken() {
                               way to your digital destiny, and may your Halloween night be filled with Taproot magic!
                             </div>
                           </>
-                        ) : null}
+                        )}
+                        {airdopAccountRet?.status === 2 && (
+                          <div className="claim-content-title__sub">
+                            <div>
+                              Congratulations! You have successfully claimed {airdopAccountRet?.amount}{" "}
+                              <span
+                                className={classNames({
+                                  "treat-text": airdopAccountRet?.choice === "TREAT",
+                                  "trick-text": airdopAccountRet?.choice === "TRICK"
+                                })}
+                              >
+                                {airdopAccountRet?.choice}!
+                              </span>
+                            </div>
+                          </div>
+                        )}
+                        {airdopAccountRet?.status === 3 && (
+                          <div className="claim-content-title__sub">
+                            <div>
+                              Claim{" "}
+                              <span
+                                className={classNames({
+                                  "treat-text": airdopAccountRet?.choice === "TREAT",
+                                  "trick-text": airdopAccountRet?.choice === "TRICK"
+                                })}
+                              >
+                                {airdopAccountRet?.choice}!
+                              </span>{" "}
+                              failed.
+                            </div>
+                          </div>
+                        )}
                       </div>
                     )}
                   </Spin>
@@ -182,7 +212,7 @@ export default function ClaimToken() {
                         disabled={!airdopAccountRet || airdopAccountRet?.status !== 0}
                         size={width > 800 ? "large" : "middle"}
                         onClick={() => {
-                          onTrickOrTreat("trick");
+                          onTrickOrTreat("TRICK");
                         }}
                       >
                         Trick<span className="pick-count pick-count__trick">{trickNum} Pick</span>
@@ -197,7 +227,7 @@ export default function ClaimToken() {
                         type="primary"
                         size={width > 800 ? "large" : "middle"}
                         onClick={() => {
-                          onTrickOrTreat("treat");
+                          onTrickOrTreat("TREAT");
                         }}
                       >
                         Treat<span className="pick-count pick-count__treat">{treatNum} Pick</span>
