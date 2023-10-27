@@ -1,7 +1,8 @@
 import { Form, Row, Col, Input, Button, Select, Modal, InputNumber } from "antd";
 
 import { useEffect, useMemo, useState, useCallback } from "react";
-import ConnectNostr from "components/Common/ConnectNostr";
+import ConnectWallet from "components/Common/ConnectWallet";
+import CheckNostrButton from "components/CheckNostrButton";
 import { useWeblnWithdraw } from "hooks/useNostrMarket";
 import { to } from "await-to-js";
 import { useSelector } from "react-redux";
@@ -9,6 +10,7 @@ import useWebln from "hooks/useWebln";
 import { sleep } from "lib/utils";
 import { useDispatch } from "react-redux";
 import { setConnectNostrModalVisible, setOnlyMobileSupportedVisible } from "store/reducer/modalReducer";
+import { useUnisatPayfee } from "hooks/useWithdrawPayfee";
 import useDevice from "hooks/useDevice";
 import { nip19 } from "nostr-tools";
 import "./LightningFormItems.scss";
@@ -20,11 +22,12 @@ export default function LightningFormItems({ form, nostrAccount, messageApi, han
   const [withdrawAmount, setWithdrawAmount] = useState(0);
   const [createInvoiceModal, setCreateInvoiceModal] = useState(false);
   const [willCreateInvoiceAmount, setWillCreateInvoiceAmount] = useState(1);
-  const { npubNostrAccount, balanceList } = useSelector(({ user }) => user);
+  const { npubNostrAccount, balanceList, account } = useSelector(({ user }) => user);
   const { tokenList } = useSelector(({ market }) => market);
   const { makeInvoice } = useWebln();
   const dispatch = useDispatch();
   const device = useDevice();
+  const { handleUnisatPay } = useUnisatPayfee();
   const balance = useMemo(() => {
     return balanceList["SATS"] ? balanceList["SATS"]?.balanceShow : 0.0;
   }, [balanceList]);
@@ -52,13 +55,16 @@ export default function LightningFormItems({ form, nostrAccount, messageApi, han
       }
       setBtnLoading(true);
       const values = form.getFieldsValue(true);
-      const withdrawRet = await handleWeblnWithdrawAsync(withdrawAmount, values.invoice);
+      const sendTx = await handleUnisatPay(values.invoice, true);
+      const withdrawRet = await handleWeblnWithdrawAsync(withdrawAmount, values.invoice, sendTx);
       if (withdrawRet?.code === 0) {
         messageApi.success({
           content: <p className="message-content">{withdrawRet.data}</p>
         });
         await sleep(4000);
         await handleQueryBalance(npubNostrAccount);
+        form.setFieldValue("invoice", "");
+        setWithdrawAmount(0);
       } else {
         throw new Error(`Withdraw failed: ${withdrawRet?.data}`);
       }
@@ -68,10 +74,17 @@ export default function LightningFormItems({ form, nostrAccount, messageApi, han
       });
     } finally {
       setBtnLoading(false);
-      form.setFieldValue("invoice", "");
-      setWithdrawAmount(0);
     }
-  }, [balance, form, handleQueryBalance, handleWeblnWithdrawAsync, messageApi, npubNostrAccount, withdrawAmount]);
+  }, [
+    balance,
+    form,
+    handleQueryBalance,
+    handleUnisatPay,
+    handleWeblnWithdrawAsync,
+    messageApi,
+    npubNostrAccount,
+    withdrawAmount
+  ]);
 
   const handleMakeInvoice = useCallback(async () => {
     setBtnCreateLoading(true);
@@ -104,14 +117,16 @@ export default function LightningFormItems({ form, nostrAccount, messageApi, han
     return <span className="withdraw-amount-balance">Nostr Account balance: {balance} SATS</span>;
   }, [balance]);
   const memoWithdrawBtn = useMemo(() => {
-    return nostrAccount ? (
-      <Button type="primary" size="large" className="withdraw-send-btn" loading={btnLoading} onClick={handleWithdraw}>
-        Send
-      </Button>
+    return account ? (
+      <CheckNostrButton>
+        <Button type="primary" size="large" className="withdraw-send-btn" loading={btnLoading} onClick={handleWithdraw}>
+          Send
+        </Button>
+      </CheckNostrButton>
     ) : (
-      <ConnectNostr />
+      <ConnectWallet />
     );
-  }, [btnLoading, handleWithdraw, nostrAccount]);
+  }, [account, btnLoading, handleWithdraw]);
   const tokens = useMemo(() => {
     return tokenList.filter((item) => item.assetType === "LIGHTNING");
   }, [tokenList]);

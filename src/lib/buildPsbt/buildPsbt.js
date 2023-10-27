@@ -84,6 +84,7 @@ export async function buildPSBT(networkstr, signerPubKey, memeList, targetList, 
   // console.info(`unsign result ============= ${JSON.stringify(result)} ============= `);
   return result;
 }
+export const sha256 = bitcoin.crypto.sha256;
 
 
 

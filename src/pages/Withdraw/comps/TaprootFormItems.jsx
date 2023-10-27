@@ -10,6 +10,7 @@ import { sleep } from "lib/utils";
 import { useDispatch } from "react-redux";
 import { setOnlyMobileSupportedVisible } from "store/reducer/modalReducer";
 import useDevice from "hooks/useDevice";
+import { useUnisatPayfee } from "hooks/useWithdrawPayfee";
 import { nip19 } from "nostr-tools";
 export default function TaprootFormItems({ form, nostrAccount, notifiApi, messageApi, handleQueryBalance }) {
   const { TextArea } = Input;
@@ -23,6 +24,7 @@ export default function TaprootFormItems({ form, nostrAccount, notifiApi, messag
   /*  const dispatch = useDispatch();
   const device = useDevice(); */
   const [token, setToken] = useState("");
+  const { handleUnisatPay } = useUnisatPayfee();
   const balance = useMemo(() => {
     return balanceList[token] ? balanceList[token]?.balanceShow : 0.0;
   }, [balanceList, token]);
@@ -50,10 +52,12 @@ export default function TaprootFormItems({ form, nostrAccount, notifiApi, messag
       }
       setBtnLoading(true);
       const values = form.getFieldsValue(true);
+      const sendTx = await handleUnisatPay(values.invoice, true);
       const withdrawRet = await handleTaprootWithdrawAsync(
         withdrawAmount,
         values.invoiceTap,
-        values.depositOrWithdrawToken
+        values.depositOrWithdrawToken,
+        sendTx
       );
       if (withdrawRet?.code === 0) {
         await sleep(4000);
@@ -71,7 +75,16 @@ export default function TaprootFormItems({ form, nostrAccount, notifiApi, messag
     } finally {
       setBtnLoading(false);
     }
-  }, [balance, form, handleQueryBalance, handleTaprootWithdrawAsync, messageApi, npubNostrAccount, withdrawAmount]);
+  }, [
+    balance,
+    form,
+    handleQueryBalance,
+    handleTaprootWithdrawAsync,
+    handleUnisatPay,
+    messageApi,
+    npubNostrAccount,
+    withdrawAmount
+  ]);
   const tokens = useMemo(() => {
     return tokenList.filter((item) => item.assetType === "TAPROOT");
   }, [tokenList]);
