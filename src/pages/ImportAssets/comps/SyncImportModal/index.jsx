@@ -14,8 +14,14 @@ import "./index.scss";
 import { t } from "@lingui/macro";
 import { useImportAsset, useHandleQueryTokenList } from "hooks/useNostrMarket";
 const universeList = [
-  process.env.REACT_APP_LIGHTNING,
-  "universe.tiramisuwallet.com:10029"
+  {
+    label: `Lightning Labs: ${process.env.REACT_APP_LIGHTNING}`,
+    value: process.env.REACT_APP_LIGHTNING
+  },
+  {
+    label: `Tiramisu Wallet: universe.tiramisuwallet.com:10029`,
+    value: "universe.tiramisuwallet.com:10029"
+  }
 ]
 function ImportModalForm({ open, setOpen, importingOpen, setImportingOpen, setImportingMap }) {
   const Option = Select.Option;
@@ -99,14 +105,14 @@ function ImportModalForm({ open, setOpen, importingOpen, setImportingOpen, setIm
     return universeList?.map((item) => {
       // const _address = nip19.npubEncode(item.contacts);
       return (
-        <Option value={item} key={item}>
+        <Option value={item.value} key={item.universeList}>
           {/* <div>
             <span className="b">Name:</span> {item.description}
           </div>
           <div title={_address}>
             <span className="b">Nostr:</span> {_address}
           </div> */}
-          {item}
+          {item.label}
         </Option>
       );
     });
