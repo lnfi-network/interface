@@ -6,7 +6,7 @@
     border-radius: 20px;
     padding: 20px 200px 20px 40px;
     // text-align: center;
-    background: #00F7D0;
+    background: #00f7d0;
     // background: linear-gradient(
     //   180deg,
     //   rgba(0, 255, 255, 1) 30%,
@@ -49,7 +49,7 @@
       z-index: 5;
     }
   }
-  .claim-content-box{
+  .claim-content-box {
     width: 100%;
 
     // padding: 20px;
@@ -65,11 +65,10 @@
   }
   &__form {
     margin: 0 auto;
-    padding-right: 160px
+    padding-right: 160px;
   }
   .ant-btn.claim-test-token__btns {
     min-width: 210px;
-    height: 46px;
   }
   &__btn {
     &-bouns {
@@ -81,39 +80,39 @@
     }
   }
 }
-.claim-bonus-modal{
+.claim-bonus-modal {
   .ant-modal-footer {
     text-align: center;
-    .claim-bonus-modal__btn{
+    .claim-bonus-modal__btn {
       min-width: 160px;
     }
   }
-  .claim-bonus-modal-content{
+  .claim-bonus-modal-content {
     padding-top: 20px;
-    .claim-bonus-modal-desc{
+    .claim-bonus-modal-desc {
       margin-top: 10px;
       margin-bottom: 10px;
     }
   }
 }
-.ClaimTokenSuccessfullyModal{
-  .ant-modal-content{
+.ClaimTokenSuccessfullyModal {
+  .ant-modal-content {
     background: var(--color-layer-light);
   }
-  .ant-modal-confirm .ant-modal-confirm-body .ant-modal-confirm-title{
+  .ant-modal-confirm .ant-modal-confirm-body .ant-modal-confirm-title {
     color: #fff;
   }
-  .ant-modal-confirm .ant-modal-confirm-body .ant-modal-confirm-title +.ant-modal-confirm-content{
+  .ant-modal-confirm .ant-modal-confirm-body .ant-modal-confirm-title + .ant-modal-confirm-content {
     color: #fff;
   }
-  .ant-btn-primary{
+  .ant-btn-primary {
     background: var(--color-green-light);
-    &:hover{
+    &:hover {
       background: var(--color-green-light);
       opacity: 0.9;
     }
   }
-  .ant-modal-close-x{
+  .ant-modal-close-x {
     color: #fff;
   }
 }
@@ -165,9 +164,8 @@
   }
 }
 @media (max-width: 800px) {
-  
   .claim-test-token {
-    padding: 20px 10px; 
+    padding: 20px 10px;
     &__banner {
       padding: 20px 20px;
       &-title {

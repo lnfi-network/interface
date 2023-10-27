@@ -1,0 +1,388 @@
+.claim-airdrop-token {
+  /* min-height: calc(100% - 190px); */
+  background-color: rgba(0, 0, 0, 0.8);
+  &__banner {
+    width: 100%;
+    border-radius: 20px;
+    padding: 20px 200px 20px 40px;
+    // text-align: center;
+    background: #00f7d0;
+    // background: linear-gradient(
+    //   180deg,
+    //   rgba(0, 255, 255, 1) 30%,
+    //   rgba(11, 242, 213, 1) 78%,
+    //   rgba(34, 238, 194, 1) 98%,
+    //   rgba(117, 224, 127, 1) 106%,
+    //   rgba(0, 0, 0, 1) 108%
+    // );
+    position: relative;
+    &-title {
+      font-size: 26px;
+      font-weight: bold;
+      padding: 20px 0;
+      color: var(--color-layer-dark);
+      position: relative;
+      z-index: 10;
+    }
+    &-description {
+      font-size: 16px;
+      // font-weight: bold;
+      color: var(--color-layer-dark);
+      position: relative;
+      z-index: 10;
+    }
+    &-more {
+      padding-left: 20px;
+      a {
+        color: var(--color-purple);
+        font-size: 16px;
+      }
+      position: relative;
+      z-index: 10;
+    }
+    &-coin {
+      width: 170px;
+      position: absolute;
+      top: 50%;
+      right: 30px;
+      transform: translateY(-50%);
+      z-index: 5;
+    }
+  }
+  .claim-content-box {
+    width: 80%;
+    margin: 0 auto;
+    position: relative;
+    background: url("../../img/claimBg.png") no-repeat;
+    background-size: cover;
+    margin-bottom: 20px;
+    .claim-content-bg {
+      text-align: center;
+      margin: 0 auto;
+      width: 100%;
+      padding-top: 60px;
+      background-color: rgba(0, 0, 0, 0.8);
+    }
+    .claim-content {
+      width: 800px;
+      margin: 0 auto;
+      .trick-text {
+        color: rgb(140, 82, 255);
+      }
+      .treat-text {
+        color: rgb(255, 102, 196);
+      }
+    }
+    .claim-content-title {
+      font-size: 22px;
+      text-align: center;
+      font-weight: bold;
+      line-height: 60px;
+      color: #fff;
+      &__des {
+        text-align: center;
+        margin: 0 auto;
+        padding: 20px;
+        color: #fff;
+      }
+      &__sub {
+        color: #fff;
+        font-size: 16px;
+
+        margin: 0 auto;
+
+        div {
+          text-align: center;
+          padding-top: 20px;
+        }
+      }
+      &__tip {
+        font-size: 14px;
+        padding: 20px 90px;
+        text-align: center;
+      }
+    }
+  }
+  &__form {
+    margin: 0 auto;
+    padding-top: 20px;
+  }
+  &__item {
+    padding: 20px;
+    background-color: var(--color-layer-light);
+    border-radius: 10px;
+  }
+  .ant-btn.claim-test-token__btns {
+    min-width: 160px;
+    color: #fff;
+    font-weight: bold;
+    &.trick {
+      background-color: rgba(140, 82, 255, 1);
+      position: relative;
+
+      &::before {
+        content: "";
+        position: absolute;
+        width: 80px;
+        height: 80px;
+        background: url("../../img/treak.png") no-repeat;
+        background-size: cover;
+        left: -40px;
+        top: -30px;
+        transform: rotate(-10deg);
+      }
+    }
+    &.treat {
+      background-color: rgba(255, 102, 196, 1);
+      &::after {
+        content: "";
+        position: absolute;
+        width: 80px;
+        height: 80px;
+        background: url("../../img/treat.png") no-repeat;
+        background-size: cover;
+        right: -50px;
+        top: -30px;
+        transform: rotate(10deg);
+      }
+    }
+  }
+  &__btn {
+    &-bouns {
+      margin-left: 10px;
+      padding: 0;
+      line-height: 20px;
+      display: flex;
+      align-items: center;
+    }
+  }
+  .pick-count {
+    position: absolute;
+    bottom: -20px;
+    right: 10px;
+    font-size: 14px;
+    color: rgb(140, 82, 255);
+    &__treat {
+      bottom: -20px;
+      right: 110px;
+      color: rgb(255, 102, 196);
+    }
+  }
+}
+
+.claim-description {
+  text-decoration: none;
+  list-style: none;
+  width: 100%;
+  height: 400px;
+
+  overflow-y: scroll;
+  // max-width: 750px;
+  border: 1px solid #333;
+  border-radius: 10px;
+  margin: 0px auto;
+  margin-top: 20px;
+  padding: 0 20px;
+  text-align: left;
+  background-color: var(--color-layer-base);
+  &-item {
+    padding: 10px 0;
+    font-size: 12px;
+    h4 {
+      color: var(--color-text-light);
+      font-weight: bold;
+      font-size: 14px;
+    }
+    &__child {
+      padding-top: 10px;
+      color: var(--color-text-base);
+    }
+  }
+}
+@media screen and (min-width: 1800px) {
+  .claim-test-token {
+    padding: 40px;
+    &__banner {
+      padding: 20px 260px 20px 80px;
+      &-title {
+        font-size: 32px;
+      }
+      &-description {
+        font-size: 20px;
+      }
+      &-more {
+        margin-top: 5px;
+        a {
+          color: var(--color-purple);
+          font-size: 20px;
+        }
+      }
+      &-coin {
+        width: 220px;
+        position: absolute;
+        top: 50%;
+        right: 80px;
+        // bottom: 20px;
+        transform: translateY(-50%);
+        z-index: 5;
+      }
+    }
+  }
+}
+@media (max-width: 800px) {
+  .claim-airdrop-token {
+    background-color: rgba(0, 0, 0, 0.8);
+    padding: 0 20px;
+    &__banner {
+      width: 100%;
+      border-radius: 20px;
+      padding: 20px 200px 20px 40px;
+      // text-align: center;
+      background: #00f7d0;
+
+      position: relative;
+      &-title {
+        font-size: 26px;
+        font-weight: bold;
+        padding: 20px 0;
+        color: var(--color-layer-dark);
+        position: relative;
+        z-index: 10;
+      }
+      &-description {
+        font-size: 16px;
+        // font-weight: bold;
+        color: var(--color-layer-dark);
+        position: relative;
+        z-index: 10;
+      }
+      &-more {
+        padding-left: 20px;
+        a {
+          color: var(--color-purple);
+          font-size: 16px;
+        }
+        position: relative;
+        z-index: 10;
+      }
+      &-coin {
+        width: 170px;
+        position: absolute;
+        top: 50%;
+        right: 30px;
+        transform: translateY(-50%);
+        z-index: 5;
+      }
+    }
+    .claim-content-box {
+      width: 100%;
+      margin: 0 auto;
+      position: relative;
+      background: url("../../img/claimBg.png") no-repeat;
+      background-size: contain;
+
+      margin-bottom: 20px;
+      .claim-content-bg {
+        text-align: center;
+        margin: 0 auto;
+        width: 100%;
+        padding-top: 60px;
+        background-color: rgba(0, 0, 0, 0.8);
+      }
+      .claim-content {
+        width: 100%;
+        margin: 0 auto;
+      }
+      .claim-content-title {
+        font-size: 22px;
+        text-align: center;
+        font-weight: bold;
+        line-height: 60px;
+        color: #fff;
+        &__des {
+          text-align: center;
+          margin: 0 auto;
+          padding: 20px;
+        }
+        &__sub {
+          color: #fff;
+          font-size: 16px;
+
+          margin: 0 auto;
+
+          div {
+            text-align: center;
+            padding-top: 20px;
+          }
+        }
+        &__tip {
+          font-size: 14px;
+          padding: 20px;
+          text-align: center;
+        }
+      }
+    }
+    &__form {
+      margin: 0 auto;
+      padding-top: 20px;
+    }
+    &__item {
+      padding: 20px;
+      background-color: var(--color-layer-light);
+      border-radius: 10px;
+    }
+    .ant-btn.claim-test-token__btns {
+      min-width: 125px;
+      &.trick {
+        background-color: rgba(140, 82, 255, 1);
+        position: relative;
+        &::before {
+          content: "";
+          position: absolute;
+          width: 80px;
+          height: 80px;
+          background: url("../../img/treak.png") no-repeat;
+          background-size: cover;
+          left: -40px;
+          top: -30px;
+          transform: rotate(-10deg);
+        }
+      }
+      &.treat {
+        background-color: rgba(255, 102, 196, 1);
+        &::after {
+          content: "";
+          position: absolute;
+          width: 80px;
+          height: 80px;
+          background: url("../../img/treat.png") no-repeat;
+          background-size: cover;
+          right: -50px;
+          top: -30px;
+          transform: rotate(10deg);
+        }
+      }
+    }
+    &__btn {
+      &-bouns {
+        margin-left: 10px;
+        padding: 0;
+        line-height: 20px;
+        display: flex;
+        align-items: center;
+      }
+    }
+    .pick-count {
+      position: absolute;
+      bottom: -20px;
+      right: 10px;
+      font-size: 12px;
+      color: rgb(140, 82, 255);
+      &__treat {
+        bottom: -20px;
+        right: 40px;
+        color: rgb(255, 102, 196);
+      }
+    }
+  }
+}

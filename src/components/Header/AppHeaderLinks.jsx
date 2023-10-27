@@ -67,6 +67,9 @@ export function AppHeaderLinks({ small, clickCloseIcon }) {
           </HeaderLink>
         </div>
       )}
+      <div className="App-header-link-container">
+        <HeaderLink to="/claim">Claim</HeaderLink>
+      </div>
 
       {/* <div className="App-header-link-container">
         <a

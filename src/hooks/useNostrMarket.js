@@ -141,7 +141,7 @@ export const useAllowance = () => {
           return { amount: 0, amountShow: "0.0000" };
         }
         setAllowance(ret.result.data);
-        if(ret?.result?.code == 400) {
+        if (ret?.result?.code == 400) {
           handleQueryAllowanceAsync(tokenName)
         }
         return ret.result;
@@ -379,61 +379,6 @@ export const useNostrPing = () => {
   };
 };
 
-/* export const useListenerTabVisible = () => {
-  const [visibilityState, setVisiblityState] = useState(true);
-  const { connectedRelays, connectToRelays, disconnectToRelays, setConnectedRelays, onConnect } = useNostr();
-  const relayUrls = useSelector(({ basic }) => basic.relayUrls);
-  const nostrProviderRelayUrls = useMemo(() => {
-    return relayUrls.filter((relayUrl) => relayUrl.link === true).map((relayUrl) => relayUrl.address);
-  }, [relayUrls]);
-  const timer = useRef(null);
-  const connectedUrls = useMemo(() => {
-    return connectedRelays.map((connectToRelay) => connectToRelay.url);
-  }, [connectedRelays]);
-  const { handlePingMarketRobot } = useNostrPing(visibilityState);
-
-  const handlePing = useCallback(() => {
-    timer.current = setInterval(() => {
-      handlePingMarketRobot();
-    }, 5_000);
-  }, [handlePingMarketRobot]);
-
-  useEffect(() => {
-    handlePing();
-    return () => {
-      clearInterval(timer.current);
-      timer.current = null;
-    };
-  }, [handlePing]);
-
-  useEffect(() => {
-    const fn = () => {
-      if (document.visibilityState === "visible") {
-        disconnectToRelays(nostrProviderRelayUrls);
-        connectToRelays(nostrProviderRelayUrls);
-        handlePing();
-      } else {
-        setConnectedRelays([]);
-        clearInterval(timer.current);
-        timer.current = null;
-      }
-    };
-    document.addEventListener("visibilitychange", fn);
-    return () => {
-      document.removeEventListener("visibilitychange", fn);
-      clearInterval(timer.current);
-      timer.current = null;
-    };
-  }, [
-    connectToRelays,
-    handlePing,
-    onConnect,
-    connectedUrls,
-    disconnectToRelays,
-    setConnectedRelays,
-    nostrProviderRelayUrls
-  ]);
-}; */
 export const useWithdraw = () => {
   const { execQueryNostrAsync } = useNostrPool();
   const handleWithdrawAsync = useCallback(
@@ -607,5 +552,26 @@ export const useImportAsset = () => {
   );
   return {
     handleImportAsset
+  };
+};
+
+export const useAirdropClaim = () => {
+  const { execQueryNostrAsync } = useNostrPool();
+
+  const handleTrickOrTreat = useCallback(
+    async (trickOrTreat) => {
+      const queryCommand = `${trickOrTreat}`;
+      const ret = await execQueryNostrAsync({
+        queryCommand,
+        isUseLocalRobotToSend: false,
+        sendToNostrAddress: NOSTR_MARKET_SEND_TO
+      });
+      return ret?.result;
+    },
+    [execQueryNostrAsync]
+  );
+
+  return {
+    handleTrickOrTreat
   };
 };
