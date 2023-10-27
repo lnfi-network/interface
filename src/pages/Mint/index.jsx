@@ -1,9 +1,11 @@
+import CreateList from "./CreateList";
 import MintList from "./MintList";
 import { useState, useRef, useMemo, useCallback, useEffect } from "react";
 import { Layout, Menu, message, theme } from "antd";
 import { t } from "@lingui/macro";
 import { BarChartOutlined } from "@ant-design/icons";
 import { Switch, Route, Link, useHistory, useRouteMatch, Redirect } from "react-router-dom";
+import CheckNostrButton from "components/CheckNostrButton";
 // import MarketEvents from "./MarketEvents";
 // import Orders from "./Orders";
 // import TokenEvents from "./TokenEvents";
@@ -31,7 +33,7 @@ export default function Explore() {
       //   <Link to={`${match.url}/mint-assets`}>{t`Mint Assets`}</Link>,
       //   "mintassets"
       // ),
-      getItem(<span to={`${match.url}/mint-assets`}>{t`Mint Assets`}</span>, "mintassets")
+      getItem(<Link to={`${match.url}/mint-assets`}>{t`Mint Assets`}</Link>, "mintassets")
       // getItem(<Link to={`${match.url}/orders`}>{t`Orders`}</Link>, "orders"),
       // getItem(<Link to={`${match.url}/markets`}>{t`Markets`}</Link>, "markets"),
     ];
@@ -52,7 +54,7 @@ export default function Explore() {
           <Redirect to="/mintassets/create-assets" />
         </Route>
         <Route exact path={`${match.url}/create-assets`}>
-          <MintList />
+          <CreateList />
         </Route>
         <Route exact path={`${match.url}/mint-assets`}>
           <MintList />
@@ -71,11 +73,11 @@ export default function Explore() {
     setSelectedKeys(pathNames[history.location.pathname]);
   }, [history.location.pathname, pathNames]);
   const selectedCilck = useCallback(({ item, key, keyPath, domEvent }) => {
-    // console.log("selectedCilck",key);
-    if (key == "mintassets") {
-      message.info("Coming soon");
-      return false;
-    }
+    // console.log("selectedCilck", key);
+    // if (key == "mintassets") {
+    //   message.info("Coming soon");
+    //   return false;
+    // }
     setSelectedKeys(key);
   }, []);
 

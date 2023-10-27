@@ -128,87 +128,54 @@ function MintList() {
           }
         },
         {
-          title: t`Progress`,
-          dataIndex: "progress"
+          title: t`Creator Address`,
+          dataIndex: "creator",
+          render: (text) => {
+            return text ? <EllipsisMiddle suffixCount={6}>{nip19.npubEncode(text)}</EllipsisMiddle> : text || "--";
+          }
         },
         {
-          title: t`Minters`,
-          dataIndex: "minters"
-        },
-        {
-          title: t`Action`,
+          title: t`Status`,
           dataIndex: "status",
           // width: 260,
           render: (text, row) => {
+            let txt;
+            let cls;
+            switch (text) {
+              case 0:
+                txt = "Pending Payment";
+                cls = "";
+                break;
+              case 1:
+                txt = "Verifying Payment";
+                cls = "";
+                break;
+              case 2:
+                txt = "Creating Assets";
+                cls = "color-yellow";
+                break;
+              case 9:
+                txt = "Success";
+                cls = "color-green";
+                break;
+              case 99:
+                txt = "Failed";
+                cls = "color-red";
+                break;
+            }
             return (
-              // <div
-              //   className="mint-table-status"
-              //   onClick={() => {
-              //     onHandleRedirect(`mint/create/${row.event_id}`);
-              //   }}
-              // >
-              <CheckNostrButton>
-                <span onClick={() => history.push(`/mint/detail/${row.event_id}`)}>
-                  <Button
-                    type="primary"
-                    // onClick={() => setType("In-Progress")}
-                  >{t`Mint`}</Button>
-                  <span style={{ fontSize: "20px", verticalAlign: "middle" }}>{" >"}</span>
-                </span>
-              </CheckNostrButton>
-              // </div>
+              <div
+                className={cls + " mint-table-status"}
+                onClick={() => {
+                  onHandleRedirect(`mint/create/${row.event_id}`);
+                }}
+              >
+                <span>{txt || text}</span>
+                <span className="ml5 f18 pointer">{">"}</span>
+              </div>
             );
           }
         }
-        // {
-        //   title: t`Creator Address`,
-        //   dataIndex: "creator",
-        //   render: (text) => {
-        //     return text ? <EllipsisMiddle suffixCount={6}>{nip19.npubEncode(text)}</EllipsisMiddle> : text || "--";
-        //   }
-        // },
-        // {
-        //   title: t`Status`,
-        //   dataIndex: "status",
-        //   // width: 260,
-        //   render: (text, row) => {
-        //     let txt;
-        //     let cls;
-        //     switch (text) {
-        //       case 0:
-        //         txt = "Pending Payment";
-        //         cls = "";
-        //         break;
-        //       case 1:
-        //         txt = "Verifying Payment";
-        //         cls = "";
-        //         break;
-        //       case 2:
-        //         txt = "Creating Assets";
-        //         cls = "color-yellow";
-        //         break;
-        //       case 9:
-        //         txt = "Success";
-        //         cls = "color-green";
-        //         break;
-        //       case 99:
-        //         txt = "Failed";
-        //         cls = "color-red";
-        //         break;
-        //     }
-        //     return (
-        //       <div
-        //         className={cls + " mint-table-status"}
-        //         onClick={() => {
-        //           onHandleRedirect(`mint/create/${row.event_id}`);
-        //         }}
-        //       >
-        //         <span>{txt || text}</span>
-        //         <span className="ml5 f18 pointer">{">"}</span>
-        //       </div>
-        //     );
-        //   }
-        // }
       ];
     } else {
       return [
@@ -269,40 +236,8 @@ function MintList() {
             return text ? <EllipsisMiddle suffixCount={6}>{nip19.npubEncode(text)}</EllipsisMiddle> : text || "--";
           }
         },
-        // {
-        //   title: t`Status`,
-        //   dataIndex: "status",
-        //   // width: 260,
-        //   render: (text, row) => {
-        //     let txt;
-        //     switch (text) {
-        //       case 0:
-        //       case 1:
-        //         txt = "待部署";
-        //         break;
-        //       case 2:
-        //         txt = "部署中";
-        //         break;
-        //       case 9:
-        //       case 99:
-        //         txt = "已完成";
-        //         break;
-        //     }
-        //     return (
-        //       <div
-        //         className="mint-table-status"
-        //         onClick={() => {
-        //           onHandleRedirect(`mint/create/${row.event_id}`);
-        //         }}
-        //       >
-        //         <span>{txt || text}</span>
-        //         <span className="ml5 f18 pointer">{">"}</span>
-        //       </div>
-        //     );
-        //   }
-        // }
         {
-          title: t`Action`,
+          title: t`Status`,
           dataIndex: "status",
           // width: 260,
           render: (text, row) => {
@@ -321,26 +256,21 @@ function MintList() {
                 break;
             }
             return (
-              // <div
-              //   className="mint-table-status"
-              //   onClick={() => {
-              //     onHandleRedirect(`mint/create/${row.event_id}`);
-              //   }}
-              // >
-              <CheckNostrButton>
-                <Button
-                  type="primary"
-                  // onClick={() => setType("In-Progress")}
-                >{t`Mint`}</Button>
-                <span style={{ fontSize: "20px", verticalAlign: "middle" }}>{" >"}</span>
-              </CheckNostrButton>
-              // </div>
+              <div
+                className="mint-table-status"
+                onClick={() => {
+                  onHandleRedirect(`mint/create/${row.event_id}`);
+                }}
+              >
+                <span>{txt || text}</span>
+                <span className="ml5 f18 pointer">{">"}</span>
+              </div>
             );
           }
         }
       ];
     }
-  }, [width]);
+  }, [onHandleRedirect, width]);
   return (
     <>
       <div className="mint-list">
@@ -352,7 +282,7 @@ function MintList() {
                   <Button type={type == "All" ? "primary" : "default"} size="large" onClick={() => setType("All")}>
                     {t`All`}
                   </Button>
-                  <Button
+                  {/* <Button
                     type={type == "In-Progress" ? "primary" : "default"}
                     size="large"
                     onClick={() => setType("In-Progress")}
@@ -361,7 +291,7 @@ function MintList() {
                     type={type == "Completed" ? "primary" : "default"}
                     size="large"
                     onClick={() => setType("Completed")}
-                  >{t`Completed`}</Button>
+                  >{t`Completed`}</Button> */}
                   <CheckNostrButton>
                     <Button type={type == "My" ? "primary" : "default"} size="large" onClick={() => setType("My")}>
                       {t`My Created`}
@@ -379,7 +309,7 @@ function MintList() {
                   <Button type={type == "All" ? "primary" : "default"} size="middle" onClick={() => setType("All")}>
                     {t`All`}
                   </Button>
-                  <Button
+                  {/* <Button
                     type={type == "In-Progress" ? "primary" : "default"}
                     size="middle"
                     onClick={() => setType("In-Progress")}
@@ -388,7 +318,7 @@ function MintList() {
                     type={type == "Completed" ? "primary" : "default"}
                     size="middle"
                     onClick={() => setType("Completed")}
-                  >{t`Completed`}</Button>
+                  >{t`Completed`}</Button> */}
                   <CheckNostrButton>
                     <Button type={type == "My" ? "primary" : "default"} size="middle" onClick={() => setType("My")}>
                       {t`My Created`}
@@ -404,9 +334,9 @@ function MintList() {
                   icon={<PlusOutlined />}
                   size="large"
                   style={{ padding: "0 15px" }}
-                  onClick={() => onHandleRedirect(`mint/launch-activity`)}
+                  onClick={() => onHandleRedirect(`mint/create`)}
                 >
-                  {t`Launch Activity`}
+                  {t`Create Asset`}
                 </Button>
               </CheckNostrButton>
             </div>
@@ -419,11 +349,11 @@ function MintList() {
                 description={
                   <>
                     <div className="color-base f16">
-                      The Nostr account you're currently linked to hasn't lanuch any assets yet.
+                      The Nostr account you're currently linked to hasn't created any assets yet.
                     </div>
                     <div className="mt5 color-base f16">
-                      NostrAssets facilitates the lanuchpad of Taproot assets, offering a quick and easy way to get
-                      started. You can create or import a Taproot Asset to lanuch a Fair Mint Activity.
+                      NostrAssets facilitates the creation of Taproot assets, offering a quick and easy way to get
+                      started. Why not create your own Taproot assets and see for yourself?
                     </div>
                   </>
                 }

@@ -1,58 +1,101 @@
 .mint-detail-container {
   width: var(--max-width);
-  margin: 20px auto 0;
+  margin: 0 auto 0;
   padding: 20px;
   max-width: 100%;
-  background: var(--color-layer-light);
+  // background: var(--color-layer-light);
   border-radius: 10px;
   height: calc(100% - 20px);
-  .mint-detail-back{
-    margin-top: 10px;
+  margin-bottom: 20px;
+  .mint-detail-back {
+    // margin-top: 10px;
     display: inline-block;
     font-size: 16px;
     cursor: pointer;
+    &:hover {
+      text-decoration: underline;
+    }
   }
-  .mint-detail-content{
+  .mint-detail-content {
     // margin-top: 20px;
-    background: var(--color-layer-light);
+    
     // padding: 0 200px;
     border-radius: 10px;
     position: relative;
-    .mint-detail-content-title{
+    .mint-detail-content-section{
+      background: var(--color-layer-light);
+      padding-bottom: 20px;
+      margin-top: 20px;
+      border-radius: 8px;
+    }
+    .mint-detail-content-head {
+      display: flex;
+      justify-content: space-between;
+      padding: 30px 160px;
+      align-items: center;
+    }
+    .mint-detail-content-progress {
+      padding: 20px 200px;
+      .progress-all {
+        width: 100%;
+        height: 8px;
+        border-radius: 4px;
+        background: #ccc;
+        position: relative;
+        .progress-percent {
+          height: 8px;
+          border-radius: 4px;
+          background: var(--color-yellow);
+          position: absolute;
+          top: 0;
+          left: 0;
+          transition: all 2s;
+        }
+        .progress-percent-text{
+          position: absolute;
+          top: -26px;
+          transform: translateX(-50%);
+        }
+      }
+    }
+    .mint-detail-content-mintbtn{
+      text-align: center;
+    }
+    .mint-detail-content-title {
       font-size: 20px;
       font-weight: bold;
       text-align: center;
       margin-bottom: 40px;
       position: relative;
-      .mint-detail-content-title-btns{
+      .mint-detail-content-title-btns {
         position: absolute;
         top: 0;
         right: 50px;
         display: flex;
         align-items: center;
-        .ant-btn{
+        .ant-btn {
           margin-right: 20px;
         }
-        .share{
+        .share {
           cursor: pointer;
         }
       }
     }
-    .mint-detail-item{
+    .mint-detail-item {
       padding-left: 300px;
       display: flex;
       align-items: center;
       line-height: 34px;
-      .mint-detail-item-key{
+      .mint-detail-item-key {
         width: 260px;
         margin-right: 10px;
       }
-      .mint-detail-item-value{
+      .mint-detail-item-value {
         color: #fff;
       }
       // justify-content: space-between;
     }
-    .mint-detail-item-title{
+    .mint-detail-item-title {
       margin-top: 10px;
       padding-left: 300px;
       line-height: 40px;
@@ -65,13 +108,13 @@
     margin: 0 auto;
     padding: 20px 10px;
     max-width: 100%;
-    .mint-detail-back{
+    .mint-detail-back {
       margin-top: 0;
       display: inline-block;
       font-size: 18px;
       cursor: pointer;
     }
-    .mint-detail-content{
+    .mint-detail-content {
       margin-top: 20px;
       background: var(--color-layer-light);
       padding: 20px 10px;

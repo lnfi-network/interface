@@ -1,0 +1,106 @@
+.mint-list {
+  width: 100%;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  // padding: 0 20px;
+  
+  .mint-list-content-create{
+    margin-top: 20px;
+    text-align: center;
+    .ant-btn{
+      display: inline-flex;
+    align-items: center;
+    }
+  }
+  .mint-list-content{
+    margin-top: 30px;
+    border-radius: 10px;
+    margin-bottom: 40px;
+    padding: 0 20px;
+    background: var(--color-layer-light);
+    
+    .my-empty{
+      width: 65%;
+      margin: 0 auto;
+      text-align: center;
+      svg{
+        g{
+          g{
+            stroke: #ccc
+          }
+        }
+      }
+    }
+  }
+  .mint-list-tabs {
+    padding: 20px 0 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #303030;
+    .mint-list-tabs-btns {
+      display: flex;
+      .mint-list-tabs-btns-btns {
+        display: flex;
+        align-items: center;
+      }
+      .ant-btn {
+        display: inline-flex;
+        align-items: center;
+        .ant-btn-icon {
+          svg {
+            path {
+              fill: #fff;
+            }
+          }
+        }
+      }
+    }
+    .account-table-btns {
+      display: flex;
+      justify-content: space-between;
+      // margin-left: -15px;
+      // .ant-btn{
+      //   font-size: 12px;
+      // }
+    }
+  }
+  .mint-table-status{
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+}
+@media screen and (max-width: 768px) {
+  .mint-list {
+    width: 100%;
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 0 20px;
+    .mint-list-head {
+      text-align: center;
+      // background: var(--color-layer-light);
+      padding: 0 20px;
+      margin-top: 20px;
+      border-radius: 10px;
+      
+    }
+    .mint-list-content{
+      margin-top: 30px;
+      border-radius: 10px;
+      margin-bottom: 40px;
+      padding: 0;
+      background: var(--color-layer-light);
+      .mint-list-tabs {
+        padding: 20px 0 30px;
+        display: block;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid #303030;
+        // .mint-list-tabs-btns {
+        //   display: block;
+        // }
+      }
+    }
+  }
+}
