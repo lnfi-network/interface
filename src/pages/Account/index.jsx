@@ -45,7 +45,7 @@ function Account() {
   const history = useHistory();
   const { nostrAccount, balanceList, npubNostrAccount } = useSelector(({ user }) => user);
   const { tokenList, quote_pirce } = useSelector(({ market }) => market);
-
+  
   const qutoAsset = useMemo(() => {
     return tokenList.find((tokenItem) => tokenItem?.name === QUOTE_ASSET);
   }, [tokenList]);
@@ -69,13 +69,22 @@ function Account() {
       return "--";
     }
     if (tokenList?.length) {
-      list.forEach((item) => {
-        const row = tokenList.find((k) => k?.name == item?.name);
-        const balance = balanceList?.[item?.name]?.balanceShow;
+      // list.forEach((item) => {
+      //   const row = tokenList.find((k) => k?.name == item?.name);
+      //   const balance = balanceList?.[item?.name]?.balanceShow;
+      //   if (item?.name?.toLowerCase() == QUOTE_ASSET?.toLowerCase()) {
+      //     total += BigNumber(balance).toNumber();
+      //   } else if (item?.deal_price && row && balance) {
+      //     total += BigNumber(item.deal_price).div(qutoAsset?.decimals).div(row?.decimals).times(balance).toNumber();
+      //   }
+      // });
+      tokenList.forEach((item) => {
+        const row = list.find((k) => k?.name == item?.name);
+        const balance = balanceList?.[item?.name]?.balanceShow || 0;
         if (item?.name?.toLowerCase() == QUOTE_ASSET?.toLowerCase()) {
           total += BigNumber(balance).toNumber();
-        } else if (item?.deal_price && row && balance) {
-          total += BigNumber(item.deal_price).div(qutoAsset?.decimals).div(row?.decimals).times(balance).toNumber();
+        } else if (row?.deal_price && row && balance) {
+          total += BigNumber(row.deal_price).div(qutoAsset?.decimals).div(row?.decimals).times(balance).toNumber();
         }
       });
     }
