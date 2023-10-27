@@ -1,7 +1,9 @@
 import { Form, Row, Col, Input, Button, Spin, Select } from "antd";
 
 import { useEffect, useMemo, useState, useCallback } from "react";
-import ConnectNostr from "components/Common/ConnectNostr";
+
+import ConnectWallet from "components/Common/ConnectWallet";
+import CheckNostrButton from "components/CheckNostrButton";
 import { useTaprootWithdraw, useTaprootDecode } from "hooks/useNostrMarket";
 import { to } from "await-to-js";
 import { useSelector } from "react-redux";
@@ -10,6 +12,7 @@ import { sleep } from "lib/utils";
 import { useDispatch } from "react-redux";
 import { setOnlyMobileSupportedVisible } from "store/reducer/modalReducer";
 import useDevice from "hooks/useDevice";
+import { useUnisatPayfee } from "hooks/useWithdrawPayfee";
 import { nip19 } from "nostr-tools";
 export default function TaprootFormItems({ form, nostrAccount, notifiApi, messageApi, handleQueryBalance }) {
   const { TextArea } = Input;
@@ -18,11 +21,12 @@ export default function TaprootFormItems({ form, nostrAccount, notifiApi, messag
   const { handleTaprootDecodeAsync } = useTaprootDecode();
   const [withdrawAmount, setWithdrawAmount] = useState(0);
   const [decodeLoading, setDecodeloding] = useState(false);
-  const { npubNostrAccount, balanceList } = useSelector(({ user }) => user);
+  const { npubNostrAccount, balanceList, account } = useSelector(({ user }) => user);
   const { tokenList } = useSelector(({ market }) => market);
   /*  const dispatch = useDispatch();
   const device = useDevice(); */
   const [token, setToken] = useState("");
+  const { handleUnisatPay } = useUnisatPayfee();
   const balance = useMemo(() => {
     return balanceList[token] ? balanceList[token]?.balanceShow : 0.0;
   }, [balanceList, token]);
@@ -50,10 +54,12 @@ export default function TaprootFormItems({ form, nostrAccount, notifiApi, messag
       }
       setBtnLoading(true);
       const values = form.getFieldsValue(true);
+      const sendTx = await handleUnisatPay(values.invoice, true);
       const withdrawRet = await handleTaprootWithdrawAsync(
         withdrawAmount,
         values.invoiceTap,
-        values.depositOrWithdrawToken
+        values.depositOrWithdrawToken,
+        sendTx
       );
       if (withdrawRet?.code === 0) {
         await sleep(4000);
@@ -71,7 +77,16 @@ export default function TaprootFormItems({ form, nostrAccount, notifiApi, messag
     } finally {
       setBtnLoading(false);
     }
-  }, [balance, form, handleQueryBalance, handleTaprootWithdrawAsync, messageApi, npubNostrAccount, withdrawAmount]);
+  }, [
+    balance,
+    form,
+    handleQueryBalance,
+    handleTaprootWithdrawAsync,
+    handleUnisatPay,
+    messageApi,
+    npubNostrAccount,
+    withdrawAmount
+  ]);
   const tokens = useMemo(() => {
     return tokenList.filter((item) => item.assetType === "TAPROOT");
   }, [tokenList]);
@@ -91,21 +106,23 @@ export default function TaprootFormItems({ form, nostrAccount, notifiApi, messag
     );
   }, [balance, token]);
   const memoWithdrawBtn = useMemo(() => {
-    return nostrAccount ? (
-      <Button
-        type="primary"
-        size="large"
-        className="withdraw-send-btn"
-        loading={btnLoading}
-        onClick={handleWithdraw}
-        disabled={withdrawAmount === 0}
-      >
-        Send
-      </Button>
+    return account ? (
+      <CheckNostrButton>
+        <Button
+          type="primary"
+          size="large"
+          className="withdraw-send-btn"
+          loading={btnLoading}
+          onClick={handleWithdraw}
+          disabled={withdrawAmount === 0}
+        >
+          Send
+        </Button>
+      </CheckNostrButton>
     ) : (
-      <ConnectNostr />
+      <ConnectWallet />
     );
-  }, [btnLoading, handleWithdraw, nostrAccount, withdrawAmount]);
+  }, [account, btnLoading, handleWithdraw, withdrawAmount]);
 
   const { run: handleInvoiceChange } = useThrottleFn(
     async ({ target: { value } }) => {

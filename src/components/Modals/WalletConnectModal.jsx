@@ -244,11 +244,11 @@ export default function WalletConnectModal() {
       ];
     } else
       return [
-        {
+        /*  {
           key: "ERC-Wallet",
           label: `ERC wallet`,
           children: <ERCWalletConnectButton />
-        },
+        }, */
         {
           key: "BRC-wallet",
           label: `BRC wallet`,
