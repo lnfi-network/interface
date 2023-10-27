@@ -33,8 +33,8 @@ export default function ClaimToken() {
   const [submitTrickLoading, setSubmitTrickLoading] = useState(false);
   const [submitTreatLoading, setSubmitTreatLoading] = useState(false);
   const { handleTrickOrTreat } = useAirdropClaim();
-  const { data: trickNum } = useAirdropStats("TRICK");
-  const { data: treatNum } = useAirdropStats("TREAT");
+  const { data: trickNum, reexcuteQuery: requeryTrickCount } = useAirdropStats("TRICK");
+  const { data: treatNum, reexcuteQuery: requeryTreatCount } = useAirdropStats("TREAT");
   //const history = useHistory();
 
   const onTrickOrTreat = useCallback(
@@ -54,6 +54,11 @@ export default function ClaimToken() {
           throw new Error(ret?.data);
         }
         window._message.success(ret.data);
+        if (trickOrTreat === "TRICK") {
+          requeryTrickCount();
+        } else {
+          requeryTreatCount();
+        }
       } catch (e) {
         window._message.error(e.message);
       } finally {
@@ -62,7 +67,7 @@ export default function ClaimToken() {
         reexcuteQuery();
       }
     },
-    [airdopAccountRet?.status, handleTrickOrTreat, reexcuteQuery]
+    [airdopAccountRet?.status, handleTrickOrTreat, reexcuteQuery, requeryTreatCount, requeryTrickCount]
   );
 
   useEffect(() => {
@@ -89,7 +94,7 @@ export default function ClaimToken() {
                 <>
                   <Spin spinning={fetching}>
                     {!airdopAccountRet ? (
-                      <div className="claim-content-title__des">
+                      <div className="claim-content-title__sub">
                         Unfortunately, your linked account does not qualify for the airdrop. Please stay tuned for
                         future updates and activities on the platform.
                       </div>
@@ -162,36 +167,23 @@ export default function ClaimToken() {
                 }}
                 initialValues={{ nostrAddress: npubNostrAccount || "" }}
               >
-                <Form.Item
-                  name="nostrAddress"
-                  label="Your Nostr Address"
-                  className="claim-airdrop-token__item"
-                  rules={[
-                    {
-                      required: true
-                    },
-                    ({ getFieldValue }) => ({
-                      validator(_, value) {
-                        if (value) {
-                          if (!/npub\w{59}/.test(value)) {
-                            return Promise.reject(new Error(t`Please input a valid Nostr address.`));
-                          }
-                          nip19.decode(value).data;
-                          return Promise.resolve();
-                        }
-                        return Promise.resolve();
-                      }
-                    })
-                  ]}
-                >
-                  <Input
-                    size="large"
-                    disabled
-                    // style={{ maxWidth: "660px" }}
-                    placeholder="Please connect your Norstr account"
-                  />
+                <Form.Item label="Your Nostr Address" className="claim-airdrop-token__item">
+                  <Form.Item name="nostrAddress" nostyle>
+                    <Input
+                      size="large"
+                      disabled
+                      // style={{ maxWidth: "660px" }}
+                      placeholder="Please connect your Norstr account"
+                    />
+                  </Form.Item>
+                  <span
+                    className={classNames(".claim-input-tag", {
+                      "claim-input-tag__cliamed": airdopAccountRet?.status === 2
+                    })}
+                  >
+                    Claimed
+                  </span>
                 </Form.Item>
-
                 <Form.Item
                   wrapperCol={
                     width > 800

@@ -1,5 +1,5 @@
 .claim-airdrop-token {
-  /* min-height: calc(100% - 190px); */
+  flex: 1;
   width: 100%;
   overflow-x: hidden;
   background-color: rgba(0, 0, 0, 0.8);
@@ -89,8 +89,8 @@
       }
       &__sub {
         color: #fff;
-        font-size: 16px;
-
+        font-size: 17px;
+        font-weight: bold;
         margin: 0 auto;
 
         div {
@@ -102,6 +102,7 @@
         font-size: 14px;
         padding: 20px 90px;
         text-align: center;
+        color: var(--color-text-dark);
       }
     }
   }
@@ -109,10 +110,29 @@
     margin: 0 auto;
     padding-top: 20px;
   }
+
   &__item {
-    padding: 20px;
+    padding: 20px 20px 0;
     background-color: var(--color-layer-light);
     border-radius: 10px;
+    position: relative;
+    .claim-input-tag {
+      display: none;
+    }
+    .claim-input-tag__cliamed {
+      display: block;
+      position: absolute;
+      right: -20px;
+      top: 0;
+      width: 80px;
+      height: 30px;
+      border-radius: 5px;
+      line-height: 28px;
+      border: 2px solid var(--color-green);
+      color: var(--color-green);
+      font-weight: bold;
+      transform: rotate(20deg);
+    }
   }
   .ant-btn.claim-test-token__btns {
     min-width: 160px;
@@ -201,36 +221,7 @@
     }
   }
 }
-@media screen and (min-width: 1800px) {
-  .claim-test-token {
-    padding: 40px;
-    &__banner {
-      padding: 20px 260px 20px 80px;
-      &-title {
-        font-size: 32px;
-      }
-      &-description {
-        font-size: 20px;
-      }
-      &-more {
-        margin-top: 5px;
-        a {
-          color: var(--color-purple);
-          font-size: 20px;
-        }
-      }
-      &-coin {
-        width: 220px;
-        position: absolute;
-        top: 50%;
-        right: 80px;
-        // bottom: 20px;
-        transform: translateY(-50%);
-        z-index: 5;
-      }
-    }
-  }
-}
+
 @media (max-width: 800px) {
   .claim-airdrop-token {
     width: 100%;
@@ -335,6 +326,24 @@
       padding: 20px;
       background-color: var(--color-layer-light);
       border-radius: 10px;
+      position: relative;
+      .claim-input-tag {
+        display: none;
+      }
+      .claim-input-tag__cliamed {
+        display: block;
+        position: absolute;
+        right: -20px;
+        top: 0;
+        width: 80px;
+        height: 30px;
+        border-radius: 5px;
+        line-height: 28px;
+        border: 2px solid var(--color-green);
+        color: var(--color-green);
+        font-weight: bold;
+        transform: rotate(20deg);
+      }
     }
     .ant-btn.claim-test-token__btns {
       min-width: 125px;
@@ -385,7 +394,7 @@
       color: rgb(140, 82, 255);
       &__treat {
         bottom: -20px;
-        right: 40px;
+        right: 80px;
         color: rgb(255, 102, 196);
       }
     }
