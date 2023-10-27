@@ -177,7 +177,7 @@ export default function ClaimToken() {
                     />
                   </Form.Item>
                   <span
-                    className={classNames(".claim-input-tag", {
+                    className={classNames("claim-input-tag", {
                       "claim-input-tag__cliamed": airdopAccountRet?.status === 2
                     })}
                   >
