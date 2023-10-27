@@ -68,7 +68,7 @@ export function AppHeaderLinks({ small, clickCloseIcon }) {
         </div>
       )}
       <div className="App-header-link-container">
-        <HeaderLink to="/claim">Claim</HeaderLink>
+        <HeaderLink to="/claim">Airdrop</HeaderLink>
       </div>
 
       {/* <div className="App-header-link-container">
