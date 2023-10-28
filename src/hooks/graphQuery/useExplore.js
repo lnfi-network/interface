@@ -674,7 +674,7 @@ export const useCreateAssetsQuery = ({ pageSize = 20, pageIndex = 1, type, creat
     reexcuteQuery
   };
 };
-export const useMintAssetsQuery = ({ pageSize = 20, pageIndex = 1, type, creator, event_id, search }) => {
+export const useMintAssetsQuery = ({ pageSize = 20, pageIndex = 1, type, creator, id, search }) => {
   const tableName = `${GRAPH_BASE}nostr_assets_activity`;
   const limit = useMemo(() => {
     return pageSize;
@@ -692,18 +692,13 @@ export const useMintAssetsQuery = ({ pageSize = 20, pageIndex = 1, type, creator
       where += `status: { _in: ["INIT"]}`;
     } else if(type == "Completed") {
       where += `status: { _in: ["SUCCESS"]}`;
-    } else {
+    } else if(type == "All") {
       where += `status: { _in: ["INIT", "SUCCESS"]}`;
     }
-    if (event_id) {
-      where += `event_id: {_eq: "${event_id}"} `;
+    if (id) {
+      where += `id: {_eq: "${id}"} `;
+      where += `status: { _in: ["INIT", "INIT_PENDING", "INIT_FAIL", "SUCCESS"]}`;
     }
-    // if (type == "In-Progress") {
-    //   where += `status: { _in: [0,1,2,99]} `;
-    // }
-    // if (type == "Completed") {
-    //   where += `status: { _in: [9]} `;
-    // }
     if (search) {
       where += `_or:[{ owner: {_iregex: "${search}"} }, { token_name: {_iregex: "${search}"} }] `;
     }
@@ -727,7 +722,7 @@ export const useMintAssetsQuery = ({ pageSize = 20, pageIndex = 1, type, creator
 
     where += "}";
     return where;
-  }, [creator, event_id, search, type]);
+  }, [creator, id, search, type]);
   let sortMemo = useMemo(() => {
     let order_by = `order_by:{create_time: desc} `;
     return order_by;

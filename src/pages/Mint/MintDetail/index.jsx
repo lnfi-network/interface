@@ -5,7 +5,7 @@ import { useHistory, useParams } from "react-router-dom";
 import { useQueryBalance } from "hooks/useNostrMarket";
 import { useSelector, useDispatch } from "react-redux";
 import { Button, Popover, Input, Spin, Empty, Tooltip, Image, Modal, Pagination } from "antd";
-import { useMintAssetDetailQuery } from "hooks/graphQuery/useExplore";
+import { useMintAssetsQuery } from "hooks/graphQuery/useExplore";
 import { useCallback, useMemo, useState } from "react";
 // import ImportModal from "./comps/ImportModal";
 // import SyncImportModal from "./comps/SyncImportModal";
@@ -73,21 +73,24 @@ export default function MintDetail() {
   const { tokenList } = useSelector(({ market }) => market);
   const params = useParams();
 
-  const { data, fetching, reexcuteQuery } = useMintAssetDetailQuery({
+  const { list, fetching, reexcuteQuery } = useMintAssetsQuery({
     id: params?.id
   });
-
+  // console.log("list",list);
+  const detail = useMemo(() => {
+    return list?.[0] || {};
+  }, [list]);
   const token = useMemo(() => {
-    return tokenList?.find((item) => item.name == data?.token_name);
-  }, [data?.token_name, tokenList]);
+    return tokenList?.find((item) => item.name == detail?.token_name);
+  }, [detail?.token_name, tokenList]);
   const handleBack = useCallback(() => {
     history.push("/mintassets/mint-assets");
   }, [history]);
   const progress = useMemo(() => {
-    const progress = limitDecimals((data?.received_amount / data?.max_amount) * 100, 2, "floor")
+    const progress = limitDecimals((detail?.received_amount / detail?.max_amount) * 100, 2, "floor");
     return `${progress || 0}%`;
-  }, [data?.max_amount, data?.received_amount])
-  
+  }, [detail?.max_amount, detail?.received_amount]);
+
   return (
     <>
       <div className="mint-detail-container">
@@ -139,15 +142,18 @@ export default function MintDetail() {
                 <div className="progress-all">
                   <div className="progress-percent" style={{ width: progress }}></div>
                   <div className="progress-percent-text" style={{ left: progress }}>
-                    {progress} <span className="color-yellow">{data?.received_number ? `${numberWithCommas(data?.received_number)} Minters` : "0 Minters"}</span>
+                    {progress}{" "}
+                    <span className="color-yellow">
+                      {detail?.received_number ? `${numberWithCommas(detail?.received_number)} Minters` : "0 Minters"}
+                    </span>
                   </div>
                 </div>
                 <div className="tc mt10">
                   Total Minted / Maximum Mint Amount{" "}
                   <span className="color-yellow b f16">
-                    {data?.received_amount ? numberWithCommas(data?.received_amount) : "0"}
+                    {detail?.received_amount ? numberWithCommas(detail?.received_amount) : "0"}
                   </span>
-                  /{data?.single_amount ? numberWithCommas(data?.max_amount) : "0"}
+                  /{detail?.single_amount ? numberWithCommas(detail?.max_amount) : "0"}
                 </div>
               </div>
               <div className="mint-detail-content-mintbtn">
@@ -193,7 +199,7 @@ export default function MintDetail() {
               </div>
               <div className="mint-detail-item">
                 <div className="mint-detail-item-key">Asset Name</div>
-                <div className="mint-detail-item-value">{data?.token_name || "--"}</div>
+                <div className="mint-detail-item-value">{detail?.token_name || "--"}</div>
               </div>
               <div className="mint-detail-item">
                 <div className="mint-detail-item-key">Asset Symbol</div>
@@ -207,7 +213,7 @@ export default function MintDetail() {
               </div>
               <div className="mint-detail-item">
                 <div className="mint-detail-item-key">Asset TX</div>
-                <div className="mint-detail-item-value">{data?.create_tx_hash || "--"}</div>
+                <div className="mint-detail-item-value">{detail?.create_tx_hash || "--"}</div>
               </div>
               <div className="mint-detail-item">
                 <div className="mint-detail-item-key">Total Supply</div>
@@ -230,8 +236,8 @@ export default function MintDetail() {
               <div className="mint-detail-item">
                 <div className="mint-detail-item-key">Deployer Address</div>
                 <div className="mint-detail-item-value">
-                  {data?.owner ? (
-                    <EllipsisMiddle suffixCount={12}>{nip19.npubEncode(data?.owner)}</EllipsisMiddle>
+                  {detail?.owner ? (
+                    <EllipsisMiddle suffixCount={12}>{nip19.npubEncode(detail?.owner)}</EllipsisMiddle>
                   ) : (
                     "--"
                   )}
@@ -239,52 +245,52 @@ export default function MintDetail() {
               </div>
               <div className="mint-detail-item">
                 <div className="mint-detail-item-key">Description</div>
-                <div className="mint-detail-item-value">{data?.description || "--"}</div>
+                <div className="mint-detail-item-value">{detail?.description || "--"}</div>
               </div>
               <div className="mint-detail-item">
                 <div className="mint-detail-item-key">Logo url</div>
-                <div className="mint-detail-item-value">{data?.logo || "--"}</div>
+                <div className="mint-detail-item-value">{detail?.logo || "--"}</div>
               </div>
               <div className="mint-detail-item-title f18 color-light">Social Media</div>
               <div className="mint-detail-item">
                 <div className="mint-detail-item-key">Twitter ID</div>
-                <div className="mint-detail-item-value">{data?.twitter || "--"}</div>
+                <div className="mint-detail-item-value">{detail?.twitter || "--"}</div>
               </div>
               <div className="mint-detail-item">
                 <div className="mint-detail-item-key">Telegram ID</div>
-                <div className="mint-detail-item-value">{data?.telegram || "--"}</div>
+                <div className="mint-detail-item-value">{detail?.telegram || "--"}</div>
               </div>
               <div className="mint-detail-item">
                 <div className="mint-detail-item-key">Discord ID</div>
-                <div className="mint-detail-item-value">{data?.discord || "--"}</div>
+                <div className="mint-detail-item-value">{detail?.discord || "--"}</div>
               </div>
               <div className="mint-detail-item">
                 <div className="mint-detail-item-key">Nostr ID</div>
-                <div className="mint-detail-item-value">{data?.nostr || "--"}</div>
+                <div className="mint-detail-item-value">{detail?.nostr || "--"}</div>
               </div>
               <div className="mint-detail-item-title f18 color-light">Mint Rules</div>
               <div className="mint-detail-item">
                 <div className="mint-detail-item-key">Maximum Mint Amount</div>
                 <div className="mint-detail-item-value">
-                  {data?.max_amount ? numberWithCommas(data?.max_amount) : "--"}
+                  {detail?.max_amount ? numberWithCommas(detail?.max_amount) : "--"}
                 </div>
               </div>
               <div className="mint-detail-item">
                 <div className="mint-detail-item-key">Single mint upper limit</div>
                 <div className="mint-detail-item-value">
-                  {data?.single_amount ? numberWithCommas(data?.single_amount) : "--"}
+                  {detail?.single_amount ? numberWithCommas(detail?.single_amount) : "--"}
                 </div>
               </div>
               <div className="mint-detail-item">
                 <div className="mint-detail-item-key">Maximum mint per address</div>
                 <div className="mint-detail-item-value">
-                  {data?.max_address ? numberWithCommas(data?.max_address) : "--"}
+                  {detail?.max_address ? numberWithCommas(detail?.max_address) : "--"}
                 </div>
               </div>
               <div className="mint-detail-item">
                 <div className="mint-detail-item-key">Mint Fee Rate</div>
                 <div className="mint-detail-item-value">
-                  {data?.create_fee ? numberWithCommas(data?.create_fee) : "--"}
+                  {detail?.create_fee ? numberWithCommas(detail?.create_fee) : "--"}
                 </div>
               </div>
             </div>
