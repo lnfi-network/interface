@@ -14,7 +14,7 @@ import asset from "img/asset.png";
 import { limitDecimals, numberWithCommas } from "lib/numbers";
 import BigNumber from "bignumber.js";
 import { useSize, useDebounce } from "ahooks";
-import { useCreateAssetsQuery } from "hooks/graphQuery/useExplore";
+import { useMintAssetsQuery } from "hooks/graphQuery/useExplore";
 // import ProModal from "./comps/ProModal";
 import { utcToClient } from "lib/dates";
 import { ReloadOutlined } from "@ant-design/icons";
@@ -46,7 +46,7 @@ function MintList() {
     return tokenList.find((k) => k?.name?.toUpperCase() == "USDT");
   }, [tokenList]);
   // const { handleQueryBalance } = useQueryBalance();
-  const { list, fetching, total, reexcuteQuery } = useCreateAssetsQuery({
+  const { list, fetching, total, reexcuteQuery } = useMintAssetsQuery({
     search: debouncedSearch,
     type,
     pageSize,
@@ -78,7 +78,7 @@ function MintList() {
       return [
         {
           title: t`Asset`,
-          dataIndex: "name",
+          dataIndex: "token_name",
           render: (text, row) => {
             return (
               <div>
@@ -98,42 +98,42 @@ function MintList() {
           }
         },
         {
-          title: t`Create Date`,
-          dataIndex: "create_time",
-          render: (text) => utcToClient(text)
+          title: t`Total Supply`,
+          dataIndex: "token_name",
+          render: (text) => {
+            const token = tokenList.find((k) => k?.name?.toUpperCase() == text?.toUpperCase())
+            return token?.totalSupply ? numberWithCommas(token?.totalSupply) : "--"
+          }
         },
         {
-          title: t`TxID`,
-          dataIndex: "create_tx_hash",
+          title: t`Maximum Mint Amount`,
+          dataIndex: "max_amount",
           render: (text) => {
             return text ? (
-              <EllipsisMiddle
-                suffixCount={8}
-                suffixCountMore={6}
-                className="pointer"
-                handleClick={() => window.open(`${process.env.REACT_APP_TX}${text}`)}
-              >
-                {`${text}`}
-              </EllipsisMiddle>
+              numberWithCommas(text)
             ) : (
               "--"
             );
           }
         },
         {
-          title: t`Asset ID`,
-          dataIndex: "asset_id",
+          title: t`Single Mint Amount`,
+          dataIndex: "single_amount",
           render: (text) => {
-            return text ? <EllipsisMiddle suffixCount={8}>{text}</EllipsisMiddle> : "--";
+            return text ? numberWithCommas(text) : "--";
           }
         },
         {
           title: t`Progress`,
-          dataIndex: "progress"
+          dataIndex: "received_amount",
+          render: (text, row) => {
+            const progress = limitDecimals((text / row.max_amount) * 100, 2, "floor")
+            return `${progress}%`;
+          }
         },
         {
           title: t`Minters`,
-          dataIndex: "minters"
+          dataIndex: "received_number"
         },
         {
           title: t`Action`,
@@ -148,7 +148,7 @@ function MintList() {
               //   }}
               // >
               <CheckNostrButton>
-                <span onClick={() => history.push(`/mint/detail/${row.event_id}`)}>
+                <span onClick={() => history.push(`/mint/detail/${row.id}`)}>
                   <Button
                     type="primary"
                     // onClick={() => setType("In-Progress")}
@@ -340,7 +340,7 @@ function MintList() {
         }
       ];
     }
-  }, [width]);
+  }, [history, tokenList, width]);
   return (
     <>
       <div className="mint-list">
@@ -364,7 +364,7 @@ function MintList() {
                   >{t`Completed`}</Button>
                   <CheckNostrButton>
                     <Button type={type == "My" ? "primary" : "default"} size="large" onClick={() => setType("My")}>
-                      {t`My Created`}
+                      {t`My Launchpad`}
                     </Button>
                   </CheckNostrButton>
                   <Input
@@ -428,14 +428,14 @@ function MintList() {
                   </>
                 }
               />
-              <CheckNostrButton>
+              {/* <CheckNostrButton>
                 <Button
                   type="primary"
                   size={"large"}
                   style={{ marginBottom: "30px" }}
                   onClick={() => onHandleRedirect(`mint/create`)}
                 >{t`Create Asset`}</Button>
-              </CheckNostrButton>
+              </CheckNostrButton> */}
             </div>
           ) : (
             <Table

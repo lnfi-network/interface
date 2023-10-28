@@ -674,7 +674,159 @@ export const useCreateAssetsQuery = ({ pageSize = 20, pageIndex = 1, type, creat
     reexcuteQuery
   };
 };
+export const useMintAssetsQuery = ({ pageSize = 20, pageIndex = 1, type, creator, event_id, search }) => {
+  const tableName = `${GRAPH_BASE}nostr_assets_activity`;
+  const limit = useMemo(() => {
+    return pageSize;
+  }, [pageSize]);
+  const offset = useMemo(() => {
+    return (pageIndex - 1) * pageSize;
+  }, [pageIndex, pageSize]);
 
+  let whereMemo = useMemo(() => {
+    let where = "{";
+    if (type == "My") {
+      where += `owner: {_eq: "${creator}"} `;
+      where += `status: { _in: ["INIT", "INIT_PENDING", "INIT_FAIL", "SUCCESS"]}`;
+    } else if(type == "In-Progress") {
+      where += `status: { _in: ["INIT"]}`;
+    } else if(type == "Completed") {
+      where += `status: { _in: ["SUCCESS"]}`;
+    } else {
+      where += `status: { _in: ["INIT", "SUCCESS"]}`;
+    }
+    if (event_id) {
+      where += `event_id: {_eq: "${event_id}"} `;
+    }
+    // if (type == "In-Progress") {
+    //   where += `status: { _in: [0,1,2,99]} `;
+    // }
+    // if (type == "Completed") {
+    //   where += `status: { _in: [9]} `;
+    // }
+    if (search) {
+      where += `_or:[{ owner: {_iregex: "${search}"} }, { token_name: {_iregex: "${search}"} }] `;
+    }
+    // where += `status: { _in: ["INIT", "PUSH_MARKET_SUCCESS", "PUSH_MARKET_FAIL", "PART_SUCCESS"]}`;
+    // where += `owner: {_eq: "${owner}"} `;
+    // if (type) {
+    //   where += `type:{_eq: "${type.toUpperCase()}"} `;
+    // }
+    // if (token) {
+    //   where += `token:{_eq: "${token.toUpperCase()}"} `;
+    // }
+    // if (!status) {
+    //   where += `status: { _in: ["INIT","PUSH_MARKET_SUCCESS","TAKE_LOCK","TRADE_PENDING","PART_SUCCESS","SUCCESS","CANCEL"]} `;
+    // }
+    // if (status == "Open Orders") {
+    //   where += `status: { _in: ["INIT","PUSH_MARKET_SUCCESS","TAKE_LOCK","TRADE_PENDING","PART_SUCCESS"]} `;
+    // }
+    // if (status == "History Orders") {
+    //   where += `status: { _in: ["SUCCESS","CANCEL"]} `;
+    // }
+
+    where += "}";
+    return where;
+  }, [creator, event_id, search, type]);
+  let sortMemo = useMemo(() => {
+    let order_by = `order_by:{create_time: desc} `;
+    return order_by;
+  }, []);
+
+  let queryGraphsql = useMemo(() => {
+    return gql`
+    query($offset: Int!, $limit: Int!){
+      ${tableName}(limit:$limit,offset:$offset,where:${whereMemo},${sortMemo}) {
+        call_event_id
+        create_fee
+        create_fee_symbol
+        create_time
+        erro_msg
+        event_id
+        id
+        max_address
+        max_amount
+        mint_fee
+        modify_time
+        npub_address
+        number
+        owner
+        received_amount
+        received_number
+        send_id
+        single_amount
+        status
+        token_address
+        token_name
+      }
+      ${tableName}_aggregate(where:${whereMemo}){
+        aggregate {
+          count
+        }
+      }
+    }
+  `;
+  }, [sortMemo, tableName, whereMemo]);
+  const [result, reexcuteQuery] = useQuery({
+    query: queryGraphsql,
+    // pause: !owner,
+    variables: {
+      offset,
+      limit
+    }
+  });
+
+  const { data, fetching } = result;
+
+  const list = data ? data[tableName] : [];
+  const total = data ? data[`${tableName}_aggregate`]?.aggregate?.count : 0;
+
+  return {
+    list,
+    total,
+    fetching,
+    reexcuteQuery
+  };
+};
+export const useMintAssetDetailQuery = ({ id }) => {
+  const tableName = `${GRAPH_BASE}nostr_assets_activity_by_pk`;
+  const queryGraphsql = gql`
+    query() {
+      ${tableName}(id: "${id}") {
+        call_event_id
+        create_fee
+        create_fee_symbol
+        create_time
+        erro_msg
+        event_id
+        id
+        max_address
+        max_amount
+        mint_fee
+        modify_time
+        npub_address
+        number
+        owner
+        received_amount
+        received_number
+        send_id
+        single_amount
+        status
+        token_address
+        token_name
+      }
+    }`;
+  const [result, reexcuteQuery] = useQuery({
+    query: queryGraphsql,
+  });
+
+  const { data, fetching } = result;
+  return {
+    reexcuteQuery,
+    fetching,
+    data: data?.[tableName] || {}
+  };
+};
 export const useQueryAssetByEventIdOrAssetName = ({ eventId, assetName }) => {
   const tableName = `${GRAPH_BASE}nostr_create_assets`;
   let whereMemo = useMemo(() => {

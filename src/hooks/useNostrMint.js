@@ -13,6 +13,7 @@ import * as Lockr from "lockr";
 
 const NOSTAR_TOKEN_SEND_TO = process.env.REACT_APP_NOSTR_TOKEN_SEND_TO;
 const NOSTR_MARKET_SEND_TO = process.env.REACT_APP_NOSTR_MARKET_SEND_TO;
+const NOSTR_MINT_SEND_TO = process.env.REACT_APP_NOSTR_MINT_SEND_TO;
 //const NOSTR_CLAIMPPOINTS_SEND_TO = nip19.decode(process.env.REACT_APP_NOSTR_CLAIMPPOINTS_SEND_TO).data;
 const LOCAL_ROBOT_ADDR = nip19.npubEncode(getPublicKey(getLocalRobotPrivateKey()));
 export const useQueryNonce = () => {
@@ -34,6 +35,26 @@ export const useQueryNonce = () => {
 
   return {
     handleQueryNonce
+  };
+};
+export const useLaunchMintActivity = () => {
+  const { execQueryNostrAsync } = useNostrPool();
+  const handleLaunchMintActivityAsync = useCallback(
+    async ({ asset, amount, number, addressMints, fee }) => {
+      const queryCommand = `create activity ${asset} amount ${amount} number ${number} address ${addressMints} fee ${fee}`;
+      const ret = await execQueryNostrAsync({
+        queryCommand,
+        sendToNostrAddress: NOSTR_MINT_SEND_TO,
+        isUseLocalRobotToSend: false
+      });
+
+      return ret?.result;
+    },
+    [execQueryNostrAsync]
+  );
+
+  return {
+    handleLaunchMintActivityAsync
   };
 };
 export const useQueryTokenList = () => {
@@ -128,7 +149,7 @@ export const useAllowance = () => {
   const handleQueryAllowanceAsync = useCallback(
     async (tokenName) => {
       if (nostrAccount && tokenName) {
-        const queryCommand = `allowance to ${process.env.REACT_APP_NOSTR_MARKET_SEND_TO} by ${nip19.npubEncode(
+        const queryCommand = `allowance to ${NOSTR_MINT_SEND_TO} by ${nip19.npubEncode(
           nostrAccount
         )} for  ${tokenName}`;
         const ret = await execQueryNostrAsync({
@@ -166,7 +187,7 @@ export const useApprove = () => {
   const { execQueryNostrAsync } = useNostrPool();
   const handleApproveAsync = useCallback(
     async (approveAmount = 0, tokenName) => {
-      const queryCommand = `approve ${approveAmount} ${tokenName} to ${process.env.REACT_APP_NOSTR_MARKET_SEND_TO}`;
+      const queryCommand = `approve ${approveAmount} ${tokenName} to ${NOSTR_MINT_SEND_TO}`;
       const ret = await execQueryNostrAsync({
         queryCommand,
         sendToNostrAddress: NOSTAR_TOKEN_SEND_TO,
@@ -196,26 +217,7 @@ export const useApprove = () => {
   };
 };
 
-export const useSendListOrder = () => {
-  const { execQueryNostrAsync } = useNostrPool();
-  const handleLimitOrderAsync = useCallback(
-    async ({ side, amount, buyTokenName, price, payTokenName }) => {
-      const queryCommand = `${side} ${amount} ${buyTokenName} at price ${price} ${payTokenName}`;
-      const ret = await execQueryNostrAsync({
-        queryCommand,
-        sendToNostrAddress: NOSTR_MARKET_SEND_TO,
-        isUseLocalRobotToSend: false
-      });
 
-      return ret?.result;
-    },
-    [execQueryNostrAsync]
-  );
-
-  return {
-    handleLimitOrderAsync
-  };
-};
 
 export const useSendMarketOrder = () => {
   const { execQueryNostrAsync } = useNostrPool();

@@ -62,7 +62,7 @@ function Routes({ children }) {
               <Route exact path="/mint/launch-activity">
                 <MintActivity />
               </Route>
-              <Route exact path="/mint/detail/:eventId">
+              <Route exact path="/mint/detail/:id">
                 <MintDetail />
               </Route>
               <Route exact path="/pioneer-points">
