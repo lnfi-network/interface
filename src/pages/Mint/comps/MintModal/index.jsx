@@ -17,12 +17,10 @@ const layout = {
   }
 };
 export default function MintModal({ visible, setVisible, mintDetail, reexcuteQueryMintAssetDetail }) {
-  console.log("🚀 ~ file: index.jsx:16 ~ MintModal ~ mintDetail:", mintDetail);
   //todo queryAllowance & approve & submit & requery
   const { npubNostrAccount, balanceList } = useSelector(({ user }) => user);
   const { handleQueryBalance } = useQueryBalance();
   const { allowance, handleQueryAllowanceAsync } = useAllowance(QUOTE_ASSET);
-  console.log("🚀 ~ file: index.jsx:23 ~ MintModal ~ allowance:", allowance);
   const { handleApproveAsync } = useApprove();
   const { handleMintActivityAsync } = useMintActivity();
   const [totalMintAmount, setTotalMintAmount] = useState(0);
@@ -33,7 +31,6 @@ export default function MintModal({ visible, setVisible, mintDetail, reexcuteQue
     mintDetail?.id,
     npubNostrAccount
   );
-  console.log("🚀 ~ file: index.jsx:32 ~ MintModal ~ hadMintCount:", hadMintCount);
   const [form] = Form.useForm();
 
   const tokenName = useMemo(() => {
