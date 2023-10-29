@@ -57,7 +57,7 @@ export default function TaprootFormItems({ form, nostrAccount, notifiApi, messag
         values.depositOrWithdrawToken
       );
       if (createRet.code !== 0) {
-        throw new Error(createRet.msg);
+        throw new Error(createRet.data);
       }
       setPaymentInvoice({ invoice: createRet.data, createTime: Date.now() });
     } catch (e) {

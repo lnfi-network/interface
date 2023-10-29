@@ -41,7 +41,7 @@ export default function LightningFormItems({ form, nostrAccount, notifiApi, mess
       const values = form.getFieldsValue(true);
       const createRet = await handleGetWeblnDepositInvoice(values.amount, values.depositOrWithdrawFormNostrAddress);
       if (createRet.code !== 0) {
-        throw new Error(createRet.msg);
+        throw new Error(createRet.data);
       }
       setPaymentInvoice({ invoice: createRet.data, createTime: Date.now() });
     } catch (e) {
@@ -80,25 +80,27 @@ export default function LightningFormItems({ form, nostrAccount, notifiApi, mess
   const memoSubmitButton = useMemo(() => {
     return nostrAccount ? (
       <>
-        {!(payInvoice && device.isMobile) && <Space>
-        <Button
-            type="primary"
-            size="large"
-            loading={btnLoading}
-            disabled={!nostrAccount}
-            onClick={!payInvoice ? handleCreateInvoice : handleDirectPayInvoice}
-          >
-            {!payInvoice ? "Create Invoice" : "Directly Pay Invoice"}
-          </Button>
-          {payInvoice && (
-            <Tooltip
-              placement="top"
-              title="You can click to pay directly and use the currently linked Alby Lightning Network account to pay, or copy the invoice to pay with other accounts."
+        {!(payInvoice && device.isMobile) && (
+          <Space>
+            <Button
+              type="primary"
+              size="large"
+              loading={btnLoading}
+              disabled={!nostrAccount}
+              onClick={!payInvoice ? handleCreateInvoice : handleDirectPayInvoice}
             >
-              <InfoCircleOutlined />
-            </Tooltip>
-          )}
-        </Space>}
+              {!payInvoice ? "Create Invoice" : "Directly Pay Invoice"}
+            </Button>
+            {payInvoice && (
+              <Tooltip
+                placement="top"
+                title="You can click to pay directly and use the currently linked Alby Lightning Network account to pay, or copy the invoice to pay with other accounts."
+              >
+                <InfoCircleOutlined />
+              </Tooltip>
+            )}
+          </Space>
+        )}
       </>
     ) : (
       <ConnectNostr />
