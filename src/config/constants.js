@@ -44,3 +44,4 @@ export const AssetDeployStatus = {
 }
 export const QUOTE_ASSET = process.env.REACT_APP_QUOTE_TOKEN
 export const FEE = 0.004
+export const MINT_SERVICE_FEE = 1000

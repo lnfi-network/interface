@@ -1,4 +1,4 @@
-import { Button, Spin, Form, Input, InputNumber, Tooltip, Row, Col, Select, Space, message } from "antd";
+import { Button, Spin, Form, Input, InputNumber, Tooltip, Row, Col, Select, Space, message, Modal } from "antd";
 import { useMintAsset, useUnisatPay } from "hooks/useMintAssets";
 import { useQueryAssetByEventIdOrAssetName, useQueryAssetByName } from "hooks/graphQuery/useExplore";
 import PayAndMintProgress from "../comps/PayAndMintProgress";
@@ -8,14 +8,15 @@ import { useState, useCallback, useMemo, useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { LeftOutlined, InfoCircleOutlined, QuestionCircleFilled } from "@ant-design/icons";
 import { useSelector } from "react-redux";
-import { QUOTE_ASSET } from "config/constants";
+import { QUOTE_ASSET, MINT_SERVICE_FEE } from "config/constants";
 import { limitDecimals, numberWithCommas } from "lib/numbers";
 import { useLaunchMintActivity, useAllowance, useApprove } from "hooks/useNostrMint";
 import { useSendListOrder, useQueryBalance } from "hooks/useNostrMarket";
+import { CheckCircleOutlined, CloseCircleOutlined, SwapOutlined } from "@ant-design/icons";
 import { t } from "@lingui/macro";
 import "./index.scss";
 const NOSTR_MINT_SEND_TO = process.env.REACT_APP_NOSTR_MINT_SEND_TO;
-const serviceFee = 1000;
+// const serviceFee = MINT_SERVICE_FEE;
 export default function MintCreate() {
   const [form] = Form.useForm();
   const params = useParams();
@@ -31,12 +32,40 @@ export default function MintCreate() {
   const [amount, setAmount] = useState(0);
   const [numberMint, setNumberMint] = useState(0);
   const [singleMint, setSingleMint] = useState(0);
+  const [addressMints, setAddressMints] = useState(0);
   const [fee, setFee] = useState(0);
   const [selectAllowance, setSelectAllowance] = useState(0);
   const [quoteAllowance, setQuoteAllowance] = useState(0);
   // const [createdId, setCreatedId] = useState("85215b48fa3ca73e55f24d6ac55db97e5b25056909439bc9e31c7e0338a778d4");
   const [btnLoading, setBtnLoading] = useState(false);
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+  const showSuccessModal = () => {
+    setIsSuccessModalOpen(true);
+  };
+  const handleSuccessOk = () => {
+    setIsSuccessModalOpen(false);
+  };
+  const handleSuccessCancel = () => {
+    setIsSuccessModalOpen(false);
+  };
+  const reset = useCallback(() => {
+    form.resetFields(["amount", "number", "addressMints"])
+    setPercentage(0)
+    setAmount(0)
+    setNumberMint(0)
+    setSingleMint(0)
+    setAddressMints(0)
+  },[form])
   const { handleCreateAssetAsync, handleUpdateAssetAsync, handleCreateMintPayAsync } = useMintAsset();
   const { nostrAccount, account, balanceList } = useSelector(({ user }) => user);
   const { tokenList } = useSelector(({ market }) => market);
@@ -49,28 +78,50 @@ export default function MintCreate() {
     },
     [balanceList]
   );
-  const onSave = useCallback(
-    async (values) => {
-      // setSaveLoding(true);
-      console.log("values", values);
-      try {
-        const ret = await handleLaunchMintActivityAsync({ ...values });
-        const { sendEvent, result } = ret;
-        console.log("ret", ret);
-        if (ret?.code === 0) {
-          message.success(t`Submit successfully`);
-          // window._message.success(result.data);
-          // const sendEventId = sendEvent.id;
-          // history.replace(`/mint/create/${sendEventId}`);
-        } else {
-          message.error(ret.data || "Fail");
-        }
-      } catch (error) {
-        message.error(error.message || "Fail");
+  const onConfirm = useCallback(async (values) => {
+    // setSaveLoding(true);
+    // console.log("values", values);
+    showModal();
+    // try {
+    //   const ret = await handleLaunchMintActivityAsync({ ...values });
+    //   const { sendEvent, result } = ret;
+    //   console.log("ret", ret);
+    //   if (ret?.code === 0) {
+    //     message.success(t`Submit successfully`);
+    //     // window._message.success(result.data);
+    //     // const sendEventId = sendEvent.id;
+    //     // history.replace(`/mint/create/${sendEventId}`);
+    //   } else {
+    //     message.error(ret.data || "Fail");
+    //   }
+    // } catch (error) {
+    //   message.error(error.message || "Fail");
+    // }
+  }, []);
+  const onSave = useCallback(async () => {
+    // setSaveLoding(true);
+    // console.log("values", values);
+    const values = form.getFieldsValue();
+    try {
+      setBtnLoading(true)
+      const ret = await handleLaunchMintActivityAsync({ ...values });
+      // console.log("ret", ret);
+      if (ret?.code === 0) {
+        // message.success(t`Submit successfully`);
+        handleCancel();
+        showSuccessModal();
+        // window._message.success(result.data);
+        // const sendEventId = sendEvent.id;
+        // history.replace(`/mint/create/${sendEventId}`);
+      } else {
+        message.error(ret.data || "Fail");
       }
-    },
-    [handleLaunchMintActivityAsync]
-  );
+      setBtnLoading(false)
+    } catch (error) {
+      message.error(error.message || "Fail");
+      setBtnLoading(false)
+    }
+  }, [form, handleLaunchMintActivityAsync]);
   const memoLabelServiceFee = useMemo(() => {
     return (
       <>
@@ -104,32 +155,18 @@ export default function MintCreate() {
       setSelectToken(token);
       setTotalSupply(token?.totalSupply);
       setSelectBalance(getTokenBalance(value));
+      reset()
       const tokenAllowanceRet = await handleQueryAllowanceAsync(token?.name);
       const quoteAllowanceRet = await handleQueryAllowanceAsync(QUOTE_ASSET);
       setSelectAllowance(tokenAllowanceRet?.data?.amount);
       setQuoteAllowance(quoteAllowanceRet?.data?.amount);
     },
-    [getTokenBalance, handleQueryAllowanceAsync, tokenList]
+    [getTokenBalance, handleQueryAllowanceAsync, reset, tokenList]
   );
   const handleMax = useCallback(() => {
     form.setFieldValue("amount", selectBalance);
+    setAmount(selectBalance);
     setPercentage(limitDecimals((selectBalance / totalSupply) * 100, 2, "floor"));
-    // if (buyOrSell === "sell") {
-    //   const maxAmount = getTokenBalance(selectedToken?.name);
-    //   form.setFieldValue("amount", maxAmount);
-    //   setAmountValue(maxAmount);
-    // } else {
-    //   if (!priceValue) {
-    //     const maxAmount = 0;
-    //     form.setFieldValue("amount", maxAmount);
-    //     setAmountValue(0);
-    //   } else {
-    //     const maxAmount = parseInt(getTokenBalance(QUOTE_ASSET) / priceValue);
-    //     form.setFieldValue("amount", maxAmount);
-    //     setAmountValue(maxAmount);
-    //   }
-    // }
-    // form.validateFields(["amount"]);
   }, [form, selectBalance, totalSupply]);
   const maxSuffix = useMemo(() => {
     return (
@@ -147,7 +184,6 @@ export default function MintCreate() {
     (e) => {
       var value = e.target.value;
       if (Number(value)) {
-        console.log("selectBalance", selectBalance);
         const inpVal = Number(value.replace(/[^\d]/g, ""));
         const val = inpVal > selectBalance ? selectBalance : inpVal;
         setAmount(val);
@@ -178,7 +214,10 @@ export default function MintCreate() {
       if (Number(value)) {
         const inpVal = Number(value.replace(/[^\d]/g, ""));
         const val = inpVal > numberMint ? numberMint : inpVal;
+        setAddressMints(val);
         form.setFieldValue("addressMints", val);
+      } else {
+        setAddressMints(0);
       }
     },
     [form, numberMint]
@@ -206,8 +245,8 @@ export default function MintCreate() {
       if (selectAllowance < amount) {
         command += `approve ${amount} ${selectToken?.name} to ${NOSTR_MINT_SEND_TO};`;
       }
-      if (quoteAllowance < serviceFee) {
-        command += `approve ${serviceFee} ${QUOTE_ASSET} to ${NOSTR_MINT_SEND_TO}`;
+      if (quoteAllowance < MINT_SERVICE_FEE) {
+        command += `approve ${MINT_SERVICE_FEE} ${QUOTE_ASSET} to ${NOSTR_MINT_SEND_TO}`;
       }
       let ret = await handleApproveAsyncByCommand(command);
       if (!ret) {
@@ -222,6 +261,7 @@ export default function MintCreate() {
       } else {
         message.error(ret.data);
       }
+      setBtnLoading(false)
     } catch (e) {
       // console.log("messageApi.error(e.message);",e, e?.errorField);
       if (!e?.errorFields?.length) {
@@ -240,17 +280,57 @@ export default function MintCreate() {
     selectToken?.name
   ]);
   const memoButton = useMemo(() => {
-    if (serviceFee > getTokenBalance(QUOTE_ASSET)) {
+    if (MINT_SERVICE_FEE > getTokenBalance(QUOTE_ASSET)) {
+      return (
+        <Button type="primary" size="large" style={{ width: "260px" }} disabled={true}>
+          {"Insufficient balance"}
+        </Button>
+      );
+    } else {
+      return (
+        <CheckNostrButton>
+          <Button type="primary" style={{ width: "260px" }} size="large" htmlType="submit">
+            Launch Your Mint Activity
+          </Button>
+        </CheckNostrButton>
+      );
+    }
+    // if (MINT_SERVICE_FEE > getTokenBalance(QUOTE_ASSET)) {
+    //   return (
+    //     <Button type="primary" size="large" style={{ width: "200px" }} disabled={true}>
+    //       {"Insufficient balance"}
+    //     </Button>
+    //   );
+    // } else if (selectAllowance && selectAllowance >= amount && quoteAllowance && quoteAllowance >= MINT_SERVICE_FEE) {
+    //   return (
+    //     <CheckNostrButton>
+    //       <Button type="primary" style={{ width: "200px" }} size="large" loading={btnLoading} htmlType="submit">
+    //         Launch Your Mint Activity
+    //       </Button>
+    //     </CheckNostrButton>
+    //   );
+    // } else {
+    //   return (
+    //     <CheckNostrButton>
+    //       <Button type="primary" style={{ width: "200px" }} size="large" onClick={onApprove} loading={btnLoading}>
+    //         Approve
+    //       </Button>
+    //     </CheckNostrButton>
+    //   );
+    // }
+  }, [getTokenBalance]);
+  const memoModalButton = useMemo(() => {
+    if (MINT_SERVICE_FEE > getTokenBalance(QUOTE_ASSET)) {
       return (
         <Button type="primary" size="large" style={{ width: "200px" }} disabled={true}>
           {"Insufficient balance"}
         </Button>
       );
-    } else if (selectAllowance && selectAllowance >= amount && quoteAllowance && quoteAllowance >= serviceFee) {
+    } else if (selectAllowance && selectAllowance >= amount && quoteAllowance && quoteAllowance >= MINT_SERVICE_FEE) {
       return (
         <CheckNostrButton>
-          <Button type="primary" style={{ width: "200px" }} size="large" loading={btnLoading} htmlType="submit">
-            Launch Your Mint Activity
+          <Button type="primary" style={{ width: "200px" }} size="large" loading={btnLoading} onClick={onSave}>
+            Submit
           </Button>
         </CheckNostrButton>
       );
@@ -263,7 +343,7 @@ export default function MintCreate() {
         </CheckNostrButton>
       );
     }
-  }, [amount, btnLoading, getTokenBalance, onApprove, quoteAllowance, selectAllowance]);
+  }, [amount, btnLoading, getTokenBalance, onApprove, onSave, quoteAllowance, selectAllowance]);
   return (
     <>
       <SubmitModal visible={submitModalVisible} setVisible={setSubmitModalVisible} />
@@ -302,7 +382,7 @@ export default function MintCreate() {
             maxWidth: "100%"
           }}
           // initialValues={{ decimal: 1, displayDecimal: 1 }}
-          onFinish={onSave}
+          onFinish={onConfirm}
           autoComplete="off"
         >
           {/* <h4 className="nostr-activity-form-groupInfo">Asset info</h4> */}
@@ -353,6 +433,12 @@ export default function MintCreate() {
                     if (!Number(value)) {
                       return Promise.reject(new Error(t`Invalid input format.`));
                     }
+                    if(selectBalance / totalSupply < 0.3) {
+                      return Promise.reject(new Error(t`Your asset holding should ≥30% to launch the mint activity.`));
+                    }
+                    if(value / totalSupply < 0.05) {
+                      return Promise.reject(new Error(t`Maximum Mint Amount should at least 5% of total supply.`));
+                    }
                     return Promise.resolve();
                   }
                   return Promise.resolve();
@@ -385,13 +471,14 @@ export default function MintCreate() {
                     if (Number(value) < 10 || Number(value) > 5000) {
                       return Promise.reject(new Error(t`Number of Mints should be 10~5000.`));
                     }
-                    // if (
-                    //   Number(value) &&
-                    //   Number(amount) &&
-                    //   Number(value) * Number(amount) < selectedToken?.volume * qutoAssetVolume
-                    // ) {
-                    //   return Promise.reject(new Error(`Minimum Qty is ${selectedToken?.volume * qutoAssetVolume} USDT`));
-                    // }
+                    const amount = form.getFieldValue("amount")
+                    if (
+                      Number(value) &&
+                      Number(amount) &&
+                      !Number.isInteger(Number(amount) / Number(value))
+                    ) {
+                      return Promise.reject(new Error(`Single Mint Amount must be an integer`));
+                    }
                     return Promise.resolve();
                   }
                   return Promise.resolve();
@@ -474,7 +561,7 @@ export default function MintCreate() {
           <div>
             {memoLabelServiceFee}
             <span className="nostr-activity-form-servicefee__value" style={{ marginLeft: "20px" }}>
-              {`${serviceFee} sats`}{" "}
+              {`${MINT_SERVICE_FEE} sats`}{" "}
               <span className="color-dark f12">{`(Balance: ${getTokenBalance(QUOTE_ASSET)} sats)`}</span>
             </span>
           </div>
@@ -490,6 +577,82 @@ export default function MintCreate() {
             {memoButton}
           </Row>
         </Form>
+        <Modal
+          title="Confirm"
+          className="base-modal"
+          open={isModalOpen}
+          footer={memoModalButton}
+          onOk={handleOk}
+          onCancel={handleCancel}
+        >
+          <div className="asset-confirm-content">
+            <div className="asset-confirm-item">
+              <div className="asset-confirm-item-label">Asset:</div>
+              <div className="asset-confirm-item-value">{selectToken?.name}</div>
+            </div>
+            <div className="asset-confirm-item">
+              <div className="asset-confirm-item-label">Maximum Mint Amount:</div>
+              <div className="asset-confirm-item-value">{amount ? numberWithCommas(amount) : "--"}</div>
+            </div>
+            <div className="asset-confirm-item">
+              <div className="asset-confirm-item-label">Percentage:</div>
+              <div className="asset-confirm-item-value">{percentage ? `${percentage}%` : "--"}</div>
+            </div>
+            <div className="asset-confirm-item">
+              <div className="asset-confirm-item-label">Number of Mints:</div>
+              <div className="asset-confirm-item-value">{numberMint ? numberWithCommas(numberMint) : "--"}</div>
+            </div>
+            <div className="asset-confirm-item">
+              <div className="asset-confirm-item-label">Single Mint Amount:</div>
+              <div className="asset-confirm-item-value">{singleMint ? numberWithCommas(singleMint) : "--"}</div>
+            </div>
+            <div className="asset-confirm-item">
+              <div className="asset-confirm-item-label">Maximum Mints Per Address:</div>
+              <div className="asset-confirm-item-value">{addressMints ? numberWithCommas(addressMints) : "--"}</div>
+            </div>
+            <div className="asset-confirm-item">
+              <div className="asset-confirm-item-label">Mint Fee/Mint:</div>
+              <div className="asset-confirm-item-value">{fee ? numberWithCommas(fee) : "--"}</div>
+            </div>
+            <div className="asset-confirm-item">
+              <div className="asset-confirm-item-label">Service Fee:</div>
+              <div className="asset-confirm-item-value">
+                {MINT_SERVICE_FEE ? numberWithCommas(MINT_SERVICE_FEE) : "--"}
+              </div>
+            </div>
+            <div className="asset-confirm-item mt20 color-green-light f12">
+              Once the mint activity is initiated, the settings cannot be modified. Please ensure that everything is
+              correct before submitting.
+            </div>
+          </div>
+        </Modal>
+        <Modal
+          title=""
+          className="base-modal"
+          open={isSuccessModalOpen}
+          footer={
+            <Button type="primary" style={{ width: "140px", marginTop: "20px" }} onClick={handleSuccessCancel}>
+              OK
+            </Button>
+          }
+          onOk={handleSuccessOk}
+          onCancel={handleSuccessCancel}
+        >
+          <div>
+            <div className="tc">
+              <CheckCircleOutlined style={{ fontSize: "30px", color: "#38c89d",verticalAlign: "middle" }} />
+              <span className="f18 b" style={{marginLeft: "8px"}}>Success!</span>
+            </div>
+            <div className="mt20">
+              You've successfully launched the mint activity. Visit the Mint Assets page to monitor the minting process
+              of your asset.
+            </div>
+            <div className="mt20">
+              Additionally, you should share your mint activity to increase its visibility and enhance the chances of
+              your asset being minted.
+            </div>
+          </div>
+        </Modal>
       </div>
     </>
   );

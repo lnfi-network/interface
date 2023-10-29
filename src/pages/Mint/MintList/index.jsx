@@ -151,6 +151,7 @@ function MintList() {
                 <span onClick={() => history.push(`/mint/detail/${row.id}`)}>
                   <Button
                     type="primary"
+                    disabled={row.status == "SUCCESS" || row.max_amount == row.received_amount}
                     // onClick={() => setType("In-Progress")}
                   >{t`Mint`}</Button>
                   <span style={{ fontSize: "20px", verticalAlign: "middle" }}>{" >"}</span>
@@ -306,20 +307,6 @@ function MintList() {
           dataIndex: "status",
           // width: 260,
           render: (text, row) => {
-            let txt;
-            switch (text) {
-              case 0:
-              case 1:
-                txt = "待部署";
-                break;
-              case 2:
-                txt = "部署中";
-                break;
-              case 9:
-              case 99:
-                txt = "已完成";
-                break;
-            }
             return (
               // <div
               //   className="mint-table-status"
@@ -330,6 +317,7 @@ function MintList() {
               <CheckNostrButton>
                 <Button
                   type="primary"
+                  disabled={row.status == "SUCCESS" || row.max_amount == row.received_amount}
                   // onClick={() => setType("In-Progress")}
                 >{t`Mint`}</Button>
                 <span style={{ fontSize: "20px", verticalAlign: "middle" }}>{" >"}</span>
