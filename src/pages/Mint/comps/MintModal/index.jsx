@@ -45,7 +45,8 @@ export default function MintModal({ visible, setVisible, mintDetail, reexcuteQue
   }, [balanceList]);
 
   const maxMintNumber = useMemo(() => {
-    return Number(mintDetail?.max_address) - hadMintCount;
+    const maxAddress = mintDetail?.max_address || 0;
+    return Number(maxAddress) - hadMintCount;
   }, [hadMintCount, mintDetail?.max_address]);
 
   const handleCancel = useCallback(() => {
