@@ -3,7 +3,7 @@ import React, { useState, useCallback, useEffect, useMemo } from "react";
 import { CheckCircleFilled } from "@ant-design/icons";
 import "./index.scss";
 
-export default function MintSuccessModal({ visible, setVisible, tokenName, mintTokenNumber = 0 }) {
+export default function MintSuccessModal({ visible, setVisible, tokenName, totalMintAmount, mintTokenNumber = 0 }) {
   const handleCancel = useCallback(() => {
     setVisible(false);
   }, [setVisible]);
@@ -44,7 +44,7 @@ export default function MintSuccessModal({ visible, setVisible, tokenName, mintT
       >
         <div className="submit-modal">
           <p className="submit-modal-content">
-            Great! You've just minted {mintTokenNumber} {tokenName}. You can check your Asset Balance on the NostrAsset
+            Great! You've just minted {totalMintAmount} {tokenName}. You can check your Asset Balance on the NostrAsset
             Asset page.
           </p>
         </div>

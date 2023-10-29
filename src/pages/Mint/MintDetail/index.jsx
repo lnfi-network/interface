@@ -84,10 +84,10 @@ export default function MintDetail() {
   });
   useEffect(() => {
     setInterval(() => {
-      reexcuteQuery();
+      reexcuteQueryMintAssetDetail();
     }, 60000);
     return () => null;
-  }, [reexcuteQuery]);
+  }, [reexcuteQueryMintAssetDetail]);
   const detail = useMemo(() => {
     return list?.[0] || {};
   }, [list]);

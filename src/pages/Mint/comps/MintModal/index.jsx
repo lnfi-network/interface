@@ -170,6 +170,7 @@ export default function MintModal({ visible, setVisible, mintDetail, reexcuteQue
         visible={successModalVisible}
         setVisible={setSuccessModalVisible}
         tokenName={mintDetail?.token_name}
+        totalMintAmount={totalMintAmount}
         mintTokenNumber={mintDetail?.single_amount}
       />
       <Modal
