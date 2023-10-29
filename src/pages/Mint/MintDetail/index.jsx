@@ -6,15 +6,16 @@ import { useQueryBalance } from "hooks/useNostrMarket";
 import { useSelector, useDispatch } from "react-redux";
 import { Button, Popover, Input, Spin, Empty, Tooltip, Image, Modal, Pagination } from "antd";
 import { useMintAssetsQuery } from "hooks/graphQuery/useExplore";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useEffect, useState } from "react";
 // import ImportModal from "./comps/ImportModal";
 // import SyncImportModal from "./comps/SyncImportModal";
 import EllipsisMiddle from "components/EllipsisMiddle";
 import { limitDecimals, numberWithCommas } from "lib/numbers";
 // import { useImportAsset, useHandleQueryTokenList } from "hooks/useNostrMarket";
-import tapdLogo from "img/tapd-logo.jpg";
+// import tapdLogo from "img/tapd-logo.jpg";
+import progressIcon from "img/progress.png";
 import CheckNostrButton from "components/CheckNostrButton";
-import { setAboutModalVisible } from "store/reducer/modalReducer";
+// import { setAboutModalVisible } from "store/reducer/modalReducer";
 import { ShareAltOutlined, CloseCircleOutlined, SwapOutlined } from "@ant-design/icons";
 import { nip19 } from "nostr-tools";
 import {
@@ -76,7 +77,12 @@ export default function MintDetail() {
   const { list, fetching, reexcuteQuery } = useMintAssetsQuery({
     id: params?.id
   });
-  // console.log("list",list);
+  useEffect(() => {
+    setInterval(() => {
+      reexcuteQuery();
+    }, 60000);
+    return () => null;
+  }, [reexcuteQuery]);
   const detail = useMemo(() => {
     return list?.[0] || {};
   }, [list]);
@@ -104,7 +110,7 @@ export default function MintDetail() {
           <span className="mint-detail-back__value"> Back</span>
         </div>
         <div className="mint-detail-content">
-          <Spin spinning={fetching}>
+          <Spin spinning={!detail?.token_name && fetching}>
             <div className="mint-detail-content-section">
               <div className="mint-detail-content-head">
                 <div className="mint-detail-content-head-name">
@@ -125,10 +131,10 @@ export default function MintDetail() {
                   placement="bottom"
                   content={
                     <>
-                      <TelegramShareButton url={"http://localhost:3011/#/mint"} quote={"hahahha"}>
+                      <TelegramShareButton url={location.href} quote={""}>
                         <TelegramIcon size={32} style={{ marginRight: "10px" }} round={true}></TelegramIcon>
                       </TelegramShareButton>
-                      <TwitterShareButton url={"http://localhost:3011/#/mint"} quote={"hahahha"}>
+                      <TwitterShareButton url={location.href} quote={""}>
                         <TwitterIcon size={32} style={{ marginRight: "10px" }} round={true}></TwitterIcon>
                       </TwitterShareButton>
                     </>
@@ -140,7 +146,9 @@ export default function MintDetail() {
               </div>
               <div className="mint-detail-content-progress">
                 <div className="progress-all">
-                  <div className="progress-percent" style={{ width: progress }}></div>
+                  <div className="progress-percent" style={{ width: progress }}>
+                    <img className="progress-percent-icon" src={progressIcon} alt="" />
+                  </div>
                   <div className="progress-percent-text" style={{ left: progress }}>
                     {progress}{" "}
                     <span className="color-yellow">
@@ -161,6 +169,7 @@ export default function MintDetail() {
                   <Button
                     type="primary"
                     // onClick={() => setType("In-Progress")}
+                    disabled={detail.status == "SUCCESS" || detail.max_amount == detail.received_amount}
                     style={{ width: "160px" }}
                     size="large"
                   >{`Mint Asset`}</Button>

@@ -42,3 +42,10 @@
     text-align: center;
   }
 }
+.asset-confirm-content{
+  .asset-confirm-item{
+    padding: 4px 30px;
+    display: flex;
+    justify-content: space-between;
+  }
+}
