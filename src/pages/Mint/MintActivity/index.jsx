@@ -147,6 +147,7 @@ export default function MintCreate() {
     (e) => {
       var value = e.target.value;
       if (Number(value)) {
+        console.log("selectBalance", selectBalance);
         const inpVal = Number(value.replace(/[^\d]/g, ""));
         const val = inpVal > selectBalance ? selectBalance : inpVal;
         setAmount(val);
@@ -241,19 +242,14 @@ export default function MintCreate() {
   const memoButton = useMemo(() => {
     if (serviceFee > getTokenBalance(QUOTE_ASSET)) {
       return (
-        <Button
-          type="primary"
-          size="large"
-          style={{width: "200px"}}
-          disabled={true}
-        >
+        <Button type="primary" size="large" style={{ width: "200px" }} disabled={true}>
           {"Insufficient balance"}
         </Button>
       );
     } else if (selectAllowance && selectAllowance >= amount && quoteAllowance && quoteAllowance >= serviceFee) {
       return (
         <CheckNostrButton>
-          <Button type="primary" style={{width: "200px"}} size="large" loading={btnLoading} htmlType="submit">
+          <Button type="primary" style={{ width: "200px" }} size="large" loading={btnLoading} htmlType="submit">
             Launch Your Mint Activity
           </Button>
         </CheckNostrButton>
@@ -261,7 +257,7 @@ export default function MintCreate() {
     } else {
       return (
         <CheckNostrButton>
-          <Button type="primary" style={{width: "200px"}} size="large" onClick={onApprove} loading={btnLoading}>
+          <Button type="primary" style={{ width: "200px" }} size="large" onClick={onApprove} loading={btnLoading}>
             Approve
           </Button>
         </CheckNostrButton>
@@ -434,7 +430,11 @@ export default function MintCreate() {
               })
             ]}
           >
-            <Input size="large" placeholder="Please setup the Maximum Mints limit for each address" onChange={addressMintsChange} />
+            <Input
+              size="large"
+              placeholder="Please setup the Maximum Mints limit for each address"
+              onChange={addressMintsChange}
+            />
           </Form.Item>
           <Form.Item
             label="Mint Fee/Mint (≥0, Mint fee will send to your NostrAssets account after every mint)"
