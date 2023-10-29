@@ -63,6 +63,7 @@ import {
   WorkplaceIcon
 } from "react-share";
 import useDevice from "hooks/useDevice";
+import MintModal from "../comps/MintModal";
 const assetsTypeMap = {
   0: "Token",
   1: "NFT"
@@ -73,7 +74,7 @@ export default function MintDetail() {
   const device = useDevice();
   const { tokenList } = useSelector(({ market }) => market);
   const params = useParams();
-
+  const [mintModalVisible, setMintModalVisible] = useState(false);
   const { list, fetching, reexcuteQuery } = useMintAssetsQuery({
     id: params?.id
   });
@@ -97,8 +98,12 @@ export default function MintDetail() {
     return `${progress || 0}%`;
   }, [detail?.max_amount, detail?.received_amount]);
 
+  const showMintModal = useCallback(() => {
+    setMintModalVisible(true);
+  }, []);
   return (
     <>
+      <MintModal visible={mintModalVisible} setVisible={setMintModalVisible} mintDetail={detail} />
       <div className="mint-detail-container">
         <div
           className="mint-detail-back OpenSans"
@@ -170,6 +175,9 @@ export default function MintDetail() {
                     type="primary"
                     // onClick={() => setType("In-Progress")}
                     disabled={detail.status == "SUCCESS" || detail.max_amount == detail.received_amount}
+                    onClick={() => {
+                      showMintModal();
+                    }}
                     style={{ width: "160px" }}
                     size="large"
                   >{`Mint Asset`}</Button>
