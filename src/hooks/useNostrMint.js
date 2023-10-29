@@ -108,3 +108,22 @@ export const useApprove = () => {
     handleApproveAsyncByCommand
   };
 };
+export const useMintActivity = () => {
+  const { execQueryNostrAsync } = useNostrPool();
+  const handleMintActivityAsync = useCallback(
+    async (activeId, addressNum) => {
+      const queryCommand = `mint activity ${activeId} share ${addressNum}`;
+      const ret = await execQueryNostrAsync({
+        queryCommand,
+        sendToNostrAddress: NOSTR_MINT_SEND_TO,
+        isUseLocalRobotToSend: false
+      });
+
+      return ret?.result;
+    },
+    [execQueryNostrAsync]
+  );
+  return {
+    handleMintActivityAsync
+  };
+};

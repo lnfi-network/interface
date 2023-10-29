@@ -75,7 +75,11 @@ export default function MintDetail() {
   const { tokenList } = useSelector(({ market }) => market);
   const params = useParams();
   const [mintModalVisible, setMintModalVisible] = useState(false);
-  const { list, fetching, reexcuteQuery } = useMintAssetsQuery({
+  const {
+    list,
+    fetching,
+    reexcuteQuery: reexcuteQueryMintAssetDetail
+  } = useMintAssetsQuery({
     id: params?.id
   });
   useEffect(() => {
@@ -103,7 +107,12 @@ export default function MintDetail() {
   }, []);
   return (
     <>
-      <MintModal visible={mintModalVisible} setVisible={setMintModalVisible} mintDetail={detail} />
+      <MintModal
+        visible={mintModalVisible}
+        setVisible={setMintModalVisible}
+        mintDetail={detail}
+        reexcuteQueryMintAssetDetail={reexcuteQueryMintAssetDetail}
+      />
       <div className="mint-detail-container">
         <div
           className="mint-detail-back OpenSans"
