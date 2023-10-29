@@ -55,8 +55,8 @@ export default function LightningFormItems({ form, nostrAccount, messageApi, han
       }
       setBtnLoading(true);
       const values = form.getFieldsValue(true);
-      const sendTx = await handleUnisatPay(values.invoice, true);
-      const withdrawRet = await handleWeblnWithdrawAsync(withdrawAmount, values.invoice, sendTx);
+      // const sendTx = await handleUnisatPay(values.invoice, true);
+      const withdrawRet = await handleWeblnWithdrawAsync(withdrawAmount, values.invoice);
       if (withdrawRet?.code === 0) {
         messageApi.success({
           content: <p className="message-content">{withdrawRet.data}</p>
@@ -75,16 +75,7 @@ export default function LightningFormItems({ form, nostrAccount, messageApi, han
     } finally {
       setBtnLoading(false);
     }
-  }, [
-    balance,
-    form,
-    handleQueryBalance,
-    handleUnisatPay,
-    handleWeblnWithdrawAsync,
-    messageApi,
-    npubNostrAccount,
-    withdrawAmount
-  ]);
+  }, [balance, form, handleQueryBalance, handleWeblnWithdrawAsync, messageApi, npubNostrAccount, withdrawAmount]);
 
   const handleMakeInvoice = useCallback(async () => {
     setBtnCreateLoading(true);
@@ -117,16 +108,14 @@ export default function LightningFormItems({ form, nostrAccount, messageApi, han
     return <span className="withdraw-amount-balance">Nostr Account balance: {balance} SATS</span>;
   }, [balance]);
   const memoWithdrawBtn = useMemo(() => {
-    return account ? (
+    return (
       <CheckNostrButton>
         <Button type="primary" size="large" className="withdraw-send-btn" loading={btnLoading} onClick={handleWithdraw}>
           Send
         </Button>
       </CheckNostrButton>
-    ) : (
-      <ConnectWallet />
     );
-  }, [account, btnLoading, handleWithdraw]);
+  }, [btnLoading, handleWithdraw]);
   const tokens = useMemo(() => {
     return tokenList.filter((item) => item.assetType === "LIGHTNING");
   }, [tokenList]);

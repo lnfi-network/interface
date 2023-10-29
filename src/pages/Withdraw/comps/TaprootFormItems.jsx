@@ -54,12 +54,11 @@ export default function TaprootFormItems({ form, nostrAccount, notifiApi, messag
       }
       setBtnLoading(true);
       const values = form.getFieldsValue(true);
-      const sendTx = await handleUnisatPay(values.invoice, true);
+      //const sendTx = await handleUnisatPay(values.invoice, true);
       const withdrawRet = await handleTaprootWithdrawAsync(
         withdrawAmount,
         values.invoiceTap,
-        values.depositOrWithdrawToken,
-        sendTx
+        values.depositOrWithdrawToken
       );
       if (withdrawRet?.code === 0) {
         await sleep(4000);
@@ -77,16 +76,7 @@ export default function TaprootFormItems({ form, nostrAccount, notifiApi, messag
     } finally {
       setBtnLoading(false);
     }
-  }, [
-    balance,
-    form,
-    handleQueryBalance,
-    handleTaprootWithdrawAsync,
-    handleUnisatPay,
-    messageApi,
-    npubNostrAccount,
-    withdrawAmount
-  ]);
+  }, [balance, form, handleQueryBalance, handleTaprootWithdrawAsync, messageApi, npubNostrAccount, withdrawAmount]);
   const tokens = useMemo(() => {
     return tokenList.filter((item) => item.assetType === "TAPROOT");
   }, [tokenList]);
@@ -106,7 +96,7 @@ export default function TaprootFormItems({ form, nostrAccount, notifiApi, messag
     );
   }, [balance, token]);
   const memoWithdrawBtn = useMemo(() => {
-    return account ? (
+    return (
       <CheckNostrButton>
         <Button
           type="primary"
@@ -119,10 +109,8 @@ export default function TaprootFormItems({ form, nostrAccount, notifiApi, messag
           Send
         </Button>
       </CheckNostrButton>
-    ) : (
-      <ConnectWallet />
     );
-  }, [account, btnLoading, handleWithdraw, withdrawAmount]);
+  }, [btnLoading, handleWithdraw, withdrawAmount]);
 
   const { run: handleInvoiceChange } = useThrottleFn(
     async ({ target: { value } }) => {

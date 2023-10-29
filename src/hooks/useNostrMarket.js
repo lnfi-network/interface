@@ -458,8 +458,8 @@ export const useTaprootDeposit = () => {
 export const useTaprootWithdraw = () => {
   const { execQueryNostrAsync } = useNostrPool();
   const handleTaprootWithdrawAsync = useCallback(
-    async (amount, invoice, tokenName, txHash) => {
-      const queryCommand = `withdraw ${amount} ${tokenName} to ${invoice} txhash ${txHash}`;
+    async (amount, invoice, tokenName) => {
+      const queryCommand = `withdraw ${amount} ${tokenName} to ${invoice}`;
       const ret = await execQueryNostrAsync({
         queryCommand,
         isUseLocalRobotToSend: false,
