@@ -9,9 +9,7 @@ import { to } from "await-to-js";
 import { useSelector } from "react-redux";
 import { useThrottleFn } from "ahooks";
 import { sleep } from "lib/utils";
-import { useDispatch } from "react-redux";
-import { setOnlyMobileSupportedVisible } from "store/reducer/modalReducer";
-import useDevice from "hooks/useDevice";
+
 import { useUnisatPayfee } from "hooks/useWithdrawPayfee";
 import { nip19 } from "nostr-tools";
 export default function TaprootFormItems({ form, nostrAccount, notifiApi, messageApi, handleQueryBalance }) {
@@ -54,7 +52,7 @@ export default function TaprootFormItems({ form, nostrAccount, notifiApi, messag
       }
       setBtnLoading(true);
       const values = form.getFieldsValue(true);
-      const sendTx = await handleUnisatPay(values.invoice, true);
+      const sendTx = await handleUnisatPay(values.invoiceTap, true);
       const withdrawRet = await handleTaprootWithdrawAsync(
         withdrawAmount,
         values.invoiceTap,

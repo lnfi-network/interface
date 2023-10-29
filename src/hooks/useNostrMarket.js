@@ -434,8 +434,8 @@ export const useWeblnDeposit = () => {
 export const useWeblnWithdraw = () => {
   const { execQueryNostrAsync } = useNostrPool();
   const handleWeblnWithdrawAsync = useCallback(
-    async (amount, invoice, txhash) => {
-      const queryCommand = `withdraw ${amount} sats to ${invoice} txhash ${txhash}`;
+    async (amount, invoice) => {
+      const queryCommand = `withdraw ${amount} sats to ${invoice}`;
       const ret = await execQueryNostrAsync({
         queryCommand,
         isUseLocalRobotToSend: false,

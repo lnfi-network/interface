@@ -51,7 +51,7 @@ export const useUnisatPayfee = () => {
     });
 
     if (balance?.confirmed === 0) {
-      throw new Error("Insufficient Balance.")
+      throw new Error("Insufficient Balance1.")
     }
     const willBuildParam = needEncode ? sha256(buildParam) : buildParam
     console.log("🚀 ~ file: useWithdrawPayfee.js:56 ~ handleUnisatPay ~ willBuildParam:", willBuildParam);
