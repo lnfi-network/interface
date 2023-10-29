@@ -5,6 +5,7 @@ import { QUOTE_ASSET } from "config/constants";
 import { useQueryBalance } from "hooks/useNostrMarket";
 import { useMintActivityDetailStats } from "hooks/graphQuery/useMintQuery";
 import { InfoCircleOutlined } from "@ant-design/icons";
+import MintSuccessModal from "../MintSuccessModal";
 import "./index.scss";
 
 import { useSelector } from "react-redux";
@@ -27,6 +28,7 @@ export default function MintModal({ visible, setVisible, mintDetail, reexcuteQue
   const [approveBtnLoading, setApproveBtnLoading] = useState(false);
   const [mintFee, setMintFee] = useState(0);
   const [mintLoading, setMintLoading] = useState(false);
+  const [successModalVisible, setSuccessModalVisible] = useState(false);
   const { hadMintCount, reexcuteQuery: reQueryHadMintCount } = useMintActivityDetailStats(
     mintDetail?.id,
     npubNostrAccount
@@ -67,6 +69,10 @@ export default function MintModal({ visible, setVisible, mintDetail, reexcuteQue
   const onNumberMintMax = useCallback(() => {
     form.setFieldValue("mintNumber", maxMintNumber);
   }, [form, maxMintNumber]);
+
+  const memoNumberMintsExtra = useMemo(() => {
+    return <span className="number-mint-etra">Maximum mints per address {mintDetail?.max_address}</span>;
+  }, [mintDetail?.max_address]);
   const onApprove = useCallback(async () => {
     try {
       setApproveBtnLoading(true);
@@ -96,7 +102,9 @@ export default function MintModal({ visible, setVisible, mintDetail, reexcuteQue
       await handleQueryAllowanceAsync(QUOTE_ASSET);
       await handleQueryBalance(npubNostrAccount);
       //queryBalance
-      window._message.success(ret.data);
+      handleCancel();
+      //window._message.success(ret.data);
+      setSuccessModalVisible(true);
     } catch (e) {
       e.message && window._message.error(e.message);
     } finally {
@@ -106,6 +114,7 @@ export default function MintModal({ visible, setVisible, mintDetail, reexcuteQue
     }
   }, [
     form,
+    handleCancel,
     handleMintActivityAsync,
     handleQueryAllowanceAsync,
     handleQueryBalance,
@@ -157,10 +166,16 @@ export default function MintModal({ visible, setVisible, mintDetail, reexcuteQue
 
   return (
     <>
+      <MintSuccessModal
+        visible={successModalVisible}
+        setVisible={setSuccessModalVisible}
+        tokenName={mintDetail?.token_name}
+        mintTokenNumber={mintDetail?.single_amount}
+      />
       <Modal
         className="nostrswap-modal"
         open={visible}
-        width="500px"
+        width="450px"
         title={`Mint ${tokenName}`}
         zIndex={1002}
         footer={null}
@@ -178,6 +193,7 @@ export default function MintModal({ visible, setVisible, mintDetail, reexcuteQue
           <Form.Item
             label="Number of Mints"
             required
+            extra={memoNumberMintsExtra}
             rules={[
               {
                 validator(_, value) {
