@@ -9,10 +9,7 @@ import { to } from "await-to-js";
 import { useSelector } from "react-redux";
 import { useThrottleFn } from "ahooks";
 import { sleep } from "lib/utils";
-import { useDispatch } from "react-redux";
-import { setOnlyMobileSupportedVisible } from "store/reducer/modalReducer";
-import useDevice from "hooks/useDevice";
-import { useUnisatPayfee } from "hooks/useWithdrawPayfee";
+
 import { nip19 } from "nostr-tools";
 export default function TaprootFormItems({ form, nostrAccount, notifiApi, messageApi, handleQueryBalance }) {
   const { TextArea } = Input;
@@ -26,7 +23,6 @@ export default function TaprootFormItems({ form, nostrAccount, notifiApi, messag
   /*  const dispatch = useDispatch();
   const device = useDevice(); */
   const [token, setToken] = useState("");
-  const { handleUnisatPay } = useUnisatPayfee();
   const balance = useMemo(() => {
     return balanceList[token] ? balanceList[token]?.balanceShow : 0.0;
   }, [balanceList, token]);

@@ -1,7 +1,7 @@
 import { Form, Row, Col, Input, Button, Select, Modal, InputNumber } from "antd";
 
 import { useEffect, useMemo, useState, useCallback } from "react";
-import ConnectWallet from "components/Common/ConnectWallet";
+
 import CheckNostrButton from "components/CheckNostrButton";
 import { useWeblnWithdraw } from "hooks/useNostrMarket";
 import { to } from "await-to-js";
@@ -10,7 +10,6 @@ import useWebln from "hooks/useWebln";
 import { sleep } from "lib/utils";
 import { useDispatch } from "react-redux";
 import { setConnectNostrModalVisible, setOnlyMobileSupportedVisible } from "store/reducer/modalReducer";
-import { useUnisatPayfee } from "hooks/useWithdrawPayfee";
 import useDevice from "hooks/useDevice";
 import { nip19 } from "nostr-tools";
 import "./LightningFormItems.scss";
