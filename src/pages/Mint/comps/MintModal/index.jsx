@@ -125,7 +125,7 @@ export default function MintModal({ visible, setVisible, mintDetail, reexcuteQue
   ]);
 
   const submitBtn = useMemo(() => {
-    if (balance?.balance < totalFee) {
+    if (!balance?.balance || balance?.balance < totalFee) {
       return (
         <Button type="primary" size="middle" disabled>
           Insufficient Balance
@@ -251,7 +251,7 @@ export default function MintModal({ visible, setVisible, mintDetail, reexcuteQue
           <Form.Item label="Total Fee" className="form-item-display">
             <span className="form-item-display__text">
               {totalFee} sats{" "}
-              <span className="form-item-display__text-tip">(Balance: {balance?.balanceShow} sats)</span>
+              <span className="form-item-display__text-tip">(Balance: {balance?.balanceShow || 0} sats)</span>
             </span>
           </Form.Item>
 
