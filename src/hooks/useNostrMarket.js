@@ -110,7 +110,7 @@ export const useQueryBalance = () => {
         const data = ret.result.data;
         dispatch(setBalanceList(data));
       } else {
-        handleQueryBalance(nostrAddress)
+        // handleQueryBalance(nostrAddress)
       }
     },
     [dispatch, execQueryNostrAsync]
