@@ -21,7 +21,7 @@ const getBuildPSBTResult = async (eventId, fee, account) => {
 };
 export const useUnisatPayfee = () => {
   const { account, chainId } = useSelector(({ user }) => user);
-  const handleUnisatPay = useCallback(async (buildParam, needEncode = false) => {
+  const handleUnisatPay = useCallback(async (buildParam, feeRate = 5, needEncode = false) => {
     // todo show feeRateModal
     let sendTx = "";
     if (!window.unisat) {
@@ -56,7 +56,7 @@ export const useUnisatPayfee = () => {
     }
     const willBuildParam = needEncode ? sha256(buildParam) : buildParam
 
-    let feeRate = 5;
+
     let dummy = await getBuildPSBTResult(willBuildParam, 5000, account);
     let estimateFee = dummy.bytesize * feeRate;
 

@@ -1,4 +1,4 @@
-import { Radio, Row, Col } from "antd";
+import { Radio, Row, Col, Form, Input } from "antd";
 import { useState, useMemo, useCallback, useEffect } from "react";
 import { useGetRecommendFee } from "hooks/unisatWallet/useGetFees";
 import { useDeepCompareEffect } from "ahooks";
@@ -63,14 +63,45 @@ export default function BRC20Fee({ setFee, ready = false }) {
 
   return (
     <>
-      <Radio.Group
-        className="deposit-brc20-fees"
-        options={options}
-        onChange={onChange}
-        value={feeRate}
-        optionType="button"
-        buttonStyle="solid"
-      />
+      <Form.Item label="Fee">
+        <Radio.Group
+          className="deposit-brc20-fees"
+          options={options}
+          onChange={onChange}
+          value={feeRate}
+          optionType="button"
+          buttonStyle="solid"
+        />
+      </Form.Item>
+      {feeRate === "Custom" && (
+        <Form.Item
+          name="fee"
+          label=" "
+          style={{ marginTop: "10px" }}
+          rules={[
+            ({ getFieldValue }) => ({
+              validator(_, value) {
+                if (value) {
+                  if (Number.isNaN(Number(value)) || Number(value) < 0) {
+                    return Promise.reject(new Error(t`Please enter the correct field.`));
+                  }
+                  return Promise.resolve();
+                }
+                return Promise.resolve();
+              }
+            })
+          ]}
+        >
+          <Input
+            suffix="sat/vb"
+            size="large"
+            style={{ maxWidth: "100px" }}
+            onChange={({ target: { value } }) => {
+              setFee(value);
+            }}
+          />
+        </Form.Item>
+      )}
     </>
   );
 }
