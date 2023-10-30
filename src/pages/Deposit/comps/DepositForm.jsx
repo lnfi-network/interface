@@ -18,7 +18,7 @@ import { getQueryVariable } from "lib/url";
 import { nip19 } from "nostr-tools";
 import { produce } from "immer";
 import { useSize, useThrottleFn } from "ahooks";
-import BRC20Fee from "./BRC20Fee";
+import BRC20Fee from "components/BRC20Fee";
 import { waitForTransaction } from "@wagmi/core";
 import { useParams } from "react-router-dom";
 import LightningFormItems from "./LightningFormItems";

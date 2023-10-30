@@ -11,6 +11,7 @@ import { useSelector } from "react-redux";
 import { useClient } from "urql";
 import "./index.scss";
 import ConnectWallet from "components/Common/ConnectWallet";
+import BRC20Fee from "components/BRC20Fee";
 const GRAPH_BASE = process.env.REACT_APP_GRAPH_BASE;
 export default function MintCreate() {
   const [form] = Form.useForm();
@@ -384,6 +385,12 @@ export default function MintCreate() {
                 <Form.Item label={memoLabelServiceFee}>
                   <span className="nostr-assets-form-servicefee__value">1200 sats</span>
                 </Form.Item>
+              </Col>
+            </Row>
+
+            <Row gutter={[24, 24]}>
+              <Col span={24}>
+                <BRC20Fee />
               </Col>
             </Row>
 
