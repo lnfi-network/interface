@@ -65,7 +65,7 @@ function App() {
   return (
     <WagmiConfig config={wagmiConfig}>
       <I18nProvider i18n={i18n} forceRenderOnLocaleChange={false}>
-        <NostrProvider debug={true}>
+        <NostrProvider debug={false}>
           <GraphProvider value={client}>
             <SEO>
               <Router>
