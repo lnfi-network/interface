@@ -155,8 +155,8 @@ export function parseUSDT(usdtStr) {
 }
 export function convertDollars(coin, price, placeholder = "--") {
   if(Number(coin) && price > 0) {
-    return `≈$${numberWithCommas(limitDecimals(coin * price, 2))}`
-    // return `≈$${numberWithCommas(limitDecimals(coin * price, 4, "floor"))}`
+    // return `≈$${numberWithCommas(limitDecimals(coin * price, 2))}`
+    return `≈$${numberWithCommas(limitDecimals(coin * price, 4, "floor"))}`
   } else {
     return placeholder
   } 
