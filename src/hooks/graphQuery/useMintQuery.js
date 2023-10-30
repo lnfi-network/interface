@@ -7,10 +7,11 @@ export const useMintActivityDetailStats = (activeId, npub_address) => {
   const tableName = `${GRAPH_BASE}nostr_assets_activity_detail`;
   const queryGraphsql = gql`
     query($activity_id:String!,$npub_address:String!) {
-      ${tableName}_aggregate(where: {activity_id: {_eq: $activity_id}, _and: {npub_address: {_eq:$npub_address }}}) {
-        aggregate {
-          count
-        }
+      ${tableName}(where: {activity_id: {_eq: $activity_id}, _and: {npub_address: {_eq:$npub_address }}}) {
+        id
+        activity_id
+        owner
+        share
       }
     }`;
   const [result, reexcuteQuery] = useQuery({
@@ -22,7 +23,7 @@ export const useMintActivityDetailStats = (activeId, npub_address) => {
   return {
     reexcuteQuery,
     fetching,
-    hadMintCount: data ? data[`${tableName}_aggregate`]?.aggregate?.count : 0
+    hadMintCount: data ? data[`${tableName}`]?.[0]?.share || 0 : 0
   };
 };
 

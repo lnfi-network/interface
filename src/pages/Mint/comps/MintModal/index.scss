@@ -4,6 +4,7 @@
   }
   .mint-form {
     width: "100%";
+    padding: 20px 20px 0;
     .mint-number {
       &-max {
         cursor: pointer;
@@ -29,6 +30,7 @@
       text-align: left;
       padding-left: 10px;
       &-tip {
+        padding-left: 10px;
         color: var(--color-text-dark);
         font-size: 12px;
       }

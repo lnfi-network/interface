@@ -724,7 +724,7 @@ export const useMintAssetsQuery = ({ pageSize = 20, pageIndex = 1, type, creator
     return where;
   }, [creator, id, search, type]);
   let sortMemo = useMemo(() => {
-    console.log(`order_by:{${order_by_name}: ${order_by}} `);
+    // console.log(`order_by:{${order_by_name}: ${order_by}} `);
     return `order_by:{${order_by_name}: ${order_by}} `;
   }, [order_by, order_by_name]);
 

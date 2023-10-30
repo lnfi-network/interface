@@ -41,7 +41,7 @@ function MintList() {
   const debouncedSearch = useDebounce(search, { wait: 500 });
   const [pageSize, setPageSize] = useState(100);
   const [pageIndex, setPageIndex] = useState(1);
-  
+
   const history = useHistory();
   const { nostrAccount, balanceList, npubNostrAccount } = useSelector(({ user }) => user);
   const { tokenList } = useSelector(({ market }) => market);
@@ -104,19 +104,15 @@ function MintList() {
           title: t`Total Supply`,
           dataIndex: "token_name",
           render: (text) => {
-            const token = tokenList.find((k) => k?.name?.toUpperCase() == text?.toUpperCase())
-            return token?.totalSupply ? numberWithCommas(token?.totalSupply) : "--"
+            const token = tokenList.find((k) => k?.name?.toUpperCase() == text?.toUpperCase());
+            return token?.totalSupply ? numberWithCommas(token?.totalSupply) : "--";
           }
         },
         {
           title: t`Maximum Mint Amount`,
           dataIndex: "max_amount",
           render: (text) => {
-            return text ? (
-              numberWithCommas(text)
-            ) : (
-              "--"
-            );
+            return text ? numberWithCommas(text) : "--";
           }
         },
         {
@@ -127,15 +123,25 @@ function MintList() {
           }
         },
         {
-          title: <><span>{t`Progress`}</span><CaretDownOutlined></CaretDownOutlined></>,
+          title: (
+            <>
+              <span>{t`Progress`}</span>
+              <CaretDownOutlined></CaretDownOutlined>
+            </>
+          ),
           dataIndex: "received_amount",
           render: (text, row) => {
-            const progress = limitDecimals((text / row.max_amount) * 100, 2, "floor")
+            const progress = limitDecimals((text / row.max_amount) * 100, 2, "floor");
             return `${progress}%`;
           }
         },
         {
-          title: <><span>{t`Minters`}</span><CaretDownOutlined></CaretDownOutlined></>,
+          title: (
+            <>
+              <span>{t`Minters`}</span>
+              <CaretDownOutlined></CaretDownOutlined>
+            </>
+          ),
           dataIndex: "received_number"
         },
         {
@@ -157,7 +163,7 @@ function MintList() {
                     disabled={row.status == "SUCCESS" || row.max_amount == row.received_amount}
                     // onClick={() => setType("In-Progress")}
                   >{t`Mint`}</Button>
-                  <span style={{ fontSize: "20px", verticalAlign: "middle" }}>{" >"}</span>
+                  <span style={{ fontSize: "20px", cursor: "pointer", verticalAlign: "middle" }}>{" >"}</span>
                 </span>
               </CheckNostrButton>
               // </div>

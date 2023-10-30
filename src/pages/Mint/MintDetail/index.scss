@@ -56,13 +56,14 @@
             position: absolute;
             top: 0;
             right: 0;
-            transform: translate(90%, -42%) rotate(45deg);
+            transform: translate(70%, -42%) rotate(45deg);
           }
         }
         .progress-percent-text{
           position: absolute;
           top: -30px;
-          transform: translateX(-50%);
+          transform: translateX(-20%);
+          width: 120px;
         }
       }
     }

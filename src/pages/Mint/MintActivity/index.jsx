@@ -200,15 +200,16 @@ export default function MintCreate() {
       var value = e.target.value;
       if (Number(value)) {
         const inpVal = Number(value.replace(/[^\d]/g, ""));
-        const val = inpVal > selectBalance ? selectBalance : inpVal;
-        setAmount(val);
-        setPercentage(limitDecimals((val / totalSupply) * 100, 2, "floor"));
-        form.setFieldValue("amount", val);
+        // const val = inpVal > selectBalance ? selectBalance : inpVal;
+        setAmount(inpVal);
+        setPercentage(limitDecimals((inpVal / totalSupply) * 100, 2, "floor"));
+        form.setFieldValue("amount", inpVal);
       } else {
         setAmount(0);
       }
+      form.validateFields(["amount"])
     },
-    [form, selectBalance, totalSupply]
+    [form, totalSupply]
   );
   const numberChange = useCallback(
     (e) => {
@@ -310,29 +311,6 @@ export default function MintCreate() {
         </CheckNostrButton>
       );
     }
-    // if (MINT_SERVICE_FEE > getTokenBalance(QUOTE_ASSET)) {
-    //   return (
-    //     <Button type="primary" size="large" style={{ width: "200px" }} disabled={true}>
-    //       {"Insufficient balance"}
-    //     </Button>
-    //   );
-    // } else if (selectAllowance && selectAllowance >= amount && quoteAllowance && quoteAllowance >= MINT_SERVICE_FEE) {
-    //   return (
-    //     <CheckNostrButton>
-    //       <Button type="primary" style={{ width: "200px" }} size="large" loading={btnLoading} htmlType="submit">
-    //         Launch Your Mint Activity
-    //       </Button>
-    //     </CheckNostrButton>
-    //   );
-    // } else {
-    //   return (
-    //     <CheckNostrButton>
-    //       <Button type="primary" style={{ width: "200px" }} size="large" onClick={onApprove} loading={btnLoading}>
-    //         Approve
-    //       </Button>
-    //     </CheckNostrButton>
-    //   );
-    // }
   }, [getTokenBalance, onConfirm]);
   const memoModalButton = useMemo(() => {
     if (MINT_SERVICE_FEE > getTokenBalance(QUOTE_ASSET)) {
@@ -459,7 +437,9 @@ export default function MintCreate() {
                     if (!Number(value)) {
                       return Promise.reject(new Error(t`Invalid input format.`));
                     }
-
+                    if(Number(value) > selectBalance || selectBalance == 0 || !selectBalance) {
+                      return Promise.reject(new Error(t`Insufficient balance.`));
+                    }
                     if (value / totalSupply < 0.05 || !value) {
                       return Promise.reject(new Error(t`Maximum Mint Amount should at least 5% of total supply.`));
                     }

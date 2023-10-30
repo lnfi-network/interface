@@ -180,7 +180,7 @@ export default function MintModal({ visible, setVisible, mintDetail, reexcuteQue
       <Modal
         className="nostrswap-modal"
         open={visible}
-        width="450px"
+        width="500px"
         title={`Mint ${tokenName}`}
         zIndex={1002}
         footer={null}
@@ -253,10 +253,11 @@ export default function MintModal({ visible, setVisible, mintDetail, reexcuteQue
             <span className="form-item-display__text">1000 sats</span>
           </Form.Item>
           <Form.Item label="Total Fee" className="form-item-display">
-            <span className="form-item-display__text">
+            <div className="form-item-display__text">
               {totalFee} sats{" "}
-              <span className="form-item-display__text-tip">(Balance: {balance?.balanceShow || 0} sats)</span>
-            </span>
+              
+            </div>
+            <div className="form-item-display__text-tip">Balance: {balance?.balanceShow || 0} sats</div>
           </Form.Item>
 
           <Form.Item wrapperCol={24} align="middle">
