@@ -36,8 +36,8 @@ function MintList() {
   const dispatch = useDispatch();
   const [type, setType] = useState("All");
   const [search, setSearch] = useState("");
-  const [order_by_name, setOrder_by_name] = useState("");
-  const [order_by, setOrder_by] = useState("");
+  const [order_by_name, setOrder_by_name] = useState("progress");
+  const [order_by, setOrder_by] = useState("desc");
   const debouncedSearch = useDebounce(search, { wait: 500 });
   const [pageSize, setPageSize] = useState(100);
   const [pageIndex, setPageIndex] = useState(1);
@@ -54,6 +54,8 @@ function MintList() {
     type,
     pageSize,
     pageIndex,
+    order_by_name,
+    order_by,
     creator: nostrAccount
   });
   // useEffect(() => {
@@ -75,6 +77,10 @@ function MintList() {
   const searchChange = useCallback((e) => {
     // console.log("value", value);
     setSearch(e.target.value);
+  }, []);
+  const onSortChange = useCallback((name, type) => {
+    setOrder_by_name(name);
+    setOrder_by(type);
   }, []);
   const columns = useMemo(() => {
     if (width > 768) {
@@ -126,7 +132,11 @@ function MintList() {
           title: (
             <>
               <span>{t`Progress`}</span>
-              <CaretDownOutlined></CaretDownOutlined>
+              {order_by_name == "progress" && order_by == "asc" ? (
+                <CaretUpOutlined className={order_by_name == "progress" && order_by == "asc" && "color-yellow"} onClick={() => onSortChange("progress", "desc")}></CaretUpOutlined>
+              ) : (
+                <CaretDownOutlined className={order_by_name == "progress" && order_by == "desc" && "color-yellow"} onClick={() => onSortChange("progress", "asc")}></CaretDownOutlined>
+              )}
             </>
           ),
           dataIndex: "received_amount",
@@ -139,7 +149,11 @@ function MintList() {
           title: (
             <>
               <span>{t`Minters`}</span>
-              <CaretDownOutlined></CaretDownOutlined>
+              {order_by_name == "received_number" && order_by == "asc" ? (
+                <CaretUpOutlined className={order_by_name == "received_number" && order_by == "asc" && "color-yellow"} onClick={() => onSortChange("received_number", "desc")}></CaretUpOutlined>
+              ) : (
+                <CaretDownOutlined className={order_by_name == "received_number" && order_by == "desc" && "color-yellow"} onClick={() => onSortChange("received_number", "asc")}></CaretDownOutlined>
+              )}
             </>
           ),
           dataIndex: "received_number"
@@ -337,7 +351,7 @@ function MintList() {
         }
       ];
     }
-  }, [history, tokenList, width]);
+  }, [history, onSortChange, order_by, order_by_name, tokenList, width]);
   return (
     <>
       <div className="mint-list">
