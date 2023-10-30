@@ -9,6 +9,7 @@ import { useDebounceEffect } from "ahooks";
 import { getLocalRobotPrivateKey } from "lib/utils/index";
 import useWebln from "./useWebln";
 import * as Lockr from "lockr";
+import { getBalance, getAllowance } from 'service/nostrApi'
 // import { sleep } from "lib/utils";
 
 const NOSTAR_TOKEN_SEND_TO = process.env.REACT_APP_NOSTR_TOKEN_SEND_TO;
@@ -95,7 +96,7 @@ export const useHandleQueryTokenList = () => {
     handleQueryTokenList
   };
 };
-export const useQueryBalance = () => {
+/* export const useQueryBalance = () => {
   const dispatch = useDispatch();
   const { execQueryNostrAsync } = useNostrPool();
   const handleQueryBalance = useCallback(
@@ -119,8 +120,69 @@ export const useQueryBalance = () => {
   return {
     handleQueryBalance
   };
+}; */
+export const useQueryBalance = () => {
+  const dispatch = useDispatch();
+
+  const handleQueryBalance = useCallback(
+    async (nostrAddress = LOCAL_ROBOT_ADDR) => {
+      if (!nostrAddress) return;
+
+      const ret = await getBalance({
+        user: nostrAddress,
+      });
+
+      if (ret?.code === 0) {
+        const data = ret.data;
+        dispatch(setBalanceList(data));
+      }
+    },
+    [dispatch]
+  );
+
+  return {
+    handleQueryBalance
+  };
 };
 export const useAllowance = () => {
+
+  const [allowance, setAllowance] = useState(0);
+
+  const { nostrAccount, npubNostrAccount } = useSelector(({ user }) => user);
+  const handleQueryAllowanceAsync = useCallback(
+    async (tokenName) => {
+
+      if (nostrAccount && tokenName) {
+        const ret = await getAllowance({
+          token: tokenName,
+          owner: npubNostrAccount,
+          spender: NOSTR_MARKET_SEND_TO
+        });
+        if (!ret) {
+          setAllowance({ amount: 0, amountShow: "0.0000" });
+          return { amount: 0, amountShow: "0.0000" };
+        }
+        setAllowance(ret.data);
+
+        return ret;
+      }
+    },
+    [setAllowance, nostrAccount, npubNostrAccount]
+  );
+  const handleQueryAllowance = useCallback(
+    async (tokenName) => {
+      return await handleQueryAllowanceAsync(tokenName);
+    },
+    [handleQueryAllowanceAsync]
+  );
+
+  return {
+    handleQueryAllowance,
+    handleQueryAllowanceAsync,
+    allowance
+  };
+};
+/* export const useAllowance = () => {
   const { execQueryNostrAsync } = useNostrPool();
   const [allowance, setAllowance] = useState(0);
 
@@ -135,15 +197,13 @@ export const useAllowance = () => {
           queryCommand,
           sendToNostrAddress: NOSTAR_TOKEN_SEND_TO
         });
-        // console.log("allowance ret", ret);
+      
         if (!ret) {
           setAllowance({ amount: 0, amountShow: "0.0000" });
           return { amount: 0, amountShow: "0.0000" };
         }
         setAllowance(ret.result.data);
-        if (ret?.result?.code == 400) {
-          handleQueryAllowanceAsync(tokenName)
-        }
+       
         return ret.result;
       }
     },
@@ -161,7 +221,8 @@ export const useAllowance = () => {
     handleQueryAllowanceAsync,
     allowance
   };
-};
+}; */
+
 export const useApprove = () => {
   const { execQueryNostrAsync } = useNostrPool();
   const handleApproveAsync = useCallback(

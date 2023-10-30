@@ -68,7 +68,7 @@ function AddressNostrDropdown() {
   }, [handleDisconnect, npubNostrAccount]);
   useDebounceEffect(
     () => {
-      if (npubNostrAccount && hasRelayConnected) {
+      if (npubNostrAccount) {
         handleQueryBalance(npubNostrAccount);
       }
     },

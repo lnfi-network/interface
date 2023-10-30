@@ -473,7 +473,6 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
 
   useEffect(() => {
     if (buyOrSell === "buy" && selectedToken?.name) {
-      //
       handleQueryAllowance(QUOTE_ASSET);
     } else if (buyOrSell === "sell" && selectedToken?.name) {
       handleQueryAllowance(selectedToken?.name);
