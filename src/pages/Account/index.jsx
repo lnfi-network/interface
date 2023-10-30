@@ -168,7 +168,7 @@ function Account() {
           dataIndex: "name",
           render: (text) => {
             const balance = balanceList?.[text]?.balanceShow;
-            return balance ? <span className="color-light">{numberWithCommas(balance)}</span> : "--";
+            return balance ? <span className="color-light">{numberWithCommas(balance)}</span> : "0";
           }
         },
         {
