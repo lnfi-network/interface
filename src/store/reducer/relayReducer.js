@@ -9,13 +9,13 @@ const INIT_RELAYS = [
     delete: false,
     status: "disconnected"
   },
-  {
-    address: "wss://relay.damus.io",
-    offical: true,
-    link: true,
-    delete: false,
-    status: "disconnected"
-  }
+  /*  {
+     address: "wss://relay.damus.io",
+     offical: true,
+     link: true,
+     delete: false,
+     status: "disconnected"
+   } */
 ]
 
 const getInitialStateRelays = () => {

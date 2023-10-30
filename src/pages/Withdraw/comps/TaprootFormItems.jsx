@@ -9,7 +9,7 @@ import { to } from "await-to-js";
 import { useSelector } from "react-redux";
 import { useThrottleFn } from "ahooks";
 import { sleep } from "lib/utils";
-
+import FunctionEnableButton from "components/FunctionEnableButton";
 import { nip19 } from "nostr-tools";
 export default function TaprootFormItems({ form, nostrAccount, notifiApi, messageApi, handleQueryBalance }) {
   const { TextArea } = Input;
@@ -94,16 +94,18 @@ export default function TaprootFormItems({ form, nostrAccount, notifiApi, messag
   const memoWithdrawBtn = useMemo(() => {
     return (
       <CheckNostrButton>
-        <Button
-          type="primary"
-          size="large"
-          className="withdraw-send-btn"
-          loading={btnLoading}
-          onClick={handleWithdraw}
-          disabled={withdrawAmount === 0}
-        >
-          Send
-        </Button>
+        <FunctionEnableButton>
+          <Button
+            type="primary"
+            size="large"
+            className="withdraw-send-btn"
+            loading={btnLoading}
+            onClick={handleWithdraw}
+            disabled={withdrawAmount === 0}
+          >
+            Send
+          </Button>
+        </FunctionEnableButton>
       </CheckNostrButton>
     );
   }, [btnLoading, handleWithdraw, withdrawAmount]);

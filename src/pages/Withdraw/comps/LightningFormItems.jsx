@@ -3,6 +3,7 @@ import { Form, Row, Col, Input, Button, Select, Modal, InputNumber } from "antd"
 import { useEffect, useMemo, useState, useCallback } from "react";
 
 import CheckNostrButton from "components/CheckNostrButton";
+import FunctionEnableButton from "components/FunctionEnableButton";
 import { useWeblnWithdraw } from "hooks/useNostrMarket";
 import { to } from "await-to-js";
 import { useSelector } from "react-redux";
@@ -109,9 +110,17 @@ export default function LightningFormItems({ form, nostrAccount, messageApi, han
   const memoWithdrawBtn = useMemo(() => {
     return (
       <CheckNostrButton>
-        <Button type="primary" size="large" className="withdraw-send-btn" loading={btnLoading} onClick={handleWithdraw}>
-          Send
-        </Button>
+        <FunctionEnableButton>
+          <Button
+            type="primary"
+            size="large"
+            className="withdraw-send-btn"
+            loading={btnLoading}
+            onClick={handleWithdraw}
+          >
+            Send
+          </Button>
+        </FunctionEnableButton>
       </CheckNostrButton>
     );
   }, [btnLoading, handleWithdraw]);

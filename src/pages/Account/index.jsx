@@ -29,6 +29,7 @@ import { setAboutModalVisible } from "store/reducer/modalReducer";
 import { QUOTE_ASSET } from "config/constants";
 import NoticeModal from "./comps/NoticeModal";
 import { convertDollars } from "lib/utils/index";
+
 const ASSET_PLAT_MAP = {
   ETHEREUM: "ETH",
   BRC20: "BTC",
@@ -487,7 +488,7 @@ function Account() {
                         goImportAssets();
                       }}
                     >
-                      {t`Import Assets`}
+                      Import Assets
                     </Button>
                   </CheckNostrButton>
                 </>
