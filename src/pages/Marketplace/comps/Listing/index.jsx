@@ -50,7 +50,7 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
   }, []);
   const getTokenBalance = useCallback(
     (tokenName) => {
-      return balanceList[tokenName]?.balanceShow;
+      return balanceList[tokenName]?.balanceShow || 0;
     },
     [balanceList]
   );
@@ -413,7 +413,7 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
           </>
         );
       }
-      console.log("allowance amountShow", Number(allowance?.amountShow), Number(amountValue));
+
       if (
         (allowance?.amountShow && Number(balance) > 0 && Number(allowance?.amountShow) < Number(amountValue)) ||
         Number(allowance?.amountShow) === 0 ||
