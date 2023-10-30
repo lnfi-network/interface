@@ -57,16 +57,16 @@ export default function MintCreate() {
   };
   const handleSuccessCancel = () => {
     setIsSuccessModalOpen(false);
+    history.replace(`/mintassets/mint-assets`)
   };
   const reset = useCallback(() => {
-    form.resetFields(["amount", "number", "addressMints"])
-    setPercentage(0)
-    setAmount(0)
-    setNumberMint(0)
-    setSingleMint(0)
-    setAddressMints(0)
-  },[form])
-  const { handleCreateAssetAsync, handleUpdateAssetAsync, handleCreateMintPayAsync } = useMintAsset();
+    form.resetFields(["amount", "number", "addressMints"]);
+    setPercentage(0);
+    setAmount(0);
+    setNumberMint(0);
+    setSingleMint(0);
+    setAddressMints(0);
+  }, [form]);
   const { nostrAccount, account, balanceList } = useSelector(({ user }) => user);
   const { tokenList } = useSelector(({ market }) => market);
   const qutoAsset = useMemo(() => {
@@ -78,32 +78,39 @@ export default function MintCreate() {
     },
     [balanceList]
   );
-  const onConfirm = useCallback(async (values) => {
-    // setSaveLoding(true);
-    // console.log("values", values);
-    showModal();
-    // try {
-    //   const ret = await handleLaunchMintActivityAsync({ ...values });
-    //   const { sendEvent, result } = ret;
-    //   console.log("ret", ret);
-    //   if (ret?.code === 0) {
-    //     message.success(t`Submit successfully`);
-    //     // window._message.success(result.data);
-    //     // const sendEventId = sendEvent.id;
-    //     // history.replace(`/mint/create/${sendEventId}`);
-    //   } else {
-    //     message.error(ret.data || "Fail");
-    //   }
-    // } catch (error) {
-    //   message.error(error.message || "Fail");
-    // }
-  }, []);
+  const onConfirm = useCallback(
+    async (values) => {
+      // setSaveLoding(true);
+      // console.log("values", values);
+      try {
+        await form.validateFields();
+        showModal();
+      } catch (error) {}
+
+      // try {
+      //   const ret = await handleLaunchMintActivityAsync({ ...values });
+      //   const { sendEvent, result } = ret;
+      //   console.log("ret", ret);
+      //   if (ret?.code === 0) {
+      //     message.success(t`Submit successfully`);
+      //     // window._message.success(result.data);
+      //     // const sendEventId = sendEvent.id;
+      //     // history.replace(`/mint/create/${sendEventId}`);
+      //   } else {
+      //     message.error(ret.data || "Fail");
+      //   }
+      // } catch (error) {
+      //   message.error(error.message || "Fail");
+      // }
+    },
+    [form]
+  );
   const onSave = useCallback(async () => {
     // setSaveLoding(true);
     // console.log("values", values);
     const values = form.getFieldsValue();
     try {
-      setBtnLoading(true)
+      setBtnLoading(true);
       const ret = await handleLaunchMintActivityAsync({ ...values });
       // console.log("ret", ret);
       if (ret?.code === 0) {
@@ -116,10 +123,10 @@ export default function MintCreate() {
       } else {
         message.error(ret.data || "Fail");
       }
-      setBtnLoading(false)
+      setBtnLoading(false);
     } catch (error) {
       message.error(error.message || "Fail");
-      setBtnLoading(false)
+      setBtnLoading(false);
     }
   }, [form, handleLaunchMintActivityAsync]);
   const memoLabelServiceFee = useMemo(() => {
@@ -132,10 +139,18 @@ export default function MintCreate() {
       </>
     );
   }, []);
+  // Filter `option.label` match the user type `input`
+  const filterOption = (input, option) => {
+    console.log("option", option);
+    return (
+      (option?.value ?? "").toLowerCase().includes(input.toLowerCase()) ||
+      (option?.id ?? "").toLowerCase().includes(input.toLowerCase())
+    );
+  };
   const options = useMemo(() => {
     return tokenList.map((tokenItem) => {
       return (
-        <Select.Option value={tokenItem.name} label={tokenItem.name} key={tokenItem.id}>
+        <Select.Option value={tokenItem.name} label={tokenItem.name} key={tokenItem.id} id={tokenItem?.token}>
           <Space>
             <span aria-label={tokenItem.name} style={{ display: "inline-block", width: "260px" }}>
               {tokenItem.name}
@@ -155,11 +170,11 @@ export default function MintCreate() {
       setSelectToken(token);
       setTotalSupply(token?.totalSupply);
       setSelectBalance(getTokenBalance(value));
-      reset()
+      reset();
       const tokenAllowanceRet = await handleQueryAllowanceAsync(token?.name);
       const quoteAllowanceRet = await handleQueryAllowanceAsync(QUOTE_ASSET);
-      setSelectAllowance(tokenAllowanceRet?.data?.amount);
-      setQuoteAllowance(quoteAllowanceRet?.data?.amount);
+      setSelectAllowance(tokenAllowanceRet?.data?.amountShow);
+      setQuoteAllowance(quoteAllowanceRet?.data?.amountShow);
     },
     [getTokenBalance, handleQueryAllowanceAsync, reset, tokenList]
   );
@@ -242,10 +257,10 @@ export default function MintCreate() {
       await form.validateFields();
       setBtnLoading(true);
       var command = "";
-      if (selectAllowance < amount) {
+      if (!selectAllowance || selectAllowance < amount) {
         command += `approve ${amount} ${selectToken?.name} to ${NOSTR_MINT_SEND_TO};`;
       }
-      if (quoteAllowance < MINT_SERVICE_FEE) {
+      if (!quoteAllowance || quoteAllowance < MINT_SERVICE_FEE) {
         command += `approve ${MINT_SERVICE_FEE} ${QUOTE_ASSET} to ${NOSTR_MINT_SEND_TO}`;
       }
       let ret = await handleApproveAsyncByCommand(command);
@@ -256,12 +271,12 @@ export default function MintCreate() {
         message.success("Approve Success");
         const tokenAllowanceRet = await handleQueryAllowanceAsync(selectToken?.name);
         const quoteAllowanceRet = await handleQueryAllowanceAsync(QUOTE_ASSET);
-        setSelectAllowance(tokenAllowanceRet?.data?.amount);
-        setQuoteAllowance(quoteAllowanceRet?.data?.amount);
+        setSelectAllowance(tokenAllowanceRet?.data?.amountShow);
+        setQuoteAllowance(quoteAllowanceRet?.data?.amountShow);
       } else {
         message.error(ret.data);
       }
-      setBtnLoading(false)
+      setBtnLoading(false);
     } catch (e) {
       // console.log("messageApi.error(e.message);",e, e?.errorField);
       if (!e?.errorFields?.length) {
@@ -289,7 +304,7 @@ export default function MintCreate() {
     } else {
       return (
         <CheckNostrButton>
-          <Button type="primary" style={{ width: "260px" }} size="large" htmlType="submit">
+          <Button type="primary" style={{ width: "260px" }} size="large" onClick={onConfirm}>
             Launch Your Mint Activity
           </Button>
         </CheckNostrButton>
@@ -318,7 +333,7 @@ export default function MintCreate() {
     //     </CheckNostrButton>
     //   );
     // }
-  }, [getTokenBalance]);
+  }, [getTokenBalance, onConfirm]);
   const memoModalButton = useMemo(() => {
     if (MINT_SERVICE_FEE > getTokenBalance(QUOTE_ASSET)) {
       return (
@@ -382,7 +397,7 @@ export default function MintCreate() {
             maxWidth: "100%"
           }}
           // initialValues={{ decimal: 1, displayDecimal: 1 }}
-          onFinish={onConfirm}
+          // onFinish={onConfirm}
           autoComplete="off"
         >
           {/* <h4 className="nostr-activity-form-groupInfo">Asset info</h4> */}
@@ -395,14 +410,24 @@ export default function MintCreate() {
               {
                 required: true,
                 message: "Please Select Your Asset"
-              }
+              },
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  if (selectBalance / totalSupply < 0.3 || selectBalance == 0) {
+                    return Promise.reject(new Error(t`Your asset holding should ≥30% to launch the mint activity.`));
+                  }
+                  return Promise.resolve();
+                }
+              })
             ]}
           >
             <Select
+              showSearch
               className="listing-select"
               optionLabelProp="label"
               size="large"
-              placeholder="Select Your Asset"
+              filterOption={filterOption}
+              placeholder="Search by Asset ID or Asset name"
               onChange={handleTokenChange}
             >
               {options}
@@ -425,23 +450,29 @@ export default function MintCreate() {
             rules={[
               {
                 required: true,
-                message: "Please input the Maximum Mint Amount"
+                message: "Please input the amount of asset you want to put in mint pool"
               },
               ({ getFieldValue }) => ({
                 validator(_, value) {
                   if (value) {
+
                     if (!Number(value)) {
                       return Promise.reject(new Error(t`Invalid input format.`));
                     }
-                    if(selectBalance / totalSupply < 0.3) {
-                      return Promise.reject(new Error(t`Your asset holding should ≥30% to launch the mint activity.`));
-                    }
-                    if(value / totalSupply < 0.05) {
+
+                    if (value / totalSupply < 0.05 || !value) {
                       return Promise.reject(new Error(t`Maximum Mint Amount should at least 5% of total supply.`));
                     }
                     return Promise.resolve();
+                  } else {
+                    if (Number(value) == 0) {
+                      return Promise.reject(
+                        new Error(t`Please input the amount of asset you want to put in mint pool.`)
+                      );
+                    } else {
+                      return Promise.reject(new Error(t`Invalid input format.`));
+                    }
                   }
-                  return Promise.resolve();
                 }
               })
             ]}
@@ -460,7 +491,7 @@ export default function MintCreate() {
             rules={[
               {
                 required: true,
-                message: "Please input the Number of Mints"
+                message: "   Please setup the Number of Mints, every Single Mint Amount is equal."
               },
               ({ getFieldValue }) => ({
                 validator(_, value) {
@@ -471,12 +502,8 @@ export default function MintCreate() {
                     if (Number(value) < 10 || Number(value) > 5000) {
                       return Promise.reject(new Error(t`Number of Mints should be 10~5000.`));
                     }
-                    const amount = form.getFieldValue("amount")
-                    if (
-                      Number(value) &&
-                      Number(amount) &&
-                      !Number.isInteger(Number(amount) / Number(value))
-                    ) {
+                    const amount = form.getFieldValue("amount");
+                    if (Number(value) && Number(amount) && !Number.isInteger(Number(amount) / Number(value))) {
                       return Promise.reject(new Error(`Single Mint Amount must be an integer`));
                     }
                     return Promise.resolve();
@@ -502,7 +529,7 @@ export default function MintCreate() {
             rules={[
               {
                 required: true,
-                message: "Please input the Number of Mints"
+                message: "Please setup the Maximum Mints limit for each address"
               },
               ({ getFieldValue }) => ({
                 validator(_, value) {
@@ -549,7 +576,7 @@ export default function MintCreate() {
             <Input
               size="large"
               onChange={mintFeeChange}
-              placeholder="eg. setup 100, every mint will pay 100 sats to you"
+              placeholder="   eg. setup 100, every mint will pay 100 sats to you"
             />
           </Form.Item>
           <div style={{ marginBottom: "20px" }}>{fee} sats/Mint</div>
@@ -592,7 +619,7 @@ export default function MintCreate() {
             </div>
             <div className="asset-confirm-item">
               <div className="asset-confirm-item-label">Maximum Mint Amount:</div>
-              <div className="asset-confirm-item-value">{amount ? numberWithCommas(amount) : "--"}</div>
+              <div className="asset-confirm-item-value">{amount ? `${numberWithCommas(amount)} ${selectToken?.name?.toLowerCase()}` : "--"}</div>
             </div>
             <div className="asset-confirm-item">
               <div className="asset-confirm-item-label">Percentage:</div>
@@ -604,7 +631,7 @@ export default function MintCreate() {
             </div>
             <div className="asset-confirm-item">
               <div className="asset-confirm-item-label">Single Mint Amount:</div>
-              <div className="asset-confirm-item-value">{singleMint ? numberWithCommas(singleMint) : "--"}</div>
+              <div className="asset-confirm-item-value">{singleMint ? `${numberWithCommas(singleMint)} ${selectToken?.name?.toLowerCase()}` : "--"}</div>
             </div>
             <div className="asset-confirm-item">
               <div className="asset-confirm-item-label">Maximum Mints Per Address:</div>
@@ -612,12 +639,12 @@ export default function MintCreate() {
             </div>
             <div className="asset-confirm-item">
               <div className="asset-confirm-item-label">Mint Fee/Mint:</div>
-              <div className="asset-confirm-item-value">{fee ? numberWithCommas(fee) : "--"}</div>
+              <div className="asset-confirm-item-value">{fee ? `${numberWithCommas(fee)} ${QUOTE_ASSET?.toLowerCase()}` : "--"}</div>
             </div>
             <div className="asset-confirm-item">
               <div className="asset-confirm-item-label">Service Fee:</div>
               <div className="asset-confirm-item-value">
-                {MINT_SERVICE_FEE ? numberWithCommas(MINT_SERVICE_FEE) : "--"}
+                {MINT_SERVICE_FEE ? `${numberWithCommas(MINT_SERVICE_FEE)} ${QUOTE_ASSET?.toLowerCase()}` : "--"}
               </div>
             </div>
             <div className="asset-confirm-item mt20 color-green-light f12">
@@ -640,8 +667,10 @@ export default function MintCreate() {
         >
           <div>
             <div className="tc">
-              <CheckCircleOutlined style={{ fontSize: "30px", color: "#38c89d",verticalAlign: "middle" }} />
-              <span className="f18 b" style={{marginLeft: "8px"}}>Success!</span>
+              <CheckCircleOutlined style={{ fontSize: "30px", color: "#38c89d", verticalAlign: "middle" }} />
+              <span className="f18 b" style={{ marginLeft: "8px" }}>
+                Success!
+              </span>
             </div>
             <div className="mt20">
               You've successfully launched the mint activity. Visit the Mint Assets page to monitor the minting process

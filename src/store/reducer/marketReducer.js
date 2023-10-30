@@ -3,6 +3,7 @@ export const marketSlice = createSlice({
   name: "market",
   initialState: {
     tokenList: [],
+    isTokenSet: false,
     responseTime: 0,
     quote_pirce: 0
   },
@@ -11,6 +12,7 @@ export const marketSlice = createSlice({
       if (payload && Array.isArray(payload)) {
         const sortedArray = [...payload].sort((a, b) => a.id - b.id);
         state.tokenList = sortedArray;
+        state.isTokenSet = true;
       }
     },
     setResponseTime(state, { payload }) {

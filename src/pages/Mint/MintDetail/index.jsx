@@ -15,6 +15,7 @@ import { limitDecimals, numberWithCommas } from "lib/numbers";
 // import tapdLogo from "img/tapd-logo.jpg";
 import progressIcon from "img/progress.png";
 import CheckNostrButton from "components/CheckNostrButton";
+import { QUOTE_ASSET, MINT_SERVICE_FEE } from "config/constants";
 // import { setAboutModalVisible } from "store/reducer/modalReducer";
 import { ShareAltOutlined, CloseCircleOutlined, SwapOutlined } from "@ant-design/icons";
 import { nip19 } from "nostr-tools";
@@ -85,7 +86,7 @@ export default function MintDetail() {
   useEffect(() => {
     setInterval(() => {
       reexcuteQueryMintAssetDetail();
-    }, 60000);
+    }, 6000);
     return () => null;
   }, [reexcuteQueryMintAssetDetail]);
   const detail = useMemo(() => {
@@ -124,7 +125,7 @@ export default function MintDetail() {
           <span className="mint-detail-back__value"> Back</span>
         </div>
         <div className="mint-detail-content">
-          <Spin spinning={!detail?.token_name && fetching}>
+          <Spin spinning={!detail?.id && fetching}>
             <div className="mint-detail-content-section">
               <div className="mint-detail-content-head">
                 <div className="mint-detail-content-head-name">
@@ -218,7 +219,7 @@ export default function MintDetail() {
               </Popover>
             </div>
           </div> */}
-          <Spin spinning={fetching}>
+          <Spin spinning={!detail?.id && fetching}>
             <div className="mint-detail-content-section">
               <div className="b f18 color-light" style={{ padding: "20px 160px" }}>
                 Asset Detail
@@ -302,21 +303,27 @@ export default function MintDetail() {
                 </div>
               </div>
               <div className="mint-detail-item">
-                <div className="mint-detail-item-key">Single mint upper limit</div>
+                <div className="mint-detail-item-key">Number of Mints</div>
+                <div className="mint-detail-item-value">
+                  {detail?.max_amount ? numberWithCommas(detail?.number) : "--"}
+                </div>
+              </div>
+              <div className="mint-detail-item">
+                <div className="mint-detail-item-key">Single Mint Amount</div>
                 <div className="mint-detail-item-value">
                   {detail?.single_amount ? numberWithCommas(detail?.single_amount) : "--"}
                 </div>
               </div>
               <div className="mint-detail-item">
-                <div className="mint-detail-item-key">Maximum mint per address</div>
+                <div className="mint-detail-item-key">Maximum Mints Per Address</div>
                 <div className="mint-detail-item-value">
                   {detail?.max_address ? numberWithCommas(detail?.max_address) : "--"}
                 </div>
               </div>
               <div className="mint-detail-item">
-                <div className="mint-detail-item-key">Mint Fee Rate</div>
+                <div className="mint-detail-item-key">Mint Fee/Mint</div>
                 <div className="mint-detail-item-value">
-                  {detail?.create_fee ? numberWithCommas(detail?.create_fee) : "--"}
+                  {detail?.create_fee ? `${numberWithCommas(detail?.create_fee)} ${QUOTE_ASSET}`  : "--"}
                 </div>
               </div>
             </div>

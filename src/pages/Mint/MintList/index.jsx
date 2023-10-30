@@ -22,7 +22,7 @@ import ConnectNostr from "components/Common/ConnectNostr";
 import CheckNostrButton from "components/CheckNostrButton";
 import useDevice from "hooks/useDevice";
 import { setAboutModalVisible } from "store/reducer/modalReducer";
-import { PlusOutlined } from "@ant-design/icons";
+import { PlusOutlined, CaretDownOutlined, CaretUpOutlined } from "@ant-design/icons";
 import * as Lockr from "lockr";
 const ASSET_PLAT_MAP = {
   ETHEREUM: "ETH",
@@ -36,9 +36,12 @@ function MintList() {
   const dispatch = useDispatch();
   const [type, setType] = useState("All");
   const [search, setSearch] = useState("");
+  const [order_by_name, setOrder_by_name] = useState("");
+  const [order_by, setOrder_by] = useState("");
   const debouncedSearch = useDebounce(search, { wait: 500 });
   const [pageSize, setPageSize] = useState(100);
   const [pageIndex, setPageIndex] = useState(1);
+  
   const history = useHistory();
   const { nostrAccount, balanceList, npubNostrAccount } = useSelector(({ user }) => user);
   const { tokenList } = useSelector(({ market }) => market);
@@ -124,7 +127,7 @@ function MintList() {
           }
         },
         {
-          title: t`Progress`,
+          title: <><span>{t`Progress`}</span><CaretDownOutlined></CaretDownOutlined></>,
           dataIndex: "received_amount",
           render: (text, row) => {
             const progress = limitDecimals((text / row.max_amount) * 100, 2, "floor")
@@ -132,7 +135,7 @@ function MintList() {
           }
         },
         {
-          title: t`Minters`,
+          title: <><span>{t`Minters`}</span><CaretDownOutlined></CaretDownOutlined></>,
           dataIndex: "received_number"
         },
         {

@@ -68,7 +68,11 @@ export default function MintModal({ visible, setVisible, mintDetail, reexcuteQue
   );
   const onNumberMintMax = useCallback(() => {
     form.setFieldValue("mintNumber", maxMintNumber);
-  }, [form, maxMintNumber]);
+    const singleMintAmount = Number(mintDetail?.single_amount) || 0;
+    setTotalMintAmount(singleMintAmount * maxMintNumber);
+    setMintFee(maxMintNumber * mintDetail?.mint_fee);
+    form.validateFields(["mintNumber"])
+  }, [form, maxMintNumber, mintDetail?.mint_fee, mintDetail?.single_amount]);
 
   const memoNumberMintsExtra = useMemo(() => {
     return <span className="number-mint-etra">Maximum mints per address {mintDetail?.max_address}</span>;
