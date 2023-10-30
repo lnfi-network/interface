@@ -38,6 +38,34 @@ export default function ClaimDescription() {
             including the ability to create, mint, and many other fantastic functions. Users can anticipate a
             comprehensive, one-stop access point for all things related to Taproot Assets in the near future.
           </div>
+          <div className="claim-description-item__child">
+            <h5>TRICK TXID:</h5>
+            <a href="https://mempool.space/tx/20735187f20ae2a5c7561b0e96e2ae4277a0be1b6da52b5448bb4378db7386de">
+              https://mempool.space/tx/20735187f20ae2a5c7561b0e96e2ae4277a0be1b6da52b5448bb4378db7386de
+            </a>
+          </div>
+          <div className="claim-description-item__child">
+            <h5>TRICK ASSET ID:</h5>
+            <div>e24574fd22b81230af6764617d37a2ec588679929516c4231292319e725d9d5c</div>
+          </div>
+          <div className="claim-description-item__child">
+            <h5>TRICK SUPPLY:</h5>
+            <div>210,000,000</div>
+          </div>
+          <div className="claim-description-item__child">
+            <h5>TREAT TXID:</h5>
+            <a href="https://mempool.space/tx/316f806c0ee133fe27fd888dc4e1099da8eb3abd8175a127db0104f416b2c7fb#vout=0">
+              https://mempool.space/tx/316f806c0ee133fe27fd888dc4e1099da8eb3abd8175a127db0104f416b2c7fb#vout=0
+            </a>
+          </div>
+          <div className="claim-description-item__child">
+            <h5>TREAT ASSET ID:</h5>
+            <div>0f8b9bb57522a824746b2ce364ae606ad433bc36db66ab86756e0e156a1ed34d</div>
+          </div>
+          <div className="claim-description-item__child">
+            <h5>TREAT SUPPLY:</h5>
+            <div>210,000,000</div>
+          </div>
         </li>
         <li className="claim-description-item OpenSans">
           <h4>Disclaimer</h4>

@@ -10,7 +10,7 @@ import { useSelector } from "react-redux";
 import { useThrottleFn } from "ahooks";
 import { sleep } from "lib/utils";
 
-import { useUnisatPayfee } from "hooks/useWithdrawPayfee";
+import { useUnisatPayfee } from "hooks/usePayfee";
 import { nip19 } from "nostr-tools";
 export default function TaprootFormItems({ form, nostrAccount, notifiApi, messageApi, handleQueryBalance }) {
   const { TextArea } = Input;
