@@ -91,8 +91,8 @@ export function ConnectWalletWithOnlyDeposit({ connectType, btnText = t`Connect 
 export default function ConnectWallet({ tokenPlatform = "", connectTip = "Connect your wallet to start trading." }) {
   const dispatch = useDispatch();
   const onConnectHandler = useCallback(() => {
-    if (tokenPlatform === "BRC20") {
-      dispatch(setSelectedTokenPlatForm("BRC20"));
+    if (tokenPlatform) {
+      dispatch(setSelectedTokenPlatForm(tokenPlatform));
     }
     dispatch(setWalletConnectModalVisible(true));
   }, [dispatch, tokenPlatform]);

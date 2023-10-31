@@ -40,6 +40,10 @@
     }
     &-servicefee {
       width: 100%;
+      &__sat {
+        width: 100%;
+        padding-top: 20px;
+      }
     }
   }
   &-mint {

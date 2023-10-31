@@ -265,7 +265,7 @@ function WithdrawForm() {
   useEffect(() => {
     if (memoCurrentPlatformTokenList.length > 0) {
       const tokenFirst = memoCurrentPlatformTokenList[0];
-      if (params?.symbol && selectedTokenPlatform === "BRC20") {
+      if (params?.symbol) {
         setSelectedToken(params.symbol);
         form.setFieldValue("token", params.symbol);
       } else {
