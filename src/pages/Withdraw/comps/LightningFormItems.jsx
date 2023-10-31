@@ -55,7 +55,6 @@ export default function LightningFormItems({ form, nostrAccount, messageApi, han
       }
       setBtnLoading(true);
       const values = form.getFieldsValue(true);
-      /* const sendTx = await handleUnisatPay(values.invoice, true); */
       const withdrawRet = await handleWeblnWithdrawAsync(withdrawAmount, values.invoice);
       if (withdrawRet?.code === 0) {
         messageApi.success({
