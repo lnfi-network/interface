@@ -1,5 +1,6 @@
 import { Button, Spin, Form, Input, InputNumber, Tooltip, Row, Col } from "antd";
-import { useMintAsset, useUnisatPay } from "hooks/useMintAssets";
+import { useMintAsset } from "hooks/useMintAssets";
+import { useUnisatPayfee } from "hooks/usePayfee";
 import { useQueryAssetByEventIdOrAssetName, useQueryAssetByName } from "hooks/graphQuery/useExplore";
 import PayAndMintProgress from "../comps/PayAndMintProgress";
 import SubmitModal from "../comps/SubmitModal";
@@ -11,6 +12,7 @@ import { useSelector } from "react-redux";
 import { useClient } from "urql";
 import "./index.scss";
 import ConnectWallet from "components/Common/ConnectWallet";
+import BRC20Fee from "components/BRC20Fee";
 const GRAPH_BASE = process.env.REACT_APP_GRAPH_BASE;
 export default function MintCreate() {
   const [form] = Form.useForm();
@@ -29,10 +31,11 @@ export default function MintCreate() {
   } = useQueryAssetByEventIdOrAssetName({ eventId: params?.eventId });
   const QueryGraphaql = useQueryAssetByName();
   const client = useClient();
-  const { handleUnisatPay } = useUnisatPay();
+  const { handleUnisatPay } = useUnisatPayfee();
   const { handleCreateAssetAsync, handleUpdateAssetAsync, handleCreateMintPayAsync } = useMintAsset();
   const { nostrAccount, account } = useSelector(({ user }) => user);
   const [payTxId, setPayTxId] = useState(null);
+  const [fee, setFee] = useState(0);
   const memoEventId = useMemo(() => {
     const { eventId } = params;
     return eventId ? eventId : "";
@@ -98,9 +101,13 @@ export default function MintCreate() {
     try {
       setPayBtnLoading(true);
       //await form.validateFields();
+      if (!fee) {
+        throw new Error("Fee must be provided.");
+      }
+      console.log(fee);
       const formData = form.getFieldsValue();
       const encodeAssetData = window.btoa(JSON.stringify(formData));
-      const txId = await handleUnisatPay(memoEventId);
+      const txId = await handleUnisatPay(memoEventId, fee);
       if (!txId) throw new Error("Pay failed.");
       setPayTxId(txId);
       const ret = await handleCreateMintPayAsync({ id: memoEventId, txId, encodeAssetData });
@@ -118,7 +125,7 @@ export default function MintCreate() {
       setPayBtnLoading(false);
       reexcuteQuery();
     }
-  }, [form, handleCreateMintPayAsync, handleUnisatPay, memoEventId, reexcuteQuery]);
+  }, [fee, form, handleCreateMintPayAsync, handleUnisatPay, memoEventId, reexcuteQuery]);
 
   const formReadOnly = useMemo(() => {
     return (!!params?.eventId && nostrAccount !== creator) || !!payTxId;
@@ -205,35 +212,31 @@ export default function MintCreate() {
                   required
                   validateTrigger="onBlur"
                   rules={[
-                    {
-                      validator(_, value) {
+                    () => ({
+                      async validator(_, value) {
                         if (value) {
                           const tableName = `${GRAPH_BASE}nostr_create_assets`;
-                          client
-                            .query(QueryGraphaql, { name: value })
-                            .toPromise()
-                            .then((res) => {
-                              if (!params?.eventId) {
-                                // create
-                                if (res.data[tableName].length > 0) {
-                                  return Promise.reject(new Error("This assetName already exists"));
-                                }
-                              } else {
-                                //update
-                                const isExist = res.data[tableName]?.find(
-                                  (item) => item.name === value && item.creator !== nostrAccount
-                                );
-                                if (isExist) {
-                                  return Promise.reject(new Error("This assetName already exists"));
-                                }
-                              }
-                            });
+                          const res = await client.query(QueryGraphaql, { name: value }).toPromise();
+                          if (!params?.eventId) {
+                            // create
+                            if (res.data[tableName].length > 0) {
+                              return Promise.reject("This assetName already exists");
+                            }
+                          } else {
+                            //update
+                            const isExist = res.data[tableName]?.find(
+                              (item) => item.name === value && item.creator !== nostrAccount
+                            );
+                            if (isExist) {
+                              return Promise.reject("This assetName already exists");
+                            }
+                          }
 
                           return Promise.resolve();
                         }
-                        return Promise.reject(new Error("Please input the asset name."));
+                        return Promise.reject("Please input the asset name.");
                       }
-                    }
+                    })
                   ]}
                 >
                   <Input placeholder="Please input asset name" maxLength={20} />
@@ -386,6 +389,14 @@ export default function MintCreate() {
                 </Form.Item>
               </Col>
             </Row>
+
+            {params?.eventId && !payTxId && creator === nostrAccount && (
+              <Row className="nostr-assets-form-servicefee__sat">
+                <Col span={11}>
+                  <BRC20Fee setFee={setFee} ready={true} />
+                </Col>
+              </Row>
+            )}
 
             {!!payTxId && (
               <>

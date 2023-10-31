@@ -10,7 +10,7 @@ import useWebln from "hooks/useWebln";
 import { sleep } from "lib/utils";
 import { useDispatch } from "react-redux";
 import { setConnectNostrModalVisible, setOnlyMobileSupportedVisible } from "store/reducer/modalReducer";
-import { useUnisatPayfee } from "hooks/useWithdrawPayfee";
+
 import useDevice from "hooks/useDevice";
 import { nip19 } from "nostr-tools";
 import "./LightningFormItems.scss";
@@ -27,7 +27,7 @@ export default function LightningFormItems({ form, nostrAccount, messageApi, han
   const { makeInvoice } = useWebln();
   const dispatch = useDispatch();
   const device = useDevice();
-  const { handleUnisatPay } = useUnisatPayfee();
+
   const balance = useMemo(() => {
     return balanceList["SATS"] ? balanceList["SATS"]?.balanceShow : 0.0;
   }, [balanceList]);
@@ -55,7 +55,6 @@ export default function LightningFormItems({ form, nostrAccount, messageApi, han
       }
       setBtnLoading(true);
       const values = form.getFieldsValue(true);
-      /* const sendTx = await handleUnisatPay(values.invoice, true); */
       const withdrawRet = await handleWeblnWithdrawAsync(withdrawAmount, values.invoice);
       if (withdrawRet?.code === 0) {
         messageApi.success({

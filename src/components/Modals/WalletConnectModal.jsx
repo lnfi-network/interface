@@ -201,7 +201,7 @@ function BRCWalletConnectButton() {
       dispatch(setAccount(ret[0]));
       Lockr.set("connectPlat", "BTC");
       dispatch(setConnectPlat("BTC"));
-      dispatch(setSelectedTokenPlatForm("BRC20"));
+      // dispatch(setSelectedTokenPlatForm("BRC20"));
       dispatch(setWalletConnectModalVisible(false));
     }
     setConnectLoading(false);
@@ -234,7 +234,7 @@ export default function WalletConnectModal() {
           children: <ERCWalletConnectButton />
         }
       ];
-    } else if (selectedTokenPlatform === "BRC20") {
+    } else {
       return [
         {
           key: "BRC-wallet",
@@ -242,19 +242,7 @@ export default function WalletConnectModal() {
           children: <BRCWalletConnectButton />
         }
       ];
-    } else
-      return [
-        /*  {
-          key: "ERC-Wallet",
-          label: `ERC wallet`,
-          children: <ERCWalletConnectButton />
-        }, */
-        {
-          key: "BRC-wallet",
-          label: `BRC wallet`,
-          children: <BRCWalletConnectButton />
-        }
-      ];
+    }
   }, [selectedTokenPlatform]);
   return (
     <>

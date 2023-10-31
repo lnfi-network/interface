@@ -4,13 +4,14 @@ import { useEffect, useMemo, useState, useCallback } from "react";
 
 import ConnectWallet from "components/Common/ConnectWallet";
 import CheckNostrButton from "components/CheckNostrButton";
+import BRC20Fee from "components/BRC20Fee";
 import { useTaprootWithdraw, useTaprootDecode } from "hooks/useNostrMarket";
 import { to } from "await-to-js";
 import { useSelector } from "react-redux";
 import { useThrottleFn } from "ahooks";
 import { sleep } from "lib/utils";
 
-import { useUnisatPayfee } from "hooks/useWithdrawPayfee";
+import { useUnisatPayfee } from "hooks/usePayfee";
 import { nip19 } from "nostr-tools";
 export default function TaprootFormItems({ form, nostrAccount, notifiApi, messageApi, handleQueryBalance }) {
   const { TextArea } = Input;
@@ -25,6 +26,7 @@ export default function TaprootFormItems({ form, nostrAccount, notifiApi, messag
   const device = useDevice(); */
   const [token, setToken] = useState("");
   const { handleUnisatPay } = useUnisatPayfee();
+  const [fee, setFee] = useState(0);
   const balance = useMemo(() => {
     return balanceList[token] ? balanceList[token]?.balanceShow : 0.0;
   }, [balanceList, token]);
@@ -39,20 +41,17 @@ export default function TaprootFormItems({ form, nostrAccount, notifiApi, messag
         return;
       }
       if (!withdrawAmount) {
-        messageApi.error({
-          content: "The minimum withdrawal quantity is 1 TAPROOT."
-        });
-        return;
+        throw new Error("The minimum withdrawal quantity is 1 TAPROOT.");
       }
       if (withdrawAmount > Number(balance)) {
-        messageApi.error({
-          content: "Insfufficient balance."
-        });
-        return;
+        throw new Error("Insufficient balance");
+      }
+      if (!fee) {
+        throw new Error("Fee must be provided.");
       }
       setBtnLoading(true);
       const values = form.getFieldsValue(true);
-      const sendTx = await handleUnisatPay(values.invoiceTap, true);
+      const sendTx = await handleUnisatPay(values.invoiceTap, fee, true);
       const withdrawRet = await handleTaprootWithdrawAsync(
         withdrawAmount,
         values.invoiceTap,
@@ -69,14 +68,13 @@ export default function TaprootFormItems({ form, nostrAccount, notifiApi, messag
         throw new Error(`Withdraw failed: ${withdrawRet?.data}`);
       }
     } catch (e) {
-      messageApi.error({
-        content: e.message
-      });
+      e.message && window._message.error(e.message);
     } finally {
       setBtnLoading(false);
     }
   }, [
     balance,
+    fee,
     form,
     handleQueryBalance,
     handleTaprootWithdrawAsync,
@@ -265,6 +263,7 @@ export default function TaprootFormItems({ form, nostrAccount, notifiApi, messag
           </Col>
         </Row>
       </Form.Item>
+      <BRC20Fee setFee={setFee} ready={true} />
       <Row justify="center" className="mb20 fixed-btn">
         {memoWithdrawBtn}
       </Row>

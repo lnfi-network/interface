@@ -54,7 +54,7 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
   };
   const getTokenBalance = useCallback(
     (tokenName) => {
-      return balanceList[tokenName]?.balanceShow;
+      return balanceList[tokenName]?.balanceShow || 0;
     },
     [balanceList]
   );
