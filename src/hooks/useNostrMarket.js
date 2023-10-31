@@ -141,9 +141,9 @@ export const useAllowance = () => {
           return { amount: 0, amountShow: "0.0000" };
         }
         setAllowance(ret.result.data);
-        if (ret?.result?.code == 400) {
-          return handleQueryAllowanceAsync(tokenName)
-        }
+        // if (ret?.result?.code == 400) {
+        //   return handleQueryAllowanceAsync(tokenName)
+        // }
         return ret.result;
       }
     },

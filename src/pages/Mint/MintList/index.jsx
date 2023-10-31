@@ -122,7 +122,7 @@ function MintList() {
           }
         },
         {
-          title: t`Single Mint Amount`,
+          title: t`Asset Amount Per Share`,
           dataIndex: "single_amount",
           render: (text) => {
             return text ? numberWithCommas(text) : "--";
@@ -132,11 +132,23 @@ function MintList() {
           title: (
             <>
               <span>{t`Progress`}</span>
-              {order_by_name == "progress" && order_by == "asc" ? (
-                <CaretUpOutlined className={order_by_name == "progress" && order_by == "asc" && "color-yellow"} onClick={() => onSortChange("progress", "desc")}></CaretUpOutlined>
+              <span style={{ display: "inline-flex", flexDirection: "column", marginLeft: "3px" }}>
+                <CaretUpOutlined
+                  className={order_by_name == "progress" && order_by == "asc" && "color-yellow"}
+                  onClick={() => onSortChange("progress", "asc")}
+                  style={{height: "14px"}}
+                ></CaretUpOutlined>
+                <CaretDownOutlined
+                  className={order_by_name == "progress" && order_by == "desc" && "color-yellow"}
+                  onClick={() => onSortChange("progress", "desc")}
+                  style={{height: "14px", marginTop: "-4px"}}
+                ></CaretDownOutlined>
+              </span>
+              {/* {order_by_name == "progress" && order_by == "asc" ? (
+                
               ) : (
-                <CaretDownOutlined className={order_by_name == "progress" && order_by == "desc" && "color-yellow"} onClick={() => onSortChange("progress", "asc")}></CaretDownOutlined>
-              )}
+                
+              )} */}
             </>
           ),
           dataIndex: "received_amount",
@@ -149,11 +161,23 @@ function MintList() {
           title: (
             <>
               <span>{t`Minters`}</span>
-              {order_by_name == "received_number" && order_by == "asc" ? (
+              <span style={{ display: "inline-flex", flexDirection: "column", marginLeft: "3px" }}>
+                <CaretUpOutlined
+                  className={order_by_name == "received_number" && order_by == "asc" && "color-yellow"}
+                  onClick={() => onSortChange("received_number", "asc")}
+                  style={{height: "14px"}}
+                ></CaretUpOutlined>
+                <CaretDownOutlined
+                  className={order_by_name == "received_number" && order_by == "desc" && "color-yellow"}
+                  onClick={() => onSortChange("received_number", "desc")}
+                  style={{height: "14px",marginTop: "-4px"}}
+                ></CaretDownOutlined>
+              </span>
+              {/* {order_by_name == "received_number" && order_by == "asc" ? (
                 <CaretUpOutlined className={order_by_name == "received_number" && order_by == "asc" && "color-yellow"} onClick={() => onSortChange("received_number", "desc")}></CaretUpOutlined>
               ) : (
                 <CaretDownOutlined className={order_by_name == "received_number" && order_by == "desc" && "color-yellow"} onClick={() => onSortChange("received_number", "asc")}></CaretDownOutlined>
-              )}
+              )} */}
             </>
           ),
           dataIndex: "received_number"

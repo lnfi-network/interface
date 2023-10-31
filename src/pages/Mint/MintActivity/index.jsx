@@ -1,4 +1,4 @@
-import { Button, Spin, Form, Input, InputNumber, Tooltip, Row, Col, Select, Space, message, Modal } from "antd";
+import { Button, Spin, Form, Input, InputNumber, Tooltip, Row, Col, Select, Space, message, Modal, Image } from "antd";
 import { useMintAsset, useUnisatPay } from "hooks/useMintAssets";
 import { useQueryAssetByEventIdOrAssetName, useQueryAssetByName } from "hooks/graphQuery/useExplore";
 import PayAndMintProgress from "../comps/PayAndMintProgress";
@@ -57,7 +57,7 @@ export default function MintCreate() {
   };
   const handleSuccessCancel = () => {
     setIsSuccessModalOpen(false);
-    history.replace(`/mintassets/mint-assets`)
+    history.replace(`/mintassets/mint-assets`);
   };
   const reset = useCallback(() => {
     form.resetFields(["amount", "number", "addressMints"]);
@@ -152,6 +152,14 @@ export default function MintCreate() {
       return (
         <Select.Option value={tokenItem.name} label={tokenItem.name} key={tokenItem.id} id={tokenItem?.token}>
           <Space>
+            <Image
+              width={32}
+              height={32}
+              style={{ borderRadius: "20px" }}
+              preview={false}
+              src={tokenItem?.logo}
+              fallback="data:image/png;base64,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"
+            />
             <span aria-label={tokenItem.name} style={{ display: "inline-block", width: "260px" }}>
               {tokenItem.name}
             </span>
@@ -207,7 +215,7 @@ export default function MintCreate() {
       } else {
         setAmount(0);
       }
-      form.validateFields(["amount"])
+      form.validateFields(["amount"]);
     },
     [form, totalSupply]
   );
@@ -407,6 +415,15 @@ export default function MintCreate() {
               filterOption={filterOption}
               placeholder="Search by Asset ID or Asset name"
               onChange={handleTokenChange}
+              dropdownRender={(menu) => (
+                <>
+                  <div className="select-dropdown-title">
+                    <div className="select-dropdown-name">Asset</div>
+                    <div className="select-dropdown-id">Asset ID</div>
+                  </div>
+                  {menu}
+                </>
+              )}
             >
               {options}
             </Select>
@@ -433,11 +450,10 @@ export default function MintCreate() {
               ({ getFieldValue }) => ({
                 validator(_, value) {
                   if (value) {
-
                     if (!Number(value)) {
                       return Promise.reject(new Error(t`Invalid input format.`));
                     }
-                    if(Number(value) > selectBalance || selectBalance == 0 || !selectBalance) {
+                    if (Number(value) > selectBalance || selectBalance == 0 || !selectBalance) {
                       return Promise.reject(new Error(t`Insufficient balance.`));
                     }
                     if (value / totalSupply < 0.05 || !value) {
@@ -464,14 +480,14 @@ export default function MintCreate() {
             Required at least 5% of total supply put in mint pool to lanuch a mint activity
           </div>
           <Form.Item
-            label="Number of Mints (10~5000)"
+            label="Shares (10~5000)"
             required
             name="number"
             style={{ marginBottom: 0 }}
             rules={[
               {
                 required: true,
-                message: "   Please setup the Number of Mints, every Single Mint Amount is equal."
+                message: "Please setup the shares."
               },
               ({ getFieldValue }) => ({
                 validator(_, value) {
@@ -480,11 +496,11 @@ export default function MintCreate() {
                       return Promise.reject(new Error(t`Invalid input format.`));
                     }
                     if (Number(value) < 10 || Number(value) > 5000) {
-                      return Promise.reject(new Error(t`Number of Mints should be 10~5000.`));
+                      return Promise.reject(new Error(t`Shares should be 10~5000.`));
                     }
                     const amount = form.getFieldValue("amount");
                     if (Number(value) && Number(amount) && !Number.isInteger(Number(amount) / Number(value))) {
-                      return Promise.reject(new Error(`Single Mint Amount must be an integer`));
+                      return Promise.reject(new Error(`Shares must be an integer`));
                     }
                     return Promise.resolve();
                   }
@@ -493,23 +509,19 @@ export default function MintCreate() {
               })
             ]}
           >
-            <Input
-              size="large"
-              onChange={numberChange}
-              placeholder="Please setup the Number of Mints, every Single Mint Amount is equal."
-            />
+            <Input size="large" onChange={numberChange} placeholder="Please setup the shares, every shares is equal." />
           </Form.Item>
-          <div style={{ marginBottom: "20px" }}>{`Single Mint Amount ${
+          <div style={{ marginBottom: "20px" }}>{`Asset Amount per share ${
             singleMint || "--"
-          } (Maximum Mint Amount / Numberof Mints)`}</div>
+          } (Maximum Mint Amount / Shares)`}</div>
           <Form.Item
-            label="Maximum Mints Per Address"
+            label="Maximum Shares Per Address"
             required
             name="addressMints"
             rules={[
               {
                 required: true,
-                message: "Please setup the Maximum Mints limit for each address"
+                message: "Please setup the Maximum Shares Per Address"
               },
               ({ getFieldValue }) => ({
                 validator(_, value) {
@@ -526,12 +538,12 @@ export default function MintCreate() {
           >
             <Input
               size="large"
-              placeholder="Please setup the Maximum Mints limit for each address"
+              placeholder="Please setup the Maximum Shares Per Address"
               onChange={addressMintsChange}
             />
           </Form.Item>
           <Form.Item
-            label="Mint Fee/Mint (≥0, Mint fee will send to your NostrAssets account after every mint)"
+            label="Mint Fee/Share (≥0, Mint fee will send to your NostrAssets account after every mint)"
             name="fee"
             style={{ marginBottom: 0 }}
             required
@@ -556,7 +568,7 @@ export default function MintCreate() {
             <Input
               size="large"
               onChange={mintFeeChange}
-              placeholder="   eg. setup 100, every mint will pay 100 sats to you"
+              placeholder="eg. setup 100, every mint will pay 100 sats to you"
             />
           </Form.Item>
           <div style={{ marginBottom: "20px" }}>{fee} sats/Mint</div>
@@ -599,32 +611,36 @@ export default function MintCreate() {
             </div>
             <div className="asset-confirm-item">
               <div className="asset-confirm-item-label">Maximum Mint Amount:</div>
-              <div className="asset-confirm-item-value">{amount ? `${numberWithCommas(amount)} ${selectToken?.name?.toLowerCase()}` : "--"}</div>
+              <div className="asset-confirm-item-value">
+                {amount ? `${numberWithCommas(amount)} ${selectToken?.name}` : "--"}
+              </div>
             </div>
             <div className="asset-confirm-item">
               <div className="asset-confirm-item-label">Percentage:</div>
               <div className="asset-confirm-item-value">{percentage ? `${percentage}%` : "--"}</div>
             </div>
             <div className="asset-confirm-item">
-              <div className="asset-confirm-item-label">Number of Mints:</div>
+              <div className="asset-confirm-item-label">Shares:</div>
               <div className="asset-confirm-item-value">{numberMint ? numberWithCommas(numberMint) : "--"}</div>
             </div>
             <div className="asset-confirm-item">
-              <div className="asset-confirm-item-label">Single Mint Amount:</div>
-              <div className="asset-confirm-item-value">{singleMint ? `${numberWithCommas(singleMint)} ${selectToken?.name?.toLowerCase()}` : "--"}</div>
+              <div className="asset-confirm-item-label">Asset Amount per share:</div>
+              <div className="asset-confirm-item-value">
+                {singleMint ? `${numberWithCommas(singleMint)} ${selectToken?.name}` : "--"}
+              </div>
             </div>
             <div className="asset-confirm-item">
-              <div className="asset-confirm-item-label">Maximum Mints Per Address:</div>
+              <div className="asset-confirm-item-label">Maximum Shares Per Address:</div>
               <div className="asset-confirm-item-value">{addressMints ? numberWithCommas(addressMints) : "--"}</div>
             </div>
             <div className="asset-confirm-item">
-              <div className="asset-confirm-item-label">Mint Fee/Mint:</div>
-              <div className="asset-confirm-item-value">{fee ? `${numberWithCommas(fee)} ${QUOTE_ASSET?.toLowerCase()}` : "--"}</div>
+              <div className="asset-confirm-item-label">Mint Fee/Share:</div>
+              <div className="asset-confirm-item-value">{fee ? `${numberWithCommas(fee)} ${QUOTE_ASSET}` : "--"}</div>
             </div>
             <div className="asset-confirm-item">
               <div className="asset-confirm-item-label">Service Fee:</div>
               <div className="asset-confirm-item-value">
-                {MINT_SERVICE_FEE ? `${numberWithCommas(MINT_SERVICE_FEE)} ${QUOTE_ASSET?.toLowerCase()}` : "--"}
+                {MINT_SERVICE_FEE ? `${numberWithCommas(MINT_SERVICE_FEE)} ${QUOTE_ASSET}` : "--"}
               </div>
             </div>
             <div className="asset-confirm-item mt20 color-green-light f12">

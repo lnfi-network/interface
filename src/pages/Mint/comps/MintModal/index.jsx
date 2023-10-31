@@ -75,7 +75,7 @@ export default function MintModal({ visible, setVisible, mintDetail, reexcuteQue
   }, [form, maxMintNumber, mintDetail?.mint_fee, mintDetail?.single_amount]);
 
   const memoNumberMintsExtra = useMemo(() => {
-    return <span className="number-mint-etra">Maximum mints per address {mintDetail?.max_address}</span>;
+    return <span className="number-mint-etra">Maximum Shares Per Address {mintDetail?.max_address}</span>;
   }, [mintDetail?.max_address]);
   const onApprove = useCallback(async () => {
     try {
@@ -196,7 +196,7 @@ export default function MintModal({ visible, setVisible, mintDetail, reexcuteQue
             </span>
           </Form.Item>
           <Form.Item
-            label="Number of Mints"
+            label="Shares"
             required
             extra={memoNumberMintsExtra}
             rules={[
@@ -204,11 +204,11 @@ export default function MintModal({ visible, setVisible, mintDetail, reexcuteQue
                 validator(_, value) {
                   if (value) {
                     if (Number(value) < 1 || Number(value) > maxMintNumber) {
-                      return Promise.reject(new Error(`The Number of Mints is a number from 1 to ${maxMintNumber}.`));
+                      return Promise.reject(new Error(`The Shares is a number from 1 to ${maxMintNumber}.`));
                     }
                     return Promise.resolve();
                   }
-                  return Promise.reject(new Error("Please enter the Number of mints"));
+                  return Promise.reject(new Error("Please enter the Shares"));
                 }
               }
             ]}
