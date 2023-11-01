@@ -579,7 +579,7 @@ The deposit will be deducted from the balance of you connected wallet account an
       {notifiContextHolder}
       <AlertTip
         id="depositAlertTip"
-        description="Withdraw assets from your currently connected Nostr account to your Lightning wallet or Taproot wallet or other Nostr accounts."
+        description="Receive assets from your Lightning wallet or Taproot wallet or other Nostr accounts to your  currently connected Nostr account."
       />
       <div className="deposit-form">
         <Form

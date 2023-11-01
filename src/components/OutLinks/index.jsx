@@ -3,6 +3,7 @@ import { ReactComponent as Twitter } from "fonts/svg/twitter.svg";
 import { ReactComponent as Telegram } from "fonts/svg/telegram.svg";
 import { ReactComponent as Gitbook } from "fonts/svg/gitbook.svg";
 import { ReactComponent as Git } from "fonts/svg/github.svg";
+import { ReactComponent as Medium } from "fonts/svg/medium.svg";
 export default function OutLinks() {
   return (
     <>
@@ -18,6 +19,9 @@ export default function OutLinks() {
         </a>
         <a href="https://github.com/nostrassets" target="_blank">
           <Git className="svg-icon" width={30} height={30} />
+        </a>
+        <a href="https://nostrassets.medium.com" target="_blank">
+          <Medium className="svg-icon" width={30} height={30} />
         </a>
       </div>
     </>
