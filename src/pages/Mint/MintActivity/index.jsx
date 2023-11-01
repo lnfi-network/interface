@@ -363,7 +363,8 @@ export default function MintCreate() {
         <h3 className="nostr-activity-titleh3">Launch Mint Activity</h3>
         <div className="nostr-activity-titleh3-description">
           Effortlessly launch a Fair Mint Activity for your Taproot asset on NostrAssets. You can create your own or
-          import Taproot assets to set up Fair Mint Activities (as long as you hold ≥30% of the asset).
+          import Taproot assets to set up Fair Mint Activities (as long as you hold ≥30% of the asset). Each asset can
+          only launch Fair Mint Activity once.
         </div>
 
         <Form
@@ -582,7 +583,16 @@ export default function MintCreate() {
             <span className="nostr-activity-form-servicefee__value" style={{ marginLeft: "20px" }}>
               {`${MINT_SERVICE_FEE} sats`}{" "}
               <span className="color-dark f12">{`(Balance: ${getTokenBalance(QUOTE_ASSET)} sats)`}</span>
-              <DownCircleOutlined onClick={() => history.push("/receive")} style={{ fontSize: "18px", color: "#38c89d", cursor:"pointer", marginLeft: "6px", verticalAlign: "middle" }} />
+              <DownCircleOutlined
+                onClick={() => history.push("/receive")}
+                style={{
+                  fontSize: "18px",
+                  color: "#38c89d",
+                  cursor: "pointer",
+                  marginLeft: "6px",
+                  verticalAlign: "middle"
+                }}
+              />
             </span>
           </div>
           {/* </Col>
