@@ -289,7 +289,7 @@ function WithdrawForm() {
       {notifiContextHolder}
       <AlertTip
         id="withdrawAlertTip"
-        description="Withdraw assets from your currently connected Nostr account to your Lightning wallet or Taproot wallet or other Nostr accounts."
+        description="Withdraw assets from your currently connected Nostr account to your Lightning wallet or Taproot wallet or other Nostr accounts. (Withdraw function currently not available)"
       />
       <div className="withdraw-form">
         <Form
