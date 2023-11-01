@@ -700,7 +700,7 @@ export const useMintAssetsQuery = ({ pageSize = 20, pageIndex = 1, type, creator
       where += `status: { _in: ["INIT", "INIT_PENDING", "INIT_FAIL", "SUCCESS"]}`;
     }
     if (search) {
-      where += `_or:[{ owner: {_iregex: "${search}"} }, { token_name: {_iregex: "${search}"} }] `;
+      where += `_or:[{ token_address: {_iregex: "${search}"} }, { token_name: {_iregex: "${search}"} }] `;
     }
     // where += `status: { _in: ["INIT", "PUSH_MARKET_SUCCESS", "PUSH_MARKET_FAIL", "PART_SUCCESS"]}`;
     // where += `owner: {_eq: "${owner}"} `;
@@ -754,6 +754,7 @@ export const useMintAssetsQuery = ({ pageSize = 20, pageIndex = 1, type, creator
         token_address
         token_name
         progress
+        minters
       }
       ${tableName}_aggregate(where:${whereMemo}){
         aggregate {
@@ -782,45 +783,6 @@ export const useMintAssetsQuery = ({ pageSize = 20, pageIndex = 1, type, creator
     total,
     fetching,
     reexcuteQuery
-  };
-};
-export const useMintAssetDetailQuery = ({ id }) => {
-  const tableName = `${GRAPH_BASE}nostr_assets_activity_by_pk`;
-  const queryGraphsql = gql`
-    query() {
-      ${tableName}(id: "${id}") {
-        call_event_id
-        create_fee
-        create_fee_symbol
-        create_time
-        erro_msg
-        event_id
-        id
-        max_address
-        max_amount
-        mint_fee
-        modify_time
-        npub_address
-        number
-        owner
-        received_amount
-        received_number
-        send_id
-        single_amount
-        status
-        token_address
-        token_name
-      }
-    }`;
-  const [result, reexcuteQuery] = useQuery({
-    query: queryGraphsql
-  });
-
-  const { data, fetching } = result;
-  return {
-    reexcuteQuery,
-    fetching,
-    data: data?.[tableName] || {}
   };
 };
 export const useQueryAssetByEventIdOrAssetName = ({ eventId, assetName }) => {

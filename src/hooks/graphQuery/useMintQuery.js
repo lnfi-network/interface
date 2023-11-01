@@ -5,18 +5,26 @@ const GRAPH_BASE = process.env.REACT_APP_GRAPH_BASE || "";
 
 export const useMintActivityDetailStats = (activeId, npub_address) => {
   const tableName = `${GRAPH_BASE}nostr_assets_activity_detail`;
+  let whereMemo = useMemo(() => {
+    let where = "{";
+    if(activeId && npub_address) {
+      where += `activity_id: {_eq: ${activeId}}, _and: {owner: {_eq: ${npub_address} }}`;
+    }
+    where += "}";
+    return where;
+  }, [activeId, npub_address]);
   const queryGraphsql = gql`
-    query($activity_id:String!,$npub_address:String!) {
-      ${tableName}(where: {activity_id: {_eq: $activity_id}, _and: {npub_address: {_eq:$npub_address }}}) {
-        id
+    query() {
+      ${tableName}(where:${whereMemo}) {
         activity_id
-        owner
+        id
         share
+        owner
       }
     }`;
   const [result, reexcuteQuery] = useQuery({
     query: queryGraphsql,
-    variables: { activity_id: '' + activeId, npub_address },
+    variables: {},
     pause: !activeId || !npub_address
   });
   const { data, fetching } = result;
@@ -26,4 +34,3 @@ export const useMintActivityDetailStats = (activeId, npub_address) => {
     hadMintCount: data ? data[`${tableName}`]?.[0]?.share || 0 : 0
   };
 };
-

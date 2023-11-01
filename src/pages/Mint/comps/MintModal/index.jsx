@@ -4,8 +4,9 @@ import { useAllowance, useApprove, useMintActivity } from "hooks/useNostrMint";
 import { QUOTE_ASSET } from "config/constants";
 import { useQueryBalance } from "hooks/useNostrMarket";
 import { useMintActivityDetailStats } from "hooks/graphQuery/useMintQuery";
-import { InfoCircleOutlined } from "@ant-design/icons";
+import { InfoCircleOutlined, DownCircleOutlined } from "@ant-design/icons";
 import MintSuccessModal from "../MintSuccessModal";
+import { useHistory } from "react-router-dom";
 import "./index.scss";
 
 import { useSelector } from "react-redux";
@@ -19,7 +20,8 @@ const layout = {
 };
 export default function MintModal({ visible, setVisible, mintDetail, reexcuteQueryMintAssetDetail }) {
   //todo queryAllowance & approve & submit & requery
-  const { npubNostrAccount, balanceList } = useSelector(({ user }) => user);
+  const history = useHistory();
+  const { nostrAccount, npubNostrAccount, balanceList } = useSelector(({ user }) => user);
   const { handleQueryBalance } = useQueryBalance();
   const { allowance, handleQueryAllowanceAsync } = useAllowance(QUOTE_ASSET);
   const { handleApproveAsync } = useApprove();
@@ -31,14 +33,20 @@ export default function MintModal({ visible, setVisible, mintDetail, reexcuteQue
   const [successModalVisible, setSuccessModalVisible] = useState(false);
   const { hadMintCount, reexcuteQuery: reQueryHadMintCount } = useMintActivityDetailStats(
     mintDetail?.id,
-    npubNostrAccount
+    nostrAccount
   );
   const [form] = Form.useForm();
 
   const tokenName = useMemo(() => {
     return mintDetail?.token_name;
   }, [mintDetail?.token_name]);
-
+  const remainingNumber = useMemo(() => {
+    // console.log("mintDetail", mintDetail);
+    if(mintDetail?.max_amount) {
+      return (mintDetail.max_amount - mintDetail.received_amount) / mintDetail.single_amount
+    }
+    
+  }, [mintDetail])
   const totalFee = useMemo(() => {
     return Number(mintFee) + 1000;
   }, [mintFee]);
@@ -67,14 +75,16 @@ export default function MintModal({ visible, setVisible, mintDetail, reexcuteQue
     [form, mintDetail?.mint_fee, mintDetail?.single_amount]
   );
   const onNumberMintMax = useCallback(() => {
-    form.setFieldValue("mintNumber", maxMintNumber);
+    const max = remainingNumber > maxMintNumber ? maxMintNumber : remainingNumber
+    form.setFieldValue("mintNumber", max);
     const singleMintAmount = Number(mintDetail?.single_amount) || 0;
-    setTotalMintAmount(singleMintAmount * maxMintNumber);
-    setMintFee(maxMintNumber * mintDetail?.mint_fee);
+    setTotalMintAmount(singleMintAmount * max);
+    setMintFee(max * mintDetail?.mint_fee);
     form.validateFields(["mintNumber"])
-  }, [form, maxMintNumber, mintDetail?.mint_fee, mintDetail?.single_amount]);
+  }, [form, maxMintNumber, mintDetail?.mint_fee, mintDetail?.single_amount, remainingNumber]);
 
   const memoNumberMintsExtra = useMemo(() => {
+    // Remaining maximum share
     return <span className="number-mint-etra">Maximum Shares Per Address {mintDetail?.max_address}</span>;
   }, [mintDetail?.max_address]);
   const onApprove = useCallback(async () => {
@@ -190,7 +200,7 @@ export default function MintModal({ visible, setVisible, mintDetail, reexcuteQue
         }}
       >
         <Form className="mint-form" {...layout} form={form} name="mintForm" autoComplete="off" preserve={false}>
-          <Form.Item label="Single Mint Amount:" className="form-item-display">
+          <Form.Item label="Asset Amount per share:" className="form-item-display">
             <span className="form-item-display__text">
               {mintDetail?.single_amount || 0} {tokenName}
             </span>
@@ -203,8 +213,14 @@ export default function MintModal({ visible, setVisible, mintDetail, reexcuteQue
               {
                 validator(_, value) {
                   if (value) {
-                    if (Number(value) < 1 || Number(value) > maxMintNumber) {
-                      return Promise.reject(new Error(`The Shares is a number from 1 to ${maxMintNumber}.`));
+                    if(Number(value) > maxMintNumber) {
+                      return Promise.reject(new Error(`Maximum shares per address is ${maxMintNumber}, already minted ${hadMintCount} shares.`));
+                    }
+                    if(Number(value) > remainingNumber) {
+                      return Promise.reject(new Error(`Exceeds the remaining shares ${remainingNumber}.`));
+                    }
+                    if (Number(value) < 1) {
+                      return Promise.reject(new Error(`Shares at least 1.`));
                     }
                     return Promise.resolve();
                   }
@@ -227,7 +243,7 @@ export default function MintModal({ visible, setVisible, mintDetail, reexcuteQue
             />
           </Form.Item>
           <Form.Item label="Total Mint Amount:" className="form-item-display">
-            <span className="form-item-display__text">{totalMintAmount}</span>
+            <span className="form-item-display__text f16">{totalMintAmount} {tokenName}</span>
           </Form.Item>
           <Form.Item
             label={
@@ -257,7 +273,11 @@ export default function MintModal({ visible, setVisible, mintDetail, reexcuteQue
               {totalFee} sats{" "}
               
             </div>
-            <div className="form-item-display__text-tip">Balance: {balance?.balanceShow || 0} sats</div>
+            <div className="form-item-display__text-tip">
+              <span>Balance: {balance?.balanceShow || 0} sats</span>
+              <DownCircleOutlined onClick={() => history.push("/receive")} style={{ fontSize: "14px", color: "#38c89d", cursor:"pointer", marginLeft: "6px", verticalAlign: "middle" }} />
+            </div>
+            
           </Form.Item>
 
           <Form.Item wrapperCol={24} align="middle">

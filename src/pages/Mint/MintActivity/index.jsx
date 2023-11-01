@@ -12,7 +12,7 @@ import { QUOTE_ASSET, MINT_SERVICE_FEE } from "config/constants";
 import { limitDecimals, numberWithCommas } from "lib/numbers";
 import { useLaunchMintActivity, useAllowance, useApprove } from "hooks/useNostrMint";
 import { useSendListOrder, useQueryBalance } from "hooks/useNostrMarket";
-import { CheckCircleOutlined, CloseCircleOutlined, SwapOutlined } from "@ant-design/icons";
+import { CheckCircleOutlined, CloseCircleOutlined, SwapOutlined, DownCircleOutlined } from "@ant-design/icons";
 import { t } from "@lingui/macro";
 import "./index.scss";
 const NOSTR_MINT_SEND_TO = process.env.REACT_APP_NOSTR_MINT_SEND_TO;
@@ -500,7 +500,7 @@ export default function MintCreate() {
                     }
                     const amount = form.getFieldValue("amount");
                     if (Number(value) && Number(amount) && !Number.isInteger(Number(amount) / Number(value))) {
-                      return Promise.reject(new Error(`Shares must be an integer`));
+                      return Promise.reject(new Error(`Asset Amount per share must be an integer`));
                     }
                     return Promise.resolve();
                   }
@@ -582,6 +582,7 @@ export default function MintCreate() {
             <span className="nostr-activity-form-servicefee__value" style={{ marginLeft: "20px" }}>
               {`${MINT_SERVICE_FEE} sats`}{" "}
               <span className="color-dark f12">{`(Balance: ${getTokenBalance(QUOTE_ASSET)} sats)`}</span>
+              <DownCircleOutlined onClick={() => history.push("/receive")} style={{ fontSize: "18px", color: "#38c89d", cursor:"pointer", marginLeft: "6px", verticalAlign: "middle" }} />
             </span>
           </div>
           {/* </Col>

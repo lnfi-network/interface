@@ -168,7 +168,7 @@ export default function MintDetail() {
                   <div className="progress-percent-text" style={{ left: progress }}>
                     {progress}{" "}
                     <span className="color-yellow">
-                      {detail?.received_number ? `${numberWithCommas(detail?.received_number)} Minters` : "0 Minters"}
+                      {detail?.minters ? `${numberWithCommas(detail?.minters)} Minters` : "0 Minters"}
                     </span>
                   </div>
                 </div>

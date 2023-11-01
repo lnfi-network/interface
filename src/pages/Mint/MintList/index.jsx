@@ -163,24 +163,24 @@ function MintList() {
               <span>{t`Minters`}</span>
               <span style={{ display: "inline-flex", flexDirection: "column", marginLeft: "3px" }}>
                 <CaretUpOutlined
-                  className={order_by_name == "received_number" && order_by == "asc" && "color-yellow"}
-                  onClick={() => onSortChange("received_number", "asc")}
+                  className={order_by_name == "minters" && order_by == "asc" && "color-yellow"}
+                  onClick={() => onSortChange("minters", "asc")}
                   style={{height: "14px"}}
                 ></CaretUpOutlined>
                 <CaretDownOutlined
-                  className={order_by_name == "received_number" && order_by == "desc" && "color-yellow"}
-                  onClick={() => onSortChange("received_number", "desc")}
+                  className={order_by_name == "minters" && order_by == "desc" && "color-yellow"}
+                  onClick={() => onSortChange("minters", "desc")}
                   style={{height: "14px",marginTop: "-4px"}}
                 ></CaretDownOutlined>
               </span>
-              {/* {order_by_name == "received_number" && order_by == "asc" ? (
-                <CaretUpOutlined className={order_by_name == "received_number" && order_by == "asc" && "color-yellow"} onClick={() => onSortChange("received_number", "desc")}></CaretUpOutlined>
+              {/* {order_by_name == "minters" && order_by == "asc" ? (
+                <CaretUpOutlined className={order_by_name == "minters" && order_by == "asc" && "color-yellow"} onClick={() => onSortChange("minters", "desc")}></CaretUpOutlined>
               ) : (
-                <CaretDownOutlined className={order_by_name == "received_number" && order_by == "desc" && "color-yellow"} onClick={() => onSortChange("received_number", "asc")}></CaretDownOutlined>
+                <CaretDownOutlined className={order_by_name == "minters" && order_by == "desc" && "color-yellow"} onClick={() => onSortChange("minters", "asc")}></CaretDownOutlined>
               )} */}
             </>
           ),
-          dataIndex: "received_number"
+          dataIndex: "minters"
         },
         {
           title: t`Action`,
