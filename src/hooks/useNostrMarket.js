@@ -9,7 +9,7 @@ import { useDebounceEffect } from "ahooks";
 import { getLocalRobotPrivateKey } from "lib/utils/index";
 import useWebln from "./useWebln";
 import * as Lockr from "lockr";
-
+import { getBalance, getAllowance } from 'service/nostrApi'
 // import { sleep } from "lib/utils";
 
 const NOSTAR_TOKEN_SEND_TO = process.env.REACT_APP_NOSTR_TOKEN_SEND_TO;
