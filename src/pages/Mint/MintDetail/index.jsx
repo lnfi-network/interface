@@ -304,25 +304,25 @@ export default function MintDetail() {
                 </div>
               </div>
               <div className="mint-detail-item">
-                <div className="mint-detail-item-key">Number of Mints</div>
+                <div className="mint-detail-item-key">Shares</div>
                 <div className="mint-detail-item-value">
                   {detail?.max_amount ? numberWithCommas(detail?.number) : "--"}
                 </div>
               </div>
               <div className="mint-detail-item">
-                <div className="mint-detail-item-key">Single Mint Amount</div>
+                <div className="mint-detail-item-key">Asset Amount Per Share</div>
                 <div className="mint-detail-item-value">
                   {detail?.single_amount ? numberWithCommas(detail?.single_amount) : "--"}
                 </div>
               </div>
               <div className="mint-detail-item">
-                <div className="mint-detail-item-key">Maximum Mints Per Address</div>
+                <div className="mint-detail-item-key">Maximum Shares Per Address</div>
                 <div className="mint-detail-item-value">
                   {detail?.max_address ? numberWithCommas(detail?.max_address) : "--"}
                 </div>
               </div>
               <div className="mint-detail-item">
-                <div className="mint-detail-item-key">Mint Fee/Mint</div>
+                <div className="mint-detail-item-key">Mint Fee/Share</div>
                 <div className="mint-detail-item-value">
                   {detail?.create_fee ? `${numberWithCommas(detail?.create_fee)} ${QUOTE_ASSET}`  : "--"}
                 </div>

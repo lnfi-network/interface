@@ -625,7 +625,7 @@ export default function MintCreate() {
               <div className="asset-confirm-item-value">{numberMint ? numberWithCommas(numberMint) : "--"}</div>
             </div>
             <div className="asset-confirm-item">
-              <div className="asset-confirm-item-label">Asset Amount per share:</div>
+              <div className="asset-confirm-item-label">Asset Amount Per Share:</div>
               <div className="asset-confirm-item-value">
                 {singleMint ? `${numberWithCommas(singleMint)} ${selectToken?.name}` : "--"}
               </div>
