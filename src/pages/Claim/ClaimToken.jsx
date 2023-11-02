@@ -84,7 +84,7 @@ export default function ClaimToken() {
         <div className="claim-content-box">
           <div className="claim-content-bg">
             <div className="claim-content">
-              <div className="claim-content-title">First Taproot Asset Airdrop</div>
+              <div className="claim-content-title">Spooky Taproot Asset Airdrop</div>
               {!npubNostrAccount ? (
                 <div className="claim-content-title__des">
                   This airdrop is only open to those whose Nostr addresses have been whitelisted. Please connect your

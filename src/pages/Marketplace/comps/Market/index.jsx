@@ -136,20 +136,19 @@ function MarketModalForm({ setIsMarketModalForm, isMarketModalForm, reexcuteQuer
       let ret = null;
       if (isBuy) {
         ret = await handleApproveAsync(Number(totalValue), QUOTE_ASSET);
-        handleQueryAllowance(QUOTE_ASSET);
+        await handleQueryAllowance(QUOTE_ASSET);
       } else {
         ret = await handleApproveAsync(Number(amountValue), data.token);
-        handleQueryAllowance(data.token);
+        await handleQueryAllowance(data.token);
       }
       if (ret?.code === 0) {
         setBtnLoading(false);
         message.success(t`Approve successfully`);
       } else {
         setBtnLoading(false);
-        message.error(ret?.data || "Fail");
+        throw new Error(ret?.data || "Fail");
       }
     } catch (e) {
-      setBtnLoading(false);
       message.error(e.message || "Fail");
     } finally {
       setBtnLoading(false);

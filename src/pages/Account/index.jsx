@@ -29,6 +29,7 @@ import { setAboutModalVisible } from "store/reducer/modalReducer";
 import { QUOTE_ASSET } from "config/constants";
 import NoticeModal from "./comps/NoticeModal";
 import { convertDollars } from "lib/utils/index";
+
 const ASSET_PLAT_MAP = {
   ETHEREUM: "ETH",
   BRC20: "BTC",
@@ -45,7 +46,6 @@ function Account() {
   const history = useHistory();
   const { nostrAccount, balanceList, npubNostrAccount } = useSelector(({ user }) => user);
   const { tokenList, quote_pirce } = useSelector(({ market }) => market);
-  console.log("tokenList", tokenList);
   const qutoAsset = useMemo(() => {
     return tokenList.find((tokenItem) => tokenItem?.name === QUOTE_ASSET);
   }, [tokenList]);
@@ -155,9 +155,7 @@ function Account() {
             return price != "--" ? (
               <div>
                 <div className="color-light">{numberWithCommas(limitDecimals(price, qutoAsset?.reserve || 0))}</div>
-                <div className="color-dark">
-                  {convertDollars(price, quote_pirce)}
-                </div>
+                <div className="color-dark">{convertDollars(price, quote_pirce)}</div>
               </div>
             ) : (
               "--"
@@ -428,7 +426,7 @@ function Account() {
             <div className="account-tokenList-title-right">
               Universe Host:{" "}
               <EllipsisMiddle suffixCount={5} suffixEnable={device.isMobile ? true : false}>
-                tapd.nostrassets.com:10029
+                {process.env.REACT_APP_UNIVERSE_HOST}
               </EllipsisMiddle>
             </div>
           </div>
@@ -489,7 +487,7 @@ function Account() {
                         goImportAssets();
                       }}
                     >
-                      {t`Import Assets`}
+                      Import Assets
                     </Button>
                   </CheckNostrButton>
                 </>

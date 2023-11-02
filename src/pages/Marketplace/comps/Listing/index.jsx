@@ -26,8 +26,9 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
   const [buyOrSell, setBuyOrSell] = useState("buy");
   const [messageApi, contextHolder] = message.useMessage();
   const [selectedToken, setSelectedToken] = useState(null);
-  const { handleQueryAllowance, allowance } = useAllowance();
+  const { handleQueryAllowance, allowance, loading: allownceLoading } = useAllowance();
   const { handleApproveAsync, handleApproveAsyncByCommand } = useApprove();
+
   const { handleLimitOrderAsync } = useSendListOrder();
   const { handleQueryBalance } = useQueryBalance();
   const [btnLoading, setBtnLoading] = useState(false);
@@ -181,10 +182,6 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
     // form.validateFields();
     try {
       await form.validateFields();
-      // if (Number(memoTotalValue) < selectedToken?.volume * qutoAssetVolume) {
-      //   message.warning(`Minimum Qty is ${selectedToken?.volume * qutoAssetVolume} ${QUOTE_ASSET}`);
-      //   return;
-      // }
       setBtnLoading(true);
       const values = form.getFieldsValue();
       const side = buyOrSell;
@@ -200,35 +197,19 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
         price,
         payTokenName: payTokenName
       });
-      if (!ret) {
-        return;
-      }
+
       if (ret?.code === 0) {
         message.success(t`Submit successfully`);
-        /* modalRef.current.handleCancel(); */
-
-        await handleQueryBalance(nip19.npubEncode(nostrAccount));
-        // setTimeout(() => {
         reexcuteQuery && reexcuteQuery();
         onCancel();
-        // }, 500)
       } else {
-        messageApi.open({
-          type: "error",
-          content: ret.data
-        });
+        throw new Error(ret?.data);
       }
     } catch (e) {
       messageApi.error(e.message);
     } finally {
+      await handleQueryBalance(nip19.npubEncode(nostrAccount));
       setBtnLoading(false);
-      //refresh balanceList
-
-      if (buyOrSell === "buy") {
-        handleQueryAllowance(QUOTE_ASSET);
-      } else {
-        handleQueryAllowance(selectedToken?.name);
-      }
     }
   }, [
     form,
@@ -239,8 +220,7 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
     nostrAccount,
     reexcuteQuery,
     onCancel,
-    messageApi,
-    handleQueryAllowance
+    messageApi
   ]);
   const onPriceChange = useCallback(
     ({ target: { value } }) => {
@@ -319,31 +299,23 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
       } else {
         if (buyOrSell === "buy") {
           ret = await handleApproveAsync(Number(memoTotalValue), QUOTE_ASSET);
-          handleQueryAllowance(QUOTE_ASSET);
+          await handleQueryAllowance(QUOTE_ASSET);
         } else {
           ret = await handleApproveAsync(Number(amountValue), selectedToken?.name);
-          handleQueryAllowance(selectedToken?.name);
+          await handleQueryAllowance(selectedToken?.name);
         }
       }
-      if (!ret) {
-        return;
-      }
+
       if (ret?.code === 0) {
         messageApi.open({
           type: "success",
           content: "Approve successfully"
         });
       } else {
-        messageApi.open({
-          type: "error",
-          content: ret.data
-        });
+        throw new Error(ret?.data);
       }
     } catch (e) {
-      // console.log("messageApi.error(e.message);",e, e?.errorField);
-      if (!e?.errorFields?.length) {
-        messageApi.error(e.message);
-      }
+      e.message && messageApi.error(e.message);
     } finally {
       setBtnLoading(false);
     }
@@ -415,8 +387,8 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
   // }, [allowance?.amountShow, amountValue, approveAllChecked, balance, buyOrSell, getTokenBalance, memoTotalValue, selectedToken?.name]);
   const memoButton = useMemo(() => {
     if (buyOrSell === "buy") {
-      //
-      if (Number(memoTotalValue) && Number(balance) && Number(memoTotalValue) > Number(balance)) {
+      // Insufficient balance
+      if ((Number(memoTotalValue) && Number(balance) && Number(memoTotalValue) > Number(balance)) || !Number(balance)) {
         return (
           <>
             <Button
@@ -424,7 +396,6 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
               className={classNames("listing-submit-btn")}
               // size="large"
               loading={btnLoading}
-              onClick={onListingSubmit}
               disabled={true}
             >
               {"Insufficient balance"}
@@ -432,24 +403,22 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
           </>
         );
       }
-      if (
-        (allowance?.amountShow && Number(balance) > 0 && Number(allowance?.amountShow) < Number(memoTotalValue)) ||
-        Number(allowance?.amountShow) === 0 ||
-        !allowance?.amountShow
-      ) {
+      // approve
+      if (Number(allowance?.amountShow) < Number(memoTotalValue)) {
         return (
           <Button
             type="primary"
             className="listing-submit-btn"
             // size="large"
             onClick={onApprove}
-            disabled={Number(balance) === 0}
+            disabled={Number(balance) === 0 || allownceLoading}
             loading={btnLoading}
           >
             Approve
           </Button>
         );
       }
+
       return (
         <>
           <Button
@@ -460,13 +429,17 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
             onClick={onListingSubmit}
             disabled={!Number(balance) || Number(balance) === 0}
           >
-            {Number(balance) > 0 ? `Buy ${selectedToken?.name}` : "Insufficient balance"}
+            {`Buy ${selectedToken?.name}`}
           </Button>
         </>
       );
     } else {
       const selectedTokenBalance = getTokenBalance(selectedToken?.name);
-      if (Number(amountValue) && Number(selectedTokenBalance) && Number(amountValue) > Number(selectedTokenBalance)) {
+      // Insufficient balance
+      if (
+        (Number(amountValue) && Number(selectedTokenBalance) && Number(amountValue) > Number(selectedTokenBalance)) ||
+        !Number(selectedTokenBalance)
+      ) {
         return (
           <>
             <Button
@@ -474,7 +447,6 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
               className={classNames("listing-submit-btn")}
               // size="large"
               loading={btnLoading}
-              onClick={onListingSubmit}
               disabled={true}
             >
               {"Insufficient balance"}
@@ -482,12 +454,8 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
           </>
         );
       }
-      // console.log("allowance amountShow", Number(allowance?.amountShow), Number(amountValue));
-      if (
-        (allowance?.amountShow && Number(balance) > 0 && Number(allowance?.amountShow) < Number(amountValue)) ||
-        Number(allowance?.amountShow) === 0 ||
-        !allowance?.amountShow
-      ) {
+
+      if (Number(allowance?.amountShow) < Number(amountValue) || !Number(allowance?.amountShow)) {
         return (
           <Button
             type="primary"
@@ -497,7 +465,7 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
             // size="large"
             onClick={onApprove}
             loading={btnLoading}
-            disabled={Number(selectedTokenBalance) === 0}
+            disabled={Number(selectedTokenBalance) === 0 || allownceLoading}
           >
             Approve
           </Button>
@@ -509,17 +477,17 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
           className={classNames("listing-submit-btn", {
             "listing-submit-btn__sell": buyOrSell === "sell"
           })}
-          // size="large"
           loading={btnLoading}
           onClick={onListingSubmit}
-          disabled={!Number(selectedTokenBalance) || Number(selectedTokenBalance) === 0}
+          disabled={!Number(selectedTokenBalance) || allownceLoading}
         >
-          {Number(selectedTokenBalance) > 0 ? `Sell ${selectedToken?.name}` : "Insufficient balance"}
+          {`Sell ${selectedToken?.name}`}
         </Button>
       );
     }
   }, [
     allowance?.amountShow,
+    allownceLoading,
     amountValue,
     balance,
     btnLoading,
@@ -542,7 +510,6 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
 
   useEffect(() => {
     if (buyOrSell === "buy" && selectedToken?.name) {
-      //
       handleQueryAllowance(QUOTE_ASSET);
     } else if (buyOrSell === "sell" && selectedToken?.name) {
       handleQueryAllowance(selectedToken?.name);

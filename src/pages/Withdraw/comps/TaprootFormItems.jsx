@@ -10,7 +10,7 @@ import { to } from "await-to-js";
 import { useSelector } from "react-redux";
 import { useThrottleFn } from "ahooks";
 import { sleep } from "lib/utils";
-
+import FunctionEnableButton from "components/FunctionEnableButton";
 import { useUnisatPayfee } from "hooks/usePayfee";
 import { nip19 } from "nostr-tools";
 export default function TaprootFormItems({ form, nostrAccount, notifiApi, messageApi, handleQueryBalance }) {
@@ -55,8 +55,7 @@ export default function TaprootFormItems({ form, nostrAccount, notifiApi, messag
       const withdrawRet = await handleTaprootWithdrawAsync(
         withdrawAmount,
         values.invoiceTap,
-        values.depositOrWithdrawToken,
-        sendTx
+        values.depositOrWithdrawToken
       );
       if (withdrawRet?.code === 0) {
         await sleep(4000);
@@ -102,23 +101,23 @@ export default function TaprootFormItems({ form, nostrAccount, notifiApi, messag
     );
   }, [balance, token]);
   const memoWithdrawBtn = useMemo(() => {
-    return account ? (
+    return (
       <CheckNostrButton>
-        <Button
-          type="primary"
-          size="large"
-          className="withdraw-send-btn"
-          loading={btnLoading}
-          onClick={handleWithdraw}
-          disabled={withdrawAmount === 0}
-        >
-          Send
-        </Button>
+        <FunctionEnableButton>
+          <Button
+            type="primary"
+            size="large"
+            className="withdraw-send-btn"
+            loading={btnLoading}
+            onClick={handleWithdraw}
+            disabled={withdrawAmount === 0}
+          >
+            Send
+          </Button>
+        </FunctionEnableButton>
       </CheckNostrButton>
-    ) : (
-      <ConnectWallet />
     );
-  }, [account, btnLoading, handleWithdraw, withdrawAmount]);
+  }, [btnLoading, handleWithdraw, withdrawAmount]);
 
   const { run: handleInvoiceChange } = useThrottleFn(
     async ({ target: { value } }) => {

@@ -1,8 +1,9 @@
 import { Form, Row, Col, Input, Button, Select, Modal, InputNumber } from "antd";
 
 import { useEffect, useMemo, useState, useCallback } from "react";
-import ConnectWallet from "components/Common/ConnectWallet";
+
 import CheckNostrButton from "components/CheckNostrButton";
+import FunctionEnableButton from "components/FunctionEnableButton";
 import { useWeblnWithdraw } from "hooks/useNostrMarket";
 import { to } from "await-to-js";
 import { useSelector } from "react-redux";
@@ -10,7 +11,6 @@ import useWebln from "hooks/useWebln";
 import { sleep } from "lib/utils";
 import { useDispatch } from "react-redux";
 import { setConnectNostrModalVisible, setOnlyMobileSupportedVisible } from "store/reducer/modalReducer";
-
 import useDevice from "hooks/useDevice";
 import { nip19 } from "nostr-tools";
 import "./LightningFormItems.scss";
@@ -27,7 +27,6 @@ export default function LightningFormItems({ form, nostrAccount, messageApi, han
   const { makeInvoice } = useWebln();
   const dispatch = useDispatch();
   const device = useDevice();
-
   const balance = useMemo(() => {
     return balanceList["SATS"] ? balanceList["SATS"]?.balanceShow : 0.0;
   }, [balanceList]);
@@ -55,6 +54,7 @@ export default function LightningFormItems({ form, nostrAccount, messageApi, han
       }
       setBtnLoading(true);
       const values = form.getFieldsValue(true);
+      // const sendTx = await handleUnisatPay(values.invoice, true);
       const withdrawRet = await handleWeblnWithdrawAsync(withdrawAmount, values.invoice);
       if (withdrawRet?.code === 0) {
         messageApi.success({
@@ -109,9 +109,17 @@ export default function LightningFormItems({ form, nostrAccount, messageApi, han
   const memoWithdrawBtn = useMemo(() => {
     return (
       <CheckNostrButton>
-        <Button type="primary" size="large" className="withdraw-send-btn" loading={btnLoading} onClick={handleWithdraw}>
-          Send
-        </Button>
+        <FunctionEnableButton enable={process.env.REACT_APP_CURRENT_ENV !== "prod"}>
+          <Button
+            type="primary"
+            size="large"
+            className="withdraw-send-btn"
+            loading={btnLoading}
+            onClick={handleWithdraw}
+          >
+            Send
+          </Button>
+        </FunctionEnableButton>
       </CheckNostrButton>
     );
   }, [btnLoading, handleWithdraw]);

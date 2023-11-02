@@ -15,6 +15,7 @@ import CheckNostrButton from "components/CheckNostrButton";
 import { setAboutModalVisible } from "store/reducer/modalReducer";
 import { CheckCircleOutlined, CloseCircleOutlined, SwapOutlined } from "@ant-design/icons";
 import useDevice from "hooks/useDevice";
+import FunctionEnableButton from "components/FunctionEnableButton";
 const assetsTypeMap = {
   0: "Token",
   1: "NFT"
@@ -165,7 +166,11 @@ export default function ImportAssets() {
                 <div className="import-asset-item-section-label color-dark">TX</div>
                 <div className="import-asset-item-section-value">
                   {item.genesis_point ? (
-                    <EllipsisMiddle suffixCount={8} suffixCountMore={6} handleClick={() => window.open(`${process.env.REACT_APP_TX}${item.genesis_point}`)}>
+                    <EllipsisMiddle
+                      suffixCount={8}
+                      suffixCountMore={6}
+                      handleClick={() => window.open(`${process.env.REACT_APP_TX}${item.genesis_point}`)}
+                    >
                       {`${process.env.REACT_APP_TX}${item.genesis_point}`}
                     </EllipsisMiddle>
                   ) : (
@@ -176,9 +181,11 @@ export default function ImportAssets() {
               <div className="import-asset-item-section-btn">
                 {!isImported ? (
                   <CheckNostrButton>
-                    <Button type="primary" onClick={() => importAssetShow(item)}>
-                      Import Asset
-                    </Button>
+                    <FunctionEnableButton enable={process.env.REACT_APP_CURRENT_ENV !== "prod"}>
+                      <Button type="primary" onClick={() => importAssetShow(item)}>
+                        Import Asset
+                      </Button>
+                    </FunctionEnableButton>
                   </CheckNostrButton>
                 ) : (
                   // (
@@ -208,10 +215,13 @@ export default function ImportAssets() {
               </span>
             }
           />
+
           <CheckNostrButton>
-            <Button type="primary" onClick={() => setSyncOpen(true)}>
-              Sync and Import
-            </Button>
+            <FunctionEnableButton enable={process.env.REACT_APP_CURRENT_ENV !== "prod"}>
+              <Button type="primary" onClick={() => setSyncOpen(true)}>
+                Sync and Import
+              </Button>
+            </FunctionEnableButton>
           </CheckNostrButton>
         </div>
       );
@@ -270,9 +280,11 @@ export default function ImportAssets() {
               <div className="import-asset-content-sync">
                 <span>Can't find asset?</span>{" "}
                 <CheckNostrButton>
-                  <span className="sync-link" onClick={() => setSyncOpen(true)}>
-                    Sync and Import
-                  </span>
+                  <FunctionEnableButton enable={process.env.REACT_APP_CURRENT_ENV !== "prod"}>
+                    <span className="sync-link" onClick={() => setSyncOpen(true)}>
+                      Sync and Import
+                    </span>
+                  </FunctionEnableButton>
                 </CheckNostrButton>
               </div>
             </div>

@@ -155,10 +155,10 @@ export function parseUSDT(usdtStr) {
   return usdtStr * 10 ** 6;
 }
 export function convertDollars(coin, price, placeholder = "--") {
-  if(Number(coin) && price > 0) {
-    // return `≈$${numberWithCommas(limitDecimals(coin * price, 2))}`
+  if (Number(coin) && price > 0) {
+    //return `≈$${numberWithCommas(limitDecimals(coin * price, 4,"fllor"))}`
     return `≈$${numberWithCommas(limitDecimals(coin * price, 4, "floor"))}`
   } else {
     return placeholder
-  } 
+  }
 }

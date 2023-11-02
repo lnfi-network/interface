@@ -12,7 +12,7 @@ window.nip19 = nip19;
 const NostrContext = createContext();
 const ROBOT_PRIVATE_KEY = getLocalRobotPrivateKey();
 export function NostrProvider({ debug = false, children }) {
-  const pool = new SimplePool({ getTimeout: 12 * 1000, eoseSubTimeout: 5000 });
+  const pool = new SimplePool({ getTimeout: 12 * 1000, eoseTimeout: 5 * 1000 });
   return <NostrContext.Provider value={{ debug, pool }}>{children}</NostrContext.Provider>;
 }
 export function useNostr() {
