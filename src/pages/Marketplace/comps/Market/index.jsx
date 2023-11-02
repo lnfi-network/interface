@@ -103,7 +103,7 @@ function MarketModalForm({ setIsMarketModalForm, isMarketModalForm, reexcuteQuer
         ? min(selectToken?.reserve)
         : limitDecimals(amountValue * FEE, selectToken?.reserve, "round");
     } else {
-      console.log("totalValue * FEE", totalValue * FEE);
+      // console.log("totalValue * FEE", totalValue * FEE);
       return limitDecimals(totalValue * FEE, qutoAsset?.reserve, "round") == 0
         ? min(qutoAsset?.reserve)
         : limitDecimals(totalValue * FEE, qutoAsset?.reserve, "round");

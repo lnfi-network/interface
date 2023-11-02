@@ -14,7 +14,7 @@ import asset from "img/asset.png";
 import { limitDecimals, numberWithCommas } from "lib/numbers";
 import BigNumber from "bignumber.js";
 import { useSize, useDebounce } from "ahooks";
-import { useCreateAssetsQuery } from "hooks/graphQuery/useExplore";
+import { useMintAssetsQuery } from "hooks/graphQuery/useExplore";
 // import ProModal from "./comps/ProModal";
 import { utcToClient } from "lib/dates";
 import { ReloadOutlined } from "@ant-design/icons";
@@ -22,7 +22,7 @@ import ConnectNostr from "components/Common/ConnectNostr";
 import CheckNostrButton from "components/CheckNostrButton";
 import useDevice from "hooks/useDevice";
 import { setAboutModalVisible } from "store/reducer/modalReducer";
-import { PlusOutlined } from "@ant-design/icons";
+import { PlusOutlined, CaretDownOutlined, CaretUpOutlined } from "@ant-design/icons";
 import * as Lockr from "lockr";
 const ASSET_PLAT_MAP = {
   ETHEREUM: "ETH",
@@ -36,9 +36,12 @@ function MintList() {
   const dispatch = useDispatch();
   const [type, setType] = useState("All");
   const [search, setSearch] = useState("");
+  const [order_by_name, setOrder_by_name] = useState("progress");
+  const [order_by, setOrder_by] = useState("desc");
   const debouncedSearch = useDebounce(search, { wait: 500 });
   const [pageSize, setPageSize] = useState(100);
   const [pageIndex, setPageIndex] = useState(1);
+
   const history = useHistory();
   const { nostrAccount, balanceList, npubNostrAccount } = useSelector(({ user }) => user);
   const { tokenList } = useSelector(({ market }) => market);
@@ -46,11 +49,13 @@ function MintList() {
     return tokenList.find((k) => k?.name?.toUpperCase() == "USDT");
   }, [tokenList]);
   // const { handleQueryBalance } = useQueryBalance();
-  const { list, fetching, total, reexcuteQuery } = useCreateAssetsQuery({
+  const { list, fetching, total, reexcuteQuery } = useMintAssetsQuery({
     search: debouncedSearch,
     type,
     pageSize,
     pageIndex,
+    order_by_name,
+    order_by,
     creator: nostrAccount
   });
   // useEffect(() => {
@@ -73,12 +78,16 @@ function MintList() {
     // console.log("value", value);
     setSearch(e.target.value);
   }, []);
+  const onSortChange = useCallback((name, type) => {
+    setOrder_by_name(name);
+    setOrder_by(type);
+  }, []);
   const columns = useMemo(() => {
     if (width > 768) {
       return [
         {
           title: t`Asset`,
-          dataIndex: "name",
+          dataIndex: "token_name",
           render: (text, row) => {
             return (
               <div>
@@ -98,41 +107,79 @@ function MintList() {
           }
         },
         {
-          title: t`Create Date`,
-          dataIndex: "create_time",
-          render: (text) => utcToClient(text)
-        },
-        {
-          title: t`TxID`,
-          dataIndex: "create_tx_hash",
+          title: t`Total Supply`,
+          dataIndex: "token_name",
           render: (text) => {
-            return text ? (
-              <EllipsisMiddle
-                suffixCount={8}
-                suffixCountMore={6}
-                className="pointer"
-                handleClick={() => window.open(`${process.env.REACT_APP_TX}${text}`)}
-              >
-                {`${text}`}
-              </EllipsisMiddle>
-            ) : (
-              "--"
-            );
+            const token = tokenList.find((k) => k?.name?.toUpperCase() == text?.toUpperCase());
+            return token?.totalSupply ? numberWithCommas(token?.totalSupply) : "--";
           }
         },
         {
-          title: t`Asset ID`,
-          dataIndex: "asset_id",
+          title: t`Maximum Mint Amount`,
+          dataIndex: "max_amount",
           render: (text) => {
-            return text ? <EllipsisMiddle suffixCount={8}>{text}</EllipsisMiddle> : "--";
+            return text ? numberWithCommas(text) : "--";
           }
         },
         {
-          title: t`Progress`,
-          dataIndex: "progress"
+          title: t`Asset Amount Per Share`,
+          dataIndex: "single_amount",
+          render: (text) => {
+            return text ? numberWithCommas(text) : "--";
+          }
         },
         {
-          title: t`Minters`,
+          title: (
+            <>
+              <span>{t`Progress`}</span>
+              <span style={{ display: "inline-flex", flexDirection: "column", marginLeft: "3px" }}>
+                <CaretUpOutlined
+                  className={order_by_name == "progress" && order_by == "asc" && "color-yellow"}
+                  onClick={() => onSortChange("progress", "asc")}
+                  style={{height: "14px"}}
+                ></CaretUpOutlined>
+                <CaretDownOutlined
+                  className={order_by_name == "progress" && order_by == "desc" && "color-yellow"}
+                  onClick={() => onSortChange("progress", "desc")}
+                  style={{height: "14px", marginTop: "-4px"}}
+                ></CaretDownOutlined>
+              </span>
+              {/* {order_by_name == "progress" && order_by == "asc" ? (
+                
+              ) : (
+                
+              )} */}
+            </>
+          ),
+          dataIndex: "received_amount",
+          render: (text, row) => {
+            const progress = limitDecimals((text / row.max_amount) * 100, 2, "floor");
+            return `${progress}%`;
+          }
+        },
+        {
+          title: (
+            <>
+              <span>{t`Minters`}</span>
+              <span style={{ display: "inline-flex", flexDirection: "column", marginLeft: "3px" }}>
+                <CaretUpOutlined
+                  className={order_by_name == "minters" && order_by == "asc" && "color-yellow"}
+                  onClick={() => onSortChange("minters", "asc")}
+                  style={{height: "14px"}}
+                ></CaretUpOutlined>
+                <CaretDownOutlined
+                  className={order_by_name == "minters" && order_by == "desc" && "color-yellow"}
+                  onClick={() => onSortChange("minters", "desc")}
+                  style={{height: "14px",marginTop: "-4px"}}
+                ></CaretDownOutlined>
+              </span>
+              {/* {order_by_name == "minters" && order_by == "asc" ? (
+                <CaretUpOutlined className={order_by_name == "minters" && order_by == "asc" && "color-yellow"} onClick={() => onSortChange("minters", "desc")}></CaretUpOutlined>
+              ) : (
+                <CaretDownOutlined className={order_by_name == "minters" && order_by == "desc" && "color-yellow"} onClick={() => onSortChange("minters", "asc")}></CaretDownOutlined>
+              )} */}
+            </>
+          ),
           dataIndex: "minters"
         },
         {
@@ -148,12 +195,13 @@ function MintList() {
               //   }}
               // >
               <CheckNostrButton>
-                <span onClick={() => history.push(`/mint/detail/${row.event_id}`)}>
+                <span onClick={() => history.push(`/mint/detail/${row.id}`)}>
                   <Button
                     type="primary"
+                    disabled={row.status == "SUCCESS" || row.max_amount == row.received_amount}
                     // onClick={() => setType("In-Progress")}
                   >{t`Mint`}</Button>
-                  <span style={{ fontSize: "20px", verticalAlign: "middle" }}>{" >"}</span>
+                  <span style={{ fontSize: "20px", cursor: "pointer", verticalAlign: "middle" }}>{" >"}</span>
                 </span>
               </CheckNostrButton>
               // </div>
@@ -306,20 +354,6 @@ function MintList() {
           dataIndex: "status",
           // width: 260,
           render: (text, row) => {
-            let txt;
-            switch (text) {
-              case 0:
-              case 1:
-                txt = "待部署";
-                break;
-              case 2:
-                txt = "部署中";
-                break;
-              case 9:
-              case 99:
-                txt = "已完成";
-                break;
-            }
             return (
               // <div
               //   className="mint-table-status"
@@ -330,6 +364,7 @@ function MintList() {
               <CheckNostrButton>
                 <Button
                   type="primary"
+                  disabled={row.status == "SUCCESS" || row.max_amount == row.received_amount}
                   // onClick={() => setType("In-Progress")}
                 >{t`Mint`}</Button>
                 <span style={{ fontSize: "20px", verticalAlign: "middle" }}>{" >"}</span>
@@ -340,7 +375,7 @@ function MintList() {
         }
       ];
     }
-  }, [width]);
+  }, [history, onSortChange, order_by, order_by_name, tokenList, width]);
   return (
     <>
       <div className="mint-list">
@@ -364,7 +399,7 @@ function MintList() {
                   >{t`Completed`}</Button>
                   <CheckNostrButton>
                     <Button type={type == "My" ? "primary" : "default"} size="large" onClick={() => setType("My")}>
-                      {t`My Created`}
+                      {t`My Launchpad`}
                     </Button>
                   </CheckNostrButton>
                   <Input
@@ -428,14 +463,14 @@ function MintList() {
                   </>
                 }
               />
-              <CheckNostrButton>
+              {/* <CheckNostrButton>
                 <Button
                   type="primary"
                   size={"large"}
                   style={{ marginBottom: "30px" }}
                   onClick={() => onHandleRedirect(`mint/create`)}
                 >{t`Create Asset`}</Button>
-              </CheckNostrButton>
+              </CheckNostrButton> */}
             </div>
           ) : (
             <Table

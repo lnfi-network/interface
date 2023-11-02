@@ -2,8 +2,9 @@ import { useCallback, useEffect, useState, useRef, useMemo } from "react";
 /* import { useListenNostrEvent } from "hooks/useNostr"; */
 import useNostrPool from "hooks/useNostrPool";
 import { useSelector, useDispatch } from "react-redux";
-import { setTokenList, setResponseTime } from "store/reducer/marketReducer";
+import { setTokenList, updateTokenList, setResponseTime } from "store/reducer/marketReducer";
 import { setBalanceList, setProMode } from "store/reducer/userReducer";
+import { useTokenAssetsQuery } from "hooks/graphQuery/useExplore";
 import { getPublicKey, nip19 } from "nostr-tools";
 import { useDebounceEffect } from "ahooks";
 import { getLocalRobotPrivateKey } from "lib/utils/index";
@@ -38,9 +39,13 @@ export const useQueryNonce = () => {
   };
 };
 export const useQueryTokenList = () => {
+  const [assetIds, setAssetIds] = useState([]);
   const dispatch = useDispatch();
   const { execQueryNostrAsync } = useNostrPool();
   const hasRelayConnected = useSelector(({ relay }) => relay.hasRelayConnected);
+  const { list, fetching, total, reexcuteQuery } = useTokenAssetsQuery({
+    assetIds: assetIds
+  });
   const handleQueryTokenList = useCallback(async () => {
     const queryCommand = `token list`;
     const ret = await execQueryNostrAsync({
@@ -51,12 +56,22 @@ export const useQueryTokenList = () => {
       const data = ret.result.data;
       dispatch(setTokenList(data));
       Lockr.set("tokenList", data);
+      const aIds = data?.length ? data.map((item) => item.token) : [];
+      setAssetIds(aIds);
     } else {
       const localTokenList = Lockr.get("tokenList") || [];
       dispatch(setTokenList(localTokenList));
+      const aIds = localTokenList?.length ? localTokenList.map((item) => item.token) : [];
+      setAssetIds(aIds);
     }
     return ret?.result;
   }, [dispatch, execQueryNostrAsync]);
+  useEffect(() => {
+    if (list && list.length) {
+      // console.log("list", list);
+      dispatch(updateTokenList(list));
+    }
+  }, [dispatch, list]);
   useDebounceEffect(
     () => {
       if (hasRelayConnected) {
@@ -94,6 +109,65 @@ export const useHandleQueryTokenList = () => {
   }, [dispatch, execQueryNostrAsync]);
   return {
     handleQueryTokenList
+  };
+};
+/* export const useQueryBalance = () => {
+  const dispatch = useDispatch();
+
+  const handleQueryBalance = useCallback(
+    async (nostrAddress = LOCAL_ROBOT_ADDR) => {
+      if (!nostrAddress) return;
+
+      const ret = await getBalance({
+        user: nostrAddress
+      });
+
+      if (ret?.code === 0) {
+        const data = ret.data;
+        dispatch(setBalanceList(data));
+      }
+    },
+    [dispatch]
+  );
+
+  return {
+    handleQueryBalance
+  };
+};
+export const useAllowance = () => {
+  const [allowance, setAllowance] = useState(0);
+
+  const { nostrAccount, npubNostrAccount } = useSelector(({ user }) => user);
+  const handleQueryAllowanceAsync = useCallback(
+    async (tokenName) => {
+      if (nostrAccount && tokenName) {
+        const ret = await getAllowance({
+          token: tokenName,
+          owner: npubNostrAccount,
+          spender: NOSTR_MARKET_SEND_TO
+        });
+        if (!ret) {
+          setAllowance({ amount: 0, amountShow: "0.0000" });
+          return { amount: 0, amountShow: "0.0000" };
+        }
+        setAllowance(ret.data);
+
+        return ret;
+      }
+    },
+    [setAllowance, nostrAccount, npubNostrAccount]
+  );
+  const handleQueryAllowance = useCallback(
+    async (tokenName) => {
+      return await handleQueryAllowanceAsync(tokenName);
+    },
+    [handleQueryAllowanceAsync]
+  );
+
+  return {
+    handleQueryAllowance,
+    handleQueryAllowanceAsync,
+    allowance
   };
 };
 /* export const useQueryBalance = () => {
@@ -228,7 +302,6 @@ export const useAllowance = () => {
     allowance
   };
 }; */
-
 export const useApprove = () => {
   const { execQueryNostrAsync } = useNostrPool();
   const handleApproveAsync = useCallback(
@@ -244,9 +317,22 @@ export const useApprove = () => {
     },
     [execQueryNostrAsync]
   );
+  const handleApproveAsyncByCommand = useCallback(
+    async (command) => {
+      const queryCommand = command;
+      const ret = await execQueryNostrAsync({
+        queryCommand,
+        sendToNostrAddress: NOSTAR_TOKEN_SEND_TO,
+        isUseLocalRobotToSend: false
+      });
 
+      return ret?.result;
+    },
+    [execQueryNostrAsync]
+  );
   return {
-    handleApproveAsync
+    handleApproveAsync,
+    handleApproveAsyncByCommand
   };
 };
 

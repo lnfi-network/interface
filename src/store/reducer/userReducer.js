@@ -1,11 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
 import * as Lockr from "lockr";
-import { isInTokenPocket } from "lib/utils/userAgent";
+//import { isInTokenPocket } from "lib/utils/userAgent";
 import { nip19 } from "nostr-tools";
 export const userSlice = createSlice({
   name: "user",
   initialState: {
-    connectPlat: Lockr.get("connectPlat") || "ERC20",
+    connectPlat: Lockr.get("connectPlat") || "ETH",
     selectedTokenPlatform: "LIGHTNING",
     account: "", //
     chainId: 1,
@@ -46,6 +46,7 @@ export const userSlice = createSlice({
       state.balanceList = action.payload;
     },
     setConnectPlat(state, action) {
+      Lockr.set("connectPlat", action.payload);
       state.connectPlat = action.payload;
     },
     setSelectedTokenPlatForm(state, action) {

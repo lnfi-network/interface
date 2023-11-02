@@ -27,7 +27,6 @@ export default function LightningFormItems({ form, nostrAccount, messageApi, han
   const { makeInvoice } = useWebln();
   const dispatch = useDispatch();
   const device = useDevice();
-  // const { handleUnisatPay } = useUnisatPayfee();
   const balance = useMemo(() => {
     return balanceList["SATS"] ? balanceList["SATS"]?.balanceShow : 0.0;
   }, [balanceList]);

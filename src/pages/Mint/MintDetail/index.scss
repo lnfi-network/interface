@@ -49,12 +49,21 @@
           position: absolute;
           top: 0;
           left: 0;
-          transition: all 2s;
+          transition: all 1s;
+          .progress-percent-icon{
+            width: 35px;
+            height: 35px;
+            position: absolute;
+            top: 0;
+            right: 0;
+            transform: translate(70%, -42%) rotate(45deg);
+          }
         }
         .progress-percent-text{
           position: absolute;
-          top: -26px;
-          transform: translateX(-50%);
+          top: -30px;
+          transform: translateX(-20%);
+          width: 120px;
         }
       }
     }

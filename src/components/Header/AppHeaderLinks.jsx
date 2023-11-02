@@ -67,10 +67,11 @@ export function AppHeaderLinks({ small, clickCloseIcon }) {
           </HeaderLink>
         </div>
       )}
-      <div className="App-header-link-container">
-        <HeaderLink to="/claim">Airdrop</HeaderLink>
-      </div>
-
+      {process.env.REACT_APP_CURRENT_ENV !== "test" && (
+        <div className="App-header-link-container">
+          <HeaderLink to="/claim">Airdrop</HeaderLink>
+        </div>
+      )}
       {/* <div className="App-header-link-container">
         <a
           href="https://doc.nostrassets.com"

@@ -125,6 +125,9 @@ li {
 .color-green {
   color: var(--color-green) !important;
 }
+.color-green-light {
+  color: var(--color-green-light) !important;
+}
 .color-red {
   color: var(--color-red) !important;
 }
@@ -659,7 +662,14 @@ input::input-placeholder {
   background: var(--color-layer-light);
   border-radius: 10px;
 }
-
+.base-modal{
+  .ant-modal-title{
+    text-align: center;
+  }
+  .ant-modal-footer{
+    text-align: center;
+  }
+}
 /* #webpack-dev-server-client-overlay {
   display: none !important;
 }

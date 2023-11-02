@@ -1,4 +1,4 @@
-.nostr-assets {
+.nostr-activity {
   &-titleh3 {
     font-size: 18px;
     font-weight: bold;
@@ -11,10 +11,11 @@
       padding-top: 10px;
       color: var(--color-text-light);
       text-align: left;
+      line-height: 20px;
     }
   }
   &-form {
-    padding: 0 40px;
+    padding: 20px 40px;
     &-groupInfo {
       color: var(--color-text-light);
       font-weight: bold;
@@ -40,5 +41,26 @@
     width: 100%;
     padding-top: 30px;
     text-align: center;
+  }
+}
+.asset-confirm-content{
+  .asset-confirm-item{
+    padding: 4px 30px;
+    display: flex;
+    justify-content: space-between;
+  }
+}
+.select-dropdown-title{
+  display: flex;
+  padding: 4px 12px 8px;
+  border-bottom: 1px solid var(--color-border-grey);
+  font-size: 16px;
+  margin-bottom: 10px;
+  .select-dropdown-name{
+    width: 300px;
+  }
+  .select-dropdown-id{
+    padding-left: 10px;
+    flex: 1;
   }
 }
