@@ -342,10 +342,10 @@ export const useListingOrderQuery = ({ pageSize = 20, pageIndex = 1, type, token
     //   where += `status: { _in: [INIT","PUSH_MARKET_SUCCESS","PUSH_MARKET_FAIL","TAKE_LOCK","TRADE_PENDING","CANCEL_PENDING","TRADE_PENDING","PART_SUCCESS","SUCCESS","CANCEL"]} `;
     // }
     if (!status) {
-      where += `status: { _in: ["INIT","INIT_FAIL","PUSH_MARKET_SUCCESS","TAKE_LOCK","TRADE_PENDING","TRADE_FAIL","PART_SUCCESS","SUCCESS","CANCEL","CANCEL_FAIL"]} `;
+      where += `status: { _in: ["INIT","INIT_PENDING","INIT_FAIL","PUSH_MARKET_SUCCESS","TAKE_LOCK","TRADE_PENDING","TRADE_FAIL","PART_SUCCESS","SUCCESS","CANCEL","CANCEL_PENDING","CANCEL_FAIL"]} `;
     }
     if (status == "Open Orders") {
-      where += `status: { _in: ["INIT","PUSH_MARKET_SUCCESS","TAKE_LOCK","TRADE_PENDING","TRADE_FAIL","PART_SUCCESS","CANCEL_FAIL"]} `;
+      where += `status: { _in: ["INIT","INIT_PENDING","PUSH_MARKET_SUCCESS","TAKE_LOCK","TRADE_PENDING","TRADE_FAIL","PART_SUCCESS","CANCEL_PENDING","CANCEL_FAIL"]} `;
     }
     if (status == "History Orders") {
       where += `status: { _in: ["INIT_FAIL","SUCCESS","CANCEL"]} `;
@@ -445,10 +445,10 @@ export const useMyOrderQuery = ({ pageSize = 20, pageIndex = 1, type, token, sta
       where += `token:{_eq: "${token.toUpperCase()}"} `;
     }
     if (!status) {
-      where += `status: { _in: ["INIT","INIT_FAIL","PUSH_MARKET_SUCCESS","TAKE_LOCK","TRADE_PENDING","TRADE_FAIL","PART_SUCCESS","SUCCESS","CANCEL","CANCEL_FAIL"]} `;
+      where += `status: { _in: ["INIT","INIT_PENDING","INIT_FAIL","PUSH_MARKET_SUCCESS","TAKE_LOCK","TRADE_PENDING","TRADE_FAIL","PART_SUCCESS","SUCCESS","CANCEL","CANCEL_PENDING","CANCEL_FAIL"]} `;
     }
     if (status == "Open Orders") {
-      where += `status: { _in: ["INIT","PUSH_MARKET_SUCCESS","TAKE_LOCK","TRADE_PENDING","TRADE_FAIL","PART_SUCCESS","CANCEL_FAIL"]} `;
+      where += `status: { _in: ["INIT","INIT_PENDING","PUSH_MARKET_SUCCESS","TAKE_LOCK","TRADE_PENDING","TRADE_FAIL","PART_SUCCESS","CANCEL_PENDING","CANCEL_FAIL"]} `;
     }
     if (status == "History Orders") {
       where += `status: { _in: ["INIT_FAIL","SUCCESS","CANCEL"]} `;

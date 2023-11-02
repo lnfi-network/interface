@@ -156,8 +156,67 @@ export function parseUSDT(usdtStr) {
 export function convertDollars(coin, price, placeholder = "--") {
   if (Number(coin) && price > 0) {
     //return `≈$${numberWithCommas(limitDecimals(coin * price, 4,"fllor"))}`
-    return `≈$${numberWithCommas(limitDecimals(coin * price, 4, "floor"))}`
+    return `≈$${numberWithCommas(limitDecimals(coin * price, 4, "floor"))}`;
   } else {
-    return placeholder
+    return placeholder;
   }
+}
+export function statusMap(status) {
+  let cls;
+  let txt;
+  let tip = "";
+  switch (status) {
+    case "INIT":
+    case "PUSH_MARKET_SUCCESS":
+    case "TRADE_PENDING":
+      txt = "Unfilled";
+      break;
+    case "PART_SUCCESS":
+      txt = "Partial";
+      cls = "color-yellow";
+      break;
+    case "SUCCESS":
+      cls = "color-green";
+      txt = "Filled";
+      break;
+    case "CANCEL":
+      txt = "Cancelled";
+      break;
+    case "INIT_FAIL":
+      txt = "Order Failed";
+      cls = "color-red";
+      tip = "Place or take order failed, no asset deducted from your account.";
+      break;
+    case "CANCEL_FAIL":
+      txt = "Cancel Failed";
+      cls = "color-red";
+      tip = "Order cancel failed.";
+      break;
+    case "TRADE_FAIL":
+      txt = "Settlement Failed";
+      cls = "color-red";
+      tip = "Settlement failed, if deducted your asset, need waiting for refund.";
+      break;
+    case "INIT_PENDING":
+      txt = "Deducting";
+      tip = "If already deducted your asset, please waiting for settlement.";
+      break;
+    case "TAKE_LOCK":
+      txt = "Pending Settlement";
+      tip = "If already deducted your asset, please waiting for settlement.";
+      break;
+    case "CANCEL_PENDING":
+      txt = "Cancel Pending";
+      tip = "Refunding for order cancel, if failed to receive refund, please contact.";
+      break;
+    default:
+      cls = "";
+      txt = status || "";
+      tip = "";
+  }
+  return {
+    cls,
+    txt,
+    tip
+  };
 }
