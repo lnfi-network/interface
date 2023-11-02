@@ -5,9 +5,11 @@ import { Switch, Route, Link, useHistory, useRouteMatch, Redirect } from "react-
 import Listing from "./Listing";
 import OrderHistory from "./OrderHistory";
 import MyOrder from "./MyOrder";
+import Markets from "./Markets";
 import ListingModalForm from "./comps/Listing";
 import { useSelector } from "react-redux";
 import useGetNostrAccount from "hooks/useGetNostrAccount";
+import { BarChartOutlined } from "@ant-design/icons";
 import { nip19 } from "nostr-tools";
 // import { useQueryBalance } from "hooks/useNostrMarket";
 // import { useDebounceEffect, useMount } from "ahooks";
@@ -68,6 +70,9 @@ export default function Marketplace() {
         <Route exact path={`${match.url}/my-order`}>
           <MyOrder></MyOrder>
         </Route>
+        <Route exact path={`${match.url}/markets`}>
+          <Markets />
+        </Route>
         <Route exact path="/marketplace/*">
           <Redirect to="/marketplace/listing" />
         </Route>
@@ -91,7 +96,10 @@ export default function Marketplace() {
       setIsListFormShow(true);
     }
   }, [handleGetNostrAccount, nostrAccount]);
-
+  const historyTo = useCallback(() => {
+    history.push(`${match.url}/markets`);
+    setSelectedKeys([]);
+  }, [history, match.url]);
   return (
     <>
       {/* <GlobalHooks /> */}
@@ -117,6 +125,7 @@ export default function Marketplace() {
               items={items}
               className="marketplace-menu"
             />
+            <div className="marketplace-sub-menu-abs" onClick={() => historyTo()}><span className="marketplace-sub-menu-abs-markets">{t`Markets`}</span><BarChartOutlined className="marketplace-sub-menu-abs-icon" color="#06F4DB" /></div>
             <div className="marketplace-listing-btn">
               <CheckNostrButton>
                 <Button className="buy-list-btn" type="primary" onClick={handleList}>
