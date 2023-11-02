@@ -45,7 +45,7 @@ function Account() {
   const history = useHistory();
   const { nostrAccount, balanceList, npubNostrAccount } = useSelector(({ user }) => user);
   const { tokenList, quote_pirce } = useSelector(({ market }) => market);
-  
+  console.log("tokenList", tokenList);
   const qutoAsset = useMemo(() => {
     return tokenList.find((tokenItem) => tokenItem?.name === QUOTE_ASSET);
   }, [tokenList]);

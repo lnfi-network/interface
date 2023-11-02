@@ -575,7 +575,7 @@ export const useOrderDetailQuery = ({ pageSize = 20, pageIndex = 1, id, type }) 
     reexcuteQuery
   };
 };
-export const useCreateAssetsQuery = ({ pageSize = 20, pageIndex = 1, type, creator, event_id, search }) => {
+export const useCreateAssetsQuery = ({ pageSize = 20, pageIndex = 1, type, creator, event_id, search, assetIds }) => {
   const tableName = `${GRAPH_BASE}nostr_create_assets`;
   const limit = useMemo(() => {
     return pageSize;
@@ -601,6 +601,10 @@ export const useCreateAssetsQuery = ({ pageSize = 20, pageIndex = 1, type, creat
     if (search) {
       where += `_or:[{ asset_id: {_iregex: "${search}"} }, { name: {_iregex: "${search}"} }] `;
     }
+    if(assetIds) {
+      where += `asset_id: { _in: ${assetIds}}`;
+    }
+    
     // where += `status: { _in: ["INIT", "PUSH_MARKET_SUCCESS", "PUSH_MARKET_FAIL", "PART_SUCCESS"]}`;
     // where += `owner: {_eq: "${owner}"} `;
     // if (type) {
@@ -621,7 +625,7 @@ export const useCreateAssetsQuery = ({ pageSize = 20, pageIndex = 1, type, creat
 
     where += "}";
     return where;
-  }, [creator, event_id, search, type]);
+  }, [assetIds, creator, event_id, search, type]);
   let sortMemo = useMemo(() => {
     let order_by = `order_by:{create_time: desc} `;
     return order_by;
@@ -656,6 +660,115 @@ export const useCreateAssetsQuery = ({ pageSize = 20, pageIndex = 1, type, creat
   const [result, reexcuteQuery] = useQuery({
     query: queryGraphsql,
     // pause: !owner,
+    variables: {
+      offset,
+      limit
+    }
+  });
+
+  const { data, fetching } = result;
+
+  const list = data ? data[tableName] : [];
+  const total = data ? data[`${tableName}_aggregate`]?.aggregate?.count : 0;
+
+  return {
+    list,
+    total,
+    fetching,
+    reexcuteQuery
+  };
+};
+export const useTokenAssetsQuery = ({ pageSize = 20, pageIndex = 1, type, creator, event_id, search, assetIds }) => {
+  const tableName = `${GRAPH_BASE}nostr_create_assets`;
+  const limit = useMemo(() => {
+    return pageSize;
+  }, [pageSize]);
+  const offset = useMemo(() => {
+    return (pageIndex - 1) * pageSize;
+  }, [pageIndex, pageSize]);
+
+  let whereMemo = useMemo(() => {
+    let where = "{";
+    if (type == "My") {
+      where += `creator: {_eq: "${creator}"} `;
+    }
+    if (event_id) {
+      where += `event_id: {_eq: "${event_id}"} `;
+    }
+    if (type == "In-Progress") {
+      where += `status: { _in: [0,1,2,99]} `;
+    }
+    if (type == "Completed") {
+      where += `status: { _in: [9]} `;
+    }
+    if (search) {
+      where += `_or:[{ asset_id: {_iregex: "${search}"} }, { name: {_iregex: "${search}"} }] `;
+    }
+    if(assetIds?.length) {
+      var str = ""
+      assetIds.forEach(element => {
+        str += `"${element}",`
+      });
+      // console.log(str)
+      where += `asset_id: { _in: [${str}]}`;
+    }
+    
+    // where += `status: { _in: ["INIT", "PUSH_MARKET_SUCCESS", "PUSH_MARKET_FAIL", "PART_SUCCESS"]}`;
+    // where += `owner: {_eq: "${owner}"} `;
+    // if (type) {
+    //   where += `type:{_eq: "${type.toUpperCase()}"} `;
+    // }
+    // if (token) {
+    //   where += `token:{_eq: "${token.toUpperCase()}"} `;
+    // }
+    // if (!status) {
+    //   where += `status: { _in: ["INIT","PUSH_MARKET_SUCCESS","TAKE_LOCK","TRADE_PENDING","PART_SUCCESS","SUCCESS","CANCEL"]} `;
+    // }
+    // if (status == "Open Orders") {
+    //   where += `status: { _in: ["INIT","PUSH_MARKET_SUCCESS","TAKE_LOCK","TRADE_PENDING","PART_SUCCESS"]} `;
+    // }
+    // if (status == "History Orders") {
+    //   where += `status: { _in: ["SUCCESS","CANCEL"]} `;
+    // }
+
+    where += "}";
+    return where;
+  }, [assetIds, creator, event_id, search, type]);
+  // console.log("whereMemo",  whereMemo);
+  let sortMemo = useMemo(() => {
+    let order_by = `order_by:{create_time: desc} `;
+    return order_by;
+  }, []);
+
+  let queryGraphsql = useMemo(() => {
+    return gql`
+    query($offset: Int!, $limit: Int!){
+      ${tableName}(limit:$limit,offset:$offset,where:${whereMemo},${sortMemo}) {
+        asset_id
+        batch_key
+        create_time
+        create_tx_hash
+        creator
+        data
+        event_id
+        id
+        logo
+        name
+        pay_tx_hash
+        status
+        update_time
+      }
+      ${tableName}_aggregate(where:${whereMemo}){
+        aggregate {
+          count
+        }
+      }
+    }
+  `;
+  }, [sortMemo, tableName, whereMemo]);
+  const [result, reexcuteQuery] = useQuery({
+    query: queryGraphsql,
+    pause: !assetIds?.length,
     variables: {
       offset,
       limit
