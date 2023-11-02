@@ -123,47 +123,52 @@ export const useHandleQueryTokenList = () => {
 }; */
 export const useQueryBalance = () => {
   const dispatch = useDispatch();
-
+  const [loading, setLoading] = useState(false)
   const handleQueryBalance = useCallback(
     async (nostrAddress = LOCAL_ROBOT_ADDR) => {
-      if (!nostrAddress) return;
-
+      setLoading(true)
       const ret = await getBalance({
         user: nostrAddress,
+      }).catch(e => {
+        setLoading(false)
       });
-
       if (ret?.code === 0) {
         const data = ret.data;
         dispatch(setBalanceList(data));
       }
+      setLoading(false)
     },
     [dispatch]
   );
 
   return {
-    handleQueryBalance
+    handleQueryBalance,
+    loading
   };
 };
 export const useAllowance = () => {
 
   const [allowance, setAllowance] = useState(0);
-
+  const [loading, setLoading] = useState(false)
   const { nostrAccount, npubNostrAccount } = useSelector(({ user }) => user);
   const handleQueryAllowanceAsync = useCallback(
     async (tokenName) => {
-
+      setLoading(true)
       if (nostrAccount && tokenName) {
         const ret = await getAllowance({
           token: tokenName,
           owner: npubNostrAccount,
           spender: NOSTR_MARKET_SEND_TO
+        }).catch(e => {
+          setLoading(false)
+          return null
         });
         if (!ret) {
           setAllowance({ amount: 0, amountShow: "0.0000" });
           return { amount: 0, amountShow: "0.0000" };
         }
         setAllowance(ret.data);
-
+        setLoading(false)
         return ret;
       }
     },
@@ -179,7 +184,8 @@ export const useAllowance = () => {
   return {
     handleQueryAllowance,
     handleQueryAllowanceAsync,
-    allowance
+    allowance,
+    loading
   };
 };
 /* export const useAllowance = () => {
