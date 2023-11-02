@@ -1,18 +1,19 @@
 import "./index.scss";
-import { Drawer, Spin } from "antd";
+import { Drawer, Spin, Tooltip } from "antd";
 import { useState, useEffect, useMemo } from "react";
 import { t } from "@lingui/macro";
 import * as dayjs from "dayjs";
 import EllipsisMiddle from "components/EllipsisMiddle";
 import TextLoading from "components/TextLoading";
 import { limitDecimals, numberWithCommas, padDecimals } from "lib/numbers";
+import { utcToClient } from "lib/dates";
 import { nip19 } from "nostr-tools";
 import { useOrderDetailQuery } from "hooks/graphQuery/useExplore";
 import { useSelector } from "react-redux";
 import BigNumber from "bignumber.js";
 import cx from "classnames";
 import { QUOTE_ASSET } from "config/constants";
-import { convertDollars } from "lib/utils/index";
+import { convertDollars, statusMap } from "lib/utils/index";
 export default function ExploreDetails({ detail, open = false, onClose, type }) {
   const { tokenList, quote_pirce } = useSelector(({ market }) => market);
   const { list, fetching, reexcuteQuery } = useOrderDetailQuery({
@@ -34,34 +35,12 @@ export default function ExploreDetails({ detail, open = false, onClose, type }) 
     return detail?.type?.toLowerCase() == "buy" ? "Sell" : "Buy";
   }, [detail?.type]);
   const statusMemo = useMemo(() => {
-    // return detail?.type?.toLowerCase() == "buy" ? "Sell" : "Buy"
-    let cls;
-    let txt;
-    switch (detail?.status) {
-      case "INIT":
-      case "PUSH_MARKET_SUCCESS":
-      case "PUSH_MARKET_FAIL":
-      case "TAKE_LOCK":
-      case "TRADE_PENDING":
-        txt = "Unfilled";
-        break;
-      case "PART_SUCCESS":
-        txt = "Partial";
-        cls = "color-yellow";
-        break;
-      case "SUCCESS":
-        cls = "color-green";
-        txt = "Filled";
-        break;
-      case "CANCEL_PENDING":
-      case "CANCEL":
-        txt = "Cancelled";
-        break;
-      default:
-        cls = "";
-        txt = "";
-    }
-    return <span className={cls}>{txt || detail?.status || "--"}</span>;
+    const { cls, txt, tip } = statusMap(detail?.status);
+    return (
+      <Tooltip title={tip || ""}>
+        <span className={cls}>{txt || "--"}</span>
+      </Tooltip>
+    );
   }, [detail?.status]);
   return (
     <Drawer
@@ -82,7 +61,7 @@ export default function ExploreDetails({ detail, open = false, onClose, type }) 
         <div className="explore-detail-list-item">
           <span className="explore-detail-list-item__label">{t`Time`}</span>
           <span className="explore-detail-list-item__text">
-            {detail?.create_time ? dayjs(detail?.create_time).format("YYYY-MM-DD HH:mm:ss") : "--"}
+            {detail?.create_time ? utcToClient(detail?.create_time) : "--"}
           </span>
         </div>
         <div className="explore-detail-list-item">

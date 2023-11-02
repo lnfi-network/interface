@@ -1,7 +1,7 @@
 import "./index.scss";
 import { useCallback, useState, useEffect, useMemo } from "react";
 
-import { Spin, Table, Select, Pagination, Collapse, Button, Row, Col, Form, message } from "antd";
+import { Spin, Table, Select, Pagination, Collapse, Button, Row, Col, Form, message, Tooltip } from "antd";
 import { t } from "@lingui/macro";
 import * as dayjs from "dayjs";
 const { Panel } = Collapse;
@@ -16,7 +16,7 @@ import { useCancelOrder } from "hooks/useNostrMarket";
 import BigNumber from "bignumber.js";
 import { utcToClient } from "lib/dates";
 import { QUOTE_ASSET } from "config/constants";
-import { convertDollars } from "lib/utils/index";
+import { convertDollars, statusMap } from "lib/utils/index";
 const initQuery = {
   type: "",
   token: "",
@@ -270,58 +270,12 @@ export default function MyOrder() {
         title: t`Status`,
         dataIndex: "status",
         render: (text) => {
-          //           INIT(0,"下单成功"),
-
-          // // 先放数据库中 然后加载到内存
-          // PUSH_MARKET_SUCCESS(0,"推送撮合系统成功"),
-
-          // PUSH_MARKET_FAIL(0,"推送撮合系统失败"),
-
-          // TAKE_LOCK(0,"指定订单交易中"),
-
-          // PART_SUCCESS(0,"部分成交"),
-
-          // TRADE_PENDING(0,"交易中"),
-
-          // SUCCESS(0,"订单完成"),
-
-          // CANCEL_PENDING(0,"取消中"),
-
-          // CANCEL(0,"取消完成"),
-          let cls;
-          let txt;
-          switch (text) {
-            case "INIT":
-            case "PUSH_MARKET_SUCCESS":
-            case "TAKE_LOCK":
-            case "TRADE_PENDING":
-              txt = "Unfilled";
-              break;
-            case "PART_SUCCESS":
-              txt = "Partial";
-              cls = "color-yellow";
-              break;
-            case "SUCCESS":
-              cls = "color-green";
-              txt = "Filled";
-              break;
-            case "CANCEL_FAIL":
-              txt = "Cancel Fail";
-              break;
-            case "CANCEL":
-              txt = "Cancelled";
-              break;
-            case "CANCEL_PENDING":
-              txt = "Canceling";
-              break;
-            case "INIT_FAIL":
-              txt = "Init Fail";
-              break;
-            default:
-              cls = "";
-              txt = "";
-          }
-          return <span className={cls}>{txt || text || "--"}</span>;
+          const { cls, txt, tip } = statusMap(text);
+          return (
+            <Tooltip title={tip || ""}>
+              <span className={cls}>{txt || "--"}</span>
+            </Tooltip>
+          );
         }
       },
       {
@@ -456,39 +410,7 @@ export default function MyOrder() {
         default:
           cls = "";
       }
-      let statusCls;
-      let statusTxt;
-      switch (item?.status) {
-        case "INIT":
-        case "PUSH_MARKET_SUCCESS":
-        case "TAKE_LOCK":
-        case "TRADE_PENDING":
-          statusTxt = "Unfilled";
-          break;
-        case "PART_SUCCESS":
-          statusTxt = "Partial";
-          statusCls = "color-yellow";
-          break;
-        case "SUCCESS":
-          statusCls = "color-green";
-          statusTxt = "Filled";
-          break;
-        case "CANCEL":
-          statusTxt = "Cancelled";
-          break;
-        case "CANCEL_PENDING":
-          txt = "Canceling";
-          break;
-        case "INIT_FAIL":
-          statusTxt = "Init Fail";
-          break;
-        case "CANCEL_FAIL":
-          statusTxt = "Cancel Fail";
-          break;
-        default:
-          statusCls = "";
-          statusTxt = "";
-      }
+      const { cls: statusCls, txt, tip } = statusMap(item?.status);
       return (
         <div className="my-order-small" key={item?.event_id}>
           <div className="my-order-section">
@@ -536,7 +458,9 @@ export default function MyOrder() {
           <div className="my-order-section">
             <div className="key">Status</div>
             <div className="value">
-              <span className={statusCls}>{statusTxt || item?.status || "--"}</span>
+              <Tooltip title={tip || ""}>
+                <span className={statusCls}>{txt || "--"}</span>
+              </Tooltip>
             </div>
           </div>
           <div className="my-order-section">

@@ -1,7 +1,7 @@
 import "./index.scss";
 import { useCallback, useState, useEffect, useMemo } from "react";
 import { useDebounce } from "ahooks";
-import { Table, Select, Input, Collapse, Button, Row, Col, Form } from "antd";
+import { Table, Select, Input, Collapse, Button, Row, Col, Form, Tooltip } from "antd";
 import { t } from "@lingui/macro";
 import * as dayjs from "dayjs";
 const { Panel } = Collapse;
@@ -15,7 +15,7 @@ import BigNumber from "bignumber.js";
 import { getQueryVariable } from "lib/url";
 import { utcToClient } from "lib/dates";
 import { QUOTE_ASSET } from "config/constants";
-import { convertDollars } from "lib/utils/index";
+import { convertDollars, statusMap } from "lib/utils/index";
 const initQuery = {
   type: "",
   token: "",
@@ -241,60 +241,12 @@ export default function OrderHistory() {
         title: t`Status`,
         dataIndex: "status",
         render: (text) => {
-          //       INIT_PENDING(0,"下单扣款中"),
-
-          // INIT(0,"下单成功"),
-
-          // INIT_FAIL(0,"下单成功"),
-
-          // // 先放数据库中 然后加载到内存
-          // PUSH_MARKET_SUCCESS(0,"推送撮合系统成功"),
-
-          // PUSH_MARKET_FAIL(0,"推送撮合系统失败"),
-
-          // TAKE_LOCK(0,"指定订单交易中"),
-
-          // PART_SUCCESS(0,"部分成交"),
-
-          // TRADE_PENDING(0,"交易中"),
-
-          // TRADE_FAI(0,"交易失败"),
-
-          // SUCCESS(0,"订单完成"),
-
-          // CANCEL_PENDING(0,"取消中"),
-
-          // CANCEL(0,"取消完成"),
-
-          // CANCEL_FAIL(0,"取消失败"),
-          let cls;
-          let txt;
-          switch (text) {
-            case "INIT":
-            case "PUSH_MARKET_SUCCESS":
-            case "TAKE_LOCK":
-            case "TRADE_PENDING":
-              txt = "Unfilled";
-              break;
-            case "PART_SUCCESS":
-              txt = "Partial";
-              cls = "color-yellow";
-              break;
-            case "SUCCESS":
-              cls = "color-green";
-              txt = "Filled";
-              break;
-            case "CANCEL":
-              txt = "Cancelled";
-              break;
-            case "INIT_FAIL":
-              txt = "Init Fail";
-              break;
-            default:
-              cls = "";
-              txt = "";
-          }
-          return <span className={cls}>{txt || text || "--"}</span>;
+          const { cls, txt, tip } = statusMap(text);
+          return (
+            <Tooltip title={tip || ""}>
+              <span className={cls}>{txt || "--"}</span>
+            </Tooltip>
+          );
         }
       },
       {
