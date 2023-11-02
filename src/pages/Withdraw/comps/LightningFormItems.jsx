@@ -109,7 +109,7 @@ export default function LightningFormItems({ form, nostrAccount, messageApi, han
   const memoWithdrawBtn = useMemo(() => {
     return (
       <CheckNostrButton>
-        <FunctionEnableButton>
+        <FunctionEnableButton enable={process.env.REACT_APP_CURRENT_ENV !== "prod"}>
           <Button
             type="primary"
             size="large"

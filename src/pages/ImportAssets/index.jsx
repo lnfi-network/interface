@@ -181,7 +181,7 @@ export default function ImportAssets() {
               <div className="import-asset-item-section-btn">
                 {!isImported ? (
                   <CheckNostrButton>
-                    <FunctionEnableButton>
+                    <FunctionEnableButton enable={process.env.REACT_APP_CURRENT_ENV !== "prod"}>
                       <Button type="primary" onClick={() => importAssetShow(item)}>
                         Import Asset
                       </Button>
@@ -217,7 +217,7 @@ export default function ImportAssets() {
           />
 
           <CheckNostrButton>
-            <FunctionEnableButton>
+            <FunctionEnableButton enable={process.env.REACT_APP_CURRENT_ENV !== "prod"}>
               <Button type="primary" onClick={() => setSyncOpen(true)}>
                 Sync and Import
               </Button>
@@ -280,7 +280,7 @@ export default function ImportAssets() {
               <div className="import-asset-content-sync">
                 <span>Can't find asset?</span>{" "}
                 <CheckNostrButton>
-                  <FunctionEnableButton>
+                  <FunctionEnableButton enable={process.env.REACT_APP_CURRENT_ENV !== "prod"}>
                     <span className="sync-link" onClick={() => setSyncOpen(true)}>
                       Sync and Import
                     </span>
