@@ -46,9 +46,6 @@ export default function Markers() {
         data: []
       },
       toolbox: {
-        //   feature: {
-        //     saveAsImage: {}
-        //   }
       },
       grid: {
         left: "3%",
