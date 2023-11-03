@@ -33,6 +33,7 @@ import { convertDollars } from "lib/utils/index";
 
 export default function Listing({ refListing }) {
   // const { handleCancelOrderAsync } = useCancelOrder();
+  const timerInterval = useRef(null)
   const [width, setWidth] = useState(document.body.clientWidth);
   const { tokenList, quote_pirce } = useSelector(({ market }) => market);
   const [timer, setTimer] = useState(false);
@@ -64,11 +65,15 @@ export default function Listing({ refListing }) {
     };
   });
   useEffect(() => {
-    setInterval(() => {
+    timerInterval.current = setInterval(() => {
       setTimer(true);
       reexcuteQuery();
     }, 30000);
-    return () => setTimer(false);
+    return () => {
+      setTimer(false);
+      clearInterval(timerInterval.current);
+      timerInterval.current = null;
+    }
   }, [reexcuteQuery]);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const sortOptions = [
