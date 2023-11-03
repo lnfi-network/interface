@@ -36,6 +36,7 @@ export default function Listing({ refListing }) {
   const [width, setWidth] = useState(document.body.clientWidth);
   const { tokenList, quote_pirce } = useSelector(({ market }) => market);
   const [timer, setTimer] = useState(false);
+  const timerInterval = useRef(null);
   const [type, setType] = useState("Buy");
   const [token, setToken] = useState(getQueryVariable("token"));
   const [sort, setSort] = useState("Price From Low to High");
@@ -64,11 +65,15 @@ export default function Listing({ refListing }) {
     };
   });
   useEffect(() => {
-    setInterval(() => {
+    timerInterval.current = setInterval(() => {
       setTimer(true);
       reexcuteQuery();
     }, 30000);
-    return () => setTimer(false);
+    return () => {
+      setTimer(false);
+      clearInterval(timerInterval.current);
+      timerInterval.current = null;
+    }
   }, [reexcuteQuery]);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const sortOptions = [
