@@ -5,7 +5,7 @@ import { BrowserRouter as Router } from "react-router-dom";
 import App from "./App/App";
 import { ConfigProvider, theme } from "antd";
 import { Provider as ReduxProvider } from "react-redux";
-
+import ErrorCatch from "ErrorCatch";
 import store from "./store";
 
 import "styles/global.scss";
@@ -15,14 +15,16 @@ root.render(
   <ConfigProvider
     theme={{
       token: {
-        colorPrimary: "#3EE8B5",
+        colorPrimary: "#3EE8B5"
       },
-      algorithm: theme.darkAlgorithm,
+      algorithm: theme.darkAlgorithm
     }}
   >
     <ReduxProvider store={store}>
       <Router>
-        <App />
+        <ErrorCatch>
+          <App />
+        </ErrorCatch>
       </Router>
     </ReduxProvider>
   </ConfigProvider>

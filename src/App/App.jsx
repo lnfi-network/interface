@@ -23,6 +23,7 @@ import { notification, message } from "antd";
 import useListenerAlbyAccountChange from "hooks/useListenerAlbyAccountChange";
 import { NostrProvider, useGlobalNostrAssetsEvent, useListenerRelayStatus } from "hooks/useNostrPool";
 import { useGetBtcPriceInterval } from "hooks/useGetBtcPrice";
+
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;
 }

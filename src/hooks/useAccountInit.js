@@ -38,11 +38,13 @@ export default function useAccountInit() {
   }, [account, address, chain?.id, connectPlat, connector, dispatch, isConnected, nostrAccount, walletConnectModalVisible]);
   useEffect(() => {
     const getKey = async () => {
-      const albyNostrAccount = await window.nostr.getPublicKey();
+      const albyNostrAccount = await window.nostr.getPublicKey().catch(e => {
+        console.log(e.message)
+      });
       dispatch(initNostrAccount(albyNostrAccount));
     };
     if (window.nostr && !nostrAccount && !Lockr.get('isUserExit')) {
-      getKey().catch((err) => console.log(err));
+      getKey()
     }
     return () => null;
   }, [dispatch, nostrAccount]);

@@ -6,17 +6,23 @@ const useListenerAlbyAccountChange = () => {
   const intervarRef = useRef(null)
   const albyAccountChange = useCallback(async () => {
     dispatch(initNostrAccount(''));
-    const albyNostrAccount = await window.nostr.getPublicKey();
+    const albyNostrAccount = await window.nostr.getPublicKey().catch(e => {
+      console.log(e.message)
+    });
     dispatch(initNostrAccount(albyNostrAccount));
   }, [dispatch])
 
   const onListenerNostr = useCallback(async () => {
-    intervarRef.current = setTimeout(() => {
+    intervarRef.current = setTimeout(async () => {
       if (window.nostr) {
         if (window.nostr.on) {
-          window.nostr?.on('accountChanged', albyAccountChange)
+          await window.nostr?.on('accountChanged', albyAccountChange).catch(e => {
+            console.log('accountChangeError:', e.message)
+          })
         } else {
-          window.nostr?.getRelays();
+          /* window.nostr?.getRelays().catch(e => {
+            console.log(e.message)
+          }); */
         }
       } else {
         console.log('trigger onListenerNostr again');
@@ -26,11 +32,15 @@ const useListenerAlbyAccountChange = () => {
 
   }, [albyAccountChange])
   useEffect(() => {
+
     onListenerNostr();
+
     return () => {
       clearTimeout(intervarRef.current);
       if (window.nostr?.off) {
-        window.nostr.off('accountChanged', albyAccountChange)
+        window.nostr.off('accountChanged', albyAccountChange).catch(e => {
+          console.log('off error', e.message)
+        })
       }
     };
 
