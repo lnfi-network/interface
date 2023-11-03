@@ -232,7 +232,7 @@ function MintList() {
         //         cls = "";
         //         break;
         //       case 2:
-        //         txt = "Creating Assets";
+        //         txt = "Issuing Assets";
         //         cls = "color-yellow";
         //         break;
         //       case 9:
@@ -311,7 +311,7 @@ function MintList() {
           }
         },
         {
-          title: t`Creator Address`,
+          title: t`Issuer Address`,
           dataIndex: "creator",
           render: (text) => {
             return text ? <EllipsisMiddle suffixCount={6}>{nip19.npubEncode(text)}</EllipsisMiddle> : text || "--";
@@ -426,7 +426,7 @@ function MintList() {
                   >{t`Completed`}</Button>
                   <CheckNostrButton>
                     <Button type={type == "My" ? "primary" : "default"} size="middle" onClick={() => setType("My")}>
-                      {t`My Created`}
+                      {t`My Issued`}
                     </Button>
                   </CheckNostrButton>
                 </>
@@ -441,7 +441,7 @@ function MintList() {
                   style={{ padding: "0 15px" }}
                   onClick={() => onHandleRedirect(`mint/launch-activity`)}
                 >
-                  {t`Launch Activity`}
+                  {t`Launch`}
                 </Button>
               </CheckNostrButton>
             </div>

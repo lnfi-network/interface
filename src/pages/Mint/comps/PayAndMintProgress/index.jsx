@@ -30,7 +30,7 @@ export default function PayAndMintProgress({ assetMintProgress }) {
           </span>
         </div>
         <div className="nostr-assets-card-item">
-          <span className="nostr-assets-card-item__label">Create Taproot Assets</span>
+          <span className="nostr-assets-card-item__label">Issue Taproot Assets</span>
 
           <span
             className={classNames("nostr-assets-card-item__value", {
@@ -41,11 +41,11 @@ export default function PayAndMintProgress({ assetMintProgress }) {
           >
             {useMemo(() => {
               if (status === 2) {
-                return "In progress. Creating...";
+                return "In progress. Issuing...";
               } else if (status === 9) {
-                return "Create Asset Successful!";
+                return "Issue Asset Successful!";
               } else if (status === 99) {
-                return "Create Asset Failed!";
+                return "Issue Asset Failed!";
               } else {
                 return "Not started. Pending verification";
               }
@@ -53,7 +53,7 @@ export default function PayAndMintProgress({ assetMintProgress }) {
           </span>
         </div>
         <div className="nostr-assets-card-item ">
-          <span className="nostr-assets-card-item__label">Create Tx</span>
+          <span className="nostr-assets-card-item__label">Issue Tx</span>
           <span className="nostr-assets-card-item__value link">
             {assetMintProgress?.createTxHash ? (
               <a href={`${process.env.REACT_APP_TX}${assetMintProgress.createTxHash}`} target="_blank">

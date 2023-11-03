@@ -3,7 +3,7 @@ import { setQuotePirce } from "store/reducer/marketReducer";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
 const getBtcPrice = async () => {
-  const response = await fetch("https://www.binance.com/api/v3/ticker/price?symbol=BTCUSDT");
+  const response = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd");
   const data = await response.json();
   return data;
 };
@@ -15,8 +15,8 @@ export const useGetBtcPriceInterval = () => {
     pollingInterval: 180000
   });
   useEffect(() => {
-    if (Number(data?.price)) {
-      dispatch(setQuotePirce(Number(data?.price) / QUOTE_UNIT));
+    if (Number(data?.bitcoin?.usd)) {
+      dispatch(setQuotePirce(Number(data?.bitcoin?.usd) / QUOTE_UNIT));
     }
   }, [QUOTE_UNIT, data, dispatch]);
 };

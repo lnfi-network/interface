@@ -83,12 +83,12 @@ export default function MintDetail() {
   } = useMintAssetsQuery({
     id: params?.id
   });
-  useEffect(() => {
-    setInterval(() => {
-      reexcuteQueryMintAssetDetail();
-    }, 60000);
-    return () => null;
-  }, [reexcuteQueryMintAssetDetail]);
+  // useEffect(() => {
+  //   setInterval(() => {
+  //     reexcuteQueryMintAssetDetail();
+  //   }, 60000);
+  //   return () => null;
+  // }, [reexcuteQueryMintAssetDetail]);
   const detail = useMemo(() => {
     return list?.[0] || {};
   }, [list]);
@@ -97,7 +97,7 @@ export default function MintDetail() {
     return tokenList?.find((item) => item.name == detail?.token_name);
   }, [detail?.token_name, tokenList]);
   const handleBack = useCallback(() => {
-    history.push("/mintassets/mint-assets");
+    history.push("/fairmint/fair-mint");
   }, [history]);
   const progress = useMemo(() => {
     const progress = limitDecimals((detail?.received_amount / detail?.max_amount) * 100, 2, "floor");

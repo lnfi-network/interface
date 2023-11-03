@@ -53,7 +53,7 @@ function Routes({ children }) {
                   <Claim />
                 </Route>
               )}
-              <Route path="/mintassets">
+              <Route path="/fairmint">
                 <Mint />
               </Route>
               <Route exact path={["/mint/create", "/mint/create/:eventId"]}>

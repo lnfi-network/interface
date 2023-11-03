@@ -28,42 +28,42 @@ export default function Explore() {
   const history = useHistory();
   const items = useMemo(() => {
     return [
-      getItem(<Link to={`${match.url}/create-assets`}>{t`Create Assets`}</Link>, "createassets"),
+      getItem(<Link to={`${match.url}/issue-assets`}>{t`Issue Assets`}</Link>, "issueassets"),
       // getItem(
-      //   <Link to={`${match.url}/mint-assets`}>{t`Mint Assets`}</Link>,
-      //   "mintassets"
+      //   <Link to={`${match.url}/fair-mint`}>{t`Mint Assets`}</Link>,
+      //   "fairmint"
       // ),
-      getItem(<Link to={`${match.url}/mint-assets`}>{t`Mint Assets`}</Link>, "mintassets")
+      getItem(<Link to={`${match.url}/fair-mint`}>{t`Fair Mint`}</Link>, "fairmint")
       // getItem(<Link to={`${match.url}/orders`}>{t`Orders`}</Link>, "orders"),
       // getItem(<Link to={`${match.url}/markets`}>{t`Markets`}</Link>, "markets"),
     ];
   }, [match.url]);
   const pathNames = useMemo(() => {
     return {
-      [match.url]: ["createassets"],
-      [match.url + "/create-assets"]: ["createassets"],
+      [match.url]: ["issueassets"],
+      [match.url + "/issue-assets"]: ["issueassets"],
       // [match.url + "/orders"]: ["orders"],
-      [match.url + "/mint-assets"]: ["mintassets"]
+      [match.url + "/fair-mint"]: ["fairmint"]
       // [match.url + "/market"]: ["markets"],
     };
   }, [match.url]);
   const switchMemo = useMemo(() => {
     return (
       <Switch>
-        <Route exact path="/mintassets">
-          <Redirect to="/mintassets/create-assets" />
+        <Route exact path="/fairmint">
+          <Redirect to="/fairmint/issue-assets" />
         </Route>
-        <Route exact path={`${match.url}/create-assets`}>
+        <Route exact path={`${match.url}/issue-assets`}>
           <CreateList />
         </Route>
-        <Route exact path={`${match.url}/mint-assets`}>
+        <Route exact path={`${match.url}/fair-mint`}>
           <MintList />
         </Route>
         {/* <Route exact path={`${match.url}/orders`}>
           <Orders />
         </Route> */}
-        <Route exact path="/mintassets/*">
-          <Redirect to="/mintassets/create-assets" />
+        <Route exact path="/fairmint/*">
+          <Redirect to="/fairmint/issue-assets" />
         </Route>
       </Switch>
     );
@@ -74,7 +74,7 @@ export default function Explore() {
   }, [history.location.pathname, pathNames]);
   const selectedCilck = useCallback(({ item, key, keyPath, domEvent }) => {
     // console.log("selectedCilck", key);
-    // if (key == "mintassets") {
+    // if (key == "fairmint") {
     //   message.info("Coming soon");
     //   return false;
     // }
@@ -86,10 +86,10 @@ export default function Explore() {
       <Layout>
         <div className="mint-list-head">
           <div className="account-head-left-nostr">
-            <div className="f18 b color-light tc">Mint Assets</div>
+            <div className="f18 b color-light tc">Fair Mint</div>
             <div className="f16 mt20 sub-title">
-              NostrAssets is your top choice for creating，minting Taproot assets and launching Fair Mint activities
-              with ease，whether you're creating or importing them.
+              NostrAssets is your top choice for issuing，minting Taproot assets and launching Fair Mint activities
+              with ease，whether you're issuing or importing them.
             </div>
           </div>
         </div>

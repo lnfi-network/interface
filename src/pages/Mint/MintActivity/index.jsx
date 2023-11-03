@@ -15,6 +15,7 @@ import { useSendListOrder, useQueryBalance } from "hooks/useNostrMarket";
 import { CheckCircleOutlined, CloseCircleOutlined, SwapOutlined, DownCircleOutlined } from "@ant-design/icons";
 import { t } from "@lingui/macro";
 import "./index.scss";
+import BigNumber from "bignumber.js";
 const NOSTR_MINT_SEND_TO = process.env.REACT_APP_NOSTR_MINT_SEND_TO;
 // const serviceFee = MINT_SERVICE_FEE;
 export default function MintCreate() {
@@ -57,7 +58,7 @@ export default function MintCreate() {
   };
   const handleSuccessCancel = () => {
     setIsSuccessModalOpen(false);
-    history.replace(`/mintassets/mint-assets`);
+    history.replace(`/fairmint/fair-mint`);
   };
   const reset = useCallback(() => {
     form.resetFields(["amount", "number", "addressMints"]);
@@ -133,7 +134,7 @@ export default function MintCreate() {
     return (
       <>
         <span style={{ paddingRight: "5px" }}>Service fee</span>
-        <Tooltip title="NostrAssets charges only sats as a fixed service fee when creating mint activities. This fee is deducted from your NostrAssets account and remains constant, regardless of the mint pool amount or your asset's value.">
+        <Tooltip title="NostrAssets charges only sats as a fixed service fee when issuing mint activities. This fee is deducted from your NostrAssets account and remains constant, regardless of the mint pool amount or your asset's value.">
           <InfoCircleOutlined />
         </Tooltip>
       </>
@@ -198,26 +199,50 @@ export default function MintCreate() {
       </Button>
     );
   }, [handleMax]);
-  useEffect(() => {
+  // useEffect(() => {}, [amount, form, numberMint, selectToken?.reserve, totalSupply]);
+  const handleSingleMint = useCallback((amount, numberMint) => {
     if (Number(amount) && Number(numberMint)) {
-      setSingleMint(amount / numberMint);
+      if (numberMint <= 5000) {
+        const reserve = selectToken?.reserve || 0;
+        const single = limitDecimals(amount / numberMint, reserve, "floor");
+        setSingleMint(single);
+        const maxAmount = BigNumber(single).times(numberMint).toNumber();
+        form.setFieldValue("amount", maxAmount);
+        setAmount(maxAmount);
+        setPercentage(limitDecimals((maxAmount / totalSupply) * 100, 2, "floor"));
+      }
     }
-  }, [amount, numberMint]);
+  }, [form, selectToken?.reserve, totalSupply]);
   const amountChange = useCallback(
     (e) => {
       var value = e.target.value;
+
       if (Number(value)) {
-        const inpVal = Number(value.replace(/[^\d]/g, ""));
-        // const val = inpVal > selectBalance ? selectBalance : inpVal;
-        setAmount(inpVal);
-        setPercentage(limitDecimals((inpVal / totalSupply) * 100, 2, "floor"));
-        form.setFieldValue("amount", inpVal);
+        const reserve = selectToken?.reserve || 0;
+        let reg = new RegExp("\\d+\\.?\\d{0," + reserve || 0 + "}");
+        const match = value.match(reg);
+        if (reserve == 0) {
+          form.setFieldValue("amount", Math.floor(value));
+          setAmount(Math.floor(value));
+          setPercentage(limitDecimals((Math.floor(value) / totalSupply) * 100, 2, "floor"));
+          handleSingleMint(Math.floor(value), form.getFieldValue("number"))
+        } else {
+          form.setFieldValue("amount", match[0]);
+          setAmount(match[0]);
+          setPercentage(limitDecimals((match[0] / totalSupply) * 100, 2, "floor"));
+          handleSingleMint(match[0], form.getFieldValue("number"))
+        }
+        // const inpVal = Number(value.replace(/[^\d]/g, ""));
+        // // const val = inpVal > selectBalance ? selectBalance : inpVal;
+        // setAmount(inpVal);
+        // setPercentage(limitDecimals((inpVal / totalSupply) * 100, 2, "floor"));
+        // form.setFieldValue("amount", inpVal);
       } else {
         setAmount(0);
       }
       form.validateFields(["amount"]);
     },
-    [form, totalSupply]
+    [form, handleSingleMint, selectToken?.reserve, totalSupply]
   );
   const numberChange = useCallback(
     (e) => {
@@ -226,11 +251,12 @@ export default function MintCreate() {
         const val = Number(value.replace(/[^\d]/g, ""));
         setNumberMint(val);
         form.setFieldValue("number", val);
+        handleSingleMint(form.getFieldValue("amount"), val)
       } else {
         setNumberMint(0);
       }
     },
-    [form]
+    [form, handleSingleMint]
   );
   const addressMintsChange = useCallback(
     (e) => {

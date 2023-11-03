@@ -4,11 +4,14 @@ import { useMemo } from "react";
 const GRAPH_BASE = process.env.REACT_APP_GRAPH_BASE || "";
 
 export const useMintActivityDetailStats = (activeId, npub_address) => {
+  console.log("activeId", activeId, npub_address);
   const tableName = `${GRAPH_BASE}nostr_assets_activity_detail`;
   let whereMemo = useMemo(() => {
     let where = "{";
     if(activeId && npub_address) {
-      where += `activity_id: {_eq: ${activeId}}, _and: {owner: {_eq: ${npub_address} }}`;
+        where += `activity_id: {_eq: "${activeId}"} `;
+        where += `owner: {_eq: "${npub_address}"} `;
+      // where += `activity_id: {_eq: ${activeId}}, _and: {owner: {_eq: ${npub_address} }}`;
     }
     where += "}";
     return where;
@@ -31,6 +34,6 @@ export const useMintActivityDetailStats = (activeId, npub_address) => {
   return {
     reexcuteQuery,
     fetching,
-    hadMintCount: data ? data[`${tableName}`]?.[0]?.share || 0 : 0
+    hadMintCount: data ? data?.[`${tableName}`]?.[0]?.share || 0 : 0
   };
 };

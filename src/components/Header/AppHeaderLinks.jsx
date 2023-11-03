@@ -62,8 +62,8 @@ export function AppHeaderLinks({ small, clickCloseIcon }) {
       )}
       {process.env.REACT_APP_CURRENT_ENV === "dev" && (
         <div className="App-header-link-container">
-          <HeaderLink to="/mintassets">
-            <Trans>Mint Assets</Trans>
+          <HeaderLink to="/fairmint">
+            <Trans>Fair Mint</Trans>
           </HeaderLink>
         </div>
       )}
