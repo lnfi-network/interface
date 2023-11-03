@@ -128,6 +128,9 @@ const useNostrPool = () => {
         if (privateKey) {
           ciphertext = await nip04.encrypt(privateKey, targetPubkey, message);
         } else {
+          if (!window.nostr.nip04) {
+            throw new Error("Your wallet does not support nip04.")
+          }
           ciphertext = await window.nostr.nip04.encrypt(targetPubkey, message);
         }
       } else {
