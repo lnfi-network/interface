@@ -5,12 +5,22 @@ import { BrowserRouter as Router } from "react-router-dom";
 import App from "./App/App";
 import { ConfigProvider, theme } from "antd";
 import { Provider as ReduxProvider } from "react-redux";
-import ErrorCatch from "components/ErrorCatch";
+import { ErrorBoundary } from "react-error-boundary";
+import { Alert } from "antd";
 import store from "./store";
 
 import "styles/global.scss";
 const container = document.getElementById("root");
 const root = createRoot(container);
+const logError = (error, info) => {
+  console.log("🚀 ~ file: index.jsx:16 ~ logError ~ error:", error);
+  // Do something with the error, e.g. log to an external API
+};
+function Fallback({ error, resetErrorBoundary }) {
+  // Call resetErrorBoundary() to reset the error boundary and retry the render.
+
+  return <Alert message={error.message} type="error" onClose={resetErrorBoundary}></Alert>;
+}
 root.render(
   <ConfigProvider
     theme={{
@@ -22,9 +32,9 @@ root.render(
   >
     <ReduxProvider store={store}>
       <Router>
-        <ErrorCatch>
+        <ErrorBoundary FallbackComponent={Fallback} onError={logError}>
           <App />
-        </ErrorCatch>
+        </ErrorBoundary>
       </Router>
     </ReduxProvider>
   </ConfigProvider>
