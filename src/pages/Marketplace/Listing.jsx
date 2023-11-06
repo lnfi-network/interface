@@ -33,10 +33,10 @@ import { convertDollars } from "lib/utils/index";
 
 export default function Listing({ refListing }) {
   // const { handleCancelOrderAsync } = useCancelOrder();
+  const timerInterval = useRef(null);
   const [width, setWidth] = useState(document.body.clientWidth);
   const { tokenList, quote_pirce } = useSelector(({ market }) => market);
   const [timer, setTimer] = useState(false);
-  const timerInterval = useRef(null);
   const [type, setType] = useState("Buy");
   const [token, setToken] = useState(getQueryVariable("token"));
   const [sort, setSort] = useState("Price From Low to High");
@@ -73,7 +73,7 @@ export default function Listing({ refListing }) {
       setTimer(false);
       clearInterval(timerInterval.current);
       timerInterval.current = null;
-    }
+    };
   }, [reexcuteQuery]);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const sortOptions = [
