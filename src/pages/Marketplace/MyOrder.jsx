@@ -322,7 +322,7 @@ export default function MyOrder() {
         title: t`Action`,
         dataIndex: "status",
         render: (text, row) => {
-          if (["INIT", "PUSH_MARKET_SUCCESS", "PUSH_MARKET_FAIL", "TAKE_LOCK", "PART_SUCCESS"].includes(text)) {
+          if (["INIT", "PUSH_MARKET_SUCCESS", "PUSH_MARKET_FAIL", "PART_SUCCESS"].includes(text)) {
             return (
               // <Button
               //   className="cancel"
