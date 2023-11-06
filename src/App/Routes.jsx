@@ -48,10 +48,12 @@ function Routes({ children }) {
               <Route exact path="/faucet">
                 <Faucet />
               </Route>
-              <Route exact path="/claim">
-                <Claim />
-              </Route>
-              <Route path="/mintassets">
+              {process.env.REACT_APP_CURRENT_ENV !== "test" && (
+                <Route exact path="/claim">
+                  <Claim />
+                </Route>
+              )}
+              <Route path="/fairmint">
                 <Mint />
               </Route>
               <Route exact path={["/mint/create", "/mint/create/:eventId"]}>
@@ -60,7 +62,7 @@ function Routes({ children }) {
               <Route exact path="/mint/launch-activity">
                 <MintActivity />
               </Route>
-              <Route exact path="/mint/detail/:eventId">
+              <Route exact path="/mint/detail/:id">
                 <MintDetail />
               </Route>
               <Route exact path="/pioneer-points">

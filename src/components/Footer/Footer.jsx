@@ -4,7 +4,6 @@ import { ReactComponent as Telegram } from "fonts/svg/telegram.svg";
 import { ReactComponent as Gitbook } from "fonts/svg/gitbook.svg";
 import { ReactComponent as Git } from "fonts/svg/github.svg";
 import { ReactComponent as Medium } from "fonts/svg/medium.svg";
-
 export default function Footer() {
   return (
     <>

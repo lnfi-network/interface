@@ -1,18 +1,19 @@
-.marketplace{
+.marketplace {
   flex: 1;
   display: flex;
   justify-content: center;
   max-width: 100%;
   // background: #000;
   // margin: 0 auto;
-  .marketplace-layout{
+  .marketplace-layout {
     flex: 1;
     max-width: var(--max-width);
     width: 100%;
     // padding: 0 24px;
     background-color: var(--color-layer-base);
   }
-  .ant-menu-dark,.ant-menu-dark>.ant-menu {
+  .ant-menu-dark,
+  .ant-menu-dark > .ant-menu {
     background: var(--color-layer-base);
     background: transparent;
     font-size: 16px;
@@ -25,14 +26,41 @@
     position: sticky;
     top: 62px;
     z-index: 100;
-    background:var(--color-layer-base) !important;
-    .marketplace-listing-btn{
+    background: var(--color-layer-base) !important;
+    .marketplace-sub-menu-abs {
       position: absolute;
-      top: 15px;
-      right: 0;
+      top: 12px;
+      right: 10px;
+      // width: 240px;
+      // height: 50px;
+      background: inherit;
+      background-color: rgba(5, 244, 219, 0.1450980392156863);
+      box-sizing: border-box;
+      border-width: 1px;
+      border-style: solid;
+      border-color: rgba(121, 121, 121, 1);
+      border-radius: 10px;
+      -moz-box-shadow: none;
+      -webkit-box-shadow: none;
+      box-shadow: none;
+      font-size: 16px;
+      line-height: 38px;
+      text-align: center;
+      padding: 0 40px;
+      cursor: pointer;
+      &-icon {
+        color: #06f4db;
+        margin-left: 5px;
+        font-size: 16px;
+      }
+    }
+    .marketplace-listing-btn {
+      position: absolute;
+      top: 18px;
+      left: 350px;
       z-index: 200;
       // display: none;
-      .buy-list-btn{
+      .buy-list-btn {
         // background: #14E3DA;
         // padding: 4px 40px;
         color: #333;
@@ -43,21 +71,21 @@
           opacity: 0;
         }
         // float: right;
-        &:hover{
+        &:hover {
           color: #333;
           // padding: 4px 40px;
-          opacity: .9;
+          opacity: 0.9;
         }
       }
-      .buy-list-btn-sell{
+      .buy-list-btn-sell {
         color: #fff;
-        background: #FF6244;
+        background: #ff6244;
         // padding: 4px 40px;
-        &:hover{
+        &:hover {
           color: #fff;
-          background: #FF6244;
+          background: #ff6244;
           // padding: 4px 40px;
-          opacity: .9;
+          opacity: 0.9;
         }
       }
     }
@@ -72,46 +100,107 @@
     .ant-menu-item-selected {
       background-color: transparent;
     }
-    
   }
-  .ant-menu-dark.ant-menu-horizontal >.ant-menu-item:hover::after, .ant-menu-dark>.ant-menu.ant-menu-horizontal >.ant-menu-item:hover::after, .ant-menu-dark.ant-menu-horizontal >.ant-menu-submenu:hover::after, .ant-menu-dark>.ant-menu.ant-menu-horizontal >.ant-menu-submenu:hover::after, .ant-menu-dark.ant-menu-horizontal >.ant-menu-item-active::after, .ant-menu-dark>.ant-menu.ant-menu-horizontal >.ant-menu-item-active::after, .ant-menu-dark.ant-menu-horizontal >.ant-menu-submenu-active::after, .ant-menu-dark>.ant-menu.ant-menu-horizontal >.ant-menu-submenu-active::after, .ant-menu-dark.ant-menu-horizontal >.ant-menu-item-open::after, .ant-menu-dark>.ant-menu.ant-menu-horizontal >.ant-menu-item-open::after, .ant-menu-dark.ant-menu-horizontal >.ant-menu-submenu-open::after, .ant-menu-dark>.ant-menu.ant-menu-horizontal >.ant-menu-submenu-open::after{
-    border-bottom-width:2px;
-    border-bottom-color: #06F4DB;
+  .ant-menu-dark.ant-menu-horizontal > .ant-menu-item:hover::after,
+  .ant-menu-dark > .ant-menu.ant-menu-horizontal > .ant-menu-item:hover::after,
+  .ant-menu-dark.ant-menu-horizontal > .ant-menu-submenu:hover::after,
+  .ant-menu-dark > .ant-menu.ant-menu-horizontal > .ant-menu-submenu:hover::after,
+  .ant-menu-dark.ant-menu-horizontal > .ant-menu-item-active::after,
+  .ant-menu-dark > .ant-menu.ant-menu-horizontal > .ant-menu-item-active::after,
+  .ant-menu-dark.ant-menu-horizontal > .ant-menu-submenu-active::after,
+  .ant-menu-dark > .ant-menu.ant-menu-horizontal > .ant-menu-submenu-active::after,
+  .ant-menu-dark.ant-menu-horizontal > .ant-menu-item-open::after,
+  .ant-menu-dark > .ant-menu.ant-menu-horizontal > .ant-menu-item-open::after,
+  .ant-menu-dark.ant-menu-horizontal > .ant-menu-submenu-open::after,
+  .ant-menu-dark > .ant-menu.ant-menu-horizontal > .ant-menu-submenu-open::after {
+    border-bottom-width: 2px;
+    border-bottom-color: #06f4db;
   }
-  .ant-menu-dark.ant-menu-horizontal >.ant-menu-item-selected::after, .ant-menu-dark>.ant-menu.ant-menu-horizontal >.ant-menu-item-selected::after, .ant-menu-dark.ant-menu-horizontal >.ant-menu-submenu-selected::after, .ant-menu-dark>.ant-menu.ant-menu-horizontal >.ant-menu-submenu-selected::after{
-    border-bottom-width:2px;
-    border-bottom-color: #06F4DB;
+  .ant-menu-dark.ant-menu-horizontal > .ant-menu-item-selected::after,
+  .ant-menu-dark > .ant-menu.ant-menu-horizontal > .ant-menu-item-selected::after,
+  .ant-menu-dark.ant-menu-horizontal > .ant-menu-submenu-selected::after,
+  .ant-menu-dark > .ant-menu.ant-menu-horizontal > .ant-menu-submenu-selected::after {
+    border-bottom-width: 2px;
+    border-bottom-color: #06f4db;
   }
-  .marketplace-title{
+  .marketplace-title {
     font-size: 30px;
     text-align: center;
     font-weight: bold;
     line-height: 80px;
     color: #fff;
   }
-  .detail{
+  .detail {
     padding: 0;
-    color: #00FFFF;
+    color: #00ffff;
     font-size: 12px;
     cursor: pointer;
   }
-  .cancel{
+  .cancel {
     padding: 0;
-    color: #00FFFF;
+    color: #00ffff;
     font-size: 12px;
   }
-  .cancel:not(:disabled){
-    &:hover{
-      color: #00FFFF;
-      opacity: .9;
+  .cancel:not(:disabled) {
+    &:hover {
+      color: #00ffff;
+      opacity: 0.9;
     }
   }
+  .marketplace-markets {
+    display: flex;
+    padding: 20px 0;
+    .marketplace-list-token {
+      width: 300px;
+      padding: 20px;
+      border-radius: 8px;
+      background: var(--color-layer-light);
+      .marketplace-token-list{
+        margin-top: 15px;
+      }
+      .token-item {
+        margin-top: 6px;
+        display: flex;
+        justify-content: space-between;
+        padding: 0 5px;
+        line-height: 42px;
+        cursor: pointer;
+        &:hover {
+          background: #38c89d;
+          color: #fff;
+          border-radius: 3px;
+        }
+        // span{
+        //   flex: 1;
+        // }
+        > span:last-child {
+          text-align: right;
+        }
+      }
+      .token-item.cur {
+        background: #38c89d;
+        color: #fff;
+        border-radius: 3px;
+      }
+    }
+    .marketplace-content-token {
+      flex: 1;
+      padding: 20px;
+      background: var(--color-layer-light);
+      margin-left: 20px;
+      border-radius: 8px;
+      .marketplace-content-section{
+        padding: 4px;
+      }
+    }
+    
+  }
 }
-.marketplace-listing{
+.marketplace-listing {
   padding-bottom: 40px;
   position: relative;
-  
-  .trade-list{
+
+  .trade-list {
     min-height: calc(100vh - 400px);
     display: flex;
     flex-direction: row;
@@ -119,30 +208,30 @@
     align-items: flex-start;
     gap: 20px;
     background-color: var(--color-layer-base);
-    .trade-item{
+    .trade-item {
       width: calc(20% - 16px);
       // background: #1e1e1e;
       border: 1px solid var(--color-border-grey);
       border-radius: 4px;
       overflow: hidden;
-      transition: all .25s ease-in-out;
+      transition: all 0.25s ease-in-out;
       box-sizing: border-box;
-      
+
       // &:hover{
       //   border: 1px solid rgba(56,200,157,.8);
       // }
-      .trade-item-head{
+      .trade-item-head {
         display: flex;
         justify-content: space-between;
         align-items: center;
         padding: 10px 16px;
         margin-top: 5px;
-        .trade-item-title{
+        .trade-item-title {
           color: #fff;
           font-size: 18px;
           font-weight: bold;
         }
-        .trade-item-id{
+        .trade-item-id {
           padding: 3px 6px;
           background: #666;
           color: #fff;
@@ -150,45 +239,45 @@
           border-radius: 2px;
         }
       }
-      .trade-item-section{
+      .trade-item-section {
         display: flex;
         justify-content: space-between;
         align-items: center;
         padding: 6px 16px;
-        .buy-btn{
+        .buy-btn {
           margin-top: 10px;
           margin-bottom: 10px;
           width: 100%;
-          .ant-btn{
+          .ant-btn {
             width: 100%;
           }
         }
-        .ant-btn.sell-btn{
+        .ant-btn.sell-btn {
           margin-top: 10px;
           margin-bottom: 10px;
           width: 100%;
-          background: #FF6244;
-          
-          &:hover{
-            background: #FF6244;
-            opacity: .9;
+          background: #ff6244;
+
+          &:hover {
+            background: #ff6244;
+            opacity: 0.9;
           }
         }
-        .sell-btn{
+        .sell-btn {
           margin-top: 10px;
           margin-bottom: 10px;
           width: 100%;
-          .ant-btn{
+          .ant-btn {
             width: 100%;
           }
         }
-        .trade-item-label{
+        .trade-item-label {
           font-size: 14px;
         }
-        .trade-item-value{
+        .trade-item-value {
           font-size: 12px;
           color: #fff;
-          .usd{
+          .usd {
             font-size: 14px;
             font-weight: bold;
           }
@@ -198,155 +287,163 @@
           // }
         }
       }
-      .bg-grey{
+      .bg-grey {
         background: #202124;
       }
-      .pt10{
+      .pt10 {
         padding-top: 10px;
       }
     }
   }
 }
 
-
-.marketplace-filters{
-  padding:24px 10px;
+.marketplace-filters {
+  padding: 24px 10px;
   // margin-top:20px;
-  
+
   background-color: var(--color-layer-base);
   border-radius: 10px;
 
-  .ant-radio-group-solid .ant-radio-button-wrapper-checked.sell:not(.ant-radio-button-wrapper-disabled){
+  .ant-radio-group-solid .ant-radio-button-wrapper-checked.sell:not(.ant-radio-button-wrapper-disabled) {
     color: #fff;
-    background: #FF6244;
-    border-color: #FF6244;
+    background: #ff6244;
+    border-color: #ff6244;
   }
   .ant-radio-button-wrapper-checked.sell:not(.ant-radio-button-wrapper-disabled)::before {
-    background-color: #FF6244;
+    background-color: #ff6244;
   }
   .ant-radio-button-wrapper.sell:hover {
-    color:#FF6244;
+    color: #ff6244;
   }
   .filter-text {
-    font-size:18px;
+    font-size: 18px;
   }
   &-items {
     display: flex;
     flex-wrap: wrap;
-    
   }
-  &-item{
-    padding:10px 0;
-    margin-right:10px;
-    
+  &-item {
+    padding: 10px 0;
+    margin-right: 10px;
+
     &__date {
-      width:auto;
+      width: auto;
     }
     &__range {
-      width:200px;
+      width: 200px;
     }
     &__select {
-      width:auto;
-    
+      width: auto;
+
       label {
-        padding-right:5px;
+        padding-right: 5px;
       }
       .select {
-        width:120px;
+        width: 120px;
       }
     }
     &__input {
-     
       label {
         padding-right: 5px;
       }
       .input {
-        width:160px;
+        width: 160px;
         &.address {
-          width:260px;
+          width: 260px;
         }
       }
     }
   }
-  .ant-form-item{
+  .ant-form-item {
     display: inline-block;
     margin-right: 20px;
     margin-bottom: 0;
   }
-  
 }
 
-.my-order-small{
+.my-order-small {
   margin-top: 10px;
   padding-bottom: 10px;
   border-bottom: 1px solid var(--color-border-grey);
-  .my-order-section{
+  .my-order-section {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 4px;
-    .key{
+    .key {
       font-size: 14px;
     }
-    .key.title{
+    .key.title {
       color: #fff;
       font-weight: bold;
       font-size: 16px;
     }
-    .key.ID{
+    .key.ID {
       color: #fff;
     }
-    .value{
+    .value {
       color: #fff;
     }
-    .value.time{
+    .value.time {
       color: var(--color-text-base);
       font-size: 12px;
     }
   }
-  .btn-Cancel{
+  .btn-Cancel {
     margin: 5px 0;
     width: 100%;
   }
 }
 @media screen and (max-width: 1200px) {
-  .marketplace-listing{
-    .trade-list{
-      .trade-item{
+  .marketplace-listing {
+    .trade-list {
+      .trade-item {
         width: calc(25% - 15px);
       }
     }
   }
 }
 @media screen and (max-width: 1000px) {
-  .marketplace-listing{
-    .trade-list{
-      .trade-item{
+  .marketplace-listing {
+    .trade-list {
+      .trade-item {
         width: calc(33.333% - 16px);
       }
     }
   }
 }
 @media screen and (max-width: 768px) {
-  .marketplace-listing{
-    
-    .trade-list{
+  .cancel {
+    margin: 5px 0;
+    width: 100%;
+  }
+  .cancel:not(:disabled) {
+    &:hover {
+      color: #00ffff;
+      opacity: 0.9;
+    }
+  }
+  .repair{
+    margin: 5px 0;
+    width: 100%;
+  }
+  .marketplace-listing {
+    .trade-list {
       margin-top: 10px;
       // background: #000;
-      .trade-item{
+      .trade-item {
         width: calc(50% - 16px);
       }
     }
   }
-  
-  
-  .marketplace{
+
+  .marketplace {
     // background-color: #000;
-    .marketplace-layout{
+    .marketplace-layout {
       padding: 0 10px;
       // background-color: #000;
     }
-    .marketplace-title{
+    .marketplace-title {
       font-size: 18px;
       text-align: center;
       font-weight: bold;
@@ -359,13 +456,18 @@
       // top: 62px;
       // z-index: 100;
       // background:var(--color-layer-base) !important;
-      .marketplace-listing-btn{
+      .marketplace-sub-menu-abs{
+        display: none;
+      }
+      .marketplace-listing-btn {
         top: 8px;
-        .buy-list-btn{
+        left: auto;
+        right: 0;
+        .buy-list-btn {
           font-size: 10px;
           padding: 2px 10px;
         }
-        .buy-list-btn-sell{
+        .buy-list-btn-sell {
           font-size: 10px;
           padding: 2px 10px;
         }
@@ -375,76 +477,75 @@
       // background-color: var(--color-layer-base);
       // background: rgba(0,0,0,.4);
     }
-    .ant-menu-dark,.ant-menu-dark>.ant-menu{
+    .ant-menu-dark,
+    .ant-menu-dark > .ant-menu {
       font-size: 12px;
       margin-top: 0;
     }
-    .explore-table{
+    .explore-table {
       padding: 0;
-      margin-top:10px;
+      margin-top: 10px;
       // background-color: var(--color-layer-base);
     }
   }
-  
-  .marketplace-filters{
+
+  .marketplace-filters {
     // .ant-form-item{
     //   display: block;
     // }
     // background-color: var(--color-layer-light);
     padding: 0 10px 0;
-    margin-top:10px;
-    .ant-form-item{
+    margin-top: 10px;
+    .ant-form-item {
       display: block;
       font-size: 12px;
       margin-right: 5px;
       margin-bottom: 10px;
-      .ant-select{
+      .ant-select {
         font-size: 12px;
-        .ant-select-selector{
+        .ant-select-selector {
           font-size: 12px;
         }
       }
-      .ant-input{
+      .ant-input {
         font-size: 12px;
       }
-      .ant-form-item-label >label{
+      .ant-form-item-label > label {
         font-size: 12px;
-      } 
+      }
     }
     .ant-form .ant-form-item .ant-form-item-label {
       flex: inherit;
       width: 80px;
     }
-    .ant-form .ant-form-item .ant-form-item-control{
+    .ant-form .ant-form-item .ant-form-item-control {
       flex: 1;
-      .ant-form-item-control-input-content{
+      .ant-form-item-control-input-content {
         width: 100%;
       }
-      
     }
-    .search-btn-item{
-      .ant-form-item-control-input-content{
+    .search-btn-item {
+      .ant-form-item-control-input-content {
         width: 100%;
         text-align: right;
       }
-    } 
+    }
   }
-  .marketplace-filters{
+  .marketplace-filters {
     // background-color: #000;
     background: var(--color-layer-base);
     border: 1px solid var(--color-border-grey);
   }
-  
-  
-  .ant-menu-horizontal .ant-menu-item, .ant-menu-horizontal .ant-menu-submenu{
+
+  .ant-menu-horizontal .ant-menu-item,
+  .ant-menu-horizontal .ant-menu-submenu {
     padding-inline: 6px;
   }
 }
 @media screen and (max-width: 500px) {
-
-  .marketplace-listing{
-    .trade-list{
-      .trade-item{
+  .marketplace-listing {
+    .trade-list {
+      .trade-item {
         width: calc(100%);
       }
     }

@@ -12,40 +12,93 @@ import { limitDecimals, numberWithCommas, padDecimals } from "lib/numbers";
 import { useSelector } from "react-redux";
 import useGetNostrAccount from "hooks/useGetNostrAccount";
 import { nip19 } from "nostr-tools";
-import { useCancelOrder } from "hooks/useNostrMarket";
+import { useCancelOrder, useRepairOrder } from "hooks/useNostrMarket";
 import BigNumber from "bignumber.js";
 import { utcToClient } from "lib/dates";
 import { QUOTE_ASSET } from "config/constants";
 import { convertDollars, statusMap } from "lib/utils/index";
+import useDevice from "hooks/useDevice";
 const initQuery = {
   type: "",
   token: "",
   nostrAddress: "",
   status: ""
 };
+function RepairButton({ reexcuteQuery, row }) {
+  const [loading, setLoading] = useState(false);
+  const { handleRepairOrderAsync } = useRepairOrder();
+  const onRepairOrder = useCallback(
+    async (orderId) => {
+      setLoading(true);
+      try {
+        const ret = await handleRepairOrderAsync(orderId);
+        if (ret.code == 0) {
+          message.success(t`Submit successfully`);
+          setLoading(false);
+          reexcuteQuery && reexcuteQuery();
+        } else {
+          setLoading(false);
+          message.error(ret.data || "Fail");
+        }
+      } catch (error) {
+        setLoading(false);
+      }
+    },
+    [handleRepairOrderAsync, reexcuteQuery]
+  );
+  return (
+    <Button
+      className="repair"
+      size="small"
+      loading={loading}
+      // type="primary"
+      danger
+      onClick={() => {
+        //
+        onRepairOrder(row.id);
+      }}
+    >{t`Repair`}</Button>
+  );
+}
 function CancelButton({ reexcuteQuery, row }) {
+  const device = useDevice();
   const [cancelLoading, setCancelLoading] = useState(false);
   const { handleCancelOrderAsync } = useCancelOrder();
   const onCancelOrder = useCallback(
     async (orderId) => {
       setCancelLoading(true);
-      const ret = await handleCancelOrderAsync(orderId);
-      if (ret.code == 0) {
-        message.success(t`Submit successfully`);
+      try {
+        const ret = await handleCancelOrderAsync(orderId);
+        if (ret.code == 0) {
+          message.success(t`Submit successfully`);
+          setCancelLoading(false);
+          reexcuteQuery && reexcuteQuery();
+        } else {
+          setCancelLoading(false);
+          message.error(ret.data || "Fail");
+        }
+      } catch (error) {
         setCancelLoading(false);
-        reexcuteQuery();
-      } else {
-        setCancelLoading(false);
-        message.error(ret.data || "Fail");
       }
     },
     [handleCancelOrderAsync, reexcuteQuery]
   );
-  return (
+  return device.isMobile ? (
+    <Button
+      className="cancel btn-grey"
+      loading={cancelLoading}
+      type={"default"}
+      size="small"
+      onClick={() => {
+        //
+        onCancelOrder(row.id);
+      }}
+    >{t`Cancel`}</Button>
+  ) : (
     <Button
       className="cancel"
       loading={cancelLoading}
-      type="link"
+      type={"text"}
       onClick={() => {
         //
         onCancelOrder(row.id);
@@ -54,13 +107,13 @@ function CancelButton({ reexcuteQuery, row }) {
   );
 }
 export default function MyOrder() {
+  const device = useDevice();
   const [currentRow, setCurrentRow] = useState(null);
   const [openDrawer, setOpenDrawer] = useState(false);
   const [type, setType] = useState("");
   const [token, setToken] = useState("");
   const [status, setStatus] = useState("");
   const [cancelLoading, setCancelLoading] = useState(false);
-  const [width, setWidth] = useState(document.body.clientWidth);
   const [filter, setFilter] = useState({ ...initQuery });
   const [form] = Form.useForm();
   const [pageSize, setPageSize] = useState(100);
@@ -135,9 +188,6 @@ export default function MyOrder() {
       }
     ];
   }, []);
-  const handleResize = useCallback(() => {
-    setWidth(document.body.clientWidth);
-  }, []);
   const onCancelOrder = useCallback(
     async (orderId) => {
       setCancelLoading(true);
@@ -153,12 +203,6 @@ export default function MyOrder() {
     },
     [handleCancelOrderAsync, reexcuteQuery]
   );
-  useEffect(() => {
-    window.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, [handleResize]);
   const columns = useMemo(() => {
     return [
       {
@@ -282,7 +326,7 @@ export default function MyOrder() {
         title: t`Action`,
         dataIndex: "status",
         render: (text, row) => {
-          if (["INIT", "PUSH_MARKET_SUCCESS", "PUSH_MARKET_FAIL", "TAKE_LOCK", "PART_SUCCESS"].includes(text)) {
+          if (["INIT", "PUSH_MARKET_SUCCESS", "PUSH_MARKET_FAIL", "PART_SUCCESS"].includes(text)) {
             return (
               // <Button
               //   className="cancel"
@@ -295,6 +339,8 @@ export default function MyOrder() {
               // >{t`Cancel`}</Button>
               <CancelButton reexcuteQuery={reexcuteQuery} row={row}></CancelButton>
             );
+          } else if (["TRADE_FAIL"].includes(text)) {
+            return <RepairButton reexcuteQuery={reexcuteQuery} row={row}></RepairButton>;
           } else {
             return <span>--</span>;
           }
@@ -382,7 +428,7 @@ export default function MyOrder() {
         </Form.Item> */}
       </Form>
     );
-    if (width > 768) {
+    if (!device.isMobile) {
       return _form;
     } else {
       return (
@@ -393,7 +439,17 @@ export default function MyOrder() {
         </Collapse>
       );
     }
-  }, [form, memoTokenList, onFinish, statusChange, statusOptions, tokenChange, typeChange, typeOptions, width]);
+  }, [
+    device.isMobile,
+    form,
+    memoTokenList,
+    onFinish,
+    statusChange,
+    statusOptions,
+    tokenChange,
+    typeChange,
+    typeOptions
+  ]);
   const listMemo = useMemo(() => {
     return list.map((item) => {
       const typeOpt = typeOptions.find((k) => k.value == item.type);
@@ -416,7 +472,8 @@ export default function MyOrder() {
           <div className="my-order-section">
             <div className="key title">{item?.token}</div>
             <div className="value time">
-              {item.create_time ? dayjs(item.create_time).format("YYYY-MM-DD HH:mm:ss") : "--"}
+              {/* {item.create_time ? dayjs(item.create_time).format("YYYY-MM-DD HH:mm:ss") : "--"} */}
+              {utcToClient(item.create_time)}
             </div>
           </div>
           <div className="my-order-section">
@@ -475,28 +532,25 @@ export default function MyOrder() {
               <EllipsisMiddle suffixCount={6}>{item?.owner}</EllipsisMiddle>
             </div>
           </div>
-          {["INIT", "PUSH_MARKET_SUCCESS", "PUSH_MARKET_FAIL", "TAKE_LOCK", "PART_SUCCESS"].includes(item.status) && (
+          {["INIT", "PUSH_MARKET_SUCCESS", "PUSH_MARKET_FAIL", "PART_SUCCESS"].includes(item.status) && (
             <div>
-              <Button
-                className="btn-grey btn-Cancel"
-                onClick={() => {
-                  //
-                  onCancelOrder(item.id);
-                }}
-              >
-                Cancel
-              </Button>
+              <CancelButton reexcuteQuery={reexcuteQuery} row={item}></CancelButton>
+            </div>
+          )}
+          {["TRADE_FAIL"].includes(item.status) && (
+            <div>
+              <RepairButton reexcuteQuery={reexcuteQuery} row={item}></RepairButton>
             </div>
           )}
         </div>
       );
     });
-  }, [list, onCancelOrder, tokenList, typeOptions]);
+  }, [list, reexcuteQuery, tokenList, typeOptions]);
   return (
     <>
       <div className="marketplace-orderHistory">
         <div className="marketplace-filters">{filters}</div>
-        {width > 768 ? (
+        {!device.isMobile ? (
           <Table
             className="table-light explore-table"
             loading={fetching}

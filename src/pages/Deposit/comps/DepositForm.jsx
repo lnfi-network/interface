@@ -18,7 +18,7 @@ import { getQueryVariable } from "lib/url";
 import { nip19 } from "nostr-tools";
 import { produce } from "immer";
 import { useSize, useThrottleFn } from "ahooks";
-import BRC20Fee from "./BRC20Fee";
+import BRC20Fee from "components/BRC20Fee";
 import { waitForTransaction } from "@wagmi/core";
 import { useParams } from "react-router-dom";
 import LightningFormItems from "./LightningFormItems";
@@ -108,10 +108,6 @@ function DepositForm() {
     }
     return [...filterdTokenList];
   }, [selectedTokenPlatform, tokenList]);
-  console.log(
-    "🚀 ~ file: DepositForm.jsx:92 ~ memoCurrentPlatformTokenList ~ memoCurrentPlatformTokenList:",
-    memoCurrentPlatformTokenList
-  );
 
   const hasErc20Token = useMemo(() => {
     return tokenList.find((token) => token.assetType === "ERC20");
@@ -532,9 +528,7 @@ The deposit will be deducted from the balance of you connected wallet account an
     checkedInscriptionValue,
     handleTranserBRC20
   ]);
-  const onChangeFeeRate = useCallback((value) => {
-    setFeeRate(value);
-  }, []);
+
   useEffect(() => {
     if (nostrAccount) {
       const npubNostrAccount = nip19.npubEncode(nostrAccount);
@@ -618,11 +612,11 @@ The deposit will be deducted from the balance of you connected wallet account an
                 Lightning
               </Radio.Button>
 
-              {process.env.REACT_APP_CURRENT_ENV === "dev" && (
+              {/*  {(
                 <Radio.Button className="network-selector-btn" value="BRC20">
                   BRC20
                 </Radio.Button>
-              )}
+              )} */}
 
               <Radio.Button className="network-selector-btn" value="TAPROOT">
                 {/* <div className="network-selector-btn-test">Test</div> */}
@@ -758,39 +752,10 @@ The deposit will be deducted from the balance of you connected wallet account an
 
           {connectPlat === "BTC" && selectedTokenPlatform === "BRC20" && account && (
             <>
-              <Form.Item label="Fee" wrapperCol={18}>
-                <BRC20Fee feeRate={feeRate} setFee={setFee} setFeeRate={onChangeFeeRate} ready={true} />
-              </Form.Item>
+              <BRC20Fee setFee={setFee} ready={true} />
             </>
           )}
-          {connectPlat === "BTC" && selectedTokenPlatform === "BRC20" && feeRate === "Custom" && (
-            <Form.Item
-              name="fee"
-              label=" "
-              rules={[
-                ({ getFieldValue }) => ({
-                  validator(_, value) {
-                    if (value) {
-                      if (Number.isNaN(Number(value)) || Number(value) < 0) {
-                        return Promise.reject(new Error(t`Please enter the correct field.`));
-                      }
-                      return Promise.resolve();
-                    }
-                    return Promise.resolve();
-                  }
-                })
-              ]}
-            >
-              <Input
-                suffix="sat/vb"
-                size="large"
-                style={{ maxWidth: "100px" }}
-                onChange={({ target: { value } }) => {
-                  setFee(value);
-                }}
-              />
-            </Form.Item>
-          )}
+
           {(selectedTokenPlatform === "ERC20" || selectedTokenPlatform === "BRC20") && (
             <Row justify="center" className="mb20 fixed-btn">
               {memoSubmitButton}

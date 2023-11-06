@@ -168,7 +168,7 @@ export default function ClaimToken() {
                 initialValues={{ nostrAddress: npubNostrAccount || "" }}
               >
                 <Form.Item label="Your Nostr Address" className="claim-airdrop-token__item">
-                  <Form.Item name="nostrAddress" nostyle>
+                  <Form.Item name="nostrAddress" nostyle="true">
                     <Input
                       size="large"
                       disabled

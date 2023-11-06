@@ -1,4 +1,4 @@
-import { Button, Modal, Form, message, Tooltip } from "antd";
+import { Button, Modal, Form, message, Tooltip, Checkbox } from "antd";
 import { useState, useCallback, useMemo, memo, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { limitDecimals, numberWithCommas } from "lib/numbers";
@@ -17,10 +17,11 @@ function MarketModalForm({ setIsMarketModalForm, isMarketModalForm, reexcuteQuer
   const { tokenList, quote_pirce } = useSelector(({ market }) => market);
   const { balanceList, nostrAccount } = useSelector(({ user }) => user);
   const [btnLoading, setBtnLoading] = useState(false);
+  const [approveAllChecked, setApproveAllChecked] = useState(true);
   const [totalValue, setTotalValue] = useState(0);
   const [amountValue, setAmountValue] = useState(0);
   const { handleQueryAllowance, allowance } = useAllowance();
-  const { handleApproveAsync } = useApprove();
+  const { handleApproveAsync, handleApproveAsyncByCommand } = useApprove();
   const { handleTakeOrderAsync } = useSendMarketOrder();
   const { handleQueryBalance } = useQueryBalance();
 
@@ -47,6 +48,10 @@ function MarketModalForm({ setIsMarketModalForm, isMarketModalForm, reexcuteQuer
   const curToken = useMemo(() => {
     return tokenList.find((item) => item.name == data?.token);
   }, [data?.token, tokenList]);
+  const onApproveAllChange = (e) => {
+    // console.log('checked = ', e.target.checked);
+    setApproveAllChecked(e.target.checked);
+  };
   const onCancel = useCallback(() => {
     setIsMarketModalForm(false);
   }, [setIsMarketModalForm]);
@@ -103,7 +108,7 @@ function MarketModalForm({ setIsMarketModalForm, isMarketModalForm, reexcuteQuer
         ? min(selectToken?.reserve)
         : limitDecimals(amountValue * FEE, selectToken?.reserve, "round");
     } else {
-      console.log("totalValue * FEE", totalValue * FEE);
+      // console.log("totalValue * FEE", totalValue * FEE);
       return limitDecimals(totalValue * FEE, qutoAsset?.reserve, "round") == 0
         ? min(qutoAsset?.reserve)
         : limitDecimals(totalValue * FEE, qutoAsset?.reserve, "round");
@@ -134,7 +139,22 @@ function MarketModalForm({ setIsMarketModalForm, isMarketModalForm, reexcuteQuer
     try {
       setBtnLoading(true);
       let ret = null;
-      if (isBuy) {
+      if (approveAllChecked) {
+        let command = "";
+        for (let key in balanceList) {
+          // console.log("balanceList", key);
+          balanceList[key]?.balanceShow;
+          if (Number(balanceList[key]?.balanceShow)) {
+            command += `approve ${balanceList[key]?.balanceShow} ${key} to ${process.env.REACT_APP_NOSTR_MARKET_SEND_TO};`;
+          }
+        }
+        ret = await handleApproveAsyncByCommand(command);
+        if (isBuy) {
+          handleQueryAllowance(QUOTE_ASSET);
+        } else {
+          handleQueryAllowance(data.token);
+        }
+      } else if (isBuy) {
         ret = await handleApproveAsync(Number(totalValue), QUOTE_ASSET);
         await handleQueryAllowance(QUOTE_ASSET);
       } else {
@@ -153,7 +173,70 @@ function MarketModalForm({ setIsMarketModalForm, isMarketModalForm, reexcuteQuer
     } finally {
       setBtnLoading(false);
     }
-  }, [isBuy, handleApproveAsync, totalValue, handleQueryAllowance, amountValue, data.token]);
+  }, [
+    approveAllChecked,
+    isBuy,
+    handleApproveAsyncByCommand,
+    balanceList,
+    handleQueryAllowance,
+    handleApproveAsync,
+    totalValue,
+    amountValue,
+    data.token
+  ]);
+  const approveAll = useMemo(() => {
+    if (isBuy) {
+      if (
+        !allowance?.amountShow ||
+        Number(allowance?.amountShow) === 0 ||
+        Number(allowance?.amountShow) < Number(totalValue)
+      ) {
+        return (
+          <div className="tc mb20">
+            <Checkbox
+              checked={approveAllChecked}
+              style={{ fontSize: "12px", verticalAlign: "text-bottom" }}
+              onChange={onApproveAllChange}
+            >
+              Approve all balance
+            </Checkbox>
+            <Tooltip
+              placement="top"
+              title="After checking to approve all current balances, if the cumulative transactions of this asset do not exceed the approved amount, you only need to sign the transaction for each transaction without repeated approve process."
+            >
+              <InfoCircleOutlined />
+            </Tooltip>
+          </div>
+        );
+      }
+    } else {
+      // const selectedTokenBalance = getTokenBalance(selectedToken?.name);
+      // console.log("allowance amountShow", Number(allowance?.amountShow), Number(amountValue));
+      if (
+        !allowance?.amountShow ||
+        Number(allowance?.amountShow) === 0 ||
+        Number(allowance?.amountShow) < Number(amountValue)
+      ) {
+        return (
+          <div className="tc mb20">
+            <Checkbox
+              checked={approveAllChecked}
+              style={{ fontSize: "12px", verticalAlign: "text-bottom" }}
+              onChange={onApproveAllChange}
+            >
+              Approve all balance
+            </Checkbox>
+            <Tooltip
+              placement="top"
+              title="After checking to approve all current balances, if the cumulative transactions of this asset do not exceed the approved amount, you only need to sign the transaction for each transaction without repeated approve process."
+            >
+              <InfoCircleOutlined />
+            </Tooltip>
+          </div>
+        );
+      }
+    }
+  }, [allowance?.amountShow, amountValue, approveAllChecked, isBuy, totalValue]);
   const memoButton = useMemo(() => {
     if (isBuy) {
       if (!Number(balance) || Number(balance) === 0 || totalValue > Number(balance)) {
@@ -325,6 +408,22 @@ function MarketModalForm({ setIsMarketModalForm, isMarketModalForm, reexcuteQuer
               ? `${getTokenBalance(QUOTE_ASSET) || 0} ${QUOTE_ASSET}`
               : `${getTokenBalance(data.token) || 0} ${data.token}`}
           </div>
+          {approveAll}
+          {/* <div className="tc mb20">
+            <Checkbox
+              checked={approveAllChecked}
+              style={{ fontSize: "12px", verticalAlign: "text-bottom" }}
+              onChange={onApproveAllChange}
+            >
+              Approve all balance
+            </Checkbox>
+            <Tooltip
+              placement="top"
+              title="After checking to approve all current balances, if the cumulative transactions of this asset do not exceed the approved amount, you only need to sign the transaction for each transaction without repeated approve process."
+            >
+              <InfoCircleOutlined />
+            </Tooltip>
+          </div> */}
           <div className="market-buy-submit">{memoButton}</div>
         </div>
       </Modal>

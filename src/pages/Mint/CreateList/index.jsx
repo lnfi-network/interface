@@ -98,7 +98,7 @@ function MintList() {
           }
         },
         {
-          title: t`Create Date`,
+          title: t`Issue Date`,
           dataIndex: "create_time",
           render: (text) => utcToClient(text)
         },
@@ -128,7 +128,7 @@ function MintList() {
           }
         },
         {
-          title: t`Creator Address`,
+          title: t`Issuer Address`,
           dataIndex: "creator",
           render: (text) => {
             return text ? <EllipsisMiddle suffixCount={6}>{nip19.npubEncode(text)}</EllipsisMiddle> : text || "--";
@@ -151,7 +151,7 @@ function MintList() {
                 cls = "";
                 break;
               case 2:
-                txt = "Creating Assets";
+                txt = "Issuing Assets";
                 cls = "color-yellow";
                 break;
               case 9:
@@ -201,7 +201,7 @@ function MintList() {
           }
         },
         {
-          title: t`Create Date`,
+          title: t`Issue Date`,
           dataIndex: "create_time",
           render: (text) => utcToClient(text)
         },
@@ -230,7 +230,7 @@ function MintList() {
           }
         },
         {
-          title: t`Creator Address`,
+          title: t`Issuer Address`,
           dataIndex: "creator",
           render: (text) => {
             return text ? <EllipsisMiddle suffixCount={6}>{nip19.npubEncode(text)}</EllipsisMiddle> : text || "--";
@@ -294,7 +294,7 @@ function MintList() {
                   >{t`Completed`}</Button> */}
                   <CheckNostrButton>
                     <Button type={type == "My" ? "primary" : "default"} size="large" onClick={() => setType("My")}>
-                      {t`My Created`}
+                      {t`My Issued`}
                     </Button>
                   </CheckNostrButton>
                   <Input
@@ -321,7 +321,7 @@ function MintList() {
                   >{t`Completed`}</Button> */}
                   <CheckNostrButton>
                     <Button type={type == "My" ? "primary" : "default"} size="middle" onClick={() => setType("My")}>
-                      {t`My Created`}
+                      {t`My Issued`}
                     </Button>
                   </CheckNostrButton>
                 </>
@@ -336,7 +336,7 @@ function MintList() {
                   style={{ padding: "0 15px" }}
                   onClick={() => onHandleRedirect(`mint/create`)}
                 >
-                  {t`Create Asset`}
+                  {t`Issue Asset`}
                 </Button>
               </CheckNostrButton>
             </div>
@@ -349,7 +349,7 @@ function MintList() {
                 description={
                   <>
                     <div className="color-base f16">
-                      The Nostr account you're currently linked to hasn't created any assets yet.
+                      The Nostr account you're currently linked to hasn't issued any assets yet.
                     </div>
                     <div className="mt5 color-base f16">
                       NostrAssets facilitates the creation of Taproot assets, offering a quick and easy way to get
@@ -364,7 +364,7 @@ function MintList() {
                   size={"large"}
                   style={{ marginBottom: "30px" }}
                   onClick={() => onHandleRedirect(`mint/create`)}
-                >{t`Create Asset`}</Button>
+                >{t`Issue Asset`}</Button>
               </CheckNostrButton>
             </div>
           ) : (

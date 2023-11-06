@@ -1,5 +1,6 @@
 import { Button, Spin, Form, Input, InputNumber, Tooltip, Row, Col } from "antd";
-import { useMintAsset, useUnisatPay } from "hooks/useMintAssets";
+import { useMintAsset } from "hooks/useMintAssets";
+import { useUnisatPayfee } from "hooks/usePayfee";
 import { useQueryAssetByEventIdOrAssetName, useQueryAssetByName } from "hooks/graphQuery/useExplore";
 import PayAndMintProgress from "../comps/PayAndMintProgress";
 import SubmitModal from "../comps/SubmitModal";
@@ -11,6 +12,9 @@ import { useSelector } from "react-redux";
 import { useClient } from "urql";
 import "./index.scss";
 import ConnectWallet from "components/Common/ConnectWallet";
+import BRC20Fee from "components/BRC20Fee";
+import { ISSUE_ASSET_STATUS } from "config/constants";
+
 const GRAPH_BASE = process.env.REACT_APP_GRAPH_BASE;
 export default function MintCreate() {
   const [form] = Form.useForm();
@@ -20,8 +24,7 @@ export default function MintCreate() {
   // const [createdId, setCreatedId] = useState("85215b48fa3ca73e55f24d6ac55db97e5b25056909439bc9e31c7e0338a778d4");
   const [saveLoding, setSaveLoding] = useState(false);
   const [payBtnLoading, setPayBtnLoading] = useState(false);
-  const [assetMintProgress, setAssetMintProgress] = useState(null);
-  const [creator, setCreator] = useState(null);
+
   const {
     list,
     fetching: loadingData,
@@ -29,80 +32,102 @@ export default function MintCreate() {
   } = useQueryAssetByEventIdOrAssetName({ eventId: params?.eventId });
   const QueryGraphaql = useQueryAssetByName();
   const client = useClient();
-  const { handleUnisatPay } = useUnisatPay();
+  const { handleUnisatPay } = useUnisatPayfee();
   const { handleCreateAssetAsync, handleUpdateAssetAsync, handleCreateMintPayAsync } = useMintAsset();
   const { nostrAccount, account } = useSelector(({ user }) => user);
-  const [payTxId, setPayTxId] = useState(null);
+  const [IssueAsset, setIssueAsset] = useState(null);
+  const [fee, setFee] = useState(0);
   const memoEventId = useMemo(() => {
     const { eventId } = params;
     return eventId ? eventId : "";
   }, [params]);
+  const creator = useMemo(() => {
+    return IssueAsset?.creator;
+  }, [IssueAsset?.creator]);
+
+  const issueAssetStatus = useMemo(() => {
+    return IssueAsset?.status !== undefined ? IssueAsset.status : -1;
+  }, [IssueAsset?.status]);
   const payBtnDisable = useMemo(() => {
-    return !!payTxId || !params?.eventId || nostrAccount !== creator;
-  }, [creator, nostrAccount, params?.eventId, payTxId]);
+    return (
+      (nostrAccount !== creator && creator) || issueAssetStatus > ISSUE_ASSET_STATUS.NEW || issueAssetStatus === -1
+    );
+  }, [creator, issueAssetStatus, nostrAccount]);
   const memoSaveDisable = useMemo(() => {
-    return !!payTxId || (creator !== nostrAccount && params?.eventId);
-  }, [creator, nostrAccount, params?.eventId, payTxId]);
+    return (creator && nostrAccount !== creator) || issueAssetStatus > ISSUE_ASSET_STATUS.NEW;
+  }, [creator, issueAssetStatus, nostrAccount]);
 
   const showConnectBtn = useMemo(() => {
-    if (!params.eventId) {
-      return true;
-    } else {
-      if (payTxId) {
-        return false;
-      }
-      if (nostrAccount !== creator) {
-        return false;
-      }
+    if (nostrAccount !== creator) {
+      return false;
+    }
+    if (params?.eventId && !account && issueAssetStatus > -1) {
       return true;
     }
-  }, [creator, nostrAccount, params.eventId, payTxId]);
+    return false;
+  }, [account, creator, issueAssetStatus, nostrAccount, params?.eventId]);
 
-  const onSave = useCallback(
-    async (values) => {
-      setSaveLoding(true);
-      try {
-        const jsonStr = JSON.stringify(values);
-        const encodeAssetData = window.btoa(jsonStr);
-        if (!memoEventId) {
-          // create
-          const ret = await handleCreateAssetAsync({ encodeAssetData });
-          const { sendEvent, result } = ret;
-          if (result.code === 0) {
-            window._message.success(result.data);
-            const sendEventId = sendEvent.id;
-            history.replace(`/mint/create/${sendEventId}`);
-          } else {
-            throw new Error(result.msg);
-          }
+  const showBRC20Fee = useMemo(() => {
+    return params?.eventId && issueAssetStatus === ISSUE_ASSET_STATUS.NEW && creator === nostrAccount;
+  }, [creator, issueAssetStatus, nostrAccount, params?.eventId]);
+
+  const showClaimBtn = useMemo(() => {
+    return nostrAccount && nostrAccount === creator && issueAssetStatus === ISSUE_ASSET_STATUS.IMPORT_FINISHED;
+  }, [creator, issueAssetStatus, nostrAccount]);
+  const assetMintProgress = useMemo(() => {
+    return {
+      status: issueAssetStatus,
+      payTxHash: IssueAsset?.pay_tx_hash,
+      createTxHash: IssueAsset?.create_tx_hash
+    };
+  }, [IssueAsset?.create_tx_hash, IssueAsset?.pay_tx_hash, issueAssetStatus]);
+
+  const onSave = useCallback(async () => {
+    setSaveLoding(true);
+    try {
+      const values = form.getFieldsValue(true);
+      await form.validateFields();
+      const jsonStr = JSON.stringify(values);
+      const encodeAssetData = window.btoa(jsonStr);
+      if (!memoEventId) {
+        // create
+        const ret = await handleCreateAssetAsync({ encodeAssetData });
+        const { sendEvent, result } = ret;
+        if (result.code === 0) {
+          window._message.success(result.data);
+          const sendEventId = sendEvent.id;
+          history.replace(`/mint/create/${sendEventId}`);
         } else {
-          // update existing asset
-          const ret = await handleUpdateAssetAsync({ id: memoEventId, encodeAssetData });
-          const { result } = ret;
-          if (result.code === 0) {
-            window._message.success("Update Asset submitted successfully");
-          } else {
-            throw new Error(result.msg);
-          }
+          throw new Error(result.msg);
         }
-      } catch (err) {
-        window._message.error(err.message);
-      } finally {
-        setSaveLoding(false);
-        setCreator(nostrAccount);
+      } else {
+        // update existing asset
+        const ret = await handleUpdateAssetAsync({ id: memoEventId, encodeAssetData });
+        const { result } = ret;
+        if (result.code === 0) {
+          window._message.success("Update Asset submitted successfully");
+        } else {
+          throw new Error(result.msg);
+        }
       }
-    },
-    [memoEventId, handleCreateAssetAsync, history, handleUpdateAssetAsync, nostrAccount]
-  );
+    } catch (err) {
+      err.message && window._message.error(err.message);
+    } finally {
+      setSaveLoding(false);
+    }
+  }, [form, memoEventId, handleCreateAssetAsync, history, handleUpdateAssetAsync]);
   const onPaymentAndCreateAsset = useCallback(async () => {
     try {
       setPayBtnLoading(true);
       //await form.validateFields();
+      if (!fee) {
+        throw new Error("Fee must be provided.");
+      }
       const formData = form.getFieldsValue();
       const encodeAssetData = window.btoa(JSON.stringify(formData));
-      const txId = await handleUnisatPay(memoEventId);
+      const txId = await handleUnisatPay(memoEventId, fee);
       if (!txId) throw new Error("Pay failed.");
-      setPayTxId(txId);
+      // setPayTxId(txId);
       const ret = await handleCreateMintPayAsync({ id: memoEventId, txId, encodeAssetData });
       const { result } = ret;
       if (result.code !== 0) {
@@ -118,42 +143,34 @@ export default function MintCreate() {
       setPayBtnLoading(false);
       reexcuteQuery();
     }
-  }, [form, handleCreateMintPayAsync, handleUnisatPay, memoEventId, reexcuteQuery]);
+  }, [fee, form, handleCreateMintPayAsync, handleUnisatPay, memoEventId, reexcuteQuery]);
 
   const formReadOnly = useMemo(() => {
-    return (!!params?.eventId && nostrAccount !== creator) || !!payTxId;
-  }, [creator, nostrAccount, params?.eventId, payTxId]);
+    return (!!params?.eventId && nostrAccount !== creator) || issueAssetStatus > ISSUE_ASSET_STATUS.NEW;
+  }, [creator, issueAssetStatus, nostrAccount, params?.eventId]);
   const memoLabelServiceFee = useMemo(() => {
     return (
       <>
         <span style={{ paddingRight: "5px" }}>Service fee</span>
-        <Tooltip title="NostrAssets charges a BTC service fee for minting. Please ensure your connected wallet has enough balance.">
+        <Tooltip title="NostrAssets charges a BTC service fee for issuing assets. Please ensure your connected wallet has enough balance.">
           <QuestionCircleFilled />
         </Tooltip>
       </>
     );
   }, []);
+
   useEffect(() => {
     if (list.length > 0) {
       const assetItem = list[0];
       if (assetItem) {
-        setCreator(assetItem.creator);
-      }
-      const payTxHash = assetItem.pay_tx_hash || payTxId;
-      const detailData = JSON.parse(assetItem.data);
-      form.setFieldsValue({
-        ...detailData
-      });
-      if (payTxHash) {
-        setPayTxId(payTxHash);
-        setAssetMintProgress({
-          status: assetItem.status,
-          payTxHash: payTxHash,
-          createTxHash: assetItem.create_tx_hash
+        const detailData = JSON.parse(assetItem.data);
+        form.setFieldsValue({
+          ...detailData
         });
+        setIssueAsset(assetItem);
       }
     }
-  }, [form, list, payTxId]);
+  }, [form, list]);
 
   return (
     <>
@@ -170,9 +187,9 @@ export default function MintCreate() {
             Back
           </Button>
         </div>
-        <h3 className="nostr-assets-titleh3">Create Asset</h3>
+        <h3 className="nostr-assets-titleh3">Issue Asset</h3>
         <div className="nostr-assets-titleh3-description">
-          The Taproot assets you create will be sent directly into your NostrAssets account, granting you complete
+          The Taproot assets you issue will be sent directly into your NostrAssets account, granting you complete
           control over them. Additionally, you can launch mint activities for these assets on NostrAssets.
         </div>
 
@@ -193,7 +210,6 @@ export default function MintCreate() {
               maxWidth: "100%"
             }}
             initialValues={{ decimal: 1, displayDecimal: 1 }}
-            onFinish={onSave}
             autoComplete="off"
           >
             <h4 className="nostr-assets-form-groupInfo">Asset info</h4>
@@ -205,35 +221,34 @@ export default function MintCreate() {
                   required
                   validateTrigger="onBlur"
                   rules={[
-                    {
-                      validator(_, value) {
+                    () => ({
+                      async validator(_, value) {
                         if (value) {
                           const tableName = `${GRAPH_BASE}nostr_create_assets`;
-                          client
+                          const res = await client
                             .query(QueryGraphaql, { name: value })
                             .toPromise()
-                            .then((res) => {
-                              if (!params?.eventId) {
-                                // create
-                                if (res.data[tableName].length > 0) {
-                                  return Promise.reject(new Error("This assetName already exists"));
-                                }
-                              } else {
-                                //update
-                                const isExist = res.data[tableName]?.find(
-                                  (item) => item.name === value && item.creator !== nostrAccount
-                                );
-                                if (isExist) {
-                                  return Promise.reject(new Error("This assetName already exists"));
-                                }
-                              }
-                            });
+                            .catch(() => {});
+                          if (!params?.eventId) {
+                            // create
+                            if (res.data[tableName].length > 0) {
+                              return Promise.reject("This assetName already exists");
+                            }
+                          } else {
+                            //update
+                            const isExist = res.data[tableName]?.find(
+                              (item) => item.name === value && item.creator !== nostrAccount
+                            );
+                            if (isExist) {
+                              return Promise.reject("This assetName already exists");
+                            }
+                          }
 
                           return Promise.resolve();
                         }
-                        return Promise.reject(new Error("Please input the asset name."));
+                        return Promise.reject("Please input the asset name.");
                       }
-                    }
+                    })
                   ]}
                 >
                   <Input placeholder="Please input asset name" maxLength={20} />
@@ -373,11 +388,13 @@ export default function MintCreate() {
               </Col>
             </Row>
 
-            <Row justify="center" className="submit">
-              <Button type="primary" disabled={memoSaveDisable} size="middle" htmlType="submit" loading={saveLoding}>
-                Save
-              </Button>
-            </Row>
+            {!memoSaveDisable && (
+              <Row justify="center" className="submit">
+                <Button type="primary" size="middle" loading={saveLoding} onClick={onSave}>
+                  Save
+                </Button>
+              </Row>
+            )}
 
             <Row className="nostr-assets-form-servicefee">
               <Col span={12}>
@@ -387,9 +404,17 @@ export default function MintCreate() {
               </Col>
             </Row>
 
-            {!!payTxId && (
+            {params?.eventId && issueAssetStatus === ISSUE_ASSET_STATUS.NEW && creator === nostrAccount && (
+              <Row className="nostr-assets-form-servicefee__sat">
+                <Col span={11}>
+                  <BRC20Fee setFee={setFee} ready={true} />
+                </Col>
+              </Row>
+            )}
+
+            {issueAssetStatus > ISSUE_ASSET_STATUS.NEW && (
               <>
-                <h4 className="nostr-assets-form-groupInfo">Payment & Create Asset Progress</h4>
+                <h4 className="nostr-assets-form-groupInfo">Payment & Issue Asset Progress</h4>
                 <Row style={{ width: "100%" }}>
                   <PayAndMintProgress assetMintProgress={assetMintProgress} />
                 </Row>
@@ -398,21 +423,25 @@ export default function MintCreate() {
           </Form>
         </Spin>
         <div className="nostr-assets-mint">
-          {account ? (
-            <CheckNostrButton>
-              <Button
-                type="primary"
-                size="middle"
-                disabled={payBtnDisable}
-                onClick={onPaymentAndCreateAsset}
-                loading={payBtnLoading}
-              >
-                Cofirm Payment and Create Asset
-              </Button>
-            </CheckNostrButton>
-          ) : showConnectBtn ? (
-            <ConnectWallet tokenPlatform="BRC20" connectTip="Connect wallet to pay the service fee." />
+          {!payBtnDisable ? (
+            account ? (
+              <CheckNostrButton>
+                <Button
+                  type="primary"
+                  size="middle"
+                  disabled={payBtnDisable}
+                  onClick={onPaymentAndCreateAsset}
+                  loading={payBtnLoading}
+                >
+                  Cofirm Payment and Issue Asset
+                </Button>
+              </CheckNostrButton>
+            ) : showConnectBtn ? (
+              <ConnectWallet tokenPlatform="BRC20" connectTip="Connect wallet to pay the service fee." />
+            ) : null
           ) : null}
+
+          {showClaimBtn && <Button type="primary">Claim</Button>}
         </div>
       </div>
     </>

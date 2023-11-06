@@ -3,6 +3,7 @@ import { ethers } from "ethers";
 import { t } from "@lingui/macro";
 import dayjs from "dayjs";
 import { limitDecimals, numberWithCommas } from "lib/numbers";
+
 const { _TypedDataEncoder } = ethers.utils;
 import * as Lockr from "lockr";
 export function throttle(fn, wait) {

@@ -5,12 +5,19 @@ import { BrowserRouter as Router } from "react-router-dom";
 import App from "./App/App";
 import { ConfigProvider, theme } from "antd";
 import { Provider as ReduxProvider } from "react-redux";
-import ErrorCatch from "ErrorCatch";
+import { ErrorBoundary } from "react-error-boundary";
+import { Alert } from "antd";
 import store from "./store";
 
 import "styles/global.scss";
 const container = document.getElementById("root");
 const root = createRoot(container);
+const logError = (error, info) => {
+  console.log("🚀  logError ~ error:", error);
+};
+function Fallback({ error, resetErrorBoundary }) {
+  return <Alert message={error.message} type="error" closable onClose={resetErrorBoundary}></Alert>;
+}
 root.render(
   <ConfigProvider
     theme={{
@@ -22,9 +29,9 @@ root.render(
   >
     <ReduxProvider store={store}>
       <Router>
-        <ErrorCatch>
+        <ErrorBoundary FallbackComponent={Fallback} onError={logError}>
           <App />
-        </ErrorCatch>
+        </ErrorBoundary>
       </Router>
     </ReduxProvider>
   </ConfigProvider>

@@ -6,7 +6,9 @@ import "./Header.scss";
 import RelayList from "../RelayList";
 import logoImg from "img/logo_nostr.png";
 import OutLinks from "../OutLinks/index";
+import useDevice from "hooks/useDevice";
 export function AppHeaderLinks({ small, clickCloseIcon }) {
+  const device = useDevice();
   const stopProp = (e) => {
     e.stopPropagation();
     e.nativeEvent.stopImmediatePropagation();
@@ -60,17 +62,18 @@ export function AppHeaderLinks({ small, clickCloseIcon }) {
           </div>
         </>
       )}
-      {process.env.REACT_APP_CURRENT_ENV === "dev" && (
+      {process.env.REACT_APP_CURRENT_ENV === "dev" && !device.isMobile && (
         <div className="App-header-link-container">
-          <HeaderLink to="/mintassets">
-            <Trans>Mint Assets</Trans>
+          <HeaderLink to="/fairmint">
+            <Trans>Fair Mint</Trans>
           </HeaderLink>
         </div>
       )}
-      <div className="App-header-link-container">
-        <HeaderLink to="/claim">Airdrop</HeaderLink>
-      </div>
-
+      {process.env.REACT_APP_CURRENT_ENV !== "test" && (
+        <div className="App-header-link-container">
+          <HeaderLink to="/claim">Airdrop</HeaderLink>
+        </div>
+      )}
       {/* <div className="App-header-link-container">
         <a
           href="https://doc.nostrassets.com"

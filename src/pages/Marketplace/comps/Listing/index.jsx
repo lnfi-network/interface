@@ -1,5 +1,5 @@
 import BaseModal from "components/Common/Modal/Modal";
-import { Button, Select, message, Input, Form, Row, Radio, Modal, Tooltip } from "antd";
+import { Button, Select, message, Input, Form, Row, Radio, Modal, Tooltip, Checkbox } from "antd";
 import { useState, useCallback, useMemo, memo, useRef, useEffect } from "react";
 import classNames from "classnames";
 import "./index.scss";
@@ -27,7 +27,8 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
   const [messageApi, contextHolder] = message.useMessage();
   const [selectedToken, setSelectedToken] = useState(null);
   const { handleQueryAllowance, allowance, loading: allownceLoading } = useAllowance();
-  const { handleApproveAsync } = useApprove();
+  const { handleApproveAsync, handleApproveAsyncByCommand } = useApprove();
+
   const { handleLimitOrderAsync } = useSendListOrder();
   const { handleQueryBalance } = useQueryBalance();
   const [btnLoading, setBtnLoading] = useState(false);
@@ -35,7 +36,7 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
   const { balanceList, nostrAccount } = useSelector(({ user }) => user);
   const [priceValue, setPriceValue] = useState(0);
   const [amountValue, setAmountValue] = useState(0);
-
+  const [approveAllChecked, setApproveAllChecked] = useState(true);
   const titleOptions = useMemo(() => {
     return [
       {
@@ -48,6 +49,10 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
       }
     ];
   }, []);
+  const onApproveAllChange = (e) => {
+    // console.log('checked = ', e.target.checked);
+    setApproveAllChecked(e.target.checked);
+  };
   const getTokenBalance = useCallback(
     (tokenName) => {
       return balanceList[tokenName]?.balanceShow || 0;
@@ -275,21 +280,38 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
       await form.validateFields();
       setBtnLoading(true);
       let ret = null;
-      if (buyOrSell === "buy") {
-        ret = await handleApproveAsync(Number(memoTotalValue), QUOTE_ASSET);
-        await handleQueryAllowance(QUOTE_ASSET);
+      if (approveAllChecked) {
+        let command = "";
+        for (let key in balanceList) {
+          // console.log("balanceList", key);
+          balanceList[key]?.balanceShow;
+          if (Number(balanceList[key]?.balanceShow)) {
+            command += `approve ${balanceList[key]?.balanceShow} ${key} to ${process.env.REACT_APP_NOSTR_MARKET_SEND_TO};`;
+          }
+        }
+        ret = await handleApproveAsyncByCommand(command);
+        if (buyOrSell === "buy") {
+          handleQueryAllowance(QUOTE_ASSET);
+        } else {
+          handleQueryAllowance(selectedToken?.name);
+        }
       } else {
-        ret = await handleApproveAsync(Number(amountValue), selectedToken?.name);
-        await handleQueryAllowance(selectedToken?.name);
+        if (buyOrSell === "buy") {
+          ret = await handleApproveAsync(Number(memoTotalValue), QUOTE_ASSET);
+          await handleQueryAllowance(QUOTE_ASSET);
+        } else {
+          ret = await handleApproveAsync(Number(amountValue), selectedToken?.name);
+          await handleQueryAllowance(selectedToken?.name);
+        }
       }
 
       if (ret?.code === 0) {
         messageApi.open({
           type: "success",
-          content: ret.data
+          content: "Approve successfully"
         });
       } else {
-        throw new Error(ret.data);
+        throw new Error(ret?.data);
       }
     } catch (e) {
       e.message && messageApi.error(e.message);
@@ -297,24 +319,71 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
       setBtnLoading(false);
     }
   }, [
-    memoTotalValue,
-    selectedToken?.name,
     form,
+    approveAllChecked,
     buyOrSell,
+    balanceList,
+    handleApproveAsyncByCommand,
+    memoTotalValue,
     handleApproveAsync,
     handleQueryAllowance,
     amountValue,
+    selectedToken?.name,
     messageApi
   ]);
-  /*  const initForm = useCallback(() => {
-    form.setFieldsValue({
-      price: "",
-      amount: "",
-    });
-    setPriceValue(0);
-    setAmountValue(0);
-  }, [form]); */
-
+  const approveAll = useMemo(() => {
+    if (buyOrSell === "buy") {
+      if (
+        !allowance?.amountShow ||
+        Number(allowance?.amountShow) === 0 ||
+        Number(allowance?.amountShow) < Number(memoTotalValue)
+      ) {
+        return (
+          <div className="tc mb20">
+            <Checkbox
+              checked={approveAllChecked}
+              style={{ fontSize: "12px", verticalAlign: "text-bottom" }}
+              onChange={onApproveAllChange}
+            >
+              Approve all balance
+            </Checkbox>
+            <Tooltip
+              placement="top"
+              title="After checking to approve all current balances, if the cumulative transactions of this asset do not exceed the approved amount, you only need to sign the transaction for each transaction without repeated approve process."
+            >
+              <InfoCircleOutlined />
+            </Tooltip>
+          </div>
+        );
+      }
+    } else {
+      // const selectedTokenBalance = getTokenBalance(selectedToken?.name);
+      // console.log("allowance amountShow", Number(allowance?.amountShow), Number(amountValue));
+      if (
+        !allowance?.amountShow ||
+        Number(allowance?.amountShow) === 0 ||
+        Number(allowance?.amountShow) < Number(amountValue)
+      ) {
+        return (
+          <div className="tc mb20">
+            <Checkbox
+              checked={approveAllChecked}
+              style={{ fontSize: "12px", verticalAlign: "text-bottom" }}
+              onChange={onApproveAllChange}
+            >
+              Approve all balance
+            </Checkbox>
+            <Tooltip
+              placement="top"
+              title="After checking to approve all current balances, if the cumulative transactions of this asset do not exceed the approved amount, you only need to sign the transaction for each transaction without repeated approve process."
+            >
+              <InfoCircleOutlined />
+            </Tooltip>
+          </div>
+        );
+      }
+    }
+  }, [allowance?.amountShow, amountValue, approveAllChecked, buyOrSell, memoTotalValue]);
   const memoButton = useMemo(() => {
     if (buyOrSell === "buy") {
       // Insufficient balance
@@ -534,8 +603,8 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
                       if (Number(value) && Number(price) && Number(value) * Number(price) < 10000) {
                         return Promise.reject(new Error(`Min limit of total value is 10000 sats`));
                       }
-                      if (Number(value) && Number(price) && Number(value) * Number(price) > 30000) {
-                        return Promise.reject(new Error(`Max limit of total value is 30000 sats`));
+                      if (Number(value) && Number(price) && Number(value) * Number(price) > 60 * 10000) {
+                        return Promise.reject(new Error(`Max limit of total value is 600000 sats`));
                       }
                       return Promise.resolve();
                     }
@@ -612,6 +681,22 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
                   {balance} USDT
                 </span>
               </div>
+            </div> */}
+            {approveAll}
+            {/* <div className="tc mb20">
+              <Checkbox
+                checked={approveAllChecked}
+                style={{ fontSize: "12px", verticalAlign: "text-bottom" }}
+                onChange={onApproveAllChange}
+              >
+                Approve all balance
+              </Checkbox>
+              <Tooltip
+                placement="top"
+                title="After checking to approve all current balances, if the cumulative transactions of this asset do not exceed the approved amount, you only need to sign the transaction for each transaction without repeated approve process."
+              >
+                <InfoCircleOutlined />
+              </Tooltip>
             </div> */}
             <Row justify="center" style={{ marginTop: "10px" }}>
               {memoButton}
