@@ -4,7 +4,7 @@ import { useMemo } from "react";
 const GRAPH_BASE = process.env.REACT_APP_GRAPH_BASE || "";
 
 export const useMintActivityDetailStats = (activeId, npub_address) => {
-  console.log("activeId", activeId, npub_address);
+  // console.log("activeId", activeId, npub_address);
   const tableName = `${GRAPH_BASE}nostr_assets_activity_detail`;
   let whereMemo = useMemo(() => {
     let where = "{";
