@@ -12,7 +12,7 @@ import { limitDecimals, numberWithCommas, padDecimals } from "lib/numbers";
 import { useSelector } from "react-redux";
 import useGetNostrAccount from "hooks/useGetNostrAccount";
 import { nip19 } from "nostr-tools";
-import { useCancelOrder } from "hooks/useNostrMarket";
+import { useCancelOrder, useRepairOrder } from "hooks/useNostrMarket";
 import BigNumber from "bignumber.js";
 import { utcToClient } from "lib/dates";
 import { QUOTE_ASSET } from "config/constants";
@@ -23,20 +23,60 @@ const initQuery = {
   nostrAddress: "",
   status: ""
 };
+function RepairButton({ reexcuteQuery, row }) {
+  const [loading, setLoading] = useState(false);
+  const { handleRepairOrderAsync } = useRepairOrder();
+  const onRepairOrder = useCallback(
+    async (orderId) => {
+      setLoading(true);
+      try {
+        const ret = await handleRepairOrderAsync(orderId);
+        if (ret.code == 0) {
+          message.success(t`Submit successfully`);
+          setLoading(false);
+          reexcuteQuery();
+        } else {
+          setLoading(false);
+          message.error(ret.data || "Fail");
+        }
+      } catch (error) {
+        setLoading(false);
+      }
+    },
+    [handleRepairOrderAsync, reexcuteQuery]
+  );
+  return (
+    <Button
+      // className="repair"
+      size="small"
+      loading={loading}
+      // type="primary"
+      danger
+      onClick={() => {
+        //
+        onRepairOrder(row.id);
+      }}
+    >{t`Repair`}</Button>
+  );
+}
 function CancelButton({ reexcuteQuery, row }) {
   const [cancelLoading, setCancelLoading] = useState(false);
   const { handleCancelOrderAsync } = useCancelOrder();
   const onCancelOrder = useCallback(
     async (orderId) => {
       setCancelLoading(true);
-      const ret = await handleCancelOrderAsync(orderId);
-      if (ret.code == 0) {
-        message.success(t`Submit successfully`);
+      try {
+        const ret = await handleCancelOrderAsync(orderId);
+        if (ret.code == 0) {
+          message.success(t`Submit successfully`);
+          setCancelLoading(false);
+          reexcuteQuery();
+        } else {
+          setCancelLoading(false);
+          message.error(ret.data || "Fail");
+        }
+      } catch (error) {
         setCancelLoading(false);
-        reexcuteQuery();
-      } else {
-        setCancelLoading(false);
-        message.error(ret.data || "Fail");
       }
     },
     [handleCancelOrderAsync, reexcuteQuery]
@@ -295,6 +335,8 @@ export default function MyOrder() {
               // >{t`Cancel`}</Button>
               <CancelButton reexcuteQuery={reexcuteQuery} row={row}></CancelButton>
             );
+          } else if (["TRADE_FAIL"].includes(text)) {
+            return <RepairButton reexcuteQuery={reexcuteQuery} row={row}></RepairButton>;
           } else {
             return <span>--</span>;
           }

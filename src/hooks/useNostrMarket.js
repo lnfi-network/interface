@@ -10,7 +10,7 @@ import { useDebounceEffect } from "ahooks";
 import { getLocalRobotPrivateKey } from "lib/utils/index";
 import useWebln from "./useWebln";
 import * as Lockr from "lockr";
-import { getBalance, getAllowance } from 'service/nostrApi'
+import { getBalance, getAllowance } from "service/nostrApi";
 // import { sleep } from "lib/utils";
 
 const NOSTAR_TOKEN_SEND_TO = process.env.REACT_APP_NOSTR_TOKEN_SEND_TO;
@@ -197,20 +197,20 @@ export const useAllowance = () => {
 }; */
 export const useQueryBalance = () => {
   const dispatch = useDispatch();
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
   const handleQueryBalance = useCallback(
     async (nostrAddress = LOCAL_ROBOT_ADDR) => {
-      setLoading(true)
+      setLoading(true);
       const ret = await getBalance({
-        user: nostrAddress,
-      }).catch(e => {
-        setLoading(false)
+        user: nostrAddress
+      }).catch((e) => {
+        setLoading(false);
       });
       if (ret?.code === 0) {
         const data = ret.data;
         dispatch(setBalanceList(data));
       }
-      setLoading(false)
+      setLoading(false);
     },
     [dispatch]
   );
@@ -221,28 +221,27 @@ export const useQueryBalance = () => {
   };
 };
 export const useAllowance = () => {
-
   const [allowance, setAllowance] = useState(0);
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
   const { nostrAccount, npubNostrAccount } = useSelector(({ user }) => user);
   const handleQueryAllowanceAsync = useCallback(
     async (tokenName) => {
-      setLoading(true)
+      setLoading(true);
       if (nostrAccount && tokenName) {
         const ret = await getAllowance({
           token: tokenName,
           owner: npubNostrAccount,
           spender: NOSTR_MARKET_SEND_TO
-        }).catch(e => {
-          setLoading(false)
-          return null
+        }).catch((e) => {
+          setLoading(false);
+          return null;
         });
         if (!ret) {
           setAllowance({ amount: 0, amountShow: "0.0000" });
           return { amount: 0, amountShow: "0.0000" };
         }
         setAllowance(ret.data);
-        setLoading(false)
+        setLoading(false);
         return ret;
       }
     },
@@ -503,6 +502,24 @@ export const useCancelOrder = () => {
   );
   return {
     handleCancelOrderAsync
+  };
+};
+export const useRepairOrder = () => {
+  const { execQueryNostrAsync } = useNostrPool();
+  const handleRepairOrderAsync = useCallback(
+    async (orderId) => {
+      const queryCommand = `repair order ${orderId}`;
+      const ret = await execQueryNostrAsync({
+        queryCommand,
+        isUseLocalRobotToSend: false,
+        sendToNostrAddress: NOSTR_MARKET_SEND_TO
+      });
+      return ret?.result;
+    },
+    [execQueryNostrAsync]
+  );
+  return {
+    handleRepairOrderAsync
   };
 };
 

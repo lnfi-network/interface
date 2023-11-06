@@ -147,6 +147,17 @@
       opacity: 0.9;
     }
   }
+  .repair {
+    padding: 0;
+    color: #f1991b;
+    font-size: 12px;
+  }
+  .repair:not(:disabled) {
+    &:hover {
+      color: #f1991b;
+      opacity: 0.9;
+    }
+  }
   .marketplace-markets {
     display: flex;
     padding: 20px 0;
