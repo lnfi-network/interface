@@ -19,6 +19,8 @@ import BigNumber from "bignumber.js";
 const NOSTR_MINT_SEND_TO = process.env.REACT_APP_NOSTR_MINT_SEND_TO;
 // const serviceFee = MINT_SERVICE_FEE;
 export default function MintCreate() {
+  const { nostrAccount, account, balanceList } = useSelector(({ user }) => user);
+  const { tokenList } = useSelector(({ market }) => market);
   const [form] = Form.useForm();
   const params = useParams();
   const history = useHistory();
@@ -68,8 +70,11 @@ export default function MintCreate() {
     setSingleMint(0);
     setAddressMints(0);
   }, [form]);
-  const { nostrAccount, account, balanceList } = useSelector(({ user }) => user);
-  const { tokenList } = useSelector(({ market }) => market);
+  useEffect(() => {
+    form.resetFields();
+    reset()
+  }, [form, nostrAccount, reset])
+ 
   const qutoAsset = useMemo(() => {
     return tokenList.find((tokenItem) => tokenItem?.name === QUOTE_ASSET);
   }, [tokenList]);
@@ -202,6 +207,9 @@ export default function MintCreate() {
   // useEffect(() => {}, [amount, form, numberMint, selectToken?.reserve, totalSupply]);
   const handleSingleMint = useCallback((amount, numberMint) => {
     if (Number(amount) && Number(numberMint)) {
+      if(Number(amount) < Number(numberMint)) {
+        return
+      }
       if (numberMint <= 5000) {
         const reserve = selectToken?.reserve || 0;
         const single = limitDecimals(amount / numberMint, reserve, "floor");
@@ -486,6 +494,9 @@ export default function MintCreate() {
                     if (value / totalSupply < 0.05 || !value) {
                       return Promise.reject(new Error(t`Maximum Mint Amount should at least 5% of total supply.`));
                     }
+                    if (Number(value) && Number(amount) > totalSupply) {
+                      return Promise.reject(new Error(`Maximum Mint Amount can’t exceed Total Supply.`));
+                    }
                     return Promise.resolve();
                   } else {
                     if (Number(value) == 0) {
@@ -525,10 +536,14 @@ export default function MintCreate() {
                     if (Number(value) < 10 || Number(value) > 5000) {
                       return Promise.reject(new Error(t`Shares should be 10~5000.`));
                     }
+                    
                     const amount = form.getFieldValue("amount");
-                    if (Number(value) && Number(amount) && !Number.isInteger(Number(amount) / Number(value))) {
-                      return Promise.reject(new Error(`Asset Amount per share must be an integer`));
+                    if (Number(value) && Number(amount) && Number(amount) < Number(value)) {
+                      return Promise.reject(new Error(`Shares can’t exceed Maximum Mint Amount.`));
                     }
+                    // if (Number(value) && Number(amount) && !Number.isInteger(Number(amount) / Number(value))) {
+                    //   return Promise.reject(new Error(`Asset Amount per share must be an integer`));
+                    // }
                     return Promise.resolve();
                   }
                   return Promise.resolve();
