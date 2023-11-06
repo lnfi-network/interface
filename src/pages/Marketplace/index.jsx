@@ -132,7 +132,7 @@ export default function Marketplace() {
               </div>
             )}
 
-            <div className="marketplace-listing-btn">
+            <div className={process.env.REACT_APP_CURRENT_ENV !== "prod" ? "marketplace-listing-btn" : "marketplace-listing-btn dev"}>
               <CheckNostrButton>
                 <Button className="buy-list-btn" type="primary" onClick={handleList}>
                   {t`Make New Listing`}

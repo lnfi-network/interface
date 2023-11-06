@@ -89,6 +89,11 @@
         }
       }
     }
+    .marketplace-listing-btn.dev{
+      // top: 18px;
+      right: 0;
+      left: auto;
+    }
     // -webkit-backdrop-filter: blur(4px);
     // backdrop-filter: blur(4px);
     // background-color: var(--color-layer-base);
@@ -472,6 +477,7 @@
           padding: 2px 10px;
         }
       }
+      
       // -webkit-backdrop-filter: blur(4px);
       // backdrop-filter: blur(4px);
       // background-color: var(--color-layer-base);
