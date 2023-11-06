@@ -472,7 +472,8 @@ export default function MyOrder() {
           <div className="my-order-section">
             <div className="key title">{item?.token}</div>
             <div className="value time">
-              {item.create_time ? dayjs(item.create_time).format("YYYY-MM-DD HH:mm:ss") : "--"}
+              {/* {item.create_time ? dayjs(item.create_time).format("YYYY-MM-DD HH:mm:ss") : "--"} */}
+              {utcToClient(item.create_time)}
             </div>
           </div>
           <div className="my-order-section">
