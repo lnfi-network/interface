@@ -283,7 +283,7 @@ function MintList() {
           }
         },
         {
-          title: t`Create Date`,
+          title: t`Issue Date`,
           dataIndex: "create_time",
           render: (text) => utcToClient(text)
         },
@@ -459,7 +459,7 @@ function MintList() {
                     </div>
                     <div className="mt5 color-base f16">
                       NostrAssets facilitates the lanuchpad of Taproot assets, offering a quick and easy way to get
-                      started. You can create or import a Taproot Asset to lanuch a Fair Mint Activity.
+                      started. You can issue or import a Taproot Asset to lanuch a Fair Mint Activity.
                     </div>
                   </>
                 }
@@ -470,7 +470,7 @@ function MintList() {
                   size={"large"}
                   style={{ marginBottom: "30px" }}
                   onClick={() => onHandleRedirect(`mint/create`)}
-                >{t`Create Asset`}</Button>
+                >{t`Issue Asset`}</Button>
               </CheckNostrButton> */}
             </div>
           ) : (

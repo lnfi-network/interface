@@ -134,7 +134,7 @@ export default function MintCreate() {
     return (
       <>
         <span style={{ paddingRight: "5px" }}>Service fee</span>
-        <Tooltip title="NostrAssets charges a BTC service fee for minting. Please ensure your connected wallet has enough balance.">
+        <Tooltip title="NostrAssets charges a BTC service fee for issuing assets. Please ensure your connected wallet has enough balance.">
           <QuestionCircleFilled />
         </Tooltip>
       </>
@@ -177,9 +177,9 @@ export default function MintCreate() {
             Back
           </Button>
         </div>
-        <h3 className="nostr-assets-titleh3">Create Asset</h3>
+        <h3 className="nostr-assets-titleh3">Issue Asset</h3>
         <div className="nostr-assets-titleh3-description">
-          The Taproot assets you create will be sent directly into your NostrAssets account, granting you complete
+          The Taproot assets you issue will be sent directly into your NostrAssets account, granting you complete
           control over them. Additionally, you can launch mint activities for these assets on NostrAssets.
         </div>
 
@@ -400,7 +400,7 @@ export default function MintCreate() {
 
             {!!payTxId && (
               <>
-                <h4 className="nostr-assets-form-groupInfo">Payment & Create Asset Progress</h4>
+                <h4 className="nostr-assets-form-groupInfo">Payment & Issue Asset Progress</h4>
                 <Row style={{ width: "100%" }}>
                   <PayAndMintProgress assetMintProgress={assetMintProgress} />
                 </Row>
@@ -418,7 +418,7 @@ export default function MintCreate() {
                 onClick={onPaymentAndCreateAsset}
                 loading={payBtnLoading}
               >
-                Cofirm Payment and Create Asset
+                Cofirm Payment and Issue Asset
               </Button>
             </CheckNostrButton>
           ) : showConnectBtn ? (

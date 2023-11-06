@@ -98,7 +98,7 @@ function MintList() {
           }
         },
         {
-          title: t`Create Date`,
+          title: t`Issue Date`,
           dataIndex: "create_time",
           render: (text) => utcToClient(text)
         },
@@ -201,7 +201,7 @@ function MintList() {
           }
         },
         {
-          title: t`Create Date`,
+          title: t`Issue Date`,
           dataIndex: "create_time",
           render: (text) => utcToClient(text)
         },
@@ -336,7 +336,7 @@ function MintList() {
                   style={{ padding: "0 15px" }}
                   onClick={() => onHandleRedirect(`mint/create`)}
                 >
-                  {t`Create Asset`}
+                  {t`Issue Asset`}
                 </Button>
               </CheckNostrButton>
             </div>
@@ -364,7 +364,7 @@ function MintList() {
                   size={"large"}
                   style={{ marginBottom: "30px" }}
                   onClick={() => onHandleRedirect(`mint/create`)}
-                >{t`Create Asset`}</Button>
+                >{t`Issue Asset`}</Button>
               </CheckNostrButton>
             </div>
           ) : (
