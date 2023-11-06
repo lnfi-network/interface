@@ -13,7 +13,8 @@
   </a>
   
 </p>
-#NostrAssets
+
+## NostrAssets
 
 [Nostr Assets Protocol](https://doc.nostrassets.com) is an open-source protocol that introduces Taproot assets and Satoshis into the Nostr ecosystem.
 Once the assets are introduced, users can send and receive them at the Nostr Protocol layer using Nostr’s public and private keys.
