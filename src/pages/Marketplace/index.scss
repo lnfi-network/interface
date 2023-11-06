@@ -147,17 +147,6 @@
       opacity: 0.9;
     }
   }
-  .repair {
-    padding: 0;
-    color: #f1991b;
-    font-size: 12px;
-  }
-  .repair:not(:disabled) {
-    &:hover {
-      color: #f1991b;
-      opacity: 0.9;
-    }
-  }
   .marketplace-markets {
     display: flex;
     padding: 20px 0;
@@ -424,6 +413,20 @@
   }
 }
 @media screen and (max-width: 768px) {
+  .cancel {
+    margin: 5px 0;
+    width: 100%;
+  }
+  .cancel:not(:disabled) {
+    &:hover {
+      color: #00ffff;
+      opacity: 0.9;
+    }
+  }
+  .repair{
+    margin: 5px 0;
+    width: 100%;
+  }
   .marketplace-listing {
     .trade-list {
       margin-top: 10px;
@@ -453,8 +456,13 @@
       // top: 62px;
       // z-index: 100;
       // background:var(--color-layer-base) !important;
+      .marketplace-sub-menu-abs{
+        display: none;
+      }
       .marketplace-listing-btn {
         top: 8px;
+        left: auto;
+        right: 0;
         .buy-list-btn {
           font-size: 10px;
           padding: 2px 10px;

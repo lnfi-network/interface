@@ -17,6 +17,7 @@ import BigNumber from "bignumber.js";
 import { utcToClient } from "lib/dates";
 import { QUOTE_ASSET } from "config/constants";
 import { convertDollars, statusMap } from "lib/utils/index";
+import useDevice from "hooks/useDevice";
 const initQuery = {
   type: "",
   token: "",
@@ -47,7 +48,7 @@ function RepairButton({ reexcuteQuery, row }) {
   );
   return (
     <Button
-      // className="repair"
+      className="repair"
       size="small"
       loading={loading}
       // type="primary"
@@ -60,6 +61,7 @@ function RepairButton({ reexcuteQuery, row }) {
   );
 }
 function CancelButton({ reexcuteQuery, row }) {
+  const device = useDevice();
   const [cancelLoading, setCancelLoading] = useState(false);
   const { handleCancelOrderAsync } = useCancelOrder();
   const onCancelOrder = useCallback(
@@ -81,11 +83,22 @@ function CancelButton({ reexcuteQuery, row }) {
     },
     [handleCancelOrderAsync, reexcuteQuery]
   );
-  return (
+  return device.isMobile ? (
+    <Button
+      className="cancel btn-grey"
+      loading={cancelLoading}
+      type={"default"}
+      size="small"
+      onClick={() => {
+        //
+        onCancelOrder(row.id);
+      }}
+    >{t`Cancel`}</Button>
+  ) : (
     <Button
       className="cancel"
       loading={cancelLoading}
-      type="link"
+      type={"text"}
       onClick={() => {
         //
         onCancelOrder(row.id);
@@ -94,13 +107,13 @@ function CancelButton({ reexcuteQuery, row }) {
   );
 }
 export default function MyOrder() {
+  const device = useDevice();
   const [currentRow, setCurrentRow] = useState(null);
   const [openDrawer, setOpenDrawer] = useState(false);
   const [type, setType] = useState("");
   const [token, setToken] = useState("");
   const [status, setStatus] = useState("");
   const [cancelLoading, setCancelLoading] = useState(false);
-  const [width, setWidth] = useState(document.body.clientWidth);
   const [filter, setFilter] = useState({ ...initQuery });
   const [form] = Form.useForm();
   const [pageSize, setPageSize] = useState(100);
@@ -175,9 +188,6 @@ export default function MyOrder() {
       }
     ];
   }, []);
-  const handleResize = useCallback(() => {
-    setWidth(document.body.clientWidth);
-  }, []);
   const onCancelOrder = useCallback(
     async (orderId) => {
       setCancelLoading(true);
@@ -193,12 +203,6 @@ export default function MyOrder() {
     },
     [handleCancelOrderAsync, reexcuteQuery]
   );
-  useEffect(() => {
-    window.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, [handleResize]);
   const columns = useMemo(() => {
     return [
       {
@@ -424,7 +428,7 @@ export default function MyOrder() {
         </Form.Item> */}
       </Form>
     );
-    if (width > 768) {
+    if (!device.isMobile) {
       return _form;
     } else {
       return (
@@ -435,7 +439,17 @@ export default function MyOrder() {
         </Collapse>
       );
     }
-  }, [form, memoTokenList, onFinish, statusChange, statusOptions, tokenChange, typeChange, typeOptions, width]);
+  }, [
+    device.isMobile,
+    form,
+    memoTokenList,
+    onFinish,
+    statusChange,
+    statusOptions,
+    tokenChange,
+    typeChange,
+    typeOptions
+  ]);
   const listMemo = useMemo(() => {
     return list.map((item) => {
       const typeOpt = typeOptions.find((k) => k.value == item.type);
@@ -517,28 +531,25 @@ export default function MyOrder() {
               <EllipsisMiddle suffixCount={6}>{item?.owner}</EllipsisMiddle>
             </div>
           </div>
-          {["INIT", "PUSH_MARKET_SUCCESS", "PUSH_MARKET_FAIL", "TAKE_LOCK", "PART_SUCCESS"].includes(item.status) && (
+          {["INIT", "PUSH_MARKET_SUCCESS", "PUSH_MARKET_FAIL", "PART_SUCCESS"].includes(item.status) && (
             <div>
-              <Button
-                className="btn-grey btn-Cancel"
-                onClick={() => {
-                  //
-                  onCancelOrder(item.id);
-                }}
-              >
-                Cancel
-              </Button>
+              <CancelButton reexcuteQuery={reexcuteQuery} row={item}></CancelButton>
+            </div>
+          )}
+          {["TRADE_FAIL"].includes(item.status) && (
+            <div>
+              <RepairButton reexcuteQuery={reexcuteQuery} row={item}></RepairButton>
             </div>
           )}
         </div>
       );
     });
-  }, [list, onCancelOrder, tokenList, typeOptions]);
+  }, [list, reexcuteQuery, tokenList, typeOptions]);
   return (
     <>
       <div className="marketplace-orderHistory">
         <div className="marketplace-filters">{filters}</div>
-        {width > 768 ? (
+        {!device.isMobile ? (
           <Table
             className="table-light explore-table"
             loading={fetching}
