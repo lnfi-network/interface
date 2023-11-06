@@ -125,7 +125,13 @@ export default function Marketplace() {
               items={items}
               className="marketplace-menu"
             />
-            <div className="marketplace-sub-menu-abs" onClick={() => historyTo()}><span className="marketplace-sub-menu-abs-markets">{t`Markets`}</span><BarChartOutlined className="marketplace-sub-menu-abs-icon" color="#06F4DB" /></div>
+            {process.env.REACT_APP_CURRENT_ENV !== "prod" && (
+              <div className="marketplace-sub-menu-abs" onClick={() => historyTo()}>
+                <span className="marketplace-sub-menu-abs-markets">{t`Markets`}</span>
+                <BarChartOutlined className="marketplace-sub-menu-abs-icon" color="#06F4DB" />
+              </div>
+            )}
+
             <div className="marketplace-listing-btn">
               <CheckNostrButton>
                 <Button className="buy-list-btn" type="primary" onClick={handleList}>
