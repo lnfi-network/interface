@@ -184,6 +184,59 @@ function MarketModalForm({ setIsMarketModalForm, isMarketModalForm, reexcuteQuer
     amountValue,
     data.token
   ]);
+  const approveAll = useMemo(() => {
+    if (isBuy) {
+      if (
+        !allowance?.amountShow ||
+        Number(allowance?.amountShow) === 0 ||
+        Number(allowance?.amountShow) < Number(totalValue)
+      ) {
+        return (
+          <div className="tc mb20">
+            <Checkbox
+              checked={approveAllChecked}
+              style={{ fontSize: "12px", verticalAlign: "text-bottom" }}
+              onChange={onApproveAllChange}
+            >
+              Approve all balance
+            </Checkbox>
+            <Tooltip
+              placement="top"
+              title="After checking to approve all current balances, if the cumulative transactions of this asset do not exceed the approved amount, you only need to sign the transaction for each transaction without repeated approve process."
+            >
+              <InfoCircleOutlined />
+            </Tooltip>
+          </div>
+        );
+      }
+    } else {
+      // const selectedTokenBalance = getTokenBalance(selectedToken?.name);
+      // console.log("allowance amountShow", Number(allowance?.amountShow), Number(amountValue));
+      if (
+        !allowance?.amountShow ||
+        Number(allowance?.amountShow) === 0 ||
+        Number(allowance?.amountShow) < Number(amountValue)
+      ) {
+        return (
+          <div className="tc mb20">
+            <Checkbox
+              checked={approveAllChecked}
+              style={{ fontSize: "12px", verticalAlign: "text-bottom" }}
+              onChange={onApproveAllChange}
+            >
+              Approve all balance
+            </Checkbox>
+            <Tooltip
+              placement="top"
+              title="After checking to approve all current balances, if the cumulative transactions of this asset do not exceed the approved amount, you only need to sign the transaction for each transaction without repeated approve process."
+            >
+              <InfoCircleOutlined />
+            </Tooltip>
+          </div>
+        );
+      }
+    }
+  }, [allowance?.amountShow, amountValue, approveAllChecked, isBuy, totalValue]);
   const memoButton = useMemo(() => {
     if (isBuy) {
       if (!Number(balance) || Number(balance) === 0 || totalValue > Number(balance)) {
@@ -355,7 +408,8 @@ function MarketModalForm({ setIsMarketModalForm, isMarketModalForm, reexcuteQuer
               ? `${getTokenBalance(QUOTE_ASSET) || 0} ${QUOTE_ASSET}`
               : `${getTokenBalance(data.token) || 0} ${data.token}`}
           </div>
-          <div className="tc mb20">
+          {approveAll}
+          {/* <div className="tc mb20">
             <Checkbox
               checked={approveAllChecked}
               style={{ fontSize: "12px", verticalAlign: "text-bottom" }}
@@ -369,7 +423,7 @@ function MarketModalForm({ setIsMarketModalForm, isMarketModalForm, reexcuteQuer
             >
               <InfoCircleOutlined />
             </Tooltip>
-          </div>
+          </div> */}
           <div className="market-buy-submit">{memoButton}</div>
         </div>
       </Modal>

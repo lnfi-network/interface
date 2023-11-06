@@ -35,7 +35,7 @@ function RepairButton({ reexcuteQuery, row }) {
         if (ret.code == 0) {
           message.success(t`Submit successfully`);
           setLoading(false);
-          reexcuteQuery();
+          reexcuteQuery && reexcuteQuery();
         } else {
           setLoading(false);
           message.error(ret.data || "Fail");
@@ -72,7 +72,7 @@ function CancelButton({ reexcuteQuery, row }) {
         if (ret.code == 0) {
           message.success(t`Submit successfully`);
           setCancelLoading(false);
-          reexcuteQuery();
+          reexcuteQuery && reexcuteQuery();
         } else {
           setCancelLoading(false);
           message.error(ret.data || "Fail");

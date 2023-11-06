@@ -331,59 +331,59 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
     selectedToken?.name,
     messageApi
   ]);
-  // const approveAll = useMemo(() => {
-  //   if (buyOrSell === "buy") {
-  //     if (
-  //       (allowance?.amountShow && Number(balance) > 0 && Number(allowance?.amountShow) < Number(memoTotalValue)) ||
-  //       Number(allowance?.amountShow) === 0 ||
-  //       !allowance?.amountShow
-  //     ) {
-  //       return (
-  //         <div className="tc mb20">
-  //           <Checkbox
-  //             checked={approveAllChecked}
-  //             style={{ fontSize: "12px", verticalAlign: "text-bottom" }}
-  //             onChange={onApproveAllChange}
-  //           >
-  //             Approve all balance
-  //           </Checkbox>
-  //           <Tooltip
-  //             placement="top"
-  //             title="After checking to approve all current balances, if the cumulative transactions of this asset do not exceed the approved amount, you only need to sign the transaction for each transaction without repeated approve process."
-  //           >
-  //             <InfoCircleOutlined />
-  //           </Tooltip>
-  //         </div>
-  //       );
-  //     }
-  //   } else {
-  //     const selectedTokenBalance = getTokenBalance(selectedToken?.name);
-  //     // console.log("allowance amountShow", Number(allowance?.amountShow), Number(amountValue));
-  //     if (
-  //       (allowance?.amountShow && Number(balance) > 0 && Number(allowance?.amountShow) < Number(amountValue)) ||
-  //       Number(allowance?.amountShow) === 0 ||
-  //       !allowance?.amountShow
-  //     ) {
-  //       return (
-  //         <div className="tc mb20">
-  //           <Checkbox
-  //             checked={approveAllChecked}
-  //             style={{ fontSize: "12px", verticalAlign: "text-bottom" }}
-  //             onChange={onApproveAllChange}
-  //           >
-  //             Approve all balance
-  //           </Checkbox>
-  //           <Tooltip
-  //             placement="top"
-  //             title="After checking to approve all current balances, if the cumulative transactions of this asset do not exceed the approved amount, you only need to sign the transaction for each transaction without repeated approve process."
-  //           >
-  //             <InfoCircleOutlined />
-  //           </Tooltip>
-  //         </div>
-  //       );
-  //     }
-  //   }
-  // }, [allowance?.amountShow, amountValue, approveAllChecked, balance, buyOrSell, getTokenBalance, memoTotalValue, selectedToken?.name]);
+  const approveAll = useMemo(() => {
+    if (buyOrSell === "buy") {
+      if (
+        !allowance?.amountShow ||
+        Number(allowance?.amountShow) === 0 ||
+        Number(allowance?.amountShow) < Number(memoTotalValue)
+      ) {
+        return (
+          <div className="tc mb20">
+            <Checkbox
+              checked={approveAllChecked}
+              style={{ fontSize: "12px", verticalAlign: "text-bottom" }}
+              onChange={onApproveAllChange}
+            >
+              Approve all balance
+            </Checkbox>
+            <Tooltip
+              placement="top"
+              title="After checking to approve all current balances, if the cumulative transactions of this asset do not exceed the approved amount, you only need to sign the transaction for each transaction without repeated approve process."
+            >
+              <InfoCircleOutlined />
+            </Tooltip>
+          </div>
+        );
+      }
+    } else {
+      // const selectedTokenBalance = getTokenBalance(selectedToken?.name);
+      // console.log("allowance amountShow", Number(allowance?.amountShow), Number(amountValue));
+      if (
+        !allowance?.amountShow ||
+        Number(allowance?.amountShow) === 0 ||
+        Number(allowance?.amountShow) < Number(amountValue)
+      ) {
+        return (
+          <div className="tc mb20">
+            <Checkbox
+              checked={approveAllChecked}
+              style={{ fontSize: "12px", verticalAlign: "text-bottom" }}
+              onChange={onApproveAllChange}
+            >
+              Approve all balance
+            </Checkbox>
+            <Tooltip
+              placement="top"
+              title="After checking to approve all current balances, if the cumulative transactions of this asset do not exceed the approved amount, you only need to sign the transaction for each transaction without repeated approve process."
+            >
+              <InfoCircleOutlined />
+            </Tooltip>
+          </div>
+        );
+      }
+    }
+  }, [allowance?.amountShow, amountValue, approveAllChecked, buyOrSell, memoTotalValue]);
   const memoButton = useMemo(() => {
     if (buyOrSell === "buy") {
       // Insufficient balance
@@ -682,8 +682,8 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
                 </span>
               </div>
             </div> */}
-            {/* {approveAll} */}
-            <div className="tc mb20">
+            {approveAll}
+            {/* <div className="tc mb20">
               <Checkbox
                 checked={approveAllChecked}
                 style={{ fontSize: "12px", verticalAlign: "text-bottom" }}
@@ -697,7 +697,7 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
               >
                 <InfoCircleOutlined />
               </Tooltip>
-            </div>
+            </div> */}
             <Row justify="center" style={{ marginTop: "10px" }}>
               {memoButton}
             </Row>
