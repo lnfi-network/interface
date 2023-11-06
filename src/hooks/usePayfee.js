@@ -52,7 +52,7 @@ export const useUnisatPayfee = () => {
     });
 
     if (balance?.confirmed === 0) {
-      throw new Error("Insufficient Balance1.")
+      throw new Error("Insufficient Balance.")
     }
     const willBuildParam = needEncode ? sha256(buildParam) : buildParam
 
