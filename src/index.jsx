@@ -14,11 +14,8 @@ const container = document.getElementById("root");
 const root = createRoot(container);
 const logError = (error, info) => {
   console.log("🚀  logError ~ error:", error);
-  // Do something with the error, e.g. log to an external API
 };
 function Fallback({ error, resetErrorBoundary }) {
-  // Call resetErrorBoundary() to reset the error boundary and retry the render.
-
   return <Alert message={error.message} type="error" closable onClose={resetErrorBoundary}></Alert>;
 }
 root.render(

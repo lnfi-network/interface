@@ -59,7 +59,6 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
     },
     [balanceList]
   );
-  console.log("balanceList", balanceList);
   const qutoAssetVolume = useMemo(() => {
     return tokenList.find((tokenItem) => tokenItem?.name === QUOTE_ASSET)?.volume || 10;
   }, [tokenList]);
@@ -604,8 +603,8 @@ function ListingModalForm({ reexcuteQuery, isListFormShow, setIsListFormShow, to
                       if (Number(value) && Number(price) && Number(value) * Number(price) < 10000) {
                         return Promise.reject(new Error(`Min limit of total value is 10000 sats`));
                       }
-                      if (Number(value) && Number(price) && Number(value) * Number(price) > 30000) {
-                        return Promise.reject(new Error(`Max limit of total value is 30000 sats`));
+                      if (Number(value) && Number(price) && Number(value) * Number(price) > 60 * 10000) {
+                        return Promise.reject(new Error(`Max limit of total value is 600000 sats`));
                       }
                       return Promise.resolve();
                     }
