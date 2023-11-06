@@ -1,6 +1,7 @@
 import EllipsisMiddle from "components/EllipsisMiddle";
 import classNames from "classnames";
 import { useMemo } from "react";
+import { ISSUE_ASSET_STATUS, ISSUE_ASSET_STATUS_DESCRIPTION } from "config/constants";
 import "./index.scss";
 export default function PayAndMintProgress({ assetMintProgress }) {
   const status = assetMintProgress?.status;
@@ -12,7 +13,9 @@ export default function PayAndMintProgress({ assetMintProgress }) {
           <span
             className={classNames("nostr-assets-card-item__value", { handing: status === 0, finished: status > 0 })}
           >
-            {assetMintProgress?.status === 0 ? "Waiting for payment verification" : "Payment Received"}
+            {status < ISSUE_ASSET_STATUS.BROADCASTING
+              ? ISSUE_ASSET_STATUS_DESCRIPTION[assetMintProgress?.status]
+              : ISSUE_ASSET_STATUS_DESCRIPTION[ISSUE_ASSET_STATUS.PENDING_BROADCAST]}
           </span>
         </div>
         <div className="nostr-assets-card-item">
@@ -40,11 +43,10 @@ export default function PayAndMintProgress({ assetMintProgress }) {
             })}
           >
             {useMemo(() => {
-              if (status === 2) {
-                return "In progress. Issuing...";
-              } else if (status === 9) {
-                return "Issue Asset Successful!";
-              } else if (status === 99) {
+              if (status < ISSUE_ASSET_STATUS.FAILED && status > ISSUE_ASSET_STATUS.PENDING_BROADCAST) {
+                return ISSUE_ASSET_STATUS_DESCRIPTION[status];
+              }
+              if (status === ISSUE_ASSET_STATUS.FAILED) {
                 return "Issue Asset Failed!";
               } else {
                 return "Not started. Pending verification";

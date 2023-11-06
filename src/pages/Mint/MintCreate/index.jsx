@@ -14,7 +14,7 @@ import "./index.scss";
 import ConnectWallet from "components/Common/ConnectWallet";
 import BRC20Fee from "components/BRC20Fee";
 import { ISSUE_ASSET_STATUS } from "config/constants";
-import { sleep } from "lib/utils";
+
 const GRAPH_BASE = process.env.REACT_APP_GRAPH_BASE;
 export default function MintCreate() {
   const [form] = Form.useForm();
@@ -50,13 +50,11 @@ export default function MintCreate() {
   }, [IssueAsset?.status]);
   const payBtnDisable = useMemo(() => {
     return (
-      (nostrAccount !== creator && creator) ||
-      issueAssetStatus > ISSUE_ASSET_STATUS.NEW.value ||
-      issueAssetStatus === -1
+      (nostrAccount !== creator && creator) || issueAssetStatus > ISSUE_ASSET_STATUS.NEW || issueAssetStatus === -1
     );
   }, [creator, issueAssetStatus, nostrAccount]);
   const memoSaveDisable = useMemo(() => {
-    return (creator && nostrAccount !== creator) || issueAssetStatus > ISSUE_ASSET_STATUS.NEW.value;
+    return (creator && nostrAccount !== creator) || issueAssetStatus > ISSUE_ASSET_STATUS.NEW;
   }, [creator, issueAssetStatus, nostrAccount]);
 
   const showConnectBtn = useMemo(() => {
@@ -70,8 +68,12 @@ export default function MintCreate() {
   }, [account, creator, issueAssetStatus, nostrAccount, params?.eventId]);
 
   const showBRC20Fee = useMemo(() => {
-    return params?.eventId && issueAssetStatus === ISSUE_ASSET_STATUS.NEW.value && creator === nostrAccount;
+    return params?.eventId && issueAssetStatus === ISSUE_ASSET_STATUS.NEW && creator === nostrAccount;
   }, [creator, issueAssetStatus, nostrAccount, params?.eventId]);
+
+  const showClaimBtn = useMemo(() => {
+    return nostrAccount && nostrAccount === creator && issueAssetStatus === ISSUE_ASSET_STATUS.IMPORT_FINISHED;
+  }, [creator, issueAssetStatus, nostrAccount]);
   const assetMintProgress = useMemo(() => {
     return {
       status: issueAssetStatus,
@@ -144,7 +146,7 @@ export default function MintCreate() {
   }, [fee, form, handleCreateMintPayAsync, handleUnisatPay, memoEventId, reexcuteQuery]);
 
   const formReadOnly = useMemo(() => {
-    return (!!params?.eventId && nostrAccount !== creator) || issueAssetStatus > ISSUE_ASSET_STATUS.NEW.value;
+    return (!!params?.eventId && nostrAccount !== creator) || issueAssetStatus > ISSUE_ASSET_STATUS.NEW;
   }, [creator, issueAssetStatus, nostrAccount, params?.eventId]);
   const memoLabelServiceFee = useMemo(() => {
     return (
@@ -156,6 +158,7 @@ export default function MintCreate() {
       </>
     );
   }, []);
+
   useEffect(() => {
     if (list.length > 0) {
       const assetItem = list[0];
@@ -385,11 +388,13 @@ export default function MintCreate() {
               </Col>
             </Row>
 
-            <Row justify="center" className="submit">
-              <Button type="primary" disabled={memoSaveDisable} size="middle" loading={saveLoding} onClick={onSave}>
-                Save
-              </Button>
-            </Row>
+            {!memoSaveDisable && (
+              <Row justify="center" className="submit">
+                <Button type="primary" size="middle" loading={saveLoding} onClick={onSave}>
+                  Save
+                </Button>
+              </Row>
+            )}
 
             <Row className="nostr-assets-form-servicefee">
               <Col span={12}>
@@ -399,7 +404,7 @@ export default function MintCreate() {
               </Col>
             </Row>
 
-            {params?.eventId && issueAssetStatus === ISSUE_ASSET_STATUS.NEW.value && creator === nostrAccount && (
+            {params?.eventId && issueAssetStatus === ISSUE_ASSET_STATUS.NEW && creator === nostrAccount && (
               <Row className="nostr-assets-form-servicefee__sat">
                 <Col span={11}>
                   <BRC20Fee setFee={setFee} ready={true} />
@@ -407,7 +412,7 @@ export default function MintCreate() {
               </Row>
             )}
 
-            {issueAssetStatus > ISSUE_ASSET_STATUS.NEW.value && (
+            {issueAssetStatus > ISSUE_ASSET_STATUS.NEW && (
               <>
                 <h4 className="nostr-assets-form-groupInfo">Payment & Issue Asset Progress</h4>
                 <Row style={{ width: "100%" }}>
@@ -418,21 +423,25 @@ export default function MintCreate() {
           </Form>
         </Spin>
         <div className="nostr-assets-mint">
-          {account ? (
-            <CheckNostrButton>
-              <Button
-                type="primary"
-                size="middle"
-                disabled={payBtnDisable}
-                onClick={onPaymentAndCreateAsset}
-                loading={payBtnLoading}
-              >
-                Cofirm Payment and Issue Asset
-              </Button>
-            </CheckNostrButton>
-          ) : showConnectBtn ? (
-            <ConnectWallet tokenPlatform="BRC20" connectTip="Connect wallet to pay the service fee." />
+          {!payBtnDisable ? (
+            account ? (
+              <CheckNostrButton>
+                <Button
+                  type="primary"
+                  size="middle"
+                  disabled={payBtnDisable}
+                  onClick={onPaymentAndCreateAsset}
+                  loading={payBtnLoading}
+                >
+                  Cofirm Payment and Issue Asset
+                </Button>
+              </CheckNostrButton>
+            ) : showConnectBtn ? (
+              <ConnectWallet tokenPlatform="BRC20" connectTip="Connect wallet to pay the service fee." />
+            ) : null
           ) : null}
+
+          {showClaimBtn && <Button type="primary">Claim</Button>}
         </div>
       </div>
     </>

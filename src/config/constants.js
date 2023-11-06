@@ -44,15 +44,26 @@ ImportFinished(6), 导入资产成功，等待用户claim资产
 SUCCESS(9),成功结束
 FAILED(99);失败结束 */
 export const ISSUE_ASSET_STATUS = {
-  NEW: { value: 0, description: '' },
-  PAIED_RECEIVED: { value: 1, description: 'Pending Payment' },
-  PAIED_CONFIRMING: { value: 2, description: 'Verifying Payment' },
-  PENDING_BROADCAST: { value: 3, description: 'Received Payment' },
-  BROADCASTING: { value: 4, description: 'Issuing Asset' },
-  BROADCASTING_CONFIRM: { value: 5, description: 'Importing Asset' },
-  IMPORT_FINISHED: { value: 6, description: 'Pending Claim' },
-  SUCCESS: { value: 9, description: 'Success' },
-  FAILED: { value: 99, description: 'Failed' }
+  NEW: 0,
+  PAIED_RECEIVED: 1,
+  PAIED_CONFIRMING: 2,
+  PENDING_BROADCAST: 3,
+  BROADCASTING: 4,
+  BROADCASTING_CONFIRM: 5,
+  IMPORT_FINISHED: 6,
+  SUCCESS: 9,
+  FAILED: 99
+}
+export const ISSUE_ASSET_STATUS_DESCRIPTION = {
+  0: 'Waiting for payment verification',
+  1: "Pending Payment",
+  2: "Verifying Payment",
+  3: "Received Payment",
+  4: "Issuing Asset",
+  5: "Importing Asset",
+  6: "Pending Claim",
+  9: "Success",
+  99: "Failed"
 }
 export const QUOTE_ASSET = process.env.REACT_APP_QUOTE_TOKEN
 export const FEE = 0.004
