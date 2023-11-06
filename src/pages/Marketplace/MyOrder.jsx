@@ -328,18 +328,9 @@ export default function MyOrder() {
         render: (text, row) => {
           if (["INIT", "PUSH_MARKET_SUCCESS", "PUSH_MARKET_FAIL", "PART_SUCCESS"].includes(text)) {
             return (
-              // <Button
-              //   className="cancel"
-              //   loading={cancelLoading}
-              //   type="link"
-              //   onClick={() => {
-              //     //
-              //     onCancelOrder(row.id);
-              //   }}
-              // >{t`Cancel`}</Button>
               <CancelButton reexcuteQuery={reexcuteQuery} row={row}></CancelButton>
             );
-          } else if (["TRADE_FAIL"].includes(text)) {
+          } else if (["TRADE_FAIL"].includes(text) && process.env.REACT_APP_CURRENT_ENV !== "prod") {
             return <RepairButton reexcuteQuery={reexcuteQuery} row={row}></RepairButton>;
           } else {
             return <span>--</span>;
@@ -537,7 +528,7 @@ export default function MyOrder() {
               <CancelButton reexcuteQuery={reexcuteQuery} row={item}></CancelButton>
             </div>
           )}
-          {["TRADE_FAIL"].includes(item.status) && (
+          {["TRADE_FAIL"].includes(item.status) && process.env.REACT_APP_CURRENT_ENV !== "prod" && (
             <div>
               <RepairButton reexcuteQuery={reexcuteQuery} row={item}></RepairButton>
             </div>

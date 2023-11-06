@@ -33,7 +33,6 @@ import { convertDollars } from "lib/utils/index";
 
 export default function Listing({ refListing }) {
   // const { handleCancelOrderAsync } = useCancelOrder();
-  const timerInterval = useRef(null)
   const [width, setWidth] = useState(document.body.clientWidth);
   const { tokenList, quote_pirce } = useSelector(({ market }) => market);
   const [timer, setTimer] = useState(false);
